@@ -1,4 +1,4 @@
-YouPower app
+BRFApp
 ============
 
 [![Join the chat at https://gitter.im/CIVIS-project/CIVIS](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/CIVIS-project/YouPower?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
