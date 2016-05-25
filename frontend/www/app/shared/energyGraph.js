@@ -5,15 +5,15 @@ angular.module('civis.youpower')
   var startYear = 2010;
 
   $scope.changeComparison = function(){
-    updateEnergyData().then(function(){
+      updateEnergyData().then(function(){
       mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
     });
   };
 
   //Lists the possible comparison options in a pop-up
   $scope.listComparisons = function() {
-    var  currentCompareTo = $scope.settings.compareTo;
-    var  currentSelectedCooperative =  $scope.settings.selectedCooperative;
+    var currentCompareTo = $scope.settings.compareTo;
+    var currentSelectedCooperative =  $scope.settings.selectedCooperative;
     var compareToPopUp = $ionicPopup.show({
       scope: $scope,
       title: $translate.instant('GRAPH_DATA_COMPARE'),
@@ -79,7 +79,7 @@ angular.module('civis.youpower')
   }
 
   $scope.changeGranularity = function(granularity){
-    updateEnergyData($scope.settings.type,granularity).then(function(){
+      updateEnergyData($scope.settings.type,granularity).then(function(){
       $scope.settings.granularity = granularity;
       mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
     });
@@ -107,27 +107,6 @@ angular.module('civis.youpower')
     months += d2.getMonth();
     return months <= 0 ? 0 : months;
   }
-
-  $scope.$on("goToActionInGraph", function (event, args) {
-    if ($scope.granularity != 'yearly'){
-      var action = _.find($scope.actions, function(action){ return action._id == args.actionId});
-      var date = new Date(action.date);
-      var currentDate = new Date();
-      if (monthDiff(date,currentDate) > 5){
-        date.setMonth(date.getMonth() + 7);
-        $scope.settings.endDate = date;
-      }else{
-        var currentDate = new Date();
-        currentDate.setDate(1);
-        currentDate.setHours(0)
-        currentDate.setMinutes(0);
-        currentDate.setSeconds(0);
-        currentDate.setMilliseconds(0);
-        $scope.settings.endDate = currentDate;
-      }
-      updateEnergyData();
-    }
-  });
 
   // Sets the initial chart configuration
   $scope.$on('civisEnergyGraph.init', function(event) {
@@ -260,7 +239,36 @@ angular.module('civis.youpower')
             $scope.chartLoaded = true;
           });
         }
+      };
+  });
+
+  //Update graph and scroll to visualize selected action on graph
+  $scope.$on("goToActionInGraph", function (event, args) {
+    if ($scope.granularity != 'yearly'){
+      var action = _.find($scope.actions, function(action){ return action._id == args.actionId});
+      var date = new Date(action.date);
+      var currentDate = new Date();
+      if (monthDiff(date,currentDate) > 5){
+        date.setMonth(date.getMonth() + 7);
+        $scope.settings.endDate = date;
+      }else{
+        var currentDate = new Date();
+        currentDate.setDate(1);
+        currentDate.setHours(0)
+        currentDate.setMinutes(0);
+        currentDate.setSeconds(0);
+        currentDate.setMilliseconds(0);
+        $scope.settings.endDate = currentDate;
       }
+      updateEnergyData();
+    }
+  });
+
+  // Update energy data
+  $scope.$on('updateData', function() {
+    if($scope.chartConfig) {
+      updateEnergyData();
+    }
   });
 
   // Helper function should be moved somewhere more general
@@ -471,6 +479,7 @@ angular.module('civis.youpower')
   }
 
 }])
+
 .directive('civisEnergyGraph', [function(){
   // Runs during compile
   return {
@@ -508,4 +517,48 @@ angular.module('civis.youpower')
       $scope.settings.endDate = currentDate;
     }
   };
-}]);
+}])
+
+.directive('ionRadioCustom', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    require: '?ngModel',
+    transclude: true,
+    template:
+    '<label class="item item-radio radio-custom">' +
+    '<input type="radio" name="radio-group">' +
+    '<div class="item-content disable-pointer-events hidden-content"></div>' +
+    '<i class="radio-icon-unchecked disable-pointer-events icon ion-checkmark-unchecked"></i>'+
+    '<i class="radio-icon-checked disable-pointer-events icon ion-checkmark-checked"></i>' +
+    '</label>',
+    compile: function (element, attr) {
+      if (attr.checkedicon) {
+        element.children().eq(3).removeClass('ion-checkmark-checked').addClass(attr.checkedicon);
+      }
+      if (attr.uncheckedicon) {
+        element.children().eq(2).removeClass('ion-checkmark-unchecked').addClass(attr.uncheckedicon);
+      }
+      var input = element.find('input');
+      _.each({
+        'name': attr.name,
+        'value': attr.value,
+        'disabled': attr.disabled,
+        'ng-value': attr.ngValue,
+        'ng-model': attr.ngModel,
+        'ng-disabled': attr.ngDisabled,
+        'ng-change': attr.ngChange,
+        'ng-required': attr.ngRequired,
+        'required': attr.required
+      }, function (value, name) {
+          input.attr(name, value);
+      });
+
+      return function (scope, element, attr) {
+        scope.getValue = function () {
+          return scope.ngValue || attr.value;
+        };
+      };
+    }
+  };
+});
