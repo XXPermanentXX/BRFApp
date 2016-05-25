@@ -15,7 +15,6 @@ $color_gray_nurse_approx: #e8e8e8;
   @include border-radius(10px);
 }
 
-
 // .card {
 //   .tabs {
 //     background-color: $white !important;
@@ -43,12 +42,11 @@ $color_gray_nurse_approx: #e8e8e8;
 // }
 
 h1 {
-    font-size: 1.5em;
+  font-size: 1.5em;
 }
 .capitalize {
     text-transform: capitalize;
 }
-
 table {
   border-collapse: collapse;
   border-spacing: 0;
@@ -73,6 +71,10 @@ td {
   font-size: 12px;
   color: gray;
 }
+.text-medium-small {
+  font-size: 14px;
+  color: $color_tundora_approx;
+}
 .text-medium {
   font-size: 16px;
 }
@@ -90,6 +92,10 @@ td {
 }
 .space-top {
   margin-top: 6px;
+}
+
+.i.icon-small.ion-loading-c {
+  font-size: 80px;
 }
 .button-top-right{
   float: right;
@@ -242,7 +248,6 @@ ul.rating li {
   }
 }
 
-
 .button.button-multiline {
   padding: 6px 16px;
   white-space: normal;
@@ -255,21 +260,123 @@ ul.rating li {
     padding: 5px 45px 5px 0;
     font-size: 12px;
   }
-
   .input-label {
     font-size: 12px;
   }
 }
-
 .button.active {
   font-weight: bold;
 }
-
-.popup-flexible .popup{
+.button .icon {
+  vertical-align: middle;
+  padding-left: 10px;
+}
+.popup-flexible .popup {
   width: 90%;
   max-width: 450px;
 }
 .disable-clickon-tabs {
     pointer-events: none !important;
     background-color: #f8f8f8;
+}
+.col-options {
+  padding: 0px;
+}
+
+.borderless-list {
+  border-width:0;
+}
+
+.popup-custom {
+  .popup {
+    //styling for popup width, width: 300px;
+    width: 310px;
+    max-height:400px;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+  }
+  .popup-title {
+    //styling for title
+    font-size: 18px;
+    text-transform: uppercase;
+    color: #2d4d75;
+  }
+  .popup-body {
+
+    font-size: 13px;
+  }
+  .popup-buttons > button {
+    color: #2d4d75;
+  }
+}
+
+.list .item.item-divider.header-divider{
+   padding-left: 20px;
+   color: $color_tundora_approx;
+}
+
+.list .item.item-accordion-filter {
+  line-height: 30px;
+  padding-top: 15px;
+  padding-bottom: 0;
+  transition: 0.2s all linear;
+}
+
+.list .item.item-accordion {
+  line-height: 20px;
+  padding-top: 0;
+  padding-bottom: 0;
+  transition: 0.1s all linear;
+}
+
+.list .item.item-accordion.ng-hide, .list .item.item-accordion-filter.ng-hide {
+  line-height: 0px;
+}
+
+.list .item.item-accordion.ng-hide-add,
+.list .item.item-accordion.ng-hide-remove,
+.list .item.item-accordion-filter.ng-hide-add,
+.list .item.item-accordion-filter.ng-hide-remove{
+  display: block !important;
+}
+
+.item-radio .radio-icon-checked, .item-radio .radio-icon-unchecked {/* checkmark icon will be hidden by default */
+  position: relative;
+  top: 0;
+  right: 0;
+  z-index: 3;
+  display: none;
+  padding: 0px;
+  height: 100%;
+  font-size: 16px;
+  background-color: white;
+}
+.item-radio input:not(:checked) ~ .radio-icon-unchecked {/* show the checkmark icon when its unchecked */
+  display: inline-block;
+}
+.item-radio input:checked ~ .radio-icon-checked {/* show the checkmark icon when its checked */
+  display: inline-block;
+}
+
+.item-content.hidden-content {
+  display: none;
+}
+
+.customCheckbox .item-checkbox input + .checkbox-icon {
+  top: 10px;
+  width: 22px;
+  height: 22px;
+}
+
+.customCheckbox .item-checkbox input:checked + .checkbox-icon:before {
+  background-color: #444 !important;
+  border-color: #444;
+  width: 22px;
+  height: 22px;
+
+}
+
+.customCheckbox .item-checkbox input:checked + .checkbox-icon:after {
+  top: 6px;
+  left: 4px;
 }
