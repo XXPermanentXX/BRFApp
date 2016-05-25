@@ -161,6 +161,10 @@ angular.module('civis.youpower.translations',[])
     COOPERATIVE_ACTION_TYPE_302 : {
       en: "Investments",
       se: "Investeringar",
+    },
+    COOPERATIVE_FILTER : {
+      en: "Filter",
+      se: "Filter",
     }
   }
 
