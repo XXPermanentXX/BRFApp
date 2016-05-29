@@ -69,7 +69,7 @@ function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthS
           if($scope.testbed && $scope.testbed.isStockholm()) {
             $state.go('main.cooperative.my');
           } else {
-            $state.go('main.actions.yours');
+            $state.go('main.cooperative.my');
           }
 
         }, function(err){
