@@ -44,10 +44,13 @@ angular.module('civis.youpower')
   }
 
   $scope.changeType = function(type){
+    if(type != $scope.settings.type){
+      $scope.settings.normalized = false;
       updateEnergyData(type).then(function(){
-      $scope.settings.type = type;
-      mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
-    });
+        $scope.settings.type = type;
+        mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
+      });
+    }
   }
 
   $scope.changeCategory = function(type){
@@ -83,6 +86,37 @@ angular.module('civis.youpower')
       $scope.settings.granularity = granularity;
       mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
     });
+  }
+
+  $scope.normalizeData = function(normalized){
+    updateEnergyData($scope.settings.type,$scope.settings.granularity,normalized);
+  }
+
+  $scope.infoEnergyUse = function() {
+    $ionicPopup.show({
+      title: $translate.instant('GRAPH_ENERGY_USE'),
+      template: $translate.instant('GRAPH_ENERGY_USE_DESCRIPTION', {
+        granularity: $translate.instant('GRAPH_DATA_' + $scope.settings.granularity.toUpperCase()),
+        category: $translate.instant('GRAPH_DATA_' + $scope.settings.type.toUpperCase())
+      }),
+      cssClass: 'popup-custom',
+      buttons: [{
+        text: 'OK',
+        type: 'button-clear popup-button'
+      }]
+    })
+  }
+
+  $scope.infoNormalization = function() {
+    $ionicPopup.show({
+      title: $translate.instant('GRAPH_NORMALIZATION'),
+      template: $translate.instant('GRAPH_NORMALIZATION_DESCRIPTION'),
+      cssClass: 'popup-custom',
+      buttons: [{
+        text: 'OK',
+        type: 'button-clear popup-button'
+      }]
+    })
   }
 
   $scope.getCorrectDate = function(date) {
@@ -277,9 +311,10 @@ angular.module('civis.youpower')
   }
 
   // Updates the chart depending on the granularity, period, type of energy and comparison
-  var updateEnergyData = function(type, granularity) {
+  var updateEnergyData = function(type, granularity, normalized) {
     type = type || $scope.settings.type;
     granularity = granularity || $scope.settings.granularity;
+    normalized = normalized || $scope.settings.normalized;
     $scope.chartConfig.loading = true;
     var period;
     var chart = $scope.chartConfig.getHighcharts();
@@ -305,7 +340,7 @@ angular.module('civis.youpower')
       period = fromYear + fromMonth + '-' + toYear + toMonth;
     }
     var results = [];
-    results.push($scope.object.getEnergyData(type,'month',period));
+    results.push($scope.object.getEnergyData(type,'month',period,normalized));
 
     //Get the data for comparison
     if($scope.settings.compareTo ==  "GRAPH_COMPARE_PREV_YEAR" && granularity == 'yearly'){
@@ -313,11 +348,11 @@ angular.module('civis.youpower')
     }
     if($scope.settings.compareTo ==  "GRAPH_COMPARE_PREV_YEAR" && granularity == 'monthly'){
       period = (fromYear -1) + fromMonth + '-' + (toYear-1) + toMonth;
-      results.push($scope.object.getEnergyData(type,'month',period));
+      results.push($scope.object.getEnergyData(type,'month',period,normalized));
     } else if($scope.settings.compareTo ==  "GRAPH_COMPARE_AVG") {
-      results.push($scope.object.getAvgEnergyData(type,'month',period));
+      results.push($scope.object.getAvgEnergyData(type,'month',period,normalized));
     } else if($scope.settings.compareTo ==  "Housing_Cooperatives"){
-      results.push($scope.object.getEnergyDataFromCooperative(type,'month',period,$scope.settings.selectedCooperative._id));
+      results.push($scope.object.getEnergyDataFromCooperative(type,'month',period,$scope.settings.selectedCooperative._id,normalized));
     } else {
       $scope.settings.compareTo = "GRAPH_COMPARE_AVG"
       //chart.series[1].setVisible(false);
@@ -497,7 +532,7 @@ angular.module('civis.youpower')
     // require: 'ngModel', // Array = multiple requires, ? = optional, ^ = check parent elements
     // restrict: 'A', // E = Element, A = Attribute, C = Class, M = Comment
     // template: '',
-    templateUrl: '/app/shared/energyGraphTpl.html',
+    templateUrl: 'brf/app/shared/energyGraphTpl.html',
     // replace: true,
     // transclude: true,
     // compile: function(tElement, tAttrs, function transclude(function(scope, cloneLinkingFn){ return function linking(scope, elm, attrs){}})),
@@ -519,46 +554,3 @@ angular.module('civis.youpower')
   };
 }])
 
-.directive('ionRadioCustom', function () {
-  return {
-    restrict: 'E',
-    replace: true,
-    require: '?ngModel',
-    transclude: true,
-    template:
-    '<label class="item item-radio radio-custom">' +
-    '<input type="radio" name="radio-group">' +
-    '<div class="item-content disable-pointer-events hidden-content"></div>' +
-    '<i class="radio-icon-unchecked disable-pointer-events icon ion-checkmark-unchecked"></i>'+
-    '<i class="radio-icon-checked disable-pointer-events icon ion-checkmark-checked"></i>' +
-    '</label>',
-    compile: function (element, attr) {
-      if (attr.checkedicon) {
-        element.children().eq(3).removeClass('ion-checkmark-checked').addClass(attr.checkedicon);
-      }
-      if (attr.uncheckedicon) {
-        element.children().eq(2).removeClass('ion-checkmark-unchecked').addClass(attr.uncheckedicon);
-      }
-      var input = element.find('input');
-      _.each({
-        'name': attr.name,
-        'value': attr.value,
-        'disabled': attr.disabled,
-        'ng-value': attr.ngValue,
-        'ng-model': attr.ngModel,
-        'ng-disabled': attr.ngDisabled,
-        'ng-change': attr.ngChange,
-        'ng-required': attr.ngRequired,
-        'required': attr.required
-      }, function (value, name) {
-          input.attr(name, value);
-      });
-
-      return function (scope, element, attr) {
-        scope.getValue = function () {
-          return scope.ngValue || attr.value;
-        };
-      };
-    }
-  };
-});

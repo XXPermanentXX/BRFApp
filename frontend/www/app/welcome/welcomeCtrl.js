@@ -17,10 +17,10 @@ function WelcomeCtrl($translate, $scope, $state, $stateParams, $window, AuthServ
     }else{
       //save the token
       AuthService.fbLoginSuccess($stateParams.token);
-      $state.go('main.actions.yours');
+      $state.go('main.cooperative.my');
     }
   }else if (AuthService.isAuthenticated()) {
-      $state.go('main.actions.yours');
+      $state.go('main.cooperative.my');
   }
 
   $scope.loginData = {
@@ -47,7 +47,7 @@ function WelcomeCtrl($translate, $scope, $state, $stateParams, $window, AuthServ
     .then(function(data){
 
       $scope.signinClicked = false;
-      $state.go('main.actions.yours');
+      $state.go('main.cooperative.my');
 
     }, function(err){
       $scope.isRejected = true;

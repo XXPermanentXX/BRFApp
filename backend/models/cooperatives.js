@@ -69,16 +69,17 @@ var CooperativeSchema = new Schema({
 
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
 
-var getConsumption = function(cooperative, type, granularity, from, to, cb) {
+var getConsumption = function(cooperative, type, granularity, from, to,normalized, cb) {
   var cooperative = cooperative;
   if(cooperative.constructor.name == 'model') {
     cooperative = cooperative.toObject();
   }
-  Consumption.getEnergimolnetConsumption(cooperative.meters,type, granularity, from, to, function(err, results){
+  Consumption.getEnergimolnetConsumption(cooperative.meters,type, granularity, from, to, normalized, function(err, results){
     results = _.map(results, function(value){
       return value / (cooperative.area ? cooperative.area : 1);
     });
     cb(null,results);
+    //console.log(results);
   });
 }
 
@@ -90,7 +91,7 @@ var calculatePerformance = function(cooperative,cb) {
     cooperative.performance = performance.value;
     return cb(null,cooperative);
   } else {
-    getConsumption(cooperative, 'heating', 'month', year - 1, null, function(err, result){
+    getConsumption(cooperative, 'heating', 'month', year - 1, null, false, function(err, result){
       if(!err) {
         var value = _.reduce(result,function(memo,num){return memo + num;});
         cooperative.performances.push({
@@ -420,7 +421,7 @@ exports.deleteEditor = function(id, coopEditorId, user, cb) {
 exports.getAvgConsumption = function(type, granularity, from, to, cb) {
   Cooperative.find({},function(err,cooperatives){
     async.map(cooperatives,function(cooperative,cb2){
-      getConsumption(cooperative, type, granularity, from, to, cb2);
+      getConsumption(cooperative, type, granularity, from, to, false, cb2);
     },function(err,coopsData){
       var avg = _.chain(coopsData)
       .reject(_.isEmpty)
@@ -458,7 +459,7 @@ exports.addMeter = function(id, meterId, type, useInCalc, cb) {
   })
 }
 
-exports.getConsumption = function(id, type, granularity, from, to, cb) {
+exports.getConsumption = function(id, type, granularity, from, to, normalized, cb) {
   Cooperative.findOne({
     _id:id
   },function(err,cooperative){
@@ -467,7 +468,7 @@ exports.getConsumption = function(id, type, granularity, from, to, cb) {
     } else if (!cooperative) {
       cb('Cooperative not found');
     } else {
-      getConsumption(cooperative,type,granularity,from,to,cb);
+      getConsumption(cooperative,type,granularity,from,to,normalized,cb);
     }
   })
 }

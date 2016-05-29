@@ -36,20 +36,22 @@ angular.module('civis.youpower')
     return this.name.toUpperCase().replace(/ /g,'');
   };
 
-  result.prototype.getEnergyData = function(type, granularity, period){
+  result.prototype.getEnergyData = function(type, granularity, period, normalized){
     return $http.get(Config.host + '/api/cooperative/' + this._id + '/consumption/' +
       type + "/" +
       granularity + "?from=" +
-      period,{
+      period+ "&normalized=" +
+      normalized,{
         cached:true,
       })
   };
 
-  result.prototype.getEnergyDataFromCooperative = function(type, granularity, period, id){
+  result.prototype.getEnergyDataFromCooperative = function(type, granularity, period, id, normalized){
     return $http.get(Config.host + '/api/cooperative/' + id + '/consumption/' +
       type + "/" +
       granularity + "?from=" +
-      period,{
+      period + "&normalized=" +
+      normalized,{
       cached:true,
     })
   };

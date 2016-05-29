@@ -12,7 +12,7 @@
   </ion-toggle>
   <ion-toggle ng-model="currentUser.profile.toRehearse.na" ng-change="toRehearseSet(); setPersonalProfileChanged()" toggle-class="toggle-balanced">
     <span translate>were_not_applicable</span>
-  </ion-toggle> 
+  </ion-toggle>
 </div>
 
 <div ng-if="!currentUser.facebookId">
@@ -24,8 +24,7 @@
 </div>
 <div class="item item-icon-left item-text-wrap" ng-if="currentUser.facebookId">
   <i class="icon ion-social-facebook-outline"></i>
-  <p><span translate>Facebook</span> <span class="item-note">{{currentUser.facebookId}}</span></p> 
-  
+  <p><span translate>Facebook</span> <span class="item-note">{{currentUser.facebookId}}</span></p>
 </div>
 
 </ion-content>

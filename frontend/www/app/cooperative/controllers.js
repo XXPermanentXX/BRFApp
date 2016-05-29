@@ -41,7 +41,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       {name: "GRAPH_COMPARE_AVG"},
       {name: "Housing_Cooperatives"}
       // {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
-    ]
+    ],
+    normalized: false
   };
 
   $scope.performanceYear = new Date();
@@ -85,9 +86,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 
   $scope.performanceInfo = function() {
-    $ionicPopup.alert({
+    $ionicPopup.show({
       title: $translate.instant('COOPERATIVE_PERFORMANCE'),
       template: $translate.instant('COOPERATIVE_PERFORMANCE_DESCRIPTION',{year: $scope.performanceYear, value: $scope.cooperative.performance}),
+      cssClass: 'popup-custom',
+      buttons: [{
+        text: 'OK',
+        type: 'button-clear popup-button'
+      }]
     })
   }
 
@@ -282,7 +288,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 })
 
-.controller('CooperativesCtrl', function($scope, $state, Cooperatives, cooperatives,currentUser, cooperativeSelection, CooperativesFilterPopup) {
+.controller('CooperativesCtrl', function($scope, $state, Cooperatives, cooperatives,currentUser, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
   $scope.cooperativesList = cooperatives;
   $scope.myCooperative = Cooperatives.get({id: currentUser.cooperativeId});
 
@@ -323,6 +329,62 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   //Lists the possible filter criterias in a pop-up
   $scope.filterList = function() {
     CooperativesFilterPopup($scope,cooperatives);
+  };
+
+  $scope.energyPerformanceInfo = function(){
+      $ionicPopup.show({
+        title: $translate.instant('COOPERATIVE_PERFORMANCE'),
+        template: $translate.instant('COOPERATIVE_ENERGY_PERFORMANCE_DESCRIPTION'),
+        cssClass: 'popup-custom',
+        buttons: [{
+          text: 'OK',
+          type: 'button-clear popup-button'
+        }]
+      })
+  };
+})
+
+.directive('ionRadioCustom', function () {
+  return {
+    restrict: 'E',
+    replace: true,
+    require: '?ngModel',
+    transclude: true,
+    template:
+    '<label class="item item-radio radio-custom">' +
+    '<input type="radio" name="radio-group">' +
+    '<div class="item-content disable-pointer-events hidden-content"></div>' +
+    '<i class="radio-icon-unchecked disable-pointer-events icon ion-checkmark-unchecked"></i>'+
+    '<i class="radio-icon-checked disable-pointer-events icon ion-checkmark-checked"></i>' +
+    '</label>',
+    compile: function (element, attr) {
+      if (attr.checkedicon) {
+        element.children().eq(3).removeClass('ion-checkmark-checked').addClass(attr.checkedicon);
+      }
+      if (attr.uncheckedicon) {
+        element.children().eq(2).removeClass('ion-checkmark-unchecked').addClass(attr.uncheckedicon);
+      }
+      var input = element.find('input');
+      _.each({
+        'name': attr.name,
+        'value': attr.value,
+        'disabled': attr.disabled,
+        'ng-value': attr.ngValue,
+        'ng-model': attr.ngModel,
+        'ng-disabled': attr.ngDisabled,
+        'ng-change': attr.ngChange,
+        'ng-required': attr.ngRequired,
+        'required': attr.required
+      }, function (value, name) {
+        input.attr(name, value);
+      });
+
+      return function (scope, element, attr) {
+        scope.getValue = function () {
+          return scope.ngValue || attr.value;
+        };
+      };
+    }
   };
 })
 

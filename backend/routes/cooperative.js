@@ -626,7 +626,7 @@ router.delete('/:id/editor/:coopEditorId', function(req, res) {
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
  *
  *  curl -i -X GET -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" \
- *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/consumption/electricity/month?from=201505-201604
+ *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/consumption/electricity/month?from=201505-201604&normalized=false
  *
  * @apiSuccessExample {json} Success-Response:
  *   [
@@ -643,7 +643,7 @@ router.get('/:id/consumption/:type/:granularity', function(req, res) {
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
-    Cooperative.getConsumption(req.params.id, req.params.type, req.params.granularity, req.query.from, req.query.to, res.successRes);
+    Cooperative.getConsumption(req.params.id, req.params.type, req.params.granularity, req.query.from, req.query.to, req.query.normalized, res.successRes);
 
     Log.create({
       // userId: req.user._id,
@@ -651,7 +651,8 @@ router.get('/:id/consumption/:type/:granularity', function(req, res) {
       type: 'geConsumption',
       data: {
         cooperativeId: req.params.id,
-        params: req.params
+        params: req.params,
+        normalized: req.query.normalized
       }
     });
   }

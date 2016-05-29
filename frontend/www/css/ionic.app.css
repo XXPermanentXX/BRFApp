@@ -7712,6 +7712,12 @@ td {
 .icon-large {
   font-size: 32px; }
 
+.icon-medium {
+  font-size: 22px; }
+
+.icon-small {
+  font-size: 14px; }
+
 .text-small {
   font-size: 12px;
   color: gray; }
@@ -7909,7 +7915,7 @@ ul.rating li {
   text-transform: uppercase;
   color: #2d4d75; }
 .popup-custom .popup-body {
-  font-size: 13px; }
+  font-size: 14px; }
 .popup-custom .popup-buttons > button {
   color: #2d4d75; }
 
@@ -7972,6 +7978,9 @@ ul.rating li {
 .customCheckbox .item-checkbox input:checked + .checkbox-icon:after {
   top: 6px;
   left: 4px; }
+
+.toggle-custom input:checked + .track .handle {
+  background: #009EDB; }
 
 .chart-container {
   padding-left: 28px;

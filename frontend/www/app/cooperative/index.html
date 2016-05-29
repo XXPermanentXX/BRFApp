@@ -15,13 +15,13 @@
               Search
             </button>-->
             <button style="padding: 0px;"
-                    class="button button-clear button-dark text-small"
+                    class="button button-clear button-dark text-medium-small"
                     ng-class="ventilationTypesSelected.length > 0 || actionTypesSelected.length > 0 ? 'text-bold' : ''"
                     ng-click="filterList()">
               {{'COOPERATIVE_FILTER' | translate}}
             </button>
             <button style="padding: 0px;"
-                    class="button button-clear button-dark text-small"
+                    class="button button-clear button-dark text-medium-small"
                     ng-click="compareToSelectedCooperative()"
                     ng-disabled="!isCooperativeSelected()">
               {{'GRAPH_DATA_COMPARE' | translate}}
@@ -33,7 +33,7 @@
         <div class="col col-100">
           <div style="float: left; color: #444" class= "padding-left text-medium text-bold">
               {{'COOPERATIVE_PERFORMANCE'| translate}}
-              <i class="icon ion-information-circled positive"></i>
+              <i class="icon ion-information-circled positive" ng-click="energyPerformanceInfo()"></i>
           </div>
         </div>
       </div>
@@ -42,10 +42,12 @@
           <div style="float:right; padding-right: 20px" ng-click="showMyExtra = !showMyExtra" >
             <i class="icon" ng-class="showMyExtra ? 'ion-ios-arrow-down' : 'ion-ios-arrow-right'"></i>
           </div>
-          <i class="icon flaticon-building80 bigger-1 energy-class-{{myCooperative.getEnergyClass()}} item-image" style="top:21px;"></i>
-          <h2>
-            {{myCooperative.name}}
-          </h2>
+          <div ng-click="cooperativeClick(myCooperative._id)" style="width: 50%;">
+            <i class="icon flaticon-building80 bigger-1 energy-class-{{myCooperative.getEnergyClass()}} item-image" style="top:21px;"></i>
+            <h2>
+              {{myCooperative.name}}
+            </h2>
+          </div>
           <p> {{myCooperative.performance | number:0}} kWh/m2 | {{'COOPERATIVE_ENERGY_ACTIONS' | translate }}: <b class="energized">{{myCooperative.actions.length}}</b></p>
           <p class="padding-left padding-top" ng-show="showMyExtra" ng-repeat="ventilation in myCooperative.ventilationType">
             {{ventilation}}
@@ -67,16 +69,17 @@
                               ng-model="selection.cooperative">
             </ion-radio-custom>
           </div>
-          <div ng-click="">
+          <div ng-click="cooperativeClick(cooperative._id)" style="width: 50%;">
             <i class="icon flaticon-building80 bigger-1 energy-class-{{cooperative.getEnergyClass()}} item-image" style="top:21px;"></i>
             <h2>
               {{cooperative.name}}
             </h2>
-            <p> {{cooperative.performance | number:0}} kWh/m2 | {{'COOPERATIVE_ENERGY_ACTIONS' | translate }}: <b class="energized">{{cooperative.actions.length}}</b></p>
-            <p class="padding-left padding-top" ng-show="showExtra" ng-repeat="ventilation in cooperative.ventilationType">
-              {{ventilation}}
-            </p>
           </div>
+          <p> {{cooperative.performance | number:0}} kWh/m2 | {{'COOPERATIVE_ENERGY_ACTIONS' | translate }}: <b class="energized">{{cooperative.actions.length}}</b></p>
+          <p class="padding-left padding-top" ng-show="showExtra" ng-repeat="ventilation in cooperative.ventilationType">
+            {{ventilation}}
+          </p>
+
       </div>
     </div>
   </ion-content>
