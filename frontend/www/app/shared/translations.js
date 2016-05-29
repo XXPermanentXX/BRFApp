@@ -27,8 +27,12 @@ angular.module('civis.youpower.translations',[])
       se: 'Energianvändning'
     },
     COOPERATIVE_PERFORMANCE_DESCRIPTION: {
-      en: 'The measured heating and hot water use during <b>{{year | date:"yyyy"}}</b> was <b>{{value | number:0}}</b> kWh/m<sup>2</sup>.',
-      se: 'Uppmätt värme- och varmvattenanvändning var <b>{{value | number:0}}</b> kWh/m<sup>2</sup> under <b>{{year | date:"yyyy"}}</b>.'
+      en: '<center>The measured heating and hot water use during <b>{{year | date:"yyyy"}}</b> was <b>{{value | number:0}}</b> kWh/m<sup>2</sup>.</center>',
+      se: '<center>Uppmätt värme- och varmvattenanvändning var <b>{{value | number:0}}</b> kWh/m<sup>2</sup> under <b>{{year | date:"yyyy"}}</b>.</center>'
+    },
+    COOPERATIVE_ENERGY_PERFORMANCE_DESCRIPTION: {
+      en: '<center>Previous year’s energy use, based on the use of <b>heating and hot water</b> divided by the heated area </b> kWh/m<sup>2</sup.</center>',
+      se: '<center>Previous year’s energy use, based on the use of <b>heating and hot water</b> divided by the heated area </b> kWh/m<sup>2</sup.</center>'
     },
     COOPERATIVE_ENERGY_ACTIONS : {
       en: 'Energy actions',
@@ -228,6 +232,22 @@ angular.module('civis.youpower.translations',[])
     GRAPH_DATA_CATEGORY : {
       en: 'Category',
       se: 'Kategori',
+    },
+    GRAPH_ENERGY_USE: {
+      en: 'Energy use',
+      se: 'Energy use'
+    },
+    GRAPH_ENERGY_USE_DESCRIPTION: {
+      en: '<center>Total energy use by <b>{{category}}</b> in a <b>{{granularity}}</b> basis  in terms of  kilowatt hour per square meter (kWh/m<sup>2</sup>).</center>',
+      se: '<center>Total energy use by <b>{{category}}</b> in a <b>{{granularity}}</b> basis  in terms of  kilowatt hour per square meter (kWh/m<sup>2</sup>).</center>'
+    },
+    GRAPH_NORMALIZATION: {
+      en: 'Normalization',
+      se: 'Normalization'
+    },
+    GRAPH_NORMALIZATION_DESCRIPTION: {
+      en: 'Normalization',
+      se: 'Normalization'
     }
   }
 

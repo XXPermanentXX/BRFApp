@@ -13,12 +13,12 @@
     <a ng-repeat="granularity in settings.granularities" class="button button-small button-multiline btn btn btn-default" ng-class="{active:settings.granularity==granularity}" ng-click="changeGranularity(granularity)" ng-disabled="settings.disabledGranularities.indexOf(granularity)>=0">
       {{'GRAPH_DATA_' + (granularity | uppercase) | translate}}</a>
   </div>
-  <div class="row">
+  <div class="row row-no-padding">
     <div class="col col-100">
-      <div style="float: left" class="text-right">
-        <button  class="button button-clear button-dark button-multiline" ng-click="listCategories()">
+      <div style="float: left">
+        <button  class="button button-clear button-dark button-multiline text-medium" ng-click="listCategories()">
           <b>{{'GRAPH_DATA_' + (settings.type | uppercase) | translate}}</b>
-          <i class="icon ion-ios-arrow-right"></i>
+          <i class="icon ion-ios-arrow-right icon-small"></i>
         </button>
       </div>
       <div style="float: right; margin-left: 5px;" class = "padding-top">
@@ -30,10 +30,20 @@
   </div>
   <div class="row">
     <div class="col col-100">
-      <div style="padding-top: 5px; padding-left: 20px" class= "text-medium-small padding-left">
+      <div style="padding-top: 5px;" class= "text-medium-small padding-left">
         {{'GRAPH_DATA_ENERGY_USE' | translate}}
         (<span ng-bind-html="settings.unit"></span>)
-        <i class="icon ion-information-circled positive"></i></div>
+        <i class="icon ion-information-circled positive" ng-click="infoEnergyUse()"></i></div>
+      </div>
+      <div style="float: right; margin-left: 5px;" class = "padding-top padding-right" ng-if="settings.type == 'heating'">
+        <i class="icon ion-information-circled positive icon-small" ng-click="infoNormalization()"></i>
+        <span class="text-medium-small padding-right">Normalize</span>
+        <label class="toggle toggle-small toggle-calm toggle-custom">
+          <input type="checkbox" ng-model="settings.normalized" ng-change="normalizeData(settings.normalized)" ng-value="settings.normalized">
+          <div class="track">
+            <div class="handle"></div>
+          </div>
+        </label>
       </div>
     </div>
   </div>

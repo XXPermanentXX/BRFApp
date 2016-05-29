@@ -64,9 +64,17 @@ td {
   background-color: #f5f5f5;
   z-index: 3 !important;
 }
+
 .icon-large {
   font-size: 32px;
 }
+.icon-medium {
+  font-size: 22px;
+}
+.icon-small {
+  font-size: 14px;
+}
+
 .text-small {
   font-size: 12px;
   color: gray;
@@ -87,6 +95,7 @@ td {
 .text-bold {
   font-weight: bold;
 }
+
 .space-bottom {
   margin-bottom: 6px;
 }
@@ -303,7 +312,7 @@ ul.rating li {
   }
   .popup-body {
 
-    font-size: 13px;
+    font-size: 14px;
   }
   .popup-buttons > button {
     color: #2d4d75;
@@ -380,3 +389,9 @@ ul.rating li {
   top: 6px;
   left: 4px;
 }
+
+.toggle-custom input:checked + .track .handle{
+  background: $positive;
+}
+
+

@@ -531,7 +531,7 @@ exports.getConsumption = function(id, type, granularity, from, to, cb) {
             break;
           case 'energimolnet':
             meter.useInCalc = true;
-            Consumption.getEnergimolnetConsumption([meter],type, granularity, from, to, cb);
+            Consumption.getEnergimolnetConsumption([meter],type, granularity, from, to, false, cb);
             break;
           default:
             cb('Unknown meter source');

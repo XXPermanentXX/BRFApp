@@ -236,7 +236,7 @@ var energimolnetHeaders = {
 
 var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   var to = to ? '-' + to : '';
-  console.log(meterId,granularity,from,to);
+  //console.log(meterId,granularity,from,to);
   request({
     url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
     headers: energimolnetHeaders
@@ -282,20 +282,17 @@ var getRawEnergimolnetConsumption = async.memoize(function(meters, type, granula
   });
 },uniqueApiCallHash);
 
-exports.getEnergimolnetConsumption = function(meters, type, granularity, from, to, cb) {
+exports.getEnergimolnetConsumption = function(meters, type, granularity, from, to, normalized, cb) {
   getRawEnergimolnetConsumption(meters,type,granularity,from,to,function(err, results){
-    console.log('Meters', meters);
-    console.log('Type', type);
-    if(type == 'heating') {
+    //console.log('Meters', meters);
+    //console.log('Type', type);
+    if(normalized == 'true') {
       normalisation.normalizeHeating(meters,from,to,results,getRawEnergimolnetConsumption,cb);
     } else {
       cb(err,results);
     }
   });
 }
-
-
-
 
 var computeCheckDigit = function(numberStr) {
   var oddSum = 0;
