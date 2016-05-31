@@ -102,10 +102,13 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 })
 
-.controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser){
-  $scope.ventilationTypes = Cooperatives.VentilationTypes;
-
+.controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser,$ionicPopup, $translate){
   $scope.actionTypes = Cooperatives.getActionTypes();
+
+  $scope.ventilationTypes = _.map(Cooperatives.VentilationTypes, function (type) {
+    return {type: type, checked: false};
+  });
+  $scope.ventilationTypesSelected = {};
 
   $scope.$on("$ionicView.enter",function(){
     // Get the cooperative, currently hardcoded
@@ -121,6 +124,25 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     })
   }
 
+  $scope.selectVentilationTypes = function() {
+    var categoryPopUp = $ionicPopup.show({
+      scope: $scope,
+      title: $translate.instant('COOPERATIVE_VENTILATION_TYPE'),
+      templateUrl: 'app/cooperative/ventilationTypesPopUp.html',
+      cssClass:'popup-custom',
+      buttons: [{
+        text: 'OK',
+        type: 'button-clear popup-button',
+        onTap: function(e) {
+          // Returning a value will cause the promise to resolve with the given value.
+          return true;
+        }
+      }]
+    });
+    categoryPopUp.then(function(res) {
+      $scope.cooperative.ventilationType = _.map(_.where($scope.ventilationTypes, {checked: true}), function(type) { return type.type});
+    });
+  }
 })
 
 .factory('CooperativeActionTypePopup', function($ionicPopup, $translate){

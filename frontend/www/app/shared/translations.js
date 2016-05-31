@@ -246,8 +246,8 @@ angular.module('civis.youpower.translations',[])
       se: 'Normalization'
     },
     GRAPH_NORMALIZATION_DESCRIPTION: {
-      en: 'Normalization',
-      se: 'Normalization'
+      en: '<center>When comparing the energy use for heating to previous years use, you can view <b>normalised data</b> that accounts for variations in outdoor temperatures between the years.<br> The energy use for heating varies with the outdoor temperature and with normalised data you can view the energy use as if every month had a “normal” outdoor temperature. That makes it easier to see the impact of different energy actions on the building’s energy performance.</center>',
+      se: '<center>When comparing the energy use for heating to previous years use, you can view <b>normalised data</b> that accounts for variations in outdoor temperatures between the years.<br> The energy use for heating varies with the outdoor temperature and with normalised data you can view the energy use as if every month had a “normal” outdoor temperature. That makes it easier to see the impact of different energy actions on the building’s energy performance.</center>'
     }
   }
 

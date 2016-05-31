@@ -35,7 +35,7 @@
         (<span ng-bind-html="settings.unit"></span>)
         <i class="icon ion-information-circled positive" ng-click="infoEnergyUse()"></i></div>
       </div>
-      <div style="float: right; margin-left: 5px;" class = "padding-top padding-right" ng-if="settings.type == 'heating'">
+      <div style="float: right; margin-left: 5px;" class = "padding-top padding-right" ng-if="showNormalization()">
         <i class="icon ion-information-circled positive icon-small" ng-click="infoNormalization()"></i>
         <span class="text-medium-small padding-right">Normalize</span>
         <label class="toggle toggle-small toggle-calm toggle-custom">

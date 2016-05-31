@@ -284,8 +284,8 @@ var getRawEnergimolnetConsumption = async.memoize(function(meters, type, granula
 
 exports.getEnergimolnetConsumption = function(meters, type, granularity, from, to, normalized, cb) {
   getRawEnergimolnetConsumption(meters,type,granularity,from,to,function(err, results){
-    //console.log('Meters', meters);
-    //console.log('Type', type);
+    console.log('Meters', meters);
+    console.log('Type', type);
     if(normalized == 'true') {
       normalisation.normalizeHeating(meters,from,to,results,getRawEnergimolnetConsumption,cb);
     } else {

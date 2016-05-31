@@ -5,6 +5,7 @@ angular.module('civis.youpower')
   var startYear = 2010;
 
   $scope.changeComparison = function(){
+      $scope.settings.normalized = false;
       updateEnergyData().then(function(){
       mixpanel.track('Graph filtered', {granularity: $scope.settings.granularity, type: $scope.settings.type, compareTo: $scope.settings.compareTo});
     });
@@ -117,6 +118,10 @@ angular.module('civis.youpower')
         type: 'button-clear popup-button'
       }]
     })
+  }
+
+  $scope.showNormalization = function(){
+    return ($scope.settings.compareTo == 'GRAPH_COMPARE_PREV_YEAR') && ($scope.settings.type == 'heating');
   }
 
   $scope.getCorrectDate = function(date) {

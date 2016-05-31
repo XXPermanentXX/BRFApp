@@ -3,7 +3,8 @@
   <ion-content>
     <div class="list">
       <div class="item item-divider">
-      {{cooperative.name}}</div>
+      {{cooperative.name}}
+      </div>
       <label class="item item-input item-stacked-label">
         <span class="input-label" translate>COOPERATIVE_YEAR_OF_CONSTRUCTION</span>
         <input type="number" ng-model="cooperative.yearOfConst" min="1600" max="2016">
@@ -20,12 +21,18 @@
         <span class="input-label" translate>COOPERATIVE_CONTACT</span>
         <input type="email" placeholder="john@example.com" ng-model="cooperative.email">
       </label>
-      <label class="item item-input item-select">
-        <span class="input-label" translate>COOPERATIVE_VENTILATION_TYPE</span>
-        <select ng-model="cooperative.ventilationType" multiple>
-          <option ng-repeat="option in ventilationTypes" value="{{option}}">{{option}}</option>
-        </select>
+      <label class="item">
+        <button  style="padding: 0;" class="button button-clear button-dark button-multiline text-medium" ng-click="selectVentilationTypes()">
+          <span translate>COOPERATIVE_VENTILATION_TYPE</span>
+          <i class="icon" ng-class="'ion-ios-arrow-right'"></i>
+        </button>
+        <div ng-if="cooperative.ventilationType.length > 0">
+          <p class="padding-left padding-top" ng-repeat="ventilation in cooperative.ventilationType">
+          {{ventilation}}
+          </p>
+        </div>
       </label>
+
       <button class="button button-block button-dark" ng-click="save()" >
         <b translate>Save</b>
       </button>
