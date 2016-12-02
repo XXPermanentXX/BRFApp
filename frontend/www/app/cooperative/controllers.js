@@ -1,13 +1,10 @@
 'use strict';
-
-angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
-
-.controller('CooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,currentUser,$location,$ionicScrollDelegate,cooperativeSelection) {
-  $scope.actionTypes = Cooperatives.getActionTypes();
+function coop(id, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection){
+      $scope.actionTypes = Cooperatives.getActionTypes();
   $scope.cooperatives = Cooperatives.query();
+	
 
   $scope.$on("$ionicView.enter",function(){
-    var id = $stateParams.id || currentUser.cooperativeId;
     // A cooperative have been selected to compare with
     if (!(_.isEmpty(cooperativeSelection.getSelection().cooperative))) {
       $scope.energyGraphSettings["selectedCooperative"] = cooperativeSelection.getSelection().cooperative;
@@ -19,14 +16,14 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       $scope.cooperative = data;
       $scope.cooperative.actions = _.sortBy($scope.cooperative.actions,function(a){ return new Date(a.date)}).reverse();
       $scope.$broadcast('civisEnergyGraph.init');
-      mixpanel.track('Cooperative viewed',{name: data.name, own: id == currentUser.cooperativeId});
+      mixpanel.track('Cooperative viewed',{name: data.name});
     });
   })
 
   $scope.energyGraphSettings = {
     granularity: "monthly",
     compareTo: "GRAPH_COMPARE_PREV_YEAR",
-    type: "electricity",
+    type: "heating",
     unit: "kWh/m<sup>2</sup>",
     granularities: ['monthly','yearly'],
     types: [{
@@ -100,6 +97,16 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   $scope.trackActionClicked = function(action) {
     mixpanel.track('Cooperative Action expanded',{'action name': action.name, 'action id': action._id});
   }
+}
+
+angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
+
+    .controller('CooperativeCtrl', function(currentUser, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection) {
+	coop(currentUser.cooperativeId, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection);
+})
+
+    .controller('OtherCooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection) {
+		coop($stateParams.id, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection);
 })
 
 .controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser,$ionicPopup, $translate){
@@ -310,10 +317,19 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   }
 })
 
-.controller('CooperativesCtrl', function($scope, $state, Cooperatives, cooperatives,currentUser, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
-  $scope.cooperativesList = cooperatives;
-  $scope.myCooperative = Cooperatives.get({id: currentUser.cooperativeId});
-
+    .controller('CooperativesCtrl', function(User, $scope, $state, Cooperatives, cooperatives, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
+	$scope.cooperativesList = cooperatives;
+	$scope.cooperatives = cooperatives;
+	User.get().$promise.then(function(user){
+	    Cooperatives.get({id: user.cooperativeId}, function(data){
+		$scope.myCooperative=data;
+	    });
+			
+	    $scope.cooperativesList= _.reject($scope.cooperativesList, function(coop){ return coop._id===user.cooperativeId; });
+	},function(reason){
+	    $scope.myCooperative="";
+	});
+	
   //filter criterias
   $scope.ventilationTypes = _.map(Cooperatives.VentilationTypes, function (type) {
     return {type: type, checked: false};
@@ -325,8 +341,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   //cooperative selected for comparison
   $scope.selection = {cooperative: {}};
 
-  $scope.view = 'list';
-
+	$scope.view='map';
+	
   $scope.$on("$ionicView.enter",function(){
     Cooperatives.query(function(data){
       $scope.cooperatives = data;
@@ -410,12 +426,13 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading, $translate) {
+    .controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading, $translate, Cooperatives) {
 
-  function initialize() {
-      var myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
-      var myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
-
+	function initialize() {
+//      var myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
+//      var myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
+      var myLatlng = new google.maps.LatLng(59.3036, 18.1025);
+      
       var mapOptions = {
           mapTypeControl: false,
           streetViewControl: false,

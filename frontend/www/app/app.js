@@ -49,21 +49,23 @@ angular.module('civis.youpower', [
 
   $rootScope.$on('$stateChangeStart', function (event, next, nextParams, fromState) {
 
-    // console.log("stateChangeStart: 1." + fromState.name + " 2." + next.name + " isAuthenticated: "+AuthService.isAuthenticated());
+    console.log("stateChangeStart: 1." + fromState.name + " 2." + next.name + " isAuthenticated: "+AuthService.isAuthenticated());
 
-   if (!AuthService.isAuthenticated()) {
+      /*
+       if (!AuthService.isAuthenticated()) {
 
       if (next.name.indexOf('main') == 0){
           event.preventDefault();
+	  console.log("going to welcome");
           $state.go('welcome');
       }
-    }
+    }*/
   });
 
   $rootScope.$on('$stateChangeError', function(event, next, nextParams, fromState, fromParams, error) {
       console.error("State Change error occurred!");
       console.error(arguments);
-      // console.log("stateChangeError: 1." + fromState.name + " 2." + next.name);
+      console.log("stateChangeError: 1." + fromState.name + " 2." + next.name+" "+JSON.stringify(error, null, 4));
       if (next.name !== 'welcome' && next.name !== 'signup'){
           event.preventDefault();
           $state.go('welcome');
@@ -90,6 +92,7 @@ angular.module('civis.youpower', [
 
 .config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider, $translateProvider) {
 
+    $ionicConfigProvider.views.maxCache(0);
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
   // Set up the various states which the app can be in.
@@ -159,31 +162,11 @@ angular.module('civis.youpower', [
     url: "/app",
     abstract: true,
     templateUrl: "app/app/menu.html",
-    controller: 'AppCtrl',
+//    controller: 'AppCtrl',
     resolve: {
       User: 'User',     
-      Testbed: 'Testbed',
-      Cooperatives: 'Cooperatives',
-      currentUser: function(User,Testbed,Cooperatives){
-        var userPromise = User.get().$promise;
-        userPromise.then(function(user){
-          if(user.testbed) {
-            user.testbed = new Testbed(user.testbed);
-          }
-          if(user.cooperative) {
-            user.cooperative = new Cooperatives(user.cooperative);
-          }
-          mixpanel.identify(user._id);
-          mixpanel.people.set({
-              "$name": user.profile.name,
-              "$created": new Date(parseInt(user._id.toString().slice(0,8), 16)*1000),
-              "$email": user.email,
-              "Testbed": (user.testbed || {}).name,
-              'Cooperative': (user.cooperative || {}).name,
-          });
-        });
-        return userPromise;
-      }
+	Testbed: 'Testbed',
+	Cooperatives: 'Cooperatives'
     }
   })
 
@@ -204,208 +187,6 @@ angular.module('civis.youpower', [
   })
 
 
-  .state('main.actions.yours', {
-    url: '/yours',
-    views: {
-      'tab-actions': {
-        templateUrl: 'app/actions/index.html',
-        controller: 'ActionCtrl'
-      }
-    }
-  })
-
-
-  .state('main.actions.action', {
-    url: '/suggested/:id',
-    views: {
-      'tab-actions': {
-        templateUrl: 'app/actions/action.html',
-        controller: 'ActionCtrl'
-      }
-    }
-  })
-
-.state('main.actions.details', {
-  url: '/:type/:index',
-  views: {
-    'tab-actions': {
-      templateUrl: 'app/actions/action-details.html',
-      controller: 'ActionsListCtrl'
-    }
-  }
-})
-
-
-
-.state('main.actions.completed', {
-  url: '/:id/completed',
-  views: {
-    'tab-actions': {
-      templateUrl: 'app/actions/action-completed.html',
-      controller: 'FormsCtrl'
-    }
-  }
-})
-
-.state('main.actions.abandoned', {
-  url: '/:id/abandoned',
-  views: {
-    'tab-actions': {
-      templateUrl: 'app/actions/action-abandoned.html',
-      controller: 'FormsCtrl'
-    }
-  }
-})
-
-
-.state('main.actions.household', {
-  url: '/household',
-  views: {
-    'tab-household': {
-      templateUrl: 'app/household/index.html',
-      controller: 'HouseholdCtrl'
-    }
-  }
-})
-
-.state('main.actions.addmember', {
-  url: '/household/members/add',
-  views: {
-    'tab-household': {
-      templateUrl: 'app/household/addmember.html',
-      controller: 'MemberCtrl'
-    }
-  }
-})
-
-.state('main.actions.communities', {
-  url: '/communities',
-  views: {
-    'tab-communities': {
-      templateUrl: 'app/communities/index.html',
-    }
-  }
-})
-
-.state('main.actions.achievements', {
-  url: '/achievements',
-  views: {
-    'tab-achievements': {
-      templateUrl: 'app/achievements/index.html',
-    }
-  }
-})
-
-// Dontation states
-//commented out due to lack of clarity
-// .state('main.donation', {
-//   url: '/donation',
-//   views: {
-//     'menuContent': {
-//       templateUrl: 'app/donation/index.html',
-//       controller: 'donationCtrl'
-//     }
-//   }
-// })
-
-
-/* Prosumption states */
-
-.state('main.prosumption', {
-  url: '/prosumption',
-  views: {
-    'menuContent': {
-      templateUrl: 'app/prosumption/tabs.html',
-          controller: 'prosumptionCtrl'
-        }
-      }
-    })
-
-  .state('main.prosumption.yours', {
-    url: '/yours',
-    views: {
-      'tab-prosumption-yours': {
-        templateUrl: 'app/prosumption/index_yours.html',
-       controller: 'dataVizCtrl'
-      }
-    }
-  })
-.state('main.prosumption.appliances', {
-    url: '/appliances',
-    views: {
-      'tab-prosumption-appliances': {
-        templateUrl: 'app/prosumption/index_appliances.html',
-       controller: 'dataVizCtrl'
-      }
-    }
-  })
-
-.state('main.prosumption.community', {
-    url: '/community',
-    views: {
-      'tab-prosumption-community': {
-        templateUrl: 'app/prosumption/index_community.html',
-       controller: 'dataVizCtrl'
-      }
-    }
-  })
-.state('main.prosumption.vizEnergyMeteo', {
-  url: '/vizEnergyMeteo',
-  views: {
-    'tab-prosumption-yours': {
-      templateUrl: 'app/prosumption/viz_energy_meteo.html',
-      controller: 'dataVizCtrl',
-    }
-  }
-}
-)
-.state('main.prosumption.vizConsumption', {
-  url: '/viz',
-  views: {
-    'tab-prosumption-yours': {
-    templateUrl: 'app/prosumption/viz_consumption_yours.html',
-    controller: 'dataVizCtrl' ,
-    }
-  }
-})
-.state('main.prosumption.vizProduction', {
-  url: '/viz2',
-  views: {
-    'tab-prosumption-yours': {
-    templateUrl: 'app/prosumption/viz_production_yours.html',
-    controller: 'dataVizCtrl' ,
-    }
-  }
-})
-.state('main.prosumption.vizHistoricalPersonal', {
-  url: '/vizHistoricalPersonal',
-  views: {
-    'tab-prosumption-yours': {
-      templateUrl: 'app/prosumption/viz_historical_personal.html',
-      controller: 'dataVizCtrl',
-    }
-  }
-}
-)
-.state('main.prosumption.vizHistoricalComparison', {
-  url: '/vizHistoricalComparison',
-  views: {
-    'tab-prosumption-yours' : {
-      templateUrl: 'app/prosumption/viz_historical_comparison.html',
-      controller: 'dataVizCtrl',
-    }
-  }
-}
-)
-.state('main.prosumption.vizAppliance', {
-    url: '/vizAppliance',
-    views: {
-      'tab-prosumption-appliances': {
-        templateUrl: 'app/prosumption/viz_appliance.html',
-       controller: 'dataVizCtrl'
-      }
-    }
-  })
 
 /* Cooperative states */
 
@@ -421,7 +202,30 @@ angular.module('civis.youpower', [
 
 .state('main.cooperative.my',{
   url: '/my',
-  cached: false,
+    cached: false,
+    resolve:{
+	currentUser: function(User,Testbed,Cooperatives){
+        var userPromise = User.get().$promise;
+        userPromise.then(function(user){
+          if(user.testbed) {
+            user.testbed = new Testbed(user.testbed);
+          }
+          if(user.cooperative) {
+            user.cooperative = new Cooperatives(user.cooperative);
+          }
+          mixpanel.identify(user._id);
+          mixpanel.people.set({
+              "$name": user.profile.name,
+              "$created": new Date(parseInt(user._id.toString().slice(0,8), 16)*1000),
+              "$email": user.email,
+              "Testbed": (user.testbed || {}).name,
+              'Cooperative': (user.cooperative || {}).name,
+          });
+        });
+        return userPromise;
+      }
+
+    },
   views: {
     'tab-my': {
       templateUrl: 'app/cooperative/show.html',
@@ -441,7 +245,7 @@ angular.module('civis.youpower', [
   },
   resolve: {
     Cooperatives: 'Cooperatives',
-    cooperatives: function(Cooperatives){
+      cooperatives: function(Cooperatives){
       return Cooperatives.query().$promise;
     }
   }
@@ -449,10 +253,10 @@ angular.module('civis.youpower', [
 
 .state('main.cooperative.show',{
   url: '/:id',
-  views: {
+    views: {
     'tab-my': {
       templateUrl: 'app/cooperative/show.html',
-      controller: 'CooperativeCtrl'
+      controller: 'OtherCooperativeCtrl'
     }
   }
 })
@@ -589,7 +393,8 @@ angular.module('civis.youpower', [
 
 ;
   //$urlRouterProvider.otherwise('/app/actions/yours');
-  $urlRouterProvider.otherwise('/welcome/');
+    //  $urlRouterProvider.otherwise('/welcome');
+    $urlRouterProvider.otherwise('/app/cooperatives/list');
 
 });
 
