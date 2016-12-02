@@ -238,8 +238,8 @@ var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   var to = to ? '-' + to : '';
   //console.log(meterId,granularity,from,to);
   request({
-    url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterId + '/' + granularity + '/' + from + to + '/',
-    headers: energimolnetHeaders
+      url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterIDs[meterId] + '/' + granularity + '/' + from + to + '/'
+      //,    headers: energimolnetHeaders
   },function(error, response, body){
     if(!error && response.statusCode == 200) {
       var result = JSON.parse(body).data[0].periods[0].energy;
@@ -313,6 +313,25 @@ var readline=require("readline");
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
 };
+
+var meterIDs={};
+
+readMeterIDs();
+
+function readMeterIDs(){
+    // this is a temporary file where we map the meter with the BRF. Later on this mapping should come in via a metry API
+    var file=fs.createReadStream(__dirname+'/'+"kth_open_data_channel_meter_mapping.csv");
+    readline.createInterface({terminal: false, input:file})
+      	.on('line', function(line){
+	    if(!line)
+      		return;
+            var ln= line.split(",");
+	    if(ln[0]=="open")
+		return;
+	    meterIDs[ln[1]]=ln[0];
+	}).on('close', function(){
+	});
+}
 
 var CIVIS_DATA= __dirname + "/../../../civis-data/localCSV/";
 
