@@ -1,7 +1,21 @@
 'use strict';
 
 var winston = require('winston');
-//require('ssl-root-cas').inject("C:\\Users\\Admin\\Downloads\\Reply Certificate\\Reply Certificate.cer");
+var dotenv = require('dotenv');
+var which = require('which');
+var express = require('express');
+var bodyParser = require('body-parser');
+var expressValidator = require('express-validator');
+var mongoose = require('mongoose');
+var fs = require('fs');
+var path = require('path');
+var mkdirp = require('mkdirp');
+
+var logger = winston.loggers.get('default');
+
+// Load environement variables
+dotenv.config();
+
 winston.loggers.add('default', {
   console: {
     level: 'silly',
@@ -9,34 +23,28 @@ winston.loggers.add('default', {
   }
 });
 
-var l = winston.loggers.get('default');
-process.env.NODE_TLS_REJECT_UNAUTHORIZED='0';
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 if (process.env.NODE_ENV === 'test') {
-  l.warn('========================= NOTICE ==========================');
-  l.warn('running in test mode, this should NOT be used in production');
-  l.warn('===========================================================\n');
+  logger.warn('========================= NOTICE ==========================');
+  logger.warn('running in test mode, this should NOT be used in production');
+  logger.warn('===========================================================\n');
 }
 
 // verify that graphicsmagick is installed
-var which = require('which');
 try {
   which.sync('gm');
 } catch (e) {
-  console.log(e);
-  console.log('\nERROR: could not find graphicsmagick binary!');
-  console.log('Please install graphicsmagick, for example on Ubuntu:');
-  console.log('$ sudo apt-get install graphicsmagick');
+  // eslint-disable-next-line no-console
+  console.log(`
+		${e}
+
+		ERROR: could not find graphicsmagick binary!
+		Please install graphicsmagick, for example on Ubuntu:
+		$ sudo apt-get install graphicsmagick
+	`);
   process.exit();
 }
-
-var express = require('express');
-
-var bodyParser = require('body-parser');
-var expressValidator = require('express-validator');
-var mongoose = require('mongoose');
-var fs = require('fs');
-var path = require('path');
-var mkdirp = require('mkdirp');
 
 // make sure directories exist for picture uploads
 var home = process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
@@ -52,11 +60,11 @@ app.set('view engine', 'jade');
 app.set('views', __dirname + '/apidoc');
 
 var options = {
-  host : 'civisprod.cloud.reply.eu',
+  host: 'civisprod.cloud.reply.eu',
   path: '/CivisEnergy/InterfaceWP3.svc/'
 }
 
-app.set('civis_opt',options);
+app.set('civis_opt', options);
 
 app.use(function(req, res, next) {
   res.successRes = function(err, json, errStatus, okStatus) {
@@ -78,7 +86,9 @@ app.use(function(req, res, next) {
 var port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
 app.use(bodyParser.raw());
 app.use(expressValidator());
 app.use(require('./middleware/auth').initialize());
@@ -95,10 +105,10 @@ app.get('/apidoc', function(req, res, next) {
 });
 app.use('/apidoc', express.static(__dirname + '/apidoc'));
 
-db.on('error', l.error.bind(console, 'connection error:'));
+db.on('error', logger.error.bind(console, 'connection error:'));
 db.once('open', function() {
-  l.info('connected to database');
+  logger.info('connected to database');
   app.listen(port, function() {
-    l.info('express listening on port', port);
+    logger.info('express listening on port', port);
   });
 });

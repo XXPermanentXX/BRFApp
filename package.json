@@ -4,8 +4,8 @@
   "description": "YouPower app backend",
   "main": "backend/app.js",
   "scripts": {
-    "start": "MONGOOSE_DISABLE_STABILITY_WARNING=1 node backend/app.js",
-    "restart": "MONGOOSE_DISABLE_STABILITY_WARNING=1 nodemon backend/app.js",
+    "start": "node backend/app.js",
+    "restart": "nodemon backend/app.js",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec"
   },
@@ -39,6 +39,7 @@
     "cookie-parser": "~1.3.3",
     "csv": "^0.4.6",
     "dateformat": "^1.0.12",
+    "dotenv": "^2.0.0",
     "email-templates": "^2.0.1",
     "escape-string-regexp": "^1.0.3",
     "express": "^4.12.3",
