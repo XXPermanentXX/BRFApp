@@ -1,65 +1,46 @@
 angular.module('civis.youpower.welcome').controller('WelcomeCtrl', WelcomeCtrl);
 
+function WelcomeCtrl($scope, $state, $stateParams, $window, $location, AuthService) {
+  var token = $location.search().access_token;
+  var err = $location.search().err;
+  var callback = $stateParams.callback;
 
-function WelcomeCtrl($translate, $scope, $state, $stateParams, $window, AuthService, Config) {
-
-  if ($stateParams
-    && $stateParams.token !== undefined
-    && $stateParams.token !== "") {
-
-    console.log("welcome params: " + JSON.stringify($stateParams, null, 4));
-
-    if ($stateParams.token === 'fbUnauthorized'){
-      fbErr = 'Unauthorized_Facebook_Login';
-    }else if ($stateParams.token === 'err'){
-      //err in generating a token
-      fbErr = 'NO_TOKEN';
-    }else{
-      //save the token
-      AuthService.fbLoginSuccess($stateParams.token);
-      $state.go('main.cooperative.my');
+  if (callback === 'success') {
+    if ($window.opener) {
+      $window.opener.dispatchEvent(new CustomEvent('METRY_AUTH', {
+        detail: { access_token: token }
+      }));
     }
-  }else if (AuthService.isAuthenticated()) {
-      $state.go('main.cooperative.my');
+
+    AuthService.storeToken(token);
+
+    $state.go('main.cooperative.my');
   }
 
-  $scope.loginData = {
-      emailAddress:'',
-      password:'',
-      err: '',
-      fbErr: '',
-      language: 'English'
+  if (callback === 'error') {
+    if ($window.opener) {
+      $window.opener.dispatchEvent(new CustomEvent('METRY_AUTH', {
+        detail: { err: err }
+      }));
+    }
+  }
+
+  $scope.auth = {
+    err: err,
+    isRejected: false
   };
 
   $scope.signinClicked = false;
-  $scope.isRejected = false;
-
-  $scope.clearSigninClicked = function(){
-    $scope.signinClicked = false;
-    $scope.isRejected = false;
-  }
 
   $scope.signin = function() {
-
     $scope.signinClicked = true;
 
-    AuthService.login($scope.loginData.emailAddress.toLowerCase(), $scope.loginData.password)
-    .then(function(data){
-
+    AuthService.login().then(function () {
       $scope.signinClicked = false;
       $state.go('main.cooperative.my');
-
-    }, function(err){
-      $scope.isRejected = true;
-      $scope.loginData.err = err;
+    }, function (err) {
+      $scope.auth.isRejected = true;
+      $scope.auth.err = err;
     })
   }
-
-
-  $scope.fbLogin = function(){
-      $window.location.href = Config.host + "/api/auth/facebook" ;
-  }
-
-};
-
-
+}

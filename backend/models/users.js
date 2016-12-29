@@ -22,6 +22,7 @@ var UserSchema = new Schema({
   token: String,
   passwordResetToken: String,
   passwordResetTokenDate: Date,
+  metryId: String,
   facebookId: String,
   accessToken: String,
   isAdmin: {
@@ -240,6 +241,7 @@ exports.getProfile = function(id, cb) {
         actions: user.actions,
         accessToken: user.accessToken,
         facebookId: user.facebookId,
+        metryId: user.metryId,
         production: user.production,
         householdId: householdId,
         household: results[1],

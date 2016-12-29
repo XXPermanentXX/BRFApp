@@ -93,17 +93,6 @@ app.use(bodyParser.raw());
 app.use(expressValidator());
 app.use(require('./middleware/auth').initialize());
 app.use('/api', require('./routes'));
-app.get('/', function(req, res) {
-  res.redirect('/apidoc');
-});
-app.get('/apidoc', function(req, res, next) {
-  if (fs.existsSync(__dirname + '/apidoc/index.html')) {
-    next();
-  } else {
-    res.render('placeholder');
-  }
-});
-app.use('/apidoc', express.static(__dirname + '/apidoc'));
 
 db.on('error', logger.error.bind(console, 'connection error:'));
 db.once('open', function() {

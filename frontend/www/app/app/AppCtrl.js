@@ -1,19 +1,28 @@
 angular.module('civis.youpower.main',[])
-.directive('ngEnter', function () {
-    return function (scope, element, attrs) {
-        element.bind("keydown keypress", function (event) {
-            if (event.which === 13) {
-                scope.$apply(function () {
-                    scope.$eval(attrs.ngEnter, {
-                        'event': event
-                    });
-                });
-                event.preventDefault();
-            }
-        });
-    };
-})
-.controller('AppCtrl', AppCtrl);
+	.directive('ngEnter', function () {
+	    return function (scope, element, attrs) {
+	        element.bind("keydown keypress", function (event) {
+	            if (event.which === 13) {
+	                scope.$apply(function () {
+	                    scope.$eval(attrs.ngEnter, {
+	                        'event': event
+	                    });
+	                });
+	                event.preventDefault();
+	            }
+	        });
+	    };
+	})
+	.directive('logOut', function () {
+		return {
+			link: function ($scope, element) {
+				element.on('click', function () {
+					debugger;
+				});
+			}
+		}
+	})
+	.controller('AppCtrl', AppCtrl);
 
 /* The controller that should always be on top of routing
 hierarchy as it will be loaded with abstract main state.
@@ -22,16 +31,16 @@ details (since this is after the user logs in).
 ----------------------------------------------*/
 function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService, $translate, currentUser) {
 
-	$scope.userPictures = {}; 
+	$scope.userPictures = {};
 
 	$scope.actions = {}; //save action details
 
-	$scope.commentPoints = 1; 
-	$scope.feedbackPoints = 1;        
+	$scope.commentPoints = 1;
+	$scope.feedbackPoints = 1;
 
 	$scope.households = {}; //save information of households
 
-	$scope.users = {}; //save user details. not the current user, the other household members and invited members 
+	$scope.users = {}; //save user details. not the current user, the other household members and invited members
 
 
   $scope.currentUser = currentUser;
@@ -47,20 +56,20 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 	$scope.loadHouseholdProfile = function(householdId, cb){
 
-		if (householdId === null) return; 
+		if (householdId === null) return;
 
 		Household.get({id: householdId}).$promise.then(function(data){
 
-			$scope.households[householdId] = data; 
+			$scope.households[householdId] = data;
 
 			$scope.loadUsersDetails(data.members);
 			$scope.loadUsersDetails(data.pendingInvites);
 			$scope.loadUserProfile(data.ownerId);
 
 			console.log("load household data");
-			console.log($scope.households); 
+			console.log($scope.households);
 
-			if (typeof cb === 'function') cb(); 
+			if (typeof cb === 'function') cb();
 		});
 	}
 
@@ -75,49 +84,49 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 	$scope.loadUserProfile = function(userId) {
 
-		if (userId === null || userId === $scope.currentUser._id || $scope.users[userId]) return; 
+		if (userId === null || userId === $scope.currentUser._id || $scope.users[userId]) return;
 
 		User.getUserProfile({userId : userId}).$promise.then(function(data){
-			$scope.users[userId] = data; 
-			$scope.loadActionDetails($scope.users[userId].actions.inProgress); 
+			$scope.users[userId] = data;
+			$scope.loadActionDetails($scope.users[userId].actions.inProgress);
 			console.log("profile:");
 			console.log(data);
 		});
 	}
 
 	$scope.toRehearseSelectAll = function() {
-		$scope.currentUser.profile.toRehearse = { 
-			setByUser: true, 
-			declined: true, 
-			done: true, 
+		$scope.currentUser.profile.toRehearse = {
+			setByUser: true,
+			declined: true,
+			done: true,
 			na: true
-		}; 
+		};
 	}
 
 	$scope.toRehearseDeselectAll = function() {
-		$scope.currentUser.profile.toRehearse = { 
-			setByUser: true, 
-			declined: false, 
-			done: false, 
+		$scope.currentUser.profile.toRehearse = {
+			setByUser: true,
+			declined: false,
+			done: false,
 			na: false
-		}; 
-	} 
+		};
+	}
 
 	$scope.toRehearseSet = function() {
-		$scope.currentUser.profile.toRehearse.setByUser = true; 
-	} 
+		$scope.currentUser.profile.toRehearse.setByUser = true;
+	}
 	$scope.isSetRehearse = function() {
-		return $scope.currentUser.profile.toRehearse.setByUser; 
+		return $scope.currentUser.profile.toRehearse.setByUser;
 	}
 
 	$scope.isToRehearse = function() {
-		var a = $scope.currentUser.profile.toRehearse; 
-		return a.setByUser && (a.declined || a.done || a.na); 
+		var a = $scope.currentUser.profile.toRehearse;
+		return a.setByUser && (a.declined || a.done || a.na);
 	}
 
 	$scope.isNotToRehearse = function() {
-		var a = $scope.currentUser.profile.toRehearse; 
-		return a.setByUser && !a.declined && !a.done && !a.na; 
+		var a = $scope.currentUser.profile.toRehearse;
+		return a.setByUser && !a.declined && !a.done && !a.na;
 	}
 
 	$scope.loadActionDetails = function(actions){
@@ -133,73 +142,73 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 			}
 		}
 	}
-	
+
 	$scope.addActionById = function(actionId, cb){
 
 		if (!$scope.actions[actionId]){
 			Actions.getActionById({id:actionId}).$promise.then(function(data){
-				
+
 				$scope.actions[data._id] = data;
 
 				console.log("action details");
-				console.log($scope.actions); 
+				console.log($scope.actions);
 
-				$scope.$broadcast('Action loaded', {actionId: data._id}); 
+				$scope.$broadcast('Action loaded', {actionId: data._id});
 
-				if (typeof cb === 'function') cb(); 
+				if (typeof cb === 'function') cb();
 			});
-		}else if (typeof cb === 'function') cb(); 
+		}else if (typeof cb === 'function') cb();
 	}
 
-	//update local list 
+	//update local list
 	$scope.removeActionById = function(actionId){
 
 		if ($scope.actions[actionId]){
 
 			delete $scope.actions[actionId];
 			console.log("delete action details");
-			console.log($scope.actions); 
+			console.log($scope.actions);
 		}
 	}
 
-	$scope.isInvitedToHousehold = function(userId){ 
+	$scope.isInvitedToHousehold = function(userId){
 
-		if ($scope.currentUser.householdId && 
-			_.indexOf($scope.households[$scope.currentUser.householdId].pendingInvites, userId) > -1) { 
-			return true; 
-		} else return false; 
+		if ($scope.currentUser.householdId &&
+			_.indexOf($scope.households[$scope.currentUser.householdId].pendingInvites, userId) > -1) {
+			return true;
+		} else return false;
 	}
 
-	$scope.isInYourHousehold = function(userId){ 
+	$scope.isInYourHousehold = function(userId){
 
-		if ($scope.currentUser.householdId && 
-			_.indexOf($scope.households[$scope.currentUser.householdId].members, userId) > -1) { 
-			return true; 
-		} else return false; 
+		if ($scope.currentUser.householdId &&
+			_.indexOf($scope.households[$scope.currentUser.householdId].members, userId) > -1) {
+			return true;
+		} else return false;
 	}
 
 	$scope.addFeedbackPoints = function(){
-		$scope.currentUser.leaves += $scope.feedbackPoints; 
+		$scope.currentUser.leaves += $scope.feedbackPoints;
 	}
 
 	$scope.addCommentPoints = function(){
-		$scope.currentUser.leaves += $scope.commentPoints; 
+		$scope.currentUser.leaves += $scope.commentPoints;
 	}
 
 	$scope.deductCommentPoints = function(){
-		$scope.currentUser.leaves -= $scope.commentPoints; 
+		$scope.currentUser.leaves -= $scope.commentPoints;
 	}
 
 	$scope.addActionPoints = function(action){
-		$scope.currentUser.leaves += action.impact + action.effort; 
+		$scope.currentUser.leaves += action.impact + action.effort;
 	}
 
 	$scope.getActionPoints = function(action){
-		return action.effort + action.impact; 
+		return action.effort + action.impact;
 	};
 
 	$scope.salut = function(){
-		var name = $scope.currentUser.profile.name? $scope.currentUser.profile.name : $scope.currentUser.email; 
+		var name = $scope.currentUser.profile.name? $scope.currentUser.profile.name : $scope.currentUser.email;
 		return $translate.instant('Hi') + ' ' + name + '!';
 	}
 
@@ -246,25 +255,25 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 	}
 
 
-	$scope.toSignout = false; 
+	$scope.toSignout = false;
 
 	$scope.isToSignout = function(){
-		return $scope.toSignout; 
+		return $scope.toSignout;
 	}
 
 	$scope.clearToSignout = function(){
-		$scope.toSignout = false; 
+		$scope.toSignout = false;
 	}
 
 	$scope.profileChanged = {
-		personal: false, 
+		personal: false,
 		houseInfo: false,
 		householdComposition: false,
 		appliancesList: false
 	};
 
 	$scope.isProfileChanged = function(){
-		return $scope.profileChanged.personal || $scope.profileChanged.houseInfo || $scope.profileChanged.householdComposition || $scope.profileChanged.appliancesList; 
+		return $scope.profileChanged.personal || $scope.profileChanged.houseInfo || $scope.profileChanged.householdComposition || $scope.profileChanged.appliancesList;
 	},
 	$scope.setHouseInfoChanged = function() {
 		$scope.profileChanged.houseInfo = true;
@@ -281,7 +290,7 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 		$scope.profileChanged.appliancesList = false
 	},
 	$scope.isHouseholdProfileChanged = function() {
-		return $scope.profileChanged.houseInfo || $scope.profileChanged.householdComposition || $scope.profileChanged.appliancesList; 
+		return $scope.profileChanged.houseInfo || $scope.profileChanged.householdComposition || $scope.profileChanged.appliancesList;
 	},
 	$scope.isHouseInfoChanged = function() {
 		return $scope.profileChanged.houseInfo;
@@ -294,35 +303,36 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 	},
 
 	$scope.setPersonalProfileChanged = function(){
-		$scope.profileChanged.personal = true; 
+		$scope.profileChanged.personal = true;
 	}
 
 	$scope.clearPersonalProfileChanged = function(){
-		$scope.profileChanged.personal = false; 
+		$scope.profileChanged.personal = false;
 	}
 
 	$scope.isPersonalProfileChanged = function(){
-		return $scope.profileChanged.personal; 
+		return $scope.profileChanged.personal;
 	}
 
 
 	$scope.signout = function() {
+		console.log('trolol');
 
 		if ($scope.isProfileChanged()){
-			$scope.toSignout = true; 
-			$state.go('welcome'); 
+			$scope.toSignout = true;
+			$state.go('welcome');
 		}else{
 			$scope.logout();
 		}
 	}
-	
-	
+
+
 	$scope.logout = function(){
 
-		console.log('logout'); 
+		console.log('logout');
 		AuthService.logout();
 
-		$state.go('welcome'); 
+		$state.go('welcome');
 
 		$timeout(function () {
 	        $ionicHistory.clearCache();
@@ -331,7 +341,7 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 	}
 
 	$scope.showLoading = function() {
-		console.log("show loading"); 
+		console.log("show loading");
 		$ionicLoading.show({
 		  	template: '<ion-spinner icon="ion-load-a"></ion-spinner>',
     		hideOnStageChange: true

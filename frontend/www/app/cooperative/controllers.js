@@ -1,52 +1,62 @@
 'use strict';
-function coop(id, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection){
-      $scope.actionTypes = Cooperatives.getActionTypes();
-  $scope.cooperatives = Cooperatives.query();
-	
 
-  $scope.$on("$ionicView.enter",function(){
+function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionicPopup, Cooperatives, $location, $ionicScrollDelegate, cooperativeSelection) {
+  $scope.actionTypes = Cooperatives.getActionTypes();
+  $scope.cooperatives = Cooperatives.query();
+
+
+  $scope.$on('$ionicView.enter', function() {
     // A cooperative have been selected to compare with
     if (!(_.isEmpty(cooperativeSelection.getSelection().cooperative))) {
-      $scope.energyGraphSettings["selectedCooperative"] = cooperativeSelection.getSelection().cooperative;
-      $scope.energyGraphSettings.compareTo = "Housing_Cooperatives";
-      $scope.$broadcast("updateData");
+      $scope.energyGraphSettings['selectedCooperative'] = cooperativeSelection.getSelection().cooperative;
+      $scope.energyGraphSettings.compareTo = 'Housing_Cooperatives';
+      $scope.$broadcast('updateData');
     }
     // Get the cooperative, currently hardcoded
-    Cooperatives.get({id:id},function(data){
+    Cooperatives.get({
+      id: id
+    }, function(data) {
       $scope.cooperative = data;
-      $scope.cooperative.actions = _.sortBy($scope.cooperative.actions,function(a){ return new Date(a.date)}).reverse();
+      $scope.cooperative.actions = _.sortBy($scope.cooperative.actions, function(a) {
+        return new Date(a.date)
+      }).reverse();
       $scope.$broadcast('civisEnergyGraph.init');
-      mixpanel.track('Cooperative viewed',{name: data.name});
+      mixpanel.track('Cooperative viewed', {
+        name: data.name
+      });
     });
   })
 
   $scope.energyGraphSettings = {
-    granularity: "monthly",
-    compareTo: "GRAPH_COMPARE_PREV_YEAR",
-    type: "heating",
-    unit: "kWh/m<sup>2</sup>",
-    granularities: ['monthly','yearly'],
+    granularity: 'monthly',
+    compareTo: 'GRAPH_COMPARE_PREV_YEAR',
+    type: 'heating',
+    unit: 'kWh/m<sup>2</sup>',
+    granularities: ['monthly', 'yearly'],
     types: [{
-      name:'heating',
+      name: 'heating',
       cssClass: 'positive'
-    },{
-      name:'electricity',
+    }, {
+      name: 'electricity',
       cssClass: 'balanced'
     }],
-    comparisons: [
-      {name: "GRAPH_COMPARE_PREV_YEAR"},
-      {name: "GRAPH_COMPARE_AVG"},
-      {name: "Housing_Cooperatives"}
-      // {name: "COOPERATIVE_COMPARE_PREV_YEAR_NORM"}
-    ],
+    comparisons: [{
+      name: 'GRAPH_COMPARE_PREV_YEAR'
+    }, {
+      name: 'GRAPH_COMPARE_AVG'
+    }, {
+      name: 'Housing_Cooperatives'
+    }],
     normalized: false
   };
 
   $scope.performanceYear = new Date();
-  $scope.performanceYear.setFullYear($scope.performanceYear.getFullYear()-1);
+  $scope.performanceYear.setFullYear($scope.performanceYear.getFullYear() - 1);
 
-  $scope.goToAction = function(action){
-    $scope.$broadcast("goToActionInGraph", {actionId: action._id });
+  $scope.goToAction = function(action) {
+    $scope.$broadcast('goToActionInGraph', {
+      actionId: action._id
+    });
   }
 
   $scope.scrollTo = function(id) {
@@ -54,38 +64,61 @@ function coop(id, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,
     $ionicScrollDelegate.anchorScroll();
   }
 
-  $scope.actionFilter = function(action, index) {
+  $scope.actionFilter = function(action) {
     var type = $scope.energyGraphSettings.type == 'electricity' ? 200 : 100;
     return action.types.indexOf(type) >= 0;
   }
 
   $scope.commentAction = function(action) {
-    Cooperatives.commentAction({id:$scope.cooperative._id,actionId:action._id,comment:action.newComment},{comment:action.newComment},function(comment){
+    Cooperatives.commentAction({
+      id: $scope.cooperative._id,
+      actionId: action._id,
+      comment: action.newComment
+    }, {
+      comment: action.newComment
+    }, function(comment) {
       action.comments.push(comment);
-      action.commentsCount ++;
+      action.commentsCount++;
       action.newComment = undefined;
-      mixpanel.track('Cooperative Action Comment added',{'action name': action.name, 'action id': action._id});
+      mixpanel.track('Cooperative Action Comment added', {
+        'action name': action.name,
+        'action id': action._id
+      });
     });
   }
 
-  $scope.loadMoreComments = function(action){
-    Cooperatives.getMoreComments({id:$scope.cooperative._id,actionId:action._id,lastCommentId:_.last(action.comments)._id},function(comments){
-      Array.prototype.push.apply(action.comments,comments);
+  $scope.loadMoreComments = function(action) {
+    Cooperatives.getMoreComments({
+      id: $scope.cooperative._id,
+      actionId: action._id,
+      lastCommentId: _.last(action.comments)._id
+    }, function(comments) {
+      Array.prototype.push.apply(action.comments, comments);
     });
   }
 
-  $scope.deleteActionComment = function(action,comment) {
-    Cooperatives.deleteActionComment({id:$scope.cooperative._id,actionId:action._id,commentId:comment._id},function(){
-      action.comments.splice(action.comments.indexOf(comment),1);
-      action.commentsCount --;
-      mixpanel.track('Cooperative Action Comment deleted',{'action name': action.name, 'action id': action._id});
+  $scope.deleteActionComment = function(action, comment) {
+    Cooperatives.deleteActionComment({
+      id: $scope.cooperative._id,
+      actionId: action._id,
+      commentId: comment._id
+    }, function() {
+      action.comments.splice(action.comments.indexOf(comment), 1);
+      action.commentsCount--;
+      mixpanel.track('Cooperative Action Comment deleted', {
+        'action name': action.name,
+        'action id': action._id
+      });
     });
   }
 
   $scope.performanceInfo = function() {
     $ionicPopup.show({
       title: $translate.instant('COOPERATIVE_PERFORMANCE'),
-      template: $translate.instant('COOPERATIVE_PERFORMANCE_DESCRIPTION',{year: $scope.performanceYear, value: $scope.cooperative.performance}),
+      template: $translate.instant('COOPERATIVE_PERFORMANCE_DESCRIPTION', {
+        year: $scope.performanceYear,
+        value: $scope.cooperative.performance
+      }),
       cssClass: 'popup-custom',
       buttons: [{
         text: 'OK',
@@ -95,39 +128,52 @@ function coop(id, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,
   }
 
   $scope.trackActionClicked = function(action) {
-    mixpanel.track('Cooperative Action expanded',{'action name': action.name, 'action id': action._id});
+    mixpanel.track('Cooperative Action expanded', {
+      'action name': action.name,
+      'action id': action._id
+    });
   }
 }
 
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
-    .controller('CooperativeCtrl', function(currentUser, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection) {
-	coop(currentUser.cooperativeId, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection);
+.controller('CooperativeCtrl', function(currentUser, $scope, $timeout, $state, $q, $stateParams, $translate, $ionicPopup, Cooperatives, $location, $ionicScrollDelegate, cooperativeSelection) {
+  coop(currentUser.cooperativeId, $scope, $timeout, $state, $q, $stateParams, $translate, $ionicPopup, Cooperatives, $location, $ionicScrollDelegate, cooperativeSelection);
 })
 
-    .controller('OtherCooperativeCtrl', function($scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection) {
-		coop($stateParams.id, $scope,$timeout,$state,$q,$stateParams,$translate,$ionicPopup,Cooperatives,$location,$ionicScrollDelegate,cooperativeSelection);
+.controller('OtherCooperativeCtrl', function($scope, $timeout, $state, $q, $stateParams, $translate, $ionicPopup, Cooperatives, $location, $ionicScrollDelegate, cooperativeSelection) {
+  coop($stateParams.id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionicPopup, Cooperatives, $location, $ionicScrollDelegate, cooperativeSelection);
 })
 
-.controller('CooperativeEditCtrl', function($scope,$state,Cooperatives,currentUser,$ionicPopup, $translate){
+.controller('CooperativeEditCtrl', function($scope, $state, Cooperatives, currentUser, $ionicPopup, $translate) {
   $scope.actionTypes = Cooperatives.getActionTypes();
 
-  $scope.ventilationTypes = _.map(Cooperatives.VentilationTypes, function (type) {
-    return {type: type, checked: false};
+  $scope.ventilationTypes = _.map(Cooperatives.VentilationTypes, function(type) {
+    return {
+      type: type,
+      checked: false
+    };
   });
   $scope.ventilationTypesSelected = {};
 
-  $scope.$on("$ionicView.enter",function(){
+  $scope.$on('$ionicView.enter', function() {
     // Get the cooperative, currently hardcoded
-    Cooperatives.get({id:currentUser.cooperativeId},function(data){
+    Cooperatives.get({
+      id: currentUser.cooperativeId
+    }, function(data) {
       $scope.cooperative = data;
     });
   })
 
-  $scope.save = function(){
-    Cooperatives.update({id:$scope.cooperative._id},$scope.cooperative,function(){
-      $state.go("^");
-      mixpanel.track('Cooperative updated',{id:$scope.cooperative._id, name:$scope.cooperative.name});
+  $scope.save = function() {
+    Cooperatives.update({
+      id: $scope.cooperative._id
+    }, $scope.cooperative, function() {
+      $state.go('^');
+      mixpanel.track('Cooperative updated', {
+        id: $scope.cooperative._id,
+        name: $scope.cooperative.name
+      });
     })
   }
 
@@ -136,106 +182,132 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       scope: $scope,
       title: $translate.instant('COOPERATIVE_VENTILATION_TYPE'),
       templateUrl: 'app/cooperative/ventilationTypesPopUp.html',
-      cssClass:'popup-custom',
+      cssClass: 'popup-custom',
       buttons: [{
         text: 'OK',
         type: 'button-clear popup-button',
-        onTap: function(e) {
+        onTap: function() {
           // Returning a value will cause the promise to resolve with the given value.
           return true;
         }
       }]
     });
-    categoryPopUp.then(function(res) {
-      $scope.cooperative.ventilationType = _.map(_.where($scope.ventilationTypes, {checked: true}), function(type) { return type.type});
+    categoryPopUp.then(function() {
+      $scope.cooperative.ventilationType = _.map(_.where($scope.ventilationTypes, {
+        checked: true
+      }), function(type) {
+        return type.type
+      });
     });
   }
 })
 
-.factory('CooperativeActionTypePopup', function($ionicPopup, $translate){
-  return function($scope){
-    _.each($scope.actionTypes,function(type){
+.factory('CooperativeActionTypePopup', function($ionicPopup, $translate) {
+  return function($scope) {
+    _.each($scope.actionTypes, function(type) {
       type.selected = false;
     })
-    _.each($scope.action.types,function(id){
+    _.each($scope.action.types, function(id) {
       $scope.actionTypes.getById(id).selected = true;
     });
     $ionicPopup.show({
-      templateUrl: "app/cooperative/actionTypes.html",
+      templateUrl: 'app/cooperative/actionTypes.html',
       scope: $scope,
       title: $translate.instant('COOPERATIVE_ACTION_TYPE'),
       cssClass: 'popup-flexible',
       buttons: [{
-        text: $translate.instant("Cancel")
-      },{
-        text: "OK",
+        text: $translate.instant('Cancel')
+      }, {
+        text: 'OK',
         type: 'button-positive',
-        onTap: function(e){
+        onTap: function() {
           // Disable subactions if parent not selected
-          _.each($scope.actionTypes,function(type){
-            if(type.parent && !$scope.actionTypes.getById(type.parent).selected) {
+          _.each($scope.actionTypes, function(type) {
+            if (type.parent && !$scope.actionTypes.getById(type.parent).selected) {
               type.selected = false;
             }
           })
-          // Assign selected types to action
-          $scope.action.types = _.map(_.where($scope.actionTypes,{selected:true}),function(type){return type.id});
+            // Assign selected types to action
+          $scope.action.types = _.map(_.where($scope.actionTypes, {
+            selected: true
+          }), function(type) {
+            return type.id
+          });
         }
       }]
     });
   }
 })
 
-.controller('CooperativeActionAddCtrl', function($scope,$state,CooperativeActionTypePopup,Cooperatives,currentUser){
+.controller('CooperativeActionAddCtrl', function($scope, $state, CooperativeActionTypePopup, Cooperatives, currentUser) {
   $scope.action = {};
 
   $scope.actionTypes = Cooperatives.getActionTypes();
 
-  $scope.selectActionType = function(){
+  $scope.selectActionType = function() {
     CooperativeActionTypePopup($scope);
   }
 
-  $scope.addAction = function(){
-    Cooperatives.addAction({id:currentUser.cooperativeId},$scope.action,function(){
-      $state.go("^");
-      mixpanel.track('Cooperative Action added',$scope.action);
+  $scope.addAction = function() {
+    Cooperatives.addAction({
+      id: currentUser.cooperativeId
+    }, $scope.action, function() {
+      $state.go('^');
+      mixpanel.track('Cooperative Action added', $scope.action);
     })
   };
 })
 
-.controller('CooperativeActionUpdateCtrl', function($scope,$state,$stateParams,CooperativeActionTypePopup,Cooperatives,currentUser){
+.controller('CooperativeActionUpdateCtrl', function($scope, $state, $stateParams, CooperativeActionTypePopup, Cooperatives, currentUser) {
 
   $scope.actionTypes = Cooperatives.getActionTypes();
 
-  $scope.selectActionType = function(){
+  $scope.selectActionType = function() {
     CooperativeActionTypePopup($scope);
   }
 
-  Cooperatives.get({id:currentUser.cooperativeId},function(data){
-    $scope.action = _.findWhere(data.actions,{_id:$stateParams.id});
+  Cooperatives.get({
+    id: currentUser.cooperativeId
+  }, function(data) {
+    $scope.action = _.findWhere(data.actions, {
+      _id: $stateParams.id
+    });
     $scope.action.date = new Date($scope.action.date);
   });
 
-  $scope.deleteAction = function(action){
-    Cooperatives.deleteAction({id:currentUser.cooperativeId,actionId:action._id},function(){
-      $state.go("^");
-      mixpanel.track('Cooperative Action deleted',{id:action._id, name:action.name});
+  $scope.deleteAction = function(action) {
+    Cooperatives.deleteAction({
+      id: currentUser.cooperativeId,
+      actionId: action._id
+    }, function() {
+      $state.go('^');
+      mixpanel.track('Cooperative Action deleted', {
+        id: action._id,
+        name: action.name
+      });
     });
   }
 
-  $scope.updateAction = function(){
-    Cooperatives.updateAction({id:currentUser.cooperativeId,actionId:$scope.action._id},$scope.action,function(){
-      $state.go("^");
-      mixpanel.track('Cooperative Action updated',{id:$scope.action._id, name:$scope.action.name});
+  $scope.updateAction = function() {
+    Cooperatives.updateAction({
+      id: currentUser.cooperativeId,
+      actionId: $scope.action._id
+    }, $scope.action, function() {
+      $state.go('^');
+      mixpanel.track('Cooperative Action updated', {
+        id: $scope.action._id,
+        name: $scope.action.name
+      });
     })
   };
 })
 
-.factory('CooperativesFilterPopup', function($ionicPopup, $translate, $state){
-  return function($scope,cooperatives){
-    _.each($scope.actionTypes,function(type){
+.factory('CooperativesFilterPopup', function($ionicPopup, $translate, $state) {
+  return function($scope, cooperatives) {
+    _.each($scope.actionTypes, function(type) {
       type.checked = false;
     })
-    _.each($scope.actionTypesSelected,function(id){
+    _.each($scope.actionTypesSelected, function(id) {
       $scope.actionTypes.getById(id).checked = true;
     });
 
@@ -246,59 +318,66 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       scope: $scope,
       title: $translate.instant('COOPERATIVE_FILTER'),
       templateUrl: 'app/cooperative/filterPopUp.html',
-      cssClass:'popup-custom',
+      cssClass: 'popup-custom',
       buttons: [{
         text: 'DESELECT',
         type: 'button-clear popup-button',
         onTap: function(e) {
-          _.each($scope.ventilationTypes, function(ventilationType){
+          _.each($scope.ventilationTypes, function(ventilationType) {
             ventilationType.checked = false;
           });
-          _.each($scope.actionTypes,function(type){
-              type.checked = false;
+          _.each($scope.actionTypes, function(type) {
+            type.checked = false;
           });
           // Assign selected types to action
           //$scope.action.types = _.map(_.where($scope.actionTypes,{selected:true}),function(type){return type.id});
           e.preventDefault();
         }
-      },{
+      }, {
         text: 'OK',
         type: 'button-clear popup-button'
       }]
     });
-    filterPopUp.then(function(res) {
+    filterPopUp.then(function() {
       $scope.cooperativesList = cooperatives;
-      _.each($scope.actionTypes,function(type){
-        if(type.parent && !$scope.actionTypes.getById(type.parent).checked) {
+      _.each($scope.actionTypes, function(type) {
+        if (type.parent && !$scope.actionTypes.getById(type.parent).checked) {
           type.checked = false;
         }
       });
       // Assign selected types
-      $scope.actionTypesSelected = _.map(_.where($scope.actionTypes,{checked:true}),function(type){return type.id});
-      $scope.ventilationTypesSelected = _.map(_.where($scope.ventilationTypes, {checked: true}), function(type) { return type.type});
-      if ($scope.ventilationTypesSelected.length > 0){
-        $scope.cooperativesList = _.filter($scope.cooperativesList, function(cooperative){
+      $scope.actionTypesSelected = _.map(_.where($scope.actionTypes, {
+        checked: true
+      }), function(type) {
+        return type.id
+      });
+      $scope.ventilationTypesSelected = _.map(_.where($scope.ventilationTypes, {
+        checked: true
+      }), function(type) {
+        return type.type
+      });
+      if ($scope.ventilationTypesSelected.length > 0) {
+        $scope.cooperativesList = _.filter($scope.cooperativesList, function(cooperative) {
           return _.intersection(cooperative.ventilationType, $scope.ventilationTypesSelected).length > 0;
         });
       }
       //TO DO: Improve performace
-      if ($scope.actionTypesSelected.length > 0){
+      if ($scope.actionTypesSelected.length > 0) {
         //get each cooperatives from the list with their actions types list
         var listedCooperativesWithActions = [];
-        _.each($scope.cooperativesList ,function(cooperative){
+        _.each($scope.cooperativesList, function(cooperative) {
           _.each(cooperative.actions, function(action) {
             var element = {};
             element.coopId = cooperative._id;
             element.actions = action.types;
             listedCooperativesWithActions.push(element);
-            });
+          });
         });
         //get the cooperatives that have the at least one of the selected actions
         var CooperativesIdsWithSelectedActions = [];
-        _.each(listedCooperativesWithActions, function(obj){
-          _.each(obj.actions, function (obj2) {
-            if (_.contains($scope.actionTypesSelected,obj2))
-            {
+        _.each(listedCooperativesWithActions, function(obj) {
+          _.each(obj.actions, function(obj2) {
+            if (_.contains($scope.actionTypesSelected, obj2)) {
               if (CooperativesIdsWithSelectedActions.indexOf(obj.coopId) == -1) {
                 CooperativesIdsWithSelectedActions.push(obj.coopId);
               }
@@ -306,96 +385,110 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           });
         });
         //filter list
-        $scope.cooperativesList = _.filter($scope.cooperativesList, function(cooperative){
+        $scope.cooperativesList = _.filter($scope.cooperativesList, function(cooperative) {
           return _.contains(CooperativesIdsWithSelectedActions, cooperative._id);
         });
       }
-      if ($scope.ventilationTypesSelected.length > 0 ||  $scope.actionTypesSelected.length > 0){
-        $state.go($state.current, {}, {reload: true});
+      if ($scope.ventilationTypesSelected.length > 0 || $scope.actionTypesSelected.length > 0) {
+        $state.go($state.current, {}, {
+          reload: true
+        });
       }
     });
   }
 })
 
-    .controller('CooperativesCtrl', function(User, $scope, $state, Cooperatives, cooperatives, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
-	$scope.cooperativesList = cooperatives;
-	$scope.cooperatives = cooperatives;
-	User.get().$promise.then(function(user){
-	    Cooperatives.get({id: user.cooperativeId}, function(data){
-		$scope.myCooperative=data;
-	    });
-			
-	    $scope.cooperativesList= _.reject($scope.cooperativesList, function(coop){ return coop._id===user.cooperativeId; });
-	},function(reason){
-	    $scope.myCooperative="";
-	});
-	
+.controller('CooperativesCtrl', function(User, $scope, $state, Cooperatives, cooperatives, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
+  $scope.cooperativesList = cooperatives;
+  $scope.cooperatives = cooperatives;
+  User.get().$promise.then(function(user) {
+    Cooperatives.get({
+      id: user.cooperativeId
+    }, function(data) {
+      $scope.myCooperative = data;
+    });
+
+    $scope.cooperativesList = _.reject($scope.cooperativesList, function(coop) {
+      return coop._id === user.cooperativeId;
+    });
+  }, function() {
+    $scope.myCooperative = '';
+  });
+
   //filter criterias
-  $scope.ventilationTypes = _.map(Cooperatives.VentilationTypes, function (type) {
-    return {type: type, checked: false};
+  $scope.ventilationTypes = _.map(Cooperatives.VentilationTypes, function(type) {
+    return {
+      type: type,
+      checked: false
+    };
   });
   $scope.actionTypes = Cooperatives.getActionTypes();
   $scope.ventilationTypesSelected = {};
   $scope.actionTypesSelected = {};
 
   //cooperative selected for comparison
-  $scope.selection = {cooperative: {}};
+  $scope.selection = {
+    cooperative: {}
+  };
 
-	$scope.view='map';
-	
-  $scope.$on("$ionicView.enter",function(){
-    Cooperatives.query(function(data){
+  $scope.view = 'map';
+
+  $scope.$on('$ionicView.enter', function() {
+    Cooperatives.query(function(data) {
       $scope.cooperatives = data;
     });
     //by default, no cooperative is selected
     cooperativeSelection.setSelection('');
   });
 
-  $scope.cooperativeClick = function(id){
-    $state.go("^.show",{id:id});
+  $scope.cooperativeClick = function(id) {
+    $state.go('^.show', {
+      id: id
+    });
   };
 
-  $scope.compareToSelectedCooperative = function(){
+  $scope.compareToSelectedCooperative = function() {
     cooperativeSelection.setSelection($scope.selection);
-    $state.go("^.show", {id: currentUser.cooperativeId});
+    $state.go('^.show', {
+      id: currentUser.cooperativeId
+    });
   };
 
-  $scope.isCooperativeSelected = function () {
+  $scope.isCooperativeSelected = function() {
     return !_.isEmpty($scope.selection.cooperative);
   };
 
   //Lists the possible filter criterias in a pop-up
   $scope.filterList = function() {
-    CooperativesFilterPopup($scope,cooperatives);
+    CooperativesFilterPopup($scope, cooperatives);
   };
 
-  $scope.energyPerformanceInfo = function(){
-      $ionicPopup.show({
-        title: $translate.instant('COOPERATIVE_PERFORMANCE'),
-        template: $translate.instant('COOPERATIVE_ENERGY_PERFORMANCE_DESCRIPTION'),
-        cssClass: 'popup-custom',
-        buttons: [{
-          text: 'OK',
-          type: 'button-clear popup-button'
-        }]
-      })
+  $scope.energyPerformanceInfo = function() {
+    $ionicPopup.show({
+      title: $translate.instant('COOPERATIVE_PERFORMANCE'),
+      template: $translate.instant('COOPERATIVE_ENERGY_PERFORMANCE_DESCRIPTION'),
+      cssClass: 'popup-custom',
+      buttons: [{
+        text: 'OK',
+        type: 'button-clear popup-button'
+      }]
+    })
   };
 })
 
-.directive('ionRadioCustom', function () {
+.directive('ionRadioCustom', function() {
   return {
     restrict: 'E',
     replace: true,
     require: '?ngModel',
     transclude: true,
-    template:
-    '<label class="item item-radio radio-custom">' +
-    '<input type="radio" name="radio-group">' +
-    '<div class="item-content disable-pointer-events hidden-content"></div>' +
-    '<i class="radio-icon-unchecked disable-pointer-events icon ion-checkmark-unchecked"></i>'+
-    '<i class="radio-icon-checked disable-pointer-events icon ion-checkmark-checked"></i>' +
-    '</label>',
-    compile: function (element, attr) {
+    template: '<label class="item item-radio radio-custom">' +
+      '<input type="radio" name="radio-group">' +
+      '<div class="item-content disable-pointer-events hidden-content"></div>' +
+      '<i class="radio-icon-unchecked disable-pointer-events icon ion-checkmark-unchecked"></i>' +
+      '<i class="radio-icon-checked disable-pointer-events icon ion-checkmark-checked"></i>' +
+      '</label>',
+    compile: function(element, attr) {
       if (attr.checkedicon) {
         element.children().eq(3).removeClass('ion-checkmark-checked').addClass(attr.checkedicon);
       }
@@ -413,12 +506,12 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         'ng-change': attr.ngChange,
         'ng-required': attr.ngRequired,
         'required': attr.required
-      }, function (value, name) {
+      }, function(value, name) {
         input.attr(name, value);
       });
 
-      return function (scope, element, attr) {
-        scope.getValue = function () {
+      return function(scope, element, attr) {
+        scope.getValue = function() {
           return scope.ngValue || attr.value;
         };
       };
@@ -426,91 +519,102 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-    .controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading, $translate, Cooperatives) {
+.controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading, $translate) {
 
-	function initialize() {
-//      var myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
-//      var myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
-      var myLatlng = new google.maps.LatLng(59.3036, 18.1025);
-      
-      var mapOptions = {
-          mapTypeControl: false,
-          streetViewControl: false,
-          center: myLatlng,
-          zoom: 14,
-          mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
-      var map = new google.maps.Map(document.getElementById("map"),
-          mapOptions);
+  function initialize() {
+    //      var myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
+    //      var myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
+    var myLatlng = new google.maps.LatLng(59.3036, 18.1025);
+
+    var mapOptions = {
+      mapTypeControl: false,
+      streetViewControl: false,
+      center: myLatlng,
+      zoom: 14,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    };
+    var map = new google.maps.Map(document.getElementById('map'),
+      mapOptions);
 
 
 
-      var energyClasses = {A: "009036", B:"55AB26", C:"C8D200", D:"FFED00", E:"FBBA00", F:"EB6909", G:"E2001A", unknown:"bbbbbb"};
+    var energyClasses = {
+      A: '009036',
+      B: '55AB26',
+      C: 'C8D200',
+      D: 'FFED00',
+      E: 'FBBA00',
+      F: 'EB6909',
+      G: 'E2001A',
+      unknown: 'bbbbbb'
+    };
 
-      var energyClassPins = _.mapObject(energyClasses,function(value,key){
-        return new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|" + value,
+    var energyClassPins = _.mapObject(energyClasses, function(value) {
+      return new google.maps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + value,
         new google.maps.Size(21, 34),
-        new google.maps.Point(0,0),
+        new google.maps.Point(0, 0),
         new google.maps.Point(10, 34));
+    });
+
+    var infowindow = new google.maps.InfoWindow();
+
+    angular.forEach($scope.cooperatives, function(coop) {
+      //Marker + infowindow + angularjs compiled ng-click
+      var contentString = '<div ng-click="cooperativeClick("' +
+        coop._id + '")"><h5>' +
+        coop.name + '</h5>' +
+        '{{' + coop.performance + ' | number:0}}' + ' kWh/m2 <br><p>' +
+        $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ': <b class="energized">' +
+        coop.actions.length + '</b></p></div>';
+      var compiled = $compile(contentString)($scope);
+
+      var marker = new google.maps.Marker({
+        position: new google.maps.LatLng(coop.lat, coop.lng),
+        map: map,
+        title: coop.name,
+        icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
       });
 
-      var infowindow = new google.maps.InfoWindow();
+      google.maps.event.addListener(marker, 'click', function() {
+        infowindow.setContent(compiled[0]);
+        infowindow.open(map, marker);
+      });
+    })
 
-      angular.forEach($scope.cooperatives, function(coop) {
-          //Marker + infowindow + angularjs compiled ng-click
-          var contentString = "<div ng-click='cooperativeClick(\""
-          + coop._id + "\")'><h5>"
-          + coop.name + "</h5>"
-          + "{{" + coop.performance + " | number:0}}" +" kWh/m2 <br><p>"
-          + $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ": <b class='energized'>"
-          + coop.actions.length + "</b></p></div>";
-          var compiled = $compile(contentString)($scope);
-
-          var marker = new google.maps.Marker({
-              position: new google.maps.LatLng(coop.lat, coop.lng),
-              map: map,
-              title: coop.name,
-              icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
-          });
-
-          google.maps.event.addListener(marker, 'click', function() {
-            infowindow.setContent(compiled[0]);
-            infowindow.open(map,marker);
-          });
-      })
-
-      $scope.map = map;
+    $scope.map = map;
   }
   ionic.Platform.ready(initialize);
 
   $scope.centerOnMe = function() {
-      if (!$scope.map) {
-          return;
-      }
+    if (!$scope.map) {
+      return;
+    }
 
-      $scope.loading = $ionicLoading.show({
-          content: 'Getting current location...',
-          showBackdrop: false
-      });
+    $scope.loading = $ionicLoading.show({
+      content: 'Getting current location...',
+      showBackdrop: false
+    });
 
-      navigator.geolocation.getCurrentPosition(function(pos) {
-          $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-          $scope.loading.hide();
-      }, function(error) {
-          alert('Unable to get location: ' + error.message);
-      });
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+      $scope.loading.hide();
+    }, function(error) {
+      // eslint-disable-next-line no-alert
+      alert('Unable to get location: ' + error.message);
+    });
   };
 
   $scope.clickTest = function() {
-      alert('Example of infowindow with ng-click')
+    // eslint-disable-next-line no-alert
+    alert('Example of infowindow with ng-click')
   };
 
 })
 
-.service('cooperativeSelection', function () {
+.service('cooperativeSelection', function() {
   var selection = '';
   return {
-    getSelection: function () {
+    getSelection: function() {
       return selection;
     },
     setSelection: function(value) {
