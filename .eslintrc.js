@@ -18,7 +18,7 @@ module.exports = {
         "array-bracket-spacing": "off",
         "array-callback-return": "error",
         "arrow-body-style": "error",
-        "arrow-parens": "error",
+        "arrow-parens": "off",
         "arrow-spacing": "error",
         "block-scoped-var": "off",
         "block-spacing": "off",
@@ -244,7 +244,7 @@ module.exports = {
         "spaced-comment": "off",
         "strict": "off",
         "symbol-description": "error",
-        "template-curly-spacing": "error",
+        "template-curly-spacing": "off",
         "unicode-bom": [
             "error",
             "never"
