@@ -5,6 +5,10 @@ function WelcomeCtrl($scope, $state, $stateParams, $window, $location, AuthServi
   var err = $location.search().err;
   var callback = $stateParams.callback;
 
+  if (AuthService.isAuthenticated()) {
+    return $state.go('main.cooperative.my');
+  }
+
   if (callback === 'success') {
     if ($window.opener) {
       $window.opener.dispatchEvent(new CustomEvent('METRY_AUTH', {
