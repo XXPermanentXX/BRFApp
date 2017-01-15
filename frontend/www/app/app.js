@@ -26,7 +26,7 @@ angular.module('civis.youpower', [
   'civis.youpower.donation',
 ])
 
-.run(function($ionicPlatform, $rootScope, $window, $state, AuthService) {
+.run(function ($ionicPlatform, $rootScope, $window, $state, AuthService) {
 
   $rootScope.scale = 5;
 
@@ -43,16 +43,11 @@ angular.module('civis.youpower', [
   // Making underscore available in the angular expressions
   $rootScope._ = $window._;
 
-  $rootScope.getNumber = function(num) {
+  $rootScope.getNumber = function (num) {
     return new Array(num);
-  }
+  };
 
-  $rootScope.$on('$stateChangeStart', function(event, next, nextParams, fromState) {
-    // eslint-disable-next-line no-console
-    console.log('stateChangeStart: 1.' + fromState.name + ' 2.' + next.name + ' isAuthenticated: ' + AuthService.isAuthenticated());
-  });
-
-  $rootScope.$on('$stateChangeError', function(event, next, nextParams, fromState, fromParams, error) {
+  $rootScope.$on('$stateChangeError', function (event, next, nextParams, fromState, fromParams, error) {
     //eslint-disable-next-line no-console
     console.log('stateChangeError: 1.' + fromState.name + ' 2.' + next.name + ' ' + JSON.stringify(error, null, 4));
     if (next.name !== 'welcome' && next.name !== 'signup') {
@@ -61,7 +56,7 @@ angular.module('civis.youpower', [
     }
   });
 
-  $ionicPlatform.ready(function() {
+  $ionicPlatform.ready(function () {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
     if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
@@ -77,7 +72,7 @@ angular.module('civis.youpower', [
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
+.config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
   $ionicConfigProvider.views.maxCache(0);
   // Ionic uses AngularUI Router which uses the concept of states
   // Learn more here: https://github.com/angular-ui/ui-router
@@ -99,33 +94,33 @@ angular.module('civis.youpower', [
     resolve: {
       Testbed: 'Testbed',
       Cooperative: 'Cooperatives',
-      testbed: function(Testbed, $stateParams, $q) {
+      testbed: function (Testbed, $stateParams, $q) {
         if ($stateParams.tid) {
           // Wrapping in promise so it breaks silently
-          return $q(function(resolve) {
+          return $q(function (resolve) {
             Testbed.get({
               id: $stateParams.tid
-            }, function(data) {
+            }, function (data) {
               resolve(data);
-            }, function() {
-              resolve()
-            })
+            }, function () {
+              resolve();
+            });
           });
         } else {
           return null;
         }
       },
-      cooperative: function(Cooperative, $stateParams, $q) {
+      cooperative: function (Cooperative, $stateParams, $q) {
         if ($stateParams.cid) {
           // Wrapping in promise so it breaks silently
-          return $q(function(resolve) {
+          return $q(function (resolve) {
             Cooperative.get({
               id: $stateParams.cid
-            }, function(data) {
+            }, function (data) {
               resolve(data);
-            }, function() {
-              resolve()
-            })
+            }, function () {
+              resolve();
+            });
           });
         } else {
           return null;
@@ -172,7 +167,7 @@ angular.module('civis.youpower', [
         templateUrl: 'app/actions/tabs.html',
         controller: 'ActionsCtrl',
         resolve: {
-          pendingInvites: function(User) {
+          pendingInvites: function (User) {
             return User.getPendingInvites().$promise;
           }
         }
@@ -196,9 +191,9 @@ angular.module('civis.youpower', [
     url: '/my',
     cached: false,
     resolve: {
-      currentUser: function(User, Testbed, Cooperatives) {
+      currentUser: function (User, Testbed, Cooperatives) {
         var userPromise = User.get().$promise;
-        userPromise.then(function(user) {
+        userPromise.then(function (user) {
           if (user.testbed) {
             user.testbed = new Testbed(user.testbed);
           }
@@ -237,7 +232,7 @@ angular.module('civis.youpower', [
     },
     resolve: {
       Cooperatives: 'Cooperatives',
-      cooperatives: function(Cooperatives) {
+      cooperatives: function (Cooperatives) {
         return Cooperatives.query().$promise;
       }
     }
@@ -343,7 +338,7 @@ angular.module('civis.youpower', [
         templateUrl: 'app/settings/household.html',
         controller: 'HouseholdSettingsCtrl',
         resolve: {
-          currentHousehold: function(Household, currentUser) {
+          currentHousehold: function (Household, currentUser) {
             if (currentUser.householdId) {
               return Household.get({
                 id: currentUser.householdId

@@ -12,7 +12,7 @@ var achievements = require('../common/achievements');
 var User = require('../models').users;
 var Log = require('../models').logs;
 var Household = require('../models').households;
-var mailer = require('../mailer')
+var mailer = require('../mailer');
 var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
@@ -68,10 +68,10 @@ router.post('/register', function(req, res) {
         testLocation: req.body.testLocation,
         contractId: req.body.contractId,
       }
-    }
+    };
     // Adding testbed and cooperative info to user if present
     // TODO: this info should be moved to household
-    if(!_.isEmpty(req.body.household)){
+    if (!_.isEmpty(req.body.household)) {
       newUser.testbed = req.body.household.testbed;
       newUser.cooperativeId = req.body.household.cooperativeId;
     }
@@ -88,15 +88,12 @@ router.post('/register', function(req, res) {
         }
 
         // Creating a household if data is present
-        if(!_.isEmpty(req.body.household)){
+        if (!_.isEmpty(req.body.household)) {
           var household = req.body.household;
           household.ownerId = user._id;
-          Household.create(household,function(er2){
-            if(!er2 && household && household.extraInfo && household.extraInfo.invoiceNo){
-              mailer.notifyNewUserRegistered(user,household,function(err){
-                if(err)
-                  console.log('Sending notification error:', err);
-              });
+          Household.create(household, function(er2) {
+            if (!er2 && household && household.extraInfo && household.extraInfo.invoiceNo) {
+              mailer.notifyNewUserRegistered(user, household);
             }
 
             res.successRes(err, {
@@ -314,10 +311,10 @@ router.post('/sendMail/:type', auth.authenticate(), function(req, res) {
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else if (req.params.type === 'householdMember'){
+  } else if (req.params.type === 'householdMember') {
     User.mailHouseholdMember(req.user, req.body, res.successRes);
   } else {
-    res.successRes
+    res.successRes();
   }
 
   Log.create({
@@ -363,7 +360,7 @@ router.post('/sendMail/householdMember', auth.authenticate(), function(req, res)
  */
 router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
   var imgPath = path.join(common.getUserHome(), '.youpower', 'profilePictures',
-      req.params.userId + '.png');
+    req.params.userId + '.png');
 
   fs.exists(imgPath, function(exists) {
     var stream = fs.createReadStream(exists ? imgPath : defaultPath);
@@ -509,7 +506,7 @@ router.get('/search', auth.authenticate(), function(req, res) {
  *
  * @apiVersion 1.0.0
  */
-router.post('/password_reset', function(req, res){
+router.post('/password_reset', function(req, res) {
 
   req.checkBody('email').notEmpty();
 
@@ -524,9 +521,9 @@ router.post('/password_reset', function(req, res){
       category: 'User Password Reset',
       type: 'post',
       data: req.body,
-    })
+    });
   }
-})
+});
 
 
 /**
@@ -537,7 +534,7 @@ router.post('/password_reset', function(req, res){
  *
  * @apiVersion 1.0.0
  */
-router.get('/password_reset/:token', function(req, res){
+router.get('/password_reset/:token', function(req, res) {
   req.checkParams('token').notEmpty();
 
   var err;
@@ -551,9 +548,9 @@ router.get('/password_reset/:token', function(req, res){
       category: 'User Password Reset',
       type: 'get',
       data: req.params.token,
-    })
+    });
   }
-})
+});
 
 /**
  * @api {put} /user/password_reset/:token Update user's password
@@ -564,11 +561,11 @@ router.get('/password_reset/:token', function(req, res){
  *
  * @apiVersion 1.0.0
  */
-router.put('/password_reset/:token', function(req, res){
+router.put('/password_reset/:token', function(req, res) {
   req.checkParams('token').notEmpty();
   req.checkBody('password').notEmpty();
 
-   var err;
+  var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
@@ -580,7 +577,7 @@ router.put('/password_reset/:token', function(req, res){
       data: req.params.token,
     });
   }
-})
+});
 
 
 
@@ -603,7 +600,9 @@ router.put('/password_reset/:token', function(req, res){
  * @apiVersion 1.0.0
  */
 router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
-  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+  User.find({
+    _id: req.params.userId
+  }, false, null, null, function(err, user) {
     if (err) {
       return res.successRes(err);
     }
@@ -656,14 +655,15 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
-  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+  User.find({
+    _id: req.params.userId
+  }, false, null, null, function(err, user) {
     if (err) {
       return res.successRes(err);
     }
     if (!user) {
       return res.successRes('user not found');
     }
-    console.log('USERRRXXX',user);
     User.fbfriends(user, res.successRes);
   });
 
@@ -711,9 +711,6 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
  * }
  */
 router.post('/postFB/:type/:id', auth.authenticate(), function(req, res) {
-
-  console.log("req.params: "+JSON.stringify(req.params, null, 4));
-
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));

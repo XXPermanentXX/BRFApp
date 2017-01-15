@@ -26,7 +26,7 @@ module.exports = {
         "callback-return": "off",
         "camelcase": "off",
         "capitalized-comments": "off",
-        "class-methods-use-this": "error",
+        "class-methods-use-this": "off",
         "comma-dangle": "off",
         "comma-spacing": "off",
         "comma-style": [
@@ -201,11 +201,11 @@ module.exports = {
         ],
         "padded-blocks": "off",
         "prefer-arrow-callback": "off",
-        "prefer-const": "error",
+        "prefer-const": "off",
         "prefer-numeric-literals": "error",
         "prefer-reflect": "off",
-        "prefer-rest-params": "error",
-        "prefer-spread": "error",
+        "prefer-rest-params": "off",
+        "prefer-spread": "off",
         "prefer-template": "off",
         "quote-props": "off",
         "quotes": [
@@ -219,7 +219,7 @@ module.exports = {
         "require-await": "error",
         "require-jsdoc": "off",
         "rest-spread-spacing": "error",
-        "semi": "off",
+        "semi": "error",
         "semi-spacing": [
             "error",
             {
