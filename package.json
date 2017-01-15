@@ -5,7 +5,7 @@
   "main": "backend/app.js",
   "scripts": {
     "start": "node backend/app.js",
-    "restart": "nodemon backend/app.js",
+    "restart": "nodemon backend/app.js -i ./frontend",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec"
   },
