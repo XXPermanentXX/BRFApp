@@ -499,6 +499,41 @@ router.get('/search', auth.authenticate(), function(req, res) {
 });
 
 /**
+ * @api {get} /user/token Get current API token
+ * @apiGroup User
+ *
+ * @apiHeader {String} Authorization HTTP Basic Authentication credentials
+ * @apiHeaderExample {String} Authorization-Example:
+ *   "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
+ *
+ * @apiExample {curl} Example usage:
+ *  # NOTE: exceptionally uses your email:password, replace them in the export command below!
+ *  export HTTP_BASIC=$(echo -n "testuser1@test.com:topsecret" | base64)
+ *
+ *  curl -i -X GET -H "Authorization: Basic $HTTP_BASIC" \
+ *  http://localhost:3000/api/user/token
+ *
+ * @apiSuccessExample {json} Success-Response:
+ *   {
+ *     "token": "615ea82f7fec0ffaee5..."
+ *   }
+ *
+ * @apiVersion 1.0.0
+ */
+router.get('/validate', auth.authenticate(), function (req, res) {
+  console.log('req:', req.user.accessToken)
+  res.successRes(req.user.accessToken ? null : 'User token not found', {
+    accessToken: req.user.accessToken
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Token',
+    type: 'get'
+  });
+});
+
+/**
  * @api {post} /user/password_reset Create new password reset token and send email to user
  * @apiGroup User
  *

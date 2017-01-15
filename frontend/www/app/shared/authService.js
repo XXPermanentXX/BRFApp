@@ -2,7 +2,7 @@
 
 angular
   .module('civis.youpower')
-  .service('AuthService', function($q, $http, $window, $timeout, $location, $translate, Config) {
+  .service('AuthService', function($q, $http, $window, $timeout, $location, $translate, Config, User) {
     var LOCAL_TOKEN_KEY = 'CIVIS_TOKEN';
     var isAuthenticated = false;
     var isAdmin = false;
@@ -12,12 +12,29 @@ angular
     var REDIRECT_URI = location.origin + '/auth';
     var POPUP_WIDTH = 500;
     var POPUP_HEIGHT = 700;
+    var initialCredentials = validateToken(getToken());
 
-    function loadUserCredentials() {
-      var token = $window.localStorage.getItem(LOCAL_TOKEN_KEY);
+    function validateToken(token) {
       if (token) {
         useCredentials(token);
       }
+
+      return $q(function(resolve, reject) {
+        $http.get(Config.host + '/api/user/validate')
+          .success(function(data) {
+            storeUserCredentials(data.accessToken);
+            useCredentials(data.accessToken);
+            resolve(data.accessToken);
+          })
+          .error(function(err) {
+            destroyUserCredentials();
+            reject(err);
+          });
+      });
+    }
+
+    function getToken() {
+      return $window.localStorage.getItem(LOCAL_TOKEN_KEY);
     }
 
     function storeUserCredentials(token) {
@@ -41,7 +58,6 @@ angular
 
     function signup(email, name, password, language, testLocation, contractId, household) {
       return $q(function(resolve, reject) {
-
         $http.post(Config.host + '/api/user/register', {
           email: email,
           name: name,
@@ -58,7 +74,6 @@ angular
         .error(function(data) {
           reject(data);
         });
-
       });
     }
 
@@ -95,13 +110,15 @@ angular
             clearInterval(checkInterval);
 
             // Callback
-            if (event.detail.access_token) {
-              return resolve(event.detail.access_token);
+            if (event.detail.accessToken) {
+              return resolve(event.detail.accessToken);
             }
 
             switch (event.detail.err) {
-              case 'METRY_ERROR': return reject($translate.instant('LOGIN_DENIED'));
-              default: return reject(event.detail.err);
+              case 'METRY_ERROR':
+                return reject($translate.instant('LOGIN_DENIED'));
+              default:
+                return reject(event.detail.err);
             }
           });
         } catch (err) {
@@ -126,7 +143,7 @@ angular
     }
 
     function login() {
-      return getCode().then(function (token) {
+      return getCode().then(function(token) {
         storeUserCredentials(token);
         return 'Login success.';
       });
@@ -160,8 +177,6 @@ angular
       destroyUserCredentials();
     }
 
-    loadUserCredentials();
-
     return {
       login: login,
       loginAdmin: loginAdmin,
@@ -169,11 +184,10 @@ angular
       signup: signup,
       storeToken: storeUserCredentials,
       isAdmin: checkAdmin,
+      getToken: getToken,
       isAuthenticated: function() {
-        return isAuthenticated;
-      },
-      getToken: function() {
-        return $window.localStorage.getItem(LOCAL_TOKEN_KEY);
+        var callback = function() { return isAuthenticated; };
+        return initialCredentials.then(callback, callback);
       }
     };
   });

@@ -14,17 +14,23 @@
   </h1>
   <p class="message text-center" translate>TERMS_CONDITION_2</p>
 </div>
-<div class="list">
-  <div class="text-center" ng-show="signinClicked && auth.isRejected">
-    <p class="errors text-center">
-      {{auth.err}}<br>
-      <span translate>TRY_AGAIN</span>
-    </p>
-  </div>
-  <a class="button button-dark button-full text-bold" ng-click="signin()" translate>Login_with_Metry</a>
+<div ng-show="isLoading" class="message text-center">
+  <ion-spinner></ion-spinner><br><br>
+  <span translate>AUTHENTICATING</span>
 </div>
+<div ng-show="!isLoading">
+  <div class="list">
+    <div class="text-center" ng-show="signinClicked && auth.isRejected">
+      <p class="errors text-center">
+        {{auth.err}}<br>
+        <span translate>TRY_AGAIN</span>
+      </p>
+    </div>
+    <a class="button button-dark button-full text-bold" ng-click="signin()" translate>Login_with_Metry</a>
+  </div>
 
-<a ui-sref="signup" class="button button-energized button-full text-bold" translate>JOIN_NOW</a>
+  <a ui-sref="signup" class="button button-energized button-full text-bold" translate>JOIN_NOW</a>
+</div>
 
 </ion-content>
 </ion-view>
