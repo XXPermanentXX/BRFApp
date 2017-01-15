@@ -4,8 +4,8 @@ const passport = require('passport');
 
 const router = express.Router();
 
-router.get('/metry', passport.authenticate('metry'));
-router.use('/metry/callback',
+router.get('/metry', passport.authenticate('metry', { session: false }));
+router.get('/metry/callback',
   passport.authenticate('metry', {
     session: false,
     failWithError: true,
