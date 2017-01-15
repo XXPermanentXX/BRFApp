@@ -18,14 +18,14 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
     }, function(data) {
       $scope.cooperative = data;
       $scope.cooperative.actions = _.sortBy($scope.cooperative.actions, function(a) {
-        return new Date(a.date)
+        return new Date(a.date);
       }).reverse();
       $scope.$broadcast('civisEnergyGraph.init');
       mixpanel.track('Cooperative viewed', {
         name: data.name
       });
     });
-  })
+  });
 
   $scope.energyGraphSettings = {
     granularity: 'monthly',
@@ -57,17 +57,17 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
     $scope.$broadcast('goToActionInGraph', {
       actionId: action._id
     });
-  }
+  };
 
   $scope.scrollTo = function(id) {
     $location.hash(id);
     $ionicScrollDelegate.anchorScroll();
-  }
+  };
 
   $scope.actionFilter = function(action) {
     var type = $scope.energyGraphSettings.type == 'electricity' ? 200 : 100;
     return action.types.indexOf(type) >= 0;
-  }
+  };
 
   $scope.commentAction = function(action) {
     Cooperatives.commentAction({
@@ -85,7 +85,7 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
         'action id': action._id
       });
     });
-  }
+  };
 
   $scope.loadMoreComments = function(action) {
     Cooperatives.getMoreComments({
@@ -95,7 +95,7 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
     }, function(comments) {
       Array.prototype.push.apply(action.comments, comments);
     });
-  }
+  };
 
   $scope.deleteActionComment = function(action, comment) {
     Cooperatives.deleteActionComment({
@@ -110,7 +110,7 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
         'action id': action._id
       });
     });
-  }
+  };
 
   $scope.performanceInfo = function() {
     $ionicPopup.show({
@@ -124,15 +124,15 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
         text: 'OK',
         type: 'button-clear popup-button'
       }]
-    })
-  }
+    });
+  };
 
   $scope.trackActionClicked = function(action) {
     mixpanel.track('Cooperative Action expanded', {
       'action name': action.name,
       'action id': action._id
     });
-  }
+  };
 }
 
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
@@ -163,7 +163,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }, function(data) {
       $scope.cooperative = data;
     });
-  })
+  });
 
   $scope.save = function() {
     Cooperatives.update({
@@ -174,8 +174,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         id: $scope.cooperative._id,
         name: $scope.cooperative.name
       });
-    })
-  }
+    });
+  };
 
   $scope.selectVentilationTypes = function() {
     var categoryPopUp = $ionicPopup.show({
@@ -196,17 +196,17 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       $scope.cooperative.ventilationType = _.map(_.where($scope.ventilationTypes, {
         checked: true
       }), function(type) {
-        return type.type
+        return type.type;
       });
     });
-  }
+  };
 })
 
 .factory('CooperativeActionTypePopup', function($ionicPopup, $translate) {
   return function($scope) {
     _.each($scope.actionTypes, function(type) {
       type.selected = false;
-    })
+    });
     _.each($scope.action.types, function(id) {
       $scope.actionTypes.getById(id).selected = true;
     });
@@ -226,17 +226,17 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
             if (type.parent && !$scope.actionTypes.getById(type.parent).selected) {
               type.selected = false;
             }
-          })
+          });
             // Assign selected types to action
           $scope.action.types = _.map(_.where($scope.actionTypes, {
             selected: true
           }), function(type) {
-            return type.id
+            return type.id;
           });
         }
       }]
     });
-  }
+  };
 })
 
 .controller('CooperativeActionAddCtrl', function($scope, $state, CooperativeActionTypePopup, Cooperatives, currentUser) {
@@ -246,7 +246,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.selectActionType = function() {
     CooperativeActionTypePopup($scope);
-  }
+  };
 
   $scope.addAction = function() {
     Cooperatives.addAction({
@@ -254,7 +254,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }, $scope.action, function() {
       $state.go('^');
       mixpanel.track('Cooperative Action added', $scope.action);
-    })
+    });
   };
 })
 
@@ -264,7 +264,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.selectActionType = function() {
     CooperativeActionTypePopup($scope);
-  }
+  };
 
   Cooperatives.get({
     id: currentUser.cooperativeId
@@ -286,7 +286,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         name: action.name
       });
     });
-  }
+  };
 
   $scope.updateAction = function() {
     Cooperatives.updateAction({
@@ -298,7 +298,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         id: $scope.action._id,
         name: $scope.action.name
       });
-    })
+    });
   };
 })
 
@@ -306,7 +306,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   return function($scope, cooperatives) {
     _.each($scope.actionTypes, function(type) {
       type.checked = false;
-    })
+    });
     _.each($scope.actionTypesSelected, function(id) {
       $scope.actionTypes.getById(id).checked = true;
     });
@@ -349,12 +349,12 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       $scope.actionTypesSelected = _.map(_.where($scope.actionTypes, {
         checked: true
       }), function(type) {
-        return type.id
+        return type.id;
       });
       $scope.ventilationTypesSelected = _.map(_.where($scope.ventilationTypes, {
         checked: true
       }), function(type) {
-        return type.type
+        return type.type;
       });
       if ($scope.ventilationTypesSelected.length > 0) {
         $scope.cooperativesList = _.filter($scope.cooperativesList, function(cooperative) {
@@ -395,7 +395,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         });
       }
     });
-  }
+  };
 })
 
 .controller('CooperativesCtrl', function(User, $scope, $state, Cooperatives, cooperatives, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
@@ -472,7 +472,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         text: 'OK',
         type: 'button-clear popup-button'
       }]
-    })
+    });
   };
 })
 
@@ -560,8 +560,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
     angular.forEach($scope.cooperatives, function(coop) {
       //Marker + infowindow + angularjs compiled ng-click
-      var contentString = '<div ng-click="cooperativeClick("' +
-        coop._id + '")"><h5>' +
+      var contentString = '<div ng-click="cooperativeClick(\'' +
+        coop._id + '\')"><h5>' +
         coop.name + '</h5>' +
         '{{' + coop.performance + ' | number:0}}' + ' kWh/m2 <br><p>' +
         $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ': <b class="energized">' +
@@ -579,7 +579,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         infowindow.setContent(compiled[0]);
         infowindow.open(map, marker);
       });
-    })
+    });
 
     $scope.map = map;
   }
@@ -606,7 +606,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
   $scope.clickTest = function() {
     // eslint-disable-next-line no-alert
-    alert('Example of infowindow with ng-click')
+    alert('Example of infowindow with ng-click');
   };
 
 })
