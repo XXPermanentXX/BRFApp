@@ -1,6 +1,8 @@
 const url = require('url');
 const express = require('express');
 const passport = require('passport');
+const auth = require('../middleware/auth');
+const Log = require('../models').logs;
 
 const router = express.Router();
 
@@ -20,6 +22,26 @@ router.get('/metry/callback',
     res.redirect(makeUrl('welcome/error', { message: 'METRY_ERROR' }));
   }
 );
+
+router.get('/validate', auth.authenticate(), function (req, res) {
+  res.successRes(req.user.accessToken ? null : 'User token not found', {
+    accessToken: req.user.accessToken
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'User Token',
+    type: 'get'
+  });
+});
+
+router.post('/invalidate', auth.authenticate(), function (req, res) {
+  delete req.user.accessToken;
+  req.user.markModified('accessToken');
+  req.user.save(err => {
+    res.successRes(err ? 'Failed to unset access token' : null);
+  });
+});
 
 function makeUrl(hash, query = null) {
   const endpoint = url.parse(process.env.YOUPOWER_CLIENT_URL);

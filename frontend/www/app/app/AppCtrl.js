@@ -13,11 +13,22 @@ angular.module('civis.youpower.main', [])
       });
     };
   })
-  .directive('logOut', function () {
+  .directive('logOut', function ($state, $timeout, $ionicHistory, AuthService) {
     return {
       link: function ($scope, element) {
         element.on('click', function () {
-          // debugger;
+          AuthService.logout().then(function () {
+            redirect();
+
+            $timeout(function () {
+              $ionicHistory.clearCache();
+              $ionicHistory.clearHistory();
+            }, 1500);
+          }, redirect);
+
+          function redirect() {
+            $state.go('welcome');
+          }
         });
       }
     };
@@ -309,14 +320,18 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
 
 
   $scope.logout = function () {
-    AuthService.logout();
+    AuthService.logout().then(function () {
+      redirect();
 
-    $state.go('welcome');
+      $timeout(function () {
+        $ionicHistory.clearCache();
+        $ionicHistory.clearHistory();
+      }, 1500);
+    }, redirect);
 
-    $timeout(function () {
-      $ionicHistory.clearCache();
-      $ionicHistory.clearHistory();
-    }, 1500);
+    function redirect() {
+      $state.go('welcome');
+    }
   };
 
   $scope.showLoading = function () {

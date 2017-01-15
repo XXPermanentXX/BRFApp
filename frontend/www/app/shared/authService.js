@@ -20,7 +20,7 @@ angular
       }
 
       return $q(function(resolve, reject) {
-        $http.get(Config.host + '/api/user/validate')
+        $http.get(Config.host + '/api/auth/validate')
           .success(function(data) {
             storeUserCredentials(data.accessToken);
             useCredentials(data.accessToken);
@@ -174,7 +174,9 @@ angular
     }
 
     function logout() {
-      destroyUserCredentials();
+      return $http
+        .post(Config.host + '/api/auth/invalidate')
+        .then(destroyUserCredentials);
     }
 
     return {
