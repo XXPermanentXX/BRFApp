@@ -138,6 +138,7 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
 angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
 .controller('CooperativeCtrl', function(currentUser, $scope, $timeout, $state, $q, $stateParams, $translate, $ionicPopup, Cooperatives, $location, $ionicScrollDelegate, cooperativeSelection) {
+  $scope.currentUser = currentUser;
   coop(currentUser.cooperativeId, $scope, $timeout, $state, $q, $stateParams, $translate, $ionicPopup, Cooperatives, $location, $ionicScrollDelegate, cooperativeSelection);
 })
 
