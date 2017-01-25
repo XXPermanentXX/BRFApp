@@ -2,10 +2,10 @@
   "name": "youpower-backend",
   "version": "0.0.1",
   "description": "YouPower app backend",
-  "main": "backend/app.js",
+  "main": "backend/server.js",
   "scripts": {
-    "start": "node backend/app.js",
-    "restart": "nodemon backend/app.js -i ./frontend",
+    "start": "node backend/server.js",
+    "restart": "nodemon backend/server.js -i ./frontend",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec"
   },
@@ -36,10 +36,12 @@
   "dependencies": {
     "async": "^1.3.0",
     "body-parser": "~1.12.0",
+    "choo": "^4.1.0",
     "colors": "^1.1.2",
     "cookie-parser": "~1.3.3",
     "csv": "^0.4.6",
     "dateformat": "^1.0.12",
+    "dedent": "^0.6.0",
     "dotenv": "^2.0.0",
     "email-templates": "^2.0.1",
     "escape-string-regexp": "^1.0.3",

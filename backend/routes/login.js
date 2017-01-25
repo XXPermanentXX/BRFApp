@@ -2,11 +2,34 @@ const url = require('url');
 const express = require('express');
 const passport = require('passport');
 const auth = require('../middleware/auth');
-const Log = require('../models').logs;
 
 const router = express.Router();
 
+/**
+ * Handle requests to login
+ */
+
+router.get('/', auth.authenticate(), function (err, req, res) {
+  if (err) {
+    if (!req.accepts('html')) {
+      res.status(406);
+    }
+    return res.render('/login');
+  }
+
+  res.redirect('/');
+});
+
+/**
+ * Redirect to metry OAuth
+ */
+
 router.get('/metry', passport.authenticate('metry', { session: false }));
+
+/**
+ * Handle Metry callback redirect
+ */
+
 router.get('/metry/callback',
   passport.authenticate('metry', {
     session: false,
@@ -23,17 +46,19 @@ router.get('/metry/callback',
   }
 );
 
+/**
+ * Validate bearer token
+ */
+
 router.get('/validate', auth.authenticate(), function (req, res) {
   res.successRes(req.user.accessToken ? null : 'User token not found', {
     accessToken: req.user.accessToken
   });
-
-  Log.create({
-    userId: req.user._id,
-    category: 'User Token',
-    type: 'get'
-  });
 });
+
+/**
+ *
+ */
 
 router.post('/invalidate', auth.authenticate(), function (req, res) {
   delete req.user.accessToken;
