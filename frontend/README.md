@@ -1,28 +1,16 @@
-# YouPower frontend
-This is the frontend of the YouPower project.
+# BRF Energi Front End
+
+This is the front end of the BRF Energi project.
 
 ## Setup
+
+```bash
+# Install local dependencies
+$ npm install
+# Install ionic globally because 🤷
+$ npm install -g ionic
+# Build static assets
+$ npm run build
+# Serve upp the app
+$ npm start
 ```
-cd frontend/                                    # move into correct directory
-npm install -g bower cordova ionic gulp         # install necessary tools for build
-npm install                                     # install build dependencies
-bower install                                   # install clientside dependencies
-gulp                                            # builds frontend
-ionic serve                                     # start web server
-```
-
-This will launch a preview of the application in your default web browser.
-Running `ionic serve --lab` will simulate different mobile platforms for
-testing.
-
-## Deploying
-
-### Android
-```
-cordova run
-```
-
-TODO!
-
-## File structure
-TODO!
