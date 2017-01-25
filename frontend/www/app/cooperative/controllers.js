@@ -520,12 +520,17 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading, $translate) {
+.controller('CooperativesMapCtrl', function(User, $scope, $compile, $ionicLoading, $translate, AuthService) {
 
   function initialize() {
-    //      var myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
-    //      var myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
-    var myLatlng = new google.maps.LatLng(59.3036, 18.1025);
+    var myCoop, myLatlng;
+
+    if ($scope.currentUser) {
+      myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
+      myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
+    } else {
+      myLatlng = new google.maps.LatLng(59.3036, 18.1025);
+    }
 
     var mapOptions = {
       mapTypeControl: false,
@@ -534,10 +539,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP
     };
-    var map = new google.maps.Map(document.getElementById('map'),
-      mapOptions);
 
-
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
     var energyClasses = {
       A: '009036',
@@ -557,6 +560,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         new google.maps.Point(10, 34));
     });
 
+    var markers = [];
+    var bounds = new google.maps.LatLngBounds();
     var infowindow = new google.maps.InfoWindow();
 
     angular.forEach($scope.cooperatives, function(coop) {
@@ -576,15 +581,62 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
       });
 
+      markers.push(marker);
+
       google.maps.event.addListener(marker, 'click', function() {
         infowindow.setContent(compiled[0]);
         infowindow.open(map, marker);
       });
     });
 
+    _.chain(markers)
+      .sort(function (a, b) {
+        var aDistance = getPositionDistance(myLatlng, a.getPosition());
+        var bDistance = getPositionDistance(myLatlng, b.getPosition());
+
+        return aDistance > bDistance ? 1 : -1;
+      })
+      .first(5)
+      .forEach(function (marker) { bounds.extend(marker.getPosition()); });
+
+    map.fitBounds(bounds);
+
     $scope.map = map;
   }
-  ionic.Platform.ready(initialize);
+
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
+
+  function getPositionDistance(posA, posB) {
+    var lon1 = posA.lng();
+    var lat1 = posA.lat();
+    var lon2 = posB.lng();
+    var lat2 = posB.lat();
+
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad above
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+
+    return d;
+  }
+
+  AuthService.isAuthenticated().then(function (isAuthenticated) {
+    if (isAuthenticated) {
+      User.get().$promise.then(function (user) {
+        $scope.currentUser = user;
+        initialize();
+      }, initialize);
+    } else {
+      ionic.Platform.ready(initialize);
+    }
+  });
 
   $scope.centerOnMe = function() {
     if (!$scope.map) {
