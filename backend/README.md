@@ -17,18 +17,34 @@ Then:
 ```
 cd YouPower/    # move into project root
 npm install     # install dependencies
+```
 
-# run server:
-MONGO_URL=mongodb://user:pass@my.db/name npm start
+Place a `.env` file in the project root with the following variables
+```bash
+# Generic OAuth
+YOUPOWER_AUTH_URL=http://localhost:8100/auth
+
+# Metry OAuth credentials
+METRY_CLIENT_ID=MY_IDENTIFIER
+METRY_CLIENT_SECRET=VERY_VERY_SECRET
+METRY_BASE_URL=https://app.metry.io/
+METRY_PATH_TOKEN=oauth/token
+METRY_PATH_AUTHORIZE=oauth/authorize
+
+# Database
+MONGO_URL=mongodb://user:pass@my.db/name
+MONGOOSE_DISABLE_STABILITY_WARNING=1
+
+NODE_TLS_REJECT_UNAUTHORIZED="0"
 ```
 
 If you're on a mac, then install and run MongoDB such: http://docs.mongodb.org/manual/tutorial/install-mongodb-on-os-x/ (otherwise see http://docs.mongodb.org/manual/)
 
-Then: 
+Then:
 ```
-# run server 
+# Start server
 npm start
-# or run server with automatic restart (with nodemon)
+# Or start server with automatic restart (using nodemon)
 npm restart
 ```
 

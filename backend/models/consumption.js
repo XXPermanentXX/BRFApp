@@ -390,8 +390,7 @@ function readMeterData(){
 
       });
     }catch(x){
-    	console.log("Static Stockholm consumption data not found ",x.message);
-    	console.log(x.stack);
+    	console.log("Static Stockholm consumption data not found ", x.message);
     }
 }
 
@@ -443,5 +442,3 @@ exports.getStoredConsumption = function(meterId, type, granularity, from, to, cb
 [13/11/15 13:47:47] Filip Kis: 3) 2010-2015 (for the yearly view)
 */
 };
-
-

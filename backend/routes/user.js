@@ -12,7 +12,7 @@ var achievements = require('../common/achievements');
 var User = require('../models').users;
 var Log = require('../models').logs;
 var Household = require('../models').households;
-var mailer = require('../mailer')
+var mailer = require('../mailer');
 var defaultPath = path.dirname(require.main.filename) + '/res/missingProfile.png';
 
 router.use('/action', require('./userAction'));
@@ -30,7 +30,7 @@ router.use('/community', require('./community'));
  * @apiParam {String} testLocation The test site a user is participating, Trento users should take the default setting, as "Trento"
  * @apiParam {String} contractId The contact Id a test user took, highly advisable for Trento test site users
  * @apiParam {String} apartmentId The apartment number a test user took, highly advisable for Trento test site users
- * 
+ *
  * @apiExample {curl} Example usage:
  *  # NOTE: this is the only API call which does not require authentication!
  *
@@ -68,10 +68,10 @@ router.post('/register', function(req, res) {
         testLocation: req.body.testLocation,
         contractId: req.body.contractId,
       }
-    }
+    };
     // Adding testbed and cooperative info to user if present
     // TODO: this info should be moved to household
-    if(!_.isEmpty(req.body.household)){
+    if (!_.isEmpty(req.body.household)) {
       newUser.testbed = req.body.household.testbed;
       newUser.cooperativeId = req.body.household.cooperativeId;
     }
@@ -88,15 +88,12 @@ router.post('/register', function(req, res) {
         }
 
         // Creating a household if data is present
-        if(!_.isEmpty(req.body.household)){
+        if (!_.isEmpty(req.body.household)) {
           var household = req.body.household;
           household.ownerId = user._id;
-          Household.create(household,function(er2){
-            if(!er2 && household && household.extraInfo && household.extraInfo.invoiceNo){
-              mailer.notifyNewUserRegistered(user,household,function(err){
-                if(err)
-                  console.log('Sending notification error:', err);
-              });
+          Household.create(household, function(er2) {
+            if (!er2 && household && household.extraInfo && household.extraInfo.invoiceNo) {
+              mailer.notifyNewUserRegistered(user, household);
             }
 
             res.successRes(err, {
@@ -290,11 +287,11 @@ router.post('/profile', auth.authenticate(), function(req, res) {
  *
  *   - **householdMember**: The mail receiver is invited to sign up YouPower and to join the sender's household
  *   - **TODO**: The mail receiver is invited to sign up YouPower
- * 
+ *
  * @apiParam {String} email Email address of the receiver
  * @apiParam {String} [name] Name of the receiver
  * @apiParam {String} [message] The sender's private message to the receiver
- * 
+ *
  * @apiExample {curl} Example usage:
  *  # Get API token via /api/user/profile
  *  export API_TOKEN=fc35e6b2f27e0f5ef...
@@ -309,15 +306,15 @@ router.post('/profile', auth.authenticate(), function(req, res) {
  *
  */
 router.post('/sendMail/:type', auth.authenticate(), function(req, res) {
-  req.checkBody('email').notEmpty(); 
+  req.checkBody('email').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else if (req.params.type === 'householdMember'){
+  } else if (req.params.type === 'householdMember') {
     User.mailHouseholdMember(req.user, req.body, res.successRes);
   } else {
-    res.successRes
+    res.successRes();
   }
 
   Log.create({
@@ -330,7 +327,7 @@ router.post('/sendMail/:type', auth.authenticate(), function(req, res) {
 
 
 router.post('/sendMail/householdMember', auth.authenticate(), function(req, res) {
-  req.checkBody('email').notEmpty(); 
+  req.checkBody('email').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
@@ -363,7 +360,7 @@ router.post('/sendMail/householdMember', auth.authenticate(), function(req, res)
  */
 router.get('/profilePicture/:userId', auth.authenticate(), function(req, res) {
   var imgPath = path.join(common.getUserHome(), '.youpower', 'profilePictures',
-      req.params.userId + '.png');
+    req.params.userId + '.png');
 
   fs.exists(imgPath, function(exists) {
     var stream = fs.createReadStream(exists ? imgPath : defaultPath);
@@ -457,7 +454,7 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  * @apiGroup User
  *
  * @apiParam {String} [email] Search by email
- * @apiParam {String} [name] Search by user's profile name 
+ * @apiParam {String} [name] Search by user's profile name
  * @apiParam {String} [userId] Search by user's MongoId
  *
  * @apiExample {curl} Example usage:
@@ -487,87 +484,17 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  */
 router.get('/search', auth.authenticate(), function(req, res) {
 
-  // console.log("req.params:" + JSON.stringify(req.params, null, 4)); 
-  // console.log("req.body:" + JSON.stringify(req.body, null, 4)); 
-  // console.log("req.query:" + JSON.stringify(req.query, null, 4)); 
+  // console.log("req.params:" + JSON.stringify(req.params, null, 4));
+  // console.log("req.body:" + JSON.stringify(req.body, null, 4));
+  // console.log("req.query:" + JSON.stringify(req.query, null, 4));
 
-  User.find(req.query, true, 50, null, res.successRes); 
+  User.find(req.query, true, 50, null, res.successRes);
 
   Log.create({
     userId: req.user._id,
     category: 'User Profile',
     type: 'find',
     data: req.query
-  });
-});
-
-/**
- * @api {post} /user/token Generate new API token
- * @apiGroup User
- *
- * @apiHeader {String} Authorization HTTP Basic Authentication credentials
- * @apiHeaderExample {String} Authorization-Example:
- *   "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
- *
- * @apiExample {curl} Example usage:
- *  # NOTE: exceptionally uses your email:password, replace them in the export command below!
- *  export HTTP_BASIC=$(echo -n "testuser1@test.com:topsecret" | base64)
- *
- *  curl -i -X POST -H "Authorization: Basic $HTTP_BASIC" \
- *  http://localhost:3000/api/user/token
- *
- * @apiSuccessExample {json} Success-Response:
- *   {
- *     "token": "615ea82f7fec0ffaee5..."
- *   }
- *
- * @apiVersion 1.0.0
- */
-router.post('/token', auth.basicauth(), function(req, res) {
-  auth.newUserToken(req.user, function(err, token) {
-    res.successRes(err, {
-      token: token
-    });
-  });
-
-  Log.create({
-    userId: req.user._id,
-    category: 'User Token',
-    type: 'post'
-  });
-});
-
-/**
- * @api {get} /user/token Get current API token
- * @apiGroup User
- *
- * @apiHeader {String} Authorization HTTP Basic Authentication credentials
- * @apiHeaderExample {String} Authorization-Example:
- *   "Authorization: Basic QWxhZGRpbjpvcGVuIHNlc2FtZQ=="
- *
- * @apiExample {curl} Example usage:
- *  # NOTE: exceptionally uses your email:password, replace them in the export command below!
- *  export HTTP_BASIC=$(echo -n "testuser1@test.com:topsecret" | base64)
- *
- *  curl -i -X GET -H "Authorization: Basic $HTTP_BASIC" \
- *  http://localhost:3000/api/user/token
- *
- * @apiSuccessExample {json} Success-Response:
- *   {
- *     "token": "615ea82f7fec0ffaee5..."
- *   }
- *
- * @apiVersion 1.0.0
- */
-router.get('/token', auth.basicauth(), function(req, res) {
-  res.successRes(req.user.token ? null : 'User token not found', {
-    token: req.user.token
-  });
-
-  Log.create({
-    userId: req.user._id,
-    category: 'User Token',
-    type: 'get'
   });
 });
 
@@ -579,7 +506,7 @@ router.get('/token', auth.basicauth(), function(req, res) {
  *
  * @apiVersion 1.0.0
  */
-router.post('/password_reset', function(req, res){
+router.post('/password_reset', function(req, res) {
 
   req.checkBody('email').notEmpty();
 
@@ -594,9 +521,9 @@ router.post('/password_reset', function(req, res){
       category: 'User Password Reset',
       type: 'post',
       data: req.body,
-    })
+    });
   }
-})
+});
 
 
 /**
@@ -607,7 +534,7 @@ router.post('/password_reset', function(req, res){
  *
  * @apiVersion 1.0.0
  */
-router.get('/password_reset/:token', function(req, res){
+router.get('/password_reset/:token', function(req, res) {
   req.checkParams('token').notEmpty();
 
   var err;
@@ -621,9 +548,9 @@ router.get('/password_reset/:token', function(req, res){
       category: 'User Password Reset',
       type: 'get',
       data: req.params.token,
-    })
+    });
   }
-})
+});
 
 /**
  * @api {put} /user/password_reset/:token Update user's password
@@ -634,11 +561,11 @@ router.get('/password_reset/:token', function(req, res){
  *
  * @apiVersion 1.0.0
  */
-router.put('/password_reset/:token', function(req, res){
+router.put('/password_reset/:token', function(req, res) {
   req.checkParams('token').notEmpty();
   req.checkBody('password').notEmpty();
 
-   var err;
+  var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));
   } else {
@@ -650,7 +577,7 @@ router.put('/password_reset/:token', function(req, res){
       data: req.params.token,
     });
   }
-})
+});
 
 
 
@@ -673,7 +600,9 @@ router.put('/password_reset/:token', function(req, res){
  * @apiVersion 1.0.0
  */
 router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
-  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+  User.find({
+    _id: req.params.userId
+  }, false, null, null, function(err, user) {
     if (err) {
       return res.successRes(err);
     }
@@ -726,14 +655,15 @@ router.get('/:userId/achievements', auth.authenticate(), function(req, res) {
  * @apiVersion 1.0.0
  */
 router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
-  User.find({_id: req.params.userId}, false, null, null, function(err, user) {
+  User.find({
+    _id: req.params.userId
+  }, false, null, null, function(err, user) {
     if (err) {
       return res.successRes(err);
     }
     if (!user) {
       return res.successRes('user not found');
     }
-    console.log('USERRRXXX',user);
     User.fbfriends(user, res.successRes);
   });
 
@@ -749,9 +679,9 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
  * @api {post} /user/postFB/:type/:id Post on Facebook
  * @apiGroup User
  *
- * @apiParam {String} type Indicates the content of the post (or share), e.g. "action" means that the post is about an action 
+ * @apiParam {String} type Indicates the content of the post (or share), e.g. "action" means that the post is about an action
  * @apiParam {String} id The id of the content, e.g. if type is "action", then the id is an actoin id
- * @apiParam (Body) {Object} object The content to be posted. Details see: 
+ * @apiParam (Body) {Object} object The content to be posted. Details see:
  <a href="https://developers.facebook.com/docs/graph-api/reference/v2.4/post">https://developers.facebook.com/docs/graph-api/reference/v2.4/post</a>
  *
  * @apiExample {curl} Example usage:
@@ -781,9 +711,6 @@ router.get('/:userId/fbfriends', auth.authenticate(), function(req, res) {
  * }
  */
 router.post('/postFB/:type/:id', auth.authenticate(), function(req, res) {
-
-  console.log("req.params: "+JSON.stringify(req.params, null, 4));
-
   var err;
   if ((err = req.validationErrors())) {
     res.status(500).send('There have been validation errors: ' + util.inspect(err));

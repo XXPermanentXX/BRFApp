@@ -3,3 +3,5 @@ npm-debug.log
 backend/apidoc
 backend/coverage
 *.swp
+.db
+.env

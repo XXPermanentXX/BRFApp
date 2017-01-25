@@ -1,97 +1,67 @@
-'use strict';
+const url = require('url');
+const express = require('express');
+const passport = require('passport');
+const auth = require('../middleware/auth');
+const Log = require('../models').logs;
 
-var express = require('express');
-var auth = require('../middleware/auth');
-var router = express.Router();
-var passport = require('passport');
+const router = express.Router();
 
+router.get('/metry', passport.authenticate('metry', { session: false }));
+router.get('/metry/callback',
+  passport.authenticate('metry', {
+    session: false,
+    failWithError: true,
+    // FIXME: Should use error middleware instead (see below)
+    failureRedirect: makeUrl('welcome/error', { err: 'METRY_ERROR' })
+  }),
+  (req, res) => res.redirect(makeUrl('welcome/success', {
+    access_token: req.user.accessToken
+  })),
+  (err, req, res) => {
+    // FIXME: Does not run due to some other error handler mocking about
+    res.redirect(makeUrl('welcome/error', { message: 'METRY_ERROR' }));
+  }
+);
 
-var YOUPOWER_REDIRECT_URL = process.env.YOUPOWER_REDIRECT_URL || 'http://localhost:8100/';
-var FACEBOOK_CALLBACK_URL = process.env.FACEBOOK_CALLBACK_URL || 'http://localhost:3000'; 
- 
+router.get('/validate', auth.authenticate(), function (req, res) {
+  res.successRes(req.user.accessToken ? null : 'User token not found', {
+    accessToken: req.user.accessToken
+  });
 
-var User = require('../models').users; 
-
-/**
- * @api {get} /auth/facebook Redirect to Facebook login
- * @apiGroup Facebook Login
- */
-router.get('/facebook', passport.authenticate('facebook',
-	{scope :['user_friends', 'user_birthday', 'email', 'user_posts', 'publish_actions'], session: false}));
-
-/**
- * @api {get} /auth/facebook/callback Callback URL for Facebook login
- * @apiGroup Facebook Login
- * 
- * @apiSuccess {Sting} [token] After the Facebook call back, the location is redirected to <code>/#/welcome/</code> followed by a user token if the  login is successful. The String value can be "fbUnauthorized", "err", or a user token. 
- */
-router.get('/facebook/callback', passport.authenticate('facebook',
-{ failureRedirect: YOUPOWER_REDIRECT_URL + "#/welcome/fbUnauthorized",
-  session : false}), function(req, res) { 
-
-  auth.newUserToken(req.user, function(err, token) { 
-
-    if (err){
-      res.redirect(YOUPOWER_REDIRECT_URL + '#/welcome/err'); 
-    }else{
-      res.redirect(YOUPOWER_REDIRECT_URL + '#/welcome/' + token); 
-    }
-  }); 
+  Log.create({
+    userId: req.user._id,
+    category: 'User Token',
+    type: 'get'
+  });
 });
 
-
-/**
- * @api {get} /auth/facebookc Connecting existing accounts with Facebook
- * @apiGroup Facebook Login
- */
-router.get('/facebookc/:id', function(req, res, next) {
-  console.log("req.params.id" + req.params.id);
-
-  passport.authenticate('facebook-authz', 
-	{ scope :['user_friends', 'user_birthday', 'email', 'user_posts', 'publish_actions'],  callbackURL: FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb/' + req.params.id, 
-    session: false
-  })(req, res, next); 
+router.post('/invalidate', auth.authenticate(), function (req, res) {
+  delete req.user.accessToken;
+  req.user.markModified('accessToken');
+  req.user.save(err => {
+    res.successRes(err ? 'Failed to unset access token' : null);
+  });
 });
- 
-/**
- * @api {get} /auth/facebook/callbackfb Callback URL for Facebook login for connection
- * @apiGroup Facebook Login
- * @apiSuccess {Sting} [res] After the Facebook call back, the location is redirected to <code>/#/app/settings/</code> followed by "fb" if the login is successful, "fbUnauthorized" otherwise. 
- */
-router.get('/facebook/callbackfb/:id', function(req, res, next) {
 
-  console.log("req.params.id" + req.params.id)
+function makeUrl(hash, query = null) {
+  const endpoint = url.parse(process.env.YOUPOWER_CLIENT_URL);
+  let hashed =  url.format(Object.assign(endpoint, {
+    query: {},
+    hash: `#/${ hash }`,
+  }));
 
-  passport.authenticate('facebook-authz',
-	{callbackURL: FACEBOOK_CALLBACK_URL + '/api/auth/facebook/callbackfb/' + req.params.id, 
-    failureRedirect: YOUPOWER_REDIRECT_URL + "#/app/settings/main/fbUnauthorized",
-    session: false}, function(err, aUser) {
+  /**
+   * Append query string after hash because Angular is silly that way
+   * @see: https://github.com/angular/angular.js/issues/6172
+   */
 
-      console.log("user:" + JSON.stringify(aUser, null, 4));
+  if (query || endpoint.query) {
+    const params = Object.assign({}, endpoint.query, query);
+    const pairs = Object.keys(params).map(key => `${ key }=${ params[key] }`);
+    hashed += `?${ pairs.join('&') }`;
+  }
 
-      User.find({_id: req.params.id}, false, null, null, function(err, user) {
-        if (err || !user) {
-          res.redirect(YOUPOWER_REDIRECT_URL + '#/app/settings/main/fbUnauthorized'); 
-        } else {
-          user.facebookId  = aUser.facebookId;
-          user.accessToken  = aUser.accessToken;
-          user.profile.gender   = aUser.gender;
-          user.profile.name   = aUser.name;
-          user.profile.dob   = aUser.dob;
-
-          user.markModified('profile.gender');
-          user.markModified('profile.name');
-          user.markModified('profile.dob');
-          user.markModified('facebookId');
-          user.markModified('accessToken');
-          user.save();
-
-          res.redirect(YOUPOWER_REDIRECT_URL + '#/app/settings/main/')
-        }
-      });
-    }
-  )(req, res, next); 
-
-});
+  return hashed;
+}
 
 module.exports = router;
