@@ -54,10 +54,10 @@
 	<script src="app/actions/formsCtrl.js"></script>
 	<script src="app/app/AppCtrl.js"></script>
 	<script src="app/communities/communitiesCtrl.js"></script>
+	<script src="app/cooperative/controllers.js"></script>
 	<script src="app/household/controllers.js"></script>
 	<script src="app/household/householdCtrl.js"></script>
 	<script src="app/household/memberCtrl.js"></script>
-	<script src="app/cooperative/controllers.js"></script>
 	<script src="app/prosumption/dataVizCtrl.js"></script>
 	<script src="app/prosumption/prosumptionCtrl.js"></script>
 	<script src="app/settings/householdSettingsCtrl.js"></script>
@@ -69,6 +69,7 @@
 	<script src="app/shared/config.js"></script>
 	<script src="app/shared/cooperatives.js"></script>
 	<script src="app/shared/energyGraph.js"></script>
+	<script src="app/shared/geoip.js"></script>
 	<script src="app/shared/household.js"></script>
 	<script src="app/shared/rating.js"></script>
 	<script src="app/shared/testbed.js"></script>
@@ -79,7 +80,8 @@
 	<script src="app/welcome/welcomeCtrl.js"></script>
 	<!-- endinject -->
 
-  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyAI7j4LZI132q62VGRFRfOsZlIOIavRrk8&sensor=true"></script>
+  <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyAI7j4LZI132q62VGRFRfOsZlIOIavRrk8"></script>
+  <script src="lib/gmaps-marker-clusterer/src/markerclusterer.js"></script>
 
   <!-- start Mixpanel -->
   <script type="text/javascript">(function(e,b){if(!b.__SV){var a,f,i,g;window.mixpanel=b;b._i=[];b.init=function(a,e,d){function f(b,h){var a=h.split(".");2==a.length&&(b=b[a[0]],h=a[1]);b[h]=function(){b.push([h].concat(Array.prototype.slice.call(arguments,0)))}}var c=b;"undefined"!==typeof d?c=b[d]=[]:d="mixpanel";c.people=c.people||[];c.toString=function(b){var a="mixpanel";"mixpanel"!==d&&(a+="."+d);b||(a+=" (stub)");return a};c.people.toString=function(){return c.toString(1)+".people (stub)"};i="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");

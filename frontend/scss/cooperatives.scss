@@ -59,9 +59,19 @@ $energyClasses: (A: #009036, B:#55AB26, C:#C8D200, D:#FFED00, E:#FBBA00, F:#EB69
     height: 100%;
   }
 
-  #map {
+  .map-container {
       width: 100%;
       height: 80%;
+      position: relative;
+  }
+
+  .map {
+    height: 100%;
+  }
+
+  .center-map {
+    position: absolute;
+    top: 10px;
+    right: 10px;
   }
 }
-
