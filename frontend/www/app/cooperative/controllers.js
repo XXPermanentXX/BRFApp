@@ -527,7 +527,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
     if ($scope.currentUser) {
       myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
-      getLatLng = $q.resolve(new google.maps.LatLng(myCoop.lat, myCoop.lng));
+      getLatLng = $q.defer();
+      getLatLng.resolve(new google.maps.LatLng(myCoop.lat, myCoop.lng));
     } else {
       getLatLng = GeoIP.getLatLng().then(function (latlng) {
         return new google.maps.LatLng(latlng[0], latlng[1]);
@@ -540,6 +541,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         streetViewControl: false,
         center: myLatLng,
         zoom: 14,
+        maxZoom: 16,
+        minZoom: 10,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
@@ -564,7 +567,6 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       });
 
       var markers = [];
-      var bounds = new google.maps.LatLngBounds();
       var infowindow = new google.maps.InfoWindow();
 
       angular.forEach($scope.cooperatives, function(coop) {
@@ -592,19 +594,46 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         });
       });
 
-      _.chain(markers)
-        .sort(function (a, b) {
-          var aDistance = getPositionDistance(myLatLng, a.getPosition());
-          var bDistance = getPositionDistance(myLatLng, b.getPosition());
-
-          return aDistance > bDistance ? 1 : -1;
-        })
-        .first(5)
-        .forEach(function (marker) { bounds.extend(marker.getPosition()); });
-
-      map.fitBounds(bounds);
+      setCenter(myLatLng);
 
       $scope.map = map;
+
+      $scope.centerOnMe = function() {
+        if (!$scope.map) {
+          return;
+        }
+
+        $ionicLoading.show({
+          content: 'Getting current location...',
+          showBackdrop: false
+        });
+
+        navigator.geolocation.getCurrentPosition(function(pos) {
+          setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+          $ionicLoading.hide();
+        }, function(error) {
+          // eslint-disable-next-line no-alert
+          alert('Unable to get location: ' + error.message);
+        });
+      };
+
+      function setCenter(center) {
+        var bounds = new google.maps.LatLngBounds();
+
+        bounds.extend(center);
+
+        _.chain(markers)
+          .sort(function (a, b) {
+            var aDistance = getPositionDistance(center, a.getPosition());
+            var bDistance = getPositionDistance(center, b.getPosition());
+
+            return aDistance > bDistance ? 1 : -1;
+          })
+          .first(5)
+          .forEach(function (marker) { bounds.extend(marker.getPosition()); });
+
+        map.fitBounds(bounds);
+      }
     });
   }
 
@@ -641,31 +670,6 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       ionic.Platform.ready(initialize);
     }
   });
-
-  $scope.centerOnMe = function() {
-    if (!$scope.map) {
-      return;
-    }
-
-    $scope.loading = $ionicLoading.show({
-      content: 'Getting current location...',
-      showBackdrop: false
-    });
-
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-      $scope.loading.hide();
-    }, function(error) {
-      // eslint-disable-next-line no-alert
-      alert('Unable to get location: ' + error.message);
-    });
-  };
-
-  $scope.clickTest = function() {
-    // eslint-disable-next-line no-alert
-    alert('Example of infowindow with ng-click');
-  };
-
 })
 
 .service('cooperativeSelection', function() {

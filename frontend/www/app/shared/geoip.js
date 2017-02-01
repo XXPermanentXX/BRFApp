@@ -3,6 +3,11 @@
 angular
   .module('civis.youpower')
   .service('GeoIP', function ($q, $http, Config) {
+
+    /**
+     * Wrapper for location service that caches response after first call
+     */
+
     var getLocation = (function () {
       var location;
 
@@ -18,6 +23,10 @@ angular
         });
       };
     }());
+
+    /**
+     * Extract latitude and longitude from location data
+     */
 
     function getLatLng() {
       return getLocation().then(function (location) {
