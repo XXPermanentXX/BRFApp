@@ -527,8 +527,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
     if ($scope.currentUser) {
       myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
-      getLatLng = $q.defer();
-      getLatLng.resolve(new google.maps.LatLng(myCoop.lat, myCoop.lng));
+      getLatLng = $q.when(new google.maps.LatLng(myCoop.lat, myCoop.lng));
     } else {
       getLatLng = GeoIP.getLatLng().then(function (latlng) {
         return new google.maps.LatLng(latlng[0], latlng[1]);
@@ -542,7 +541,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         center: myLatLng,
         zoom: 14,
         maxZoom: 16,
-        minZoom: 10,
+        minZoom: 5,
         mapTypeId: google.maps.MapTypeId.ROADMAP
       };
 
@@ -581,7 +580,6 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
         var marker = new google.maps.Marker({
           position: new google.maps.LatLng(coop.lat, coop.lng),
-          map: map,
           title: coop.name,
           icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
         });
@@ -595,6 +593,19 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
       });
 
       setCenter(myLatLng);
+
+      new MarkerClusterer(map, markers, {
+        maxZoom: 15,
+        styles: [{
+          url: '/img/cluster-pin.png',
+          height: 45,
+          width: 48,
+          anchor: [3, 6],
+          textColor: '#ffffff',
+          textSize: 11,
+          iconAnchor: [20, 20]
+        }]
+      });
 
       $scope.map = map;
 
