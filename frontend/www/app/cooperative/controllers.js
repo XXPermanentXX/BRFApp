@@ -520,88 +520,92 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativesMapCtrl', function(User, $scope, $compile, $ionicLoading, $translate, AuthService) {
+.controller('CooperativesMapCtrl', function(User, $q, $scope, $compile, $ionicLoading, $translate, AuthService, GeoIP) {
 
   function initialize() {
-    var myCoop, myLatlng;
+    var getLatLng, myCoop;
 
     if ($scope.currentUser) {
       myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
-      myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
+      getLatLng = $q.resolve(new google.maps.LatLng(myCoop.lat, myCoop.lng));
     } else {
-      myLatlng = new google.maps.LatLng(59.3036, 18.1025);
+      getLatLng = GeoIP.getLatLng().then(function (latlng) {
+        return new google.maps.LatLng(latlng[0], latlng[1]);
+      });
     }
 
-    var mapOptions = {
-      mapTypeControl: false,
-      streetViewControl: false,
-      center: myLatlng,
-      zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
+    getLatLng.then(function (myLatLng) {
+      var mapOptions = {
+        mapTypeControl: false,
+        streetViewControl: false,
+        center: myLatLng,
+        zoom: 14,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      };
 
-    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    var energyClasses = {
-      A: '009036',
-      B: '55AB26',
-      C: 'C8D200',
-      D: 'FFED00',
-      E: 'FBBA00',
-      F: 'EB6909',
-      G: 'E2001A',
-      unknown: 'bbbbbb'
-    };
+      var energyClasses = {
+        A: '009036',
+        B: '55AB26',
+        C: 'C8D200',
+        D: 'FFED00',
+        E: 'FBBA00',
+        F: 'EB6909',
+        G: 'E2001A',
+        unknown: 'bbbbbb'
+      };
 
-    var energyClassPins = _.mapObject(energyClasses, function(value) {
-      return new google.maps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + value,
-        new google.maps.Size(21, 34),
-        new google.maps.Point(0, 0),
-        new google.maps.Point(10, 34));
-    });
-
-    var markers = [];
-    var bounds = new google.maps.LatLngBounds();
-    var infowindow = new google.maps.InfoWindow();
-
-    angular.forEach($scope.cooperatives, function(coop) {
-      //Marker + infowindow + angularjs compiled ng-click
-      var contentString = '<div ng-click="cooperativeClick(\'' +
-        coop._id + '\')"><h5>' +
-        coop.name + '</h5>' +
-        '{{' + coop.performance + ' | number:0}}' + ' kWh/m2 <br><p>' +
-        $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ': <b class="energized">' +
-        coop.actions.length + '</b></p></div>';
-      var compiled = $compile(contentString)($scope);
-
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(coop.lat, coop.lng),
-        map: map,
-        title: coop.name,
-        icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
+      var energyClassPins = _.mapObject(energyClasses, function(value) {
+        return new google.maps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + value,
+          new google.maps.Size(21, 34),
+          new google.maps.Point(0, 0),
+          new google.maps.Point(10, 34));
       });
 
-      markers.push(marker);
+      var markers = [];
+      var bounds = new google.maps.LatLngBounds();
+      var infowindow = new google.maps.InfoWindow();
 
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(compiled[0]);
-        infowindow.open(map, marker);
+      angular.forEach($scope.cooperatives, function(coop) {
+        //Marker + infowindow + angularjs compiled ng-click
+        var contentString = '<div ng-click="cooperativeClick(\'' +
+          coop._id + '\')"><h5>' +
+          coop.name + '</h5>' +
+          '{{' + coop.performance + ' | number:0}}' + ' kWh/m2 <br><p>' +
+          $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ': <b class="energized">' +
+          coop.actions.length + '</b></p></div>';
+        var compiled = $compile(contentString)($scope);
+
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(coop.lat, coop.lng),
+          map: map,
+          title: coop.name,
+          icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
+        });
+
+        markers.push(marker);
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(compiled[0]);
+          infowindow.open(map, marker);
+        });
       });
+
+      _.chain(markers)
+        .sort(function (a, b) {
+          var aDistance = getPositionDistance(myLatLng, a.getPosition());
+          var bDistance = getPositionDistance(myLatLng, b.getPosition());
+
+          return aDistance > bDistance ? 1 : -1;
+        })
+        .first(5)
+        .forEach(function (marker) { bounds.extend(marker.getPosition()); });
+
+      map.fitBounds(bounds);
+
+      $scope.map = map;
     });
-
-    _.chain(markers)
-      .sort(function (a, b) {
-        var aDistance = getPositionDistance(myLatlng, a.getPosition());
-        var bDistance = getPositionDistance(myLatlng, b.getPosition());
-
-        return aDistance > bDistance ? 1 : -1;
-      })
-      .first(5)
-      .forEach(function (marker) { bounds.extend(marker.getPosition()); });
-
-    map.fitBounds(bounds);
-
-    $scope.map = map;
   }
 
   function deg2rad(deg) {
