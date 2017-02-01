@@ -16,30 +16,15 @@
   <!-- Side menu -->
   <ion-side-menu side="left">
     <header class="bar bar-header bar-stable">
-      <h1 class="title">{{currentUser.profile.name? currentUser.profile.name : currentUser.email}}</h1>
+      <h1 class="title">{{ currentUser ? currentUser.profile.name : 'BRF Energi'}}</h1>
     </header>
     <ion-content class="has-header">
       <ion-list>
-        <!-- Exclude actions and household -->
-        <!--<ion-item nav-clear menu-close href="#/app/actions/yours">
-          <span translate>Actions</span>
-        </ion-item>-->
-        <!--  <ion-item nav-clear menu-close ng-show="currentUser.householdId&&households[currentUser.householdId].connected===true && !currentUser.testbed.isStockholm() " href="#/app/prosumption"> -->
         <ion-item nav-clear menu-close ng-show="!((currentUser.profile.testLocation=='') || (currentUser.profile.contractId=='')) && !currentUser.testbed.isStockholm()" href="#/app/prosumption">
-       <!-- <ion-item nav-clear menu-close ng-show="currentUser.testLocation=="Trento"" href="#/app/prosumption"> -->
           <span translate>Energy_Data</span>
         </ion-item>
-        <!--<ion-item nav-clear menu-close ng-show="currentUser.testbed.isStockholm() && (currentUser.household.connected==true || currentUser.household.extraInfo.invoiceNo)" ui-sref=".household">
-          <span translate>HOUSEHOLD_ENERGY</span>
-        </ion-item>-->
-        <!--  <ion-item nav-clear menu-close href="#/app/household">
-          Household
-        </ion-item>
-        <ion-item nav-clear menu-close href="#/app/communities">
-          Communities
-        </ion-item> -->
         <ion-item nav-clear menu-close ng-show="currentUser.cooperativeId" ui-sref=".cooperative.my">
-          <span translate>Housing_Cooperatives</span> <!-- Bostadsrättsförening  -->
+          <span translate>Housing_Cooperatives</span>
         </ion-item>
         <ion-item nav-clear menu-close href="#/app/settings/main/">
           <span translate>Settings</span>
@@ -47,8 +32,11 @@
         <ion-item nav-clear menu-close href="#/app/about">
           <span translate>About</span>
         </ion-item>
-        <ion-item nav-clear log-out>
+        <ion-item nav-clear ng-show="currentUser" ng-click="logout()">
           <span translate>Log_Out</span>
+        </ion-item>
+        <ion-item nav-clear ng-show="!currentUser" ng-click="login()">
+          <span translate>Login</span>
         </ion-item>
       </ion-list>
     </ion-content>

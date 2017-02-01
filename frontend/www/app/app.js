@@ -151,11 +151,36 @@ angular.module('civis.youpower', [
     url: '/app',
     abstract: true,
     templateUrl: 'app/app/menu.html',
-    //    controller: 'AppCtrl',
+    controller: 'AppCtrl',
     resolve: {
       User: 'User',
       Testbed: 'Testbed',
-      Cooperatives: 'Cooperatives'
+      Cooperatives: 'Cooperatives',
+      currentUser: function (User, Testbed, Cooperatives, AuthService) {
+        return AuthService.isAuthenticated().then(function (isAuthenticated) {
+          if (!isAuthenticated) {
+            return null;
+          }
+
+          return User.get().$promise.then(function (user) {
+            if (user.cooperative) {
+              user.cooperative = new Cooperatives(user.cooperative);
+            }
+
+            mixpanel.identify(user._id);
+
+            mixpanel.people.set({
+              $name: user.profile.name,
+              $created: new Date(parseInt(user._id.toString().slice(0, 8), 16) * 1000),
+              $email: user.email,
+              Testbed: (user.testbed || {}).name,
+              Cooperative: (user.cooperative || {}).name,
+            });
+
+            return user;
+          });
+        });
+      }
     }
   })
 
