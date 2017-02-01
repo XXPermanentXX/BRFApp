@@ -7,6 +7,8 @@ const winston = require('winston');
 const which = require('which');
 const express = require('express');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
+const session = require('express-session');
 const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
 const mkdirp = require('mkdirp');
@@ -71,52 +73,39 @@ server.set('civis_opt', {
  */
 
 server.render = function (route, options, done) {
-  const state = Object.assign({}, this.locals, options._locals, options, {
-    cache: this.enabled('view cache')
-  });
+  const state = Object.assign({}, this.locals, options._locals, options);
+  const cache = this.enabled('view cache');
 
   let view;
 
-  if (state.cache) {
-    view = this.cache[route];
+  if (cache) {
+    this.cache[state.lang] = this.cache[state.lang] || {};
+    view = this.cache[state.lang][route];
   }
 
   if (!view) {
     try {
-      view = app.toString('/', state);
-      // view = dedent`
-      //   <!DOCTYPE html>
-      //   ${ app.toString(route, state) }
-      // `;
+      view = dedent`
+        <!DOCTYPE html>
+        ${ app.toString(route, state) }
+      `;
     } catch (err) {
       return done(err);
     }
   }
 
-  if (state.cache) {
-    state.cache[name] = view;
+  if (cache) {
+    this.cache[state.lang][route] = view;
   }
 
   done(null, view);
 };
 
 /**
- * Extend response native render method with a type switcher
+ * Extend native response render method with a type switch and user decoration
  */
 
-server.use(function (req, res, next) {
-  const orig = res.render;
-
-  res.render = function (route, state) {
-    if (route && req.accepts('html')) {
-      return orig.call(this, route, state);
-    } else {
-      return res.json(state);
-    }
-  };
-
-  next();
-});
+server.use(require('./middleware/render'));
 
 /**
  * Enable CORS
@@ -129,13 +118,26 @@ server.use(function (req, res, next) {
   next();
 });
 
+server.use(cookieParser());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.raw());
+server.use(session({
+  secret: process.env.BRFENERGI_SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
 server.use(expressValidator());
 server.use(auth.initialize());
-server.use('/en', (req, res, next) => { req.lang = 'en'; next(); }, routes);
+server.use(auth.session());
 server.use(routes);
+server.use('/en',
+  (req, res, next) => {
+    res.locals.lang = 'en';
+    next();
+  },
+  routes
+);
 
 db.on('error', logger.error.bind(console, 'connection error:'));
 db.once('open', function() {

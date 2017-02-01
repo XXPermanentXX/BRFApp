@@ -7,7 +7,8 @@ module.exports = function (state, prev, send) {
     <html lang="${ state.lang }">
       ${ head(state) }
       <body>
-        404
+        Oops!
+        <pre>${ JSON.stringify(state, null, 2) }</pre>
         ${ scripts(state) }
       </body>
     </html>

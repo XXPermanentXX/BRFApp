@@ -97,7 +97,7 @@ module.exports = {
             "error",
             "except-parens"
         ],
-        "no-confusing-arrow": "error",
+        "no-confusing-arrow": "off",
         "no-continue": "error",
         "no-div-regex": "error",
         "no-duplicate-imports": "error",

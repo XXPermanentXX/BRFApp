@@ -1,14 +1,8 @@
-'use strict';
-
-var express = require('express');
-var auth = require('../middleware/auth');
-var util = require('util');
-var path = require('path');
-var common = require('./common');
-var fs = require('fs');
-var router = express.Router();
-var Cooperative = require('../models').cooperatives;
-var Log = require('../models').logs;
+const express = require('express');
+const auth = require('../middleware/auth');
+const router = express.Router();
+const Cooperative = require('../models').cooperatives;
+const Log = require('../models').logs;
 
 /**
  * @api {post} /cooperative Create new cooperative
@@ -33,15 +27,28 @@ var Log = require('../models').logs;
  *     "name": "BRF Hamarby"
  *   }
  */
-router.post('/', function(req, res) {
-  var cooperative = req.body;
-  Cooperative.create(cooperative, res.successRes);
+router.post('/', auth.authenticate(), function (req, res) {
+  const { body } = req;
+
+  Cooperative.create(body, (err, cooperative) => {
+    if (err) {
+      res.status(500).render(
+        `/cooperatives${ req.url }`,
+        Object.assign({ err: err.message }, body)
+      );
+    } else {
+      res.render(
+        `/cooperatives${ req.url }/${ cooperative._id }`,
+        cooperative
+      );
+    }
+  });
 
   Log.create({
-    // userId: req.user._id,
+    userId: req.user._id,
     category: 'Cooperative',
     type: 'create',
-    data: req.body
+    data: body
   });
 });
 
@@ -69,10 +76,21 @@ router.post('/', function(req, res) {
  *     "name": "BRF Hamarby"
  *   }
  */
-router.get('/consumption/:type/:granularity', function(req, res) {
-  Cooperative.getAvgConsumption(req.params.type, req.params.granularity, req.query.from, req.query.to, res.successRes);
+router.get('/consumption/:type/:granularity', function (req, res) {
+  const { params: { type, granularity }, query: { from, to }} = req;
+
+  Cooperative.getAvgConsumption(type, granularity, from, to, (err, data) => {
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else if (req.accepts('html')) {
+      res.redirect('/cooperatives');
+    } else {
+      res.json(data);
+    }
+  });
+
   Log.create({
-    // userId: req.user._id,
+    userId: req.user && req.user._id,
     category: 'Cooperative',
     type: 'geAvgConsumption',
     data: {
@@ -101,24 +119,25 @@ router.get('/consumption/:type/:granularity', function(req, res) {
  *     "name": "BRF Hamarby"
  *   }
  */
-router.get('/:id', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+router.get('/:id', checkParams('id'), function (req, res) {
+  const { params: { id }} = req;
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    Cooperative.get(req.params.id, null, res.successRes);
+  Cooperative.get(id, null, (err, cooperative) => {
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else {
+      res.render(`/cooperatives${ req.url }`, cooperative);
+    }
+  });
 
-    Log.create({
-      // userId: req.user._id,
-      category: 'Cooperative',
-      type: 'get',
-      data: {
-        cooperativeId: req.params.id
-      }
-    });
-  }
+  Log.create({
+    userId: req.user && req.user._id,
+    category: 'Cooperative',
+    type: 'get',
+    data: {
+      cooperativeId: id
+    }
+  });
 });
 
 
@@ -144,19 +163,20 @@ router.get('/:id', function(req, res) {
  *   ...
  *   ]
  */
-router.get('/', function(req, res) {
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    Cooperative.all(res.successRes);
+router.get('/', function (req, res) {
+  Cooperative.all((err, cooperatives) => {
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else {
+      res.render('/cooperatives', { cooperatives });
+    }
+  });
 
-    Log.create({
-      // userId: req.user._id,
-      category: 'Cooperative',
-      type: 'get'
-    });
-  }
+  Log.create({
+    userId: req.user && req.user._id,
+    category: 'Cooperative',
+    type: 'get'
+  });
 });
 
 /**
@@ -191,73 +211,29 @@ router.get('/', function(req, res) {
  *     ...
  *   }
  */
-router.put('/:id', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+router.put('/:id', auth.authenticate(), checkParams('id'), function (req, res) {
+  const { body, params: { id }} = req;
+  const err = req.validationErrors();
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
   } else {
-    Cooperative.update(req.params.id, req.body, res.successRes);
+    Cooperative.update(id, body, (err, result) => {
+      if (err) {
+        res.status(500).render(
+          `/cooperatives/${ id }`,
+          Object.assign({ err: err.message }, body)
+        );
+      } else {
+        req.render(`/cooperatives/${ id }`, result);
+      }
+    });
 
     Log.create({
-      // userId: req.user._id,
+      userId: req.user._id,
       category: 'Cooperative',
       type: 'update',
-      data: req.body
-    });
-  }
-});
-
-
-/**
- * @api {post} /cooperative/:id/meter Add new meter to cooperative
- * @apiGroup Cooperative
- *
- * @apiParam {String} id MongoId of cooperative
- * @apiParam (Body) {String} meterId Id of the new meter
- * @apiParam (Body) {String} type Type of the new meter (e.g. electricity, heating)
- * @apiParam (Body) {Boolean} useInCalc Whether to use the meter reading in energy calculations
- *
- * @apiExample {curl} Example usage:
- *  # Get API token via /api/user/token
- *  export API_TOKEN=fc35e6b2f27e0f5ef...
- *
- *  curl -i -X PUSH -H "Content-Type: application/json" -H "Authorization: Bearer $API_TOKEN" -d \
- *  '{
- *    "meterId": "12341234",
- *    "type": "electricity",
- *    "useInCalc": true
- *  }' \
- *  http://localhost:3000/api/cooperative/55f14ce337d4bef728a861ab/meter
- *
- * @apiSuccessExample {json} Success-Response:
- *   {
- *     "__v": 8,
- *     "_id": "555ef84b2fd41ffc6e078a34",
- *     "date": "2015-07-01T12:04:33.599Z",
- *     "name": "BRF Hamarby"
- *     ...
- *   }
- */
-router.post('/:id/meter', function(req, res) {
-
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
-
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    Cooperative.addMeter(req.params.id, req.body.meterId, req.body.type, req.body.useInCalc, res.successRes);
-
-    Log.create({
-      // userId: req.user._id,
-      category: 'Cooperative',
-      type: 'addMeter',
-      data: {
-        cooperativeId: req.params.id,
-        params: req.body
-      }
+      data: body
     });
   }
 });
@@ -293,23 +269,57 @@ router.post('/:id/meter', function(req, res) {
  *     ...
  *   }
  */
-router.post('/:id/action', function(req, res) {
+router.post('/:id/actions', auth.authenticate(), checkParams('id'), function (req, res) {
+  const { body, params: { id }} = req;
+  const err = req.validationErrors();
 
-    req.checkParams('id', 'Invalid cooperative id').isMongoId();
-
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
   } else {
-    Cooperative.addAction(req.params.id, req.body, null, res.successRes);
+    Cooperative.addAction(id, body, null, (err, action) => {
+      if (err) {
+        res.status(500).render(
+          `/cooperatives${ req.url }`,
+          Object.assign({ err: err.message }, body)
+        );
+      } else {
+        res.render(`/cooperatives${ req.url }/${ action._id }`, action);
+      }
+    });
 
     Log.create({
-      // userId: req.user._id,
+      userId: req.user._id,
       category: 'Cooperative',
       type: 'addAction',
       data: {
-        cooperativeId: req.params.id,
-        action: req.body
+        cooperativeId: id,
+        action: body
+      }
+    });
+  }
+});
+
+router.get('/:id/actions', checkParams('id'), function (req, res) {
+  const { params: { id }} = req;
+  const err = req.validationErrors();
+
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
+  } else {
+    Cooperative.get(id, null, (err, cooperative) => {
+      if (err) {
+        res.status(404).render('/404', { err: err.message });
+      } else {
+        res.render(`/cooperatives${ req.url }`, { actions: cooperative.actions });
+      }
+    });
+
+    Log.create({
+      userId: req.user && req.user._id,
+      category: 'Actions',
+      type: 'get',
+      data: {
+        cooperativeId: id
       }
     });
   }
@@ -348,24 +358,64 @@ router.post('/:id/action', function(req, res) {
  *     ...
  *   }
  */
-router.put('/:id/action/:actionId', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
-  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+router.put('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
+  const { body, params: { id, actionId }} = req;
+  const err = req.validationErrors();
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
   } else {
-    Cooperative.updateAction(req.params.id, req.params.actionId, req.body, null, res.successRes);
+    Cooperative.updateAction(id, actionId, body, null, (err, action) => {
+      if (err) {
+        res.status(500).render(
+          `/cooperatives${ req.url }`,
+          Object.assign({ err: err.message }, body)
+        );
+      } else {
+        res.render(`/cooperatives${ req.url }`, action);
+      }
+    });
 
     Log.create({
-      // userId: req.user._id,
+      userId: req.user._id,
       category: 'Cooperative',
       type: 'updateAction',
       data: {
-        cooperativeId: req.params.id,
-        actionId: req.params.actionId,
-        action: req.body
+        cooperativeId: id,
+        actionId: actionId,
+        action: body
+      }
+    });
+  }
+});
+
+router.get('/:id/actions/:actionId', checkParams('id', 'actionId'), function (req, res) {
+  const { params: { id, actionId }} = req;
+  const err = req.validationErrors();
+
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
+  } else {
+    Cooperative.get(id, null, (err, cooperative) => {
+      let action;
+
+      if (!err) {
+        action = cooperative.actions.find(action => action._id.toString() === actionId);
+      }
+
+      if (err || !action) {
+        res.status(404).render('/404', { err: err && err.message });
+      } else {
+        res.render(`/cooperatives${ req.url }`, action);
+      }
+    });
+
+    Log.create({
+      userId: req.user && req.user._id,
+      category: 'Actions',
+      type: 'get',
+      data: {
+        cooperativeId: id
       }
     });
   }
@@ -394,18 +444,24 @@ router.put('/:id/action/:actionId', function(req, res) {
  *     ...
  *   }
  */
-router.delete('/:id/action/:actionId', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
-  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+router.delete('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
+  const { params: { id, actionId }} = req;
+  const err = req.validationErrors();
+
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
   } else {
-    Cooperative.deleteAction(req.params.id, req.params.actionId, null, res.successRes);
+    Cooperative.deleteAction(id, actionId, null, err => {
+      if (err) {
+        res.status(500).redirect(`/cooperatives${ req.url }`);
+      } else {
+        res.redirect(`/cooperatives/${ id }/actions`);
+      }
+    });
 
     Log.create({
-      // userId: req.user._id,
+      userId: req.user._id,
       category: 'Cooperative',
       type: 'deleteAction',
       data: {
@@ -443,24 +499,32 @@ router.delete('/:id/action/:actionId', function(req, res) {
  *     ...
  *   }
  */
-router.post('/:id/action/:actionId/comment', auth.authenticate(), function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
-  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+router.post('/:id/actions/:actionId/comments', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
+  const { body, user, params: { id, actionId }} = req;
+  const err = req.validationErrors();
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
   } else {
-    Cooperative.commentAction(req.params.id, req.params.actionId, req.body, req.user, res.successRes);
+    Cooperative.commentAction(id, actionId, body, user, (err, comment) => {
+      if (err) {
+        req.status(500).render(
+          `/cooperatives${ req.url }`,
+          Object.assign({ err: err.message }, body)
+        );
+      } else {
+        res.render(`/cooperatives${ req.url }/${ id }`, comment);
+      }
+    });
 
     Log.create({
-      // userId: req.user._id,
+      userId: req.user._id,
       category: 'Cooperative',
       type: 'commentAction',
       data: {
-        cooperativeId: req.params.id,
-        actionId: req.params.actionId,
-        comment: req.body
+        cooperativeId: id,
+        actionId: actionId,
+        comment: body
       }
     });
   }
@@ -490,25 +554,61 @@ router.post('/:id/action/:actionId/comment', auth.authenticate(), function(req, 
  *     ...
  *   }
  */
-router.get('/:id/action/:actionId/comment', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
-  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
-  req.checkQuery('lastCommentId', 'Invalid comment id').isMongoId();
+router.get('/:id/actions/:actionId/comments', checkParams('id', 'actionId'), function (req, res) {
+  const { params: { id, actionId }} = req;
+  const err = req.validationErrors();
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
   } else {
-    Cooperative.getMoreComments(req.params.id, req.params.actionId, req.query.lastCommentId, null, res.successRes);
+    Cooperative.getComments(id, actionId, null, (err, comments) => {
+      if (err) {
+        res.status(404).render('/404', { err: err.message });
+      } else {
+        res.render(`/cooperatives${ req.url }`, { comments });
+      }
+    });
 
     Log.create({
-      // userId: req.user._id,
+      userId: req.user && req.user._id,
       category: 'Cooperative',
-      type: 'getMoreComments',
+      type: 'getComments',
       data: {
-        cooperativeId: req.params.id,
-        actionId: req.params.actionId,
-        lastCommentId: req.params.lastCommentId
+        cooperativeId: id,
+        actionId: actionId
+      }
+    });
+  }
+});
+
+router.get('/:id/actions/:actionId/comments/:commentId', checkParams('id', 'actionId', 'commentId'), function (req, res) {
+  const { params: { id, actionId, commentId }} = req;
+  const err = req.validationErrors();
+
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
+  } else {
+    Cooperative.getComments(id, actionId, null, (err, comments) => {
+      let comment;
+
+      if (!err) {
+        comment = comments.find(comment => comment._id.toString() === commentId);
+      }
+
+      if (err || !comment) {
+        res.status(404).render('/404', { err: err && err.message });
+      } else {
+        res.render(`/cooperatives${ req.url }`, comment);
+      }
+    });
+
+    Log.create({
+      userId: req.user && req.user._id,
+      category: 'Cooperative',
+      type: 'getComments',
+      data: {
+        cooperativeId: id,
+        actionId: actionId
       }
     });
   }
@@ -538,25 +638,29 @@ router.get('/:id/action/:actionId/comment', function(req, res) {
  *     ...
  *   }
  */
-router.delete('/:id/action/:actionId/comment/:commentId', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
-  req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
-  req.checkParams('commentId', 'Invalid comment id').isMongoId();
+router.delete('/:id/actions/:actionId/comments/:commentId', auth.authenticate(), checkParams('id', 'actionId', 'commentId'), function(req, res) {
+  const { params: { id, actionId, commentId }} = req;
+  const err = req.validationErrors();
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
   } else {
-    Cooperative.deleteActionComment(req.params.id, req.params.actionId, req.params.commentId, null, res.successRes);
+    Cooperative.deleteActionComment(id, actionId, commentId, null, err => {
+      if (err) {
+        res.status(500).redirect(`/cooperatives${ req.url }`);
+      } else {
+        res.redirect(`/cooperatives/${ id }/actions/${ actionId }/comments`);
+      }
+    });
 
     Log.create({
-      // userId: req.user._id,
+      userId: req.user._id,
       category: 'Cooperative',
       type: 'deleteActionComment',
       data: {
-        cooperativeId: req.params.id,
-        actionId: req.params.actionId,
-        commentId: req.params.commentId
+        cooperativeId: id,
+        actionId: actionId,
+        commentId: commentId
       }
     });
   }
@@ -566,50 +670,35 @@ router.delete('/:id/action/:actionId/comment/:commentId', function(req, res) {
 /*
 curl  -X POST http://localhost:3000/api/cooperative/5623feb4fa9bee84098e7ce0/editor -d'{"editorId" : "55f91cacf9b31654b8758efd"}' -H "Content-Type: application/json" | python -m json.tool
 */
-router.post('/:id/editor', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+router.post('/:id/editor', checkParams('id'), function(req, res) {
+  Cooperative.addEditor(req.params.id, req.body, null, res.successRes);
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    Cooperative.addEditor(req.params.id, req.body, null, res.successRes);
-
-    Log.create({
-      // userId: req.user._id,
-      category: 'Cooperative',
-      type: 'addEditor',
-      data: {
-        cooperativeId: req.params.id,
-        editor: req.body
-      }
-    });
-  }
+  Log.create({
+    // userId: req.user._id,
+    category: 'Cooperative',
+    type: 'addEditor',
+    data: {
+      cooperativeId: req.params.id,
+      editor: req.body
+    }
+  });
 });
 
 /**
  curl  -X DELETE http://localhost:3000/api/cooperative/5623feb4fa9bee84098e7ce0/editor/56240d8a830db5840a70571a | python -m json.tool
 */
-router.delete('/:id/editor/:coopEditorId', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
-  req.checkParams('coopEditorId', 'Invalid cooperative editor id').isMongoId();
+router.delete('/:id/editor/:coopEditorId', checkParams('id', 'coopEditorId'), function(req, res) {
+  Cooperative.deleteEditor(req.params.id, req.params.coopEditorId, null, res.successRes);
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    Cooperative.deleteEditor(req.params.id, req.params.coopEditorId, null, res.successRes);
-
-    Log.create({
-      // userId: req.user._id,
-      category: 'Cooperative',
-      type: 'deleteEditor',
-      data: {
-        cooperativeId: req.params.id,
-        coopEditorId: req.params.coopEditorId
-      }
-    });
-  }
+  Log.create({
+    // userId: req.user._id,
+    category: 'Cooperative',
+    type: 'deleteEditor',
+    data: {
+      cooperativeId: req.params.id,
+      coopEditorId: req.params.coopEditorId
+    }
+  });
 });
 
 /**
@@ -636,27 +725,44 @@ router.delete('/:id/editor/:coopEditorId', function(req, res) {
  *   ...
  *   ]
  */
-router.get('/:id/consumption/:type/:granularity', function(req, res) {
-  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+router.get('/:id/consumption', checkParams('id'), function (req, res) {
+  const { params: { id }, query } = req;
+  const options = Object.assign({ id, normalized: false }, query);
 
-  var err;
-  if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
-  } else {
-    Cooperative.getConsumption(req.params.id, req.params.type, req.params.granularity, req.query.from, req.query.to, req.query.normalized, res.successRes);
+  Cooperative.getConsumption(options, (err, consumption) => {
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else {
+      res.render(`/cooperatives${ req.url }`, consumption);
 
-    Log.create({
-      // userId: req.user._id,
-      category: 'Cooperative',
-      type: 'geConsumption',
-      data: {
-        cooperativeId: req.params.id,
-        params: req.params,
-        normalized: req.query.normalized
-      }
-    });
-  }
+      Log.create({
+        userId: req.user && req.user._id,
+        category: 'Cooperative',
+        type: 'getConsumption',
+        data: {
+          cooperativeId: id,
+          query: query
+        }
+      });
+    }
+  });
+
 });
 
+function checkParams(...params) {
+  return (req, res, next) => {
+    for (let param of params) {
+      req.checkParams(param, `Invalid cooperative ${ param }`).isMongoId();
+    }
+
+    const err = req.validationErrors();
+
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else {
+      next();
+    }
+  };
+}
 
 module.exports = router;

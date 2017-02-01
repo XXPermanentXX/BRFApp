@@ -2,9 +2,8 @@ const url = require('url');
 const crypto = require('crypto');
 const request = require('request');
 const passport = require('passport');
-const BearerStrategy = require('passport-http-bearer');
 const OAuth2Strategy = require('passport-oauth2').Strategy;
-const User = require('../models').users;
+const User = require('../models/users');
 
 const ENDPOINT = url.parse(process.env.METRY_ENDPOINT_URL);
 const {
@@ -14,7 +13,7 @@ const {
   METRY_CLIENT_ID,
   METRY_CLIENT_SECRET,
   METRY_PROFILE_PATH,
-  YOUPOWER_AUTH_URL
+  BRFENERGI_CLIENT_URL
 } = process.env;
 
 /**
@@ -53,7 +52,7 @@ exports.initialize = function initialize() {
     tokenURL: url.resolve(METRY_BASE_URL, METRY_PATH_TOKEN),
     clientID: METRY_CLIENT_ID,
     clientSecret: METRY_CLIENT_SECRET,
-    callbackURL: url.resolve(YOUPOWER_AUTH_URL, 'metry/callback')
+    callbackURL: url.resolve(BRFENERGI_CLIENT_URL, 'auth/callback')
   }, (accessToken, refreshToken, profile, done) => {
     User.model.findOne({ metryId: profile._id }, (err, user) => {
       if (err) { return done(err); }
@@ -75,27 +74,17 @@ exports.initialize = function initialize() {
   }));
 
   /**
-   * Set up bearer strategy for validating token on requests
-   */
-
-  passport.use(new BearerStrategy((token, done) => {
-    if (!token) { return done(new Error('No token provided')); }
-
-    User.model.findOne({ accessToken: token }, (err, user) => {
-      if (err) { return done(err); }
-      if (!user) { return done(null, false); }
-      return done(null, user);
-    });
-  }));
-
-  /**
    * Serialize user data by _id
    */
 
   passport.serializeUser((user, done) => done(null, user._id));
-  passport.deserializeUser((id, done) => User.findById(id, done));
+  passport.deserializeUser((id, done) => User.model.findById(id, done));
 
   return passport.initialize();
+};
+
+exports.session = function session() {
+  return passport.session();
 };
 
 /**
@@ -103,20 +92,11 @@ exports.initialize = function initialize() {
  */
 
 exports.authenticate = function authenticate() {
-  return passport.authenticate('bearer', { session: false });
-};
-
-/**
- * TODO: Remove legacy implementation of locally generated tokens
- */
-
-exports.genToken = function genToken(callback) {
-  crypto.randomBytes(48, (ex, buf) => callback(buf.toString('hex')));
-};
-
-exports.newUserToken = function newUserToken(user, callback) {
-  exports.genToken(token => {
-    user.token = token;
-    user.save(err => callback(err, token));
-  });
+  return function (req, res, next) {
+    if (!req.isAuthenticated()) {
+      res.status(401).redirect('/auth');
+    } else {
+      next();
+    }
+  };
 };

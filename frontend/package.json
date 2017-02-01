@@ -6,13 +6,15 @@
     "bower": "^1.7.7",
     "cordova": "^6.0.0",
     "datepicker-for-ionic": "^1.1.7",
+    "express-session": "^1.15.0",
     "gulp": "^3.9.1",
     "gulp-concat": "^2.2.0",
     "gulp-minify-css": "^0.3.0",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^2.3.2",
     "gulp-watch": "^4.2.4",
-    "ionic": "^1.7.14"
+    "ionic": "^1.7.14",
+    "passport-oauth2": "^1.4.0"
   },
   "devDependencies": {
     "gulp-inject": "^1.2.0",
