@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "civis: An Ionic project",
   "scripts": {
-    "start": "$(npm bin -g)/ionic serve --address localhost"
+    "start": "$(npm bin -g)/ionic serve --address localhost",
+    "build": "gulp"
   },
   "dependencies": {
     "bower": "^1.7.7",
