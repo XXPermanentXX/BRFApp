@@ -1,62 +1,18 @@
 // Load environement variables before anything else
 require('dotenv').config();
 
-const os = require('os');
-const path = require('path');
-const winston = require('winston');
-const which = require('which');
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
+const compression = require('compression');
 const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
-const mkdirp = require('mkdirp');
 const dedent = require('dedent');
 const routes = require('./routes');
+const lang = require('./middleware/lang');
 const auth = require('./middleware/auth');
-const app = require('./app');
-
-const logger = winston.loggers.get('default');
-
-const PORT = process.env.PORT || 3000;
-const HOME = os.homedir();
-
-winston.loggers.add('default', {
-  console: {
-    level: 'silly',
-    colorize: true
-  }
-});
-
-if (process.env.NODE_ENV === 'test') {
-  logger.warn(dedent`
-    ========================= NOTICE ==========================
-    running in test mode, this should NOT be used in production
-    ===========================================================
-  `);
-}
-
-// verify that graphicsmagick is installed
-try {
-  which.sync('gm');
-} catch (e) {
-  // eslint-disable-next-line no-console
-  console.log(`
-		${e}
-
-		ERROR: could not find graphicsmagick binary!
-		Please install graphicsmagick, for example on Ubuntu:
-		$ sudo apt-get install graphicsmagick
-	`);
-  process.exit();
-}
-
-// make sure directories exist for picture uploads
-mkdirp(path.join(HOME, '.youpower', 'actionCommentPictures'));
-mkdirp(path.join(HOME, '.youpower', 'actionPictures'));
-mkdirp(path.join(HOME, '.youpower', 'profilePictures'));
-mkdirp(path.join(HOME, '.youpower', 'communityPictures'));
+const app = require('./index');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 
@@ -118,6 +74,11 @@ server.use(function (req, res, next) {
   next();
 });
 
+if (process.env.NODE_ENV === 'development') {
+  server.use(require('./middleware/assets'));
+}
+
+server.use(compression());
 server.use(cookieParser());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
@@ -131,18 +92,18 @@ server.use(expressValidator());
 server.use(auth.initialize());
 server.use(auth.session());
 server.use(routes);
-server.use('/en',
-  (req, res, next) => {
-    res.locals.lang = 'en';
-    next();
-  },
-  routes
-);
+server.use('/en', lang('en'), routes);
+server.use(express.static('public'));
 
-db.on('error', logger.error.bind(console, 'connection error:'));
+// eslint-disable-next-line no-console
+db.on('error', err => console.error(err));
 db.once('open', function() {
-  logger.info('connected to database');
-  server.listen(PORT, function() {
-    logger.info('express listening on PORT', PORT);
+  const listener = server.listen(process.env.PORT || 0, () => {
+    const { address: host, port } = listener.address();
+
+    // eslint-disable-next-line no-console
+    console.info(`
+      Server listening at ${ host.replace('::', 'localhost') }:${ port }
+    `);
   });
 });

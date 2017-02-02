@@ -1,0 +1,51 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i');
+
+@import "suitcss-base";
+
+@import "suitcss-components-button":;
+@import "suitcss-components-grid";
+
+@import "suitcss-utils-display";
+@import "suitcss-utils-flex";
+@import "suitcss-utils-layout";
+@import "suitcss-utils-link";
+@import "suitcss-utils-size";
+@import "suitcss-utils-text";
+
+:root {
+  --font-family: "Lato", sans-serif;
+  --font-weight-bold: 700;
+  --font-weight-normal: 400;
+  --font-weight-light: 300;
+  --base-font-size: 16;
+
+  --sm-viewport: 640px;
+  --md-viewport: 900px;
+  --lg-viewport: 1400px;
+
+  --Grid-gutter-size: 60px;
+
+  --space-n: 0;
+  --space-b: .5rem;
+  --space-s: 1rem;
+  --space-m: 1.5rem;
+  --space-l: 3rem;
+  --space-g: 5rem;
+}
+
+@custom-media --sm-viewport (min-width:400px) and (max-width:899px);
+@custom-media --md-viewport (min-width:900px) and (max-width:1399px);
+@custom-media --lg-viewport (min-width:1400px);
+
+html, body {
+  height: 100%;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-normal);
+  font-size: calc(0.7px * var(--base-font-size));
+}
+
+@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
+  html, body {
+    font-size: calc(1px * var(--base-font-size));
+  }
+}
