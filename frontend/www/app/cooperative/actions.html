@@ -1,6 +1,9 @@
 <ion-list>
-  <div class = "item item-divider header-divider">
-    <h>{{'COOPERATIVE_ENERGY_ACTIONS'| translate}}</h>
+  <div class="item item-divider header-divider bg-energized text-white">
+    <h2 class="text-white text-bold display-inline">{{'COOPERATIVE_ENERGY_ACTIONS'| translate}}</h2>
+    <a class="text-normal link-plain pull-right" href="#/app/cooperatives/my/edit/action">
+        <i class="icon ion-plus"></i> {{'Add_Action' | translate}}
+    </a>
   </div>
   <ion-item class="item-text-wrap" ng-repeat="action in filteredActions = cooperative.actions | orderBy:'date':true" ng-class="{'item-button-right':canEditActions, 'item-complex-left':!canEditActions}">
     <div style="float:right; padding-right: 20px" ng-click="action.showExtra = !action.showExtra" >
