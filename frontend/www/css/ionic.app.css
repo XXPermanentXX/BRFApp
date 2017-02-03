@@ -9446,3 +9446,77 @@ ul.rating li {
     position: absolute;
     top: 10px;
     right: 10px; }
+
+/**
+ * Utilities are used as building blocks for composing the desired design and
+ * only to be used when there are no contextual selectors availible or when
+ * applying a deviating design.
+ * All rules are applied with `!important` to ensure that the utilites take
+ * presidence over any contextually nested mess that may be lurking around.
+ */
+/**
+ * Layout
+ */
+.display-inline {
+  display: inline !important; }
+
+.display-block {
+  display: block !important; }
+
+.display-inline-block {
+  display: inline-block !important; }
+
+.pull-right {
+  float: right !important; }
+
+.pull-left {
+  float: left !important; }
+
+/**
+ * Text
+ */
+.text-normal {
+  font-weight: normal !important; }
+
+.text-bold {
+  font-weight: bold !important; }
+
+/**
+ * Links
+ */
+.link-plain, .link-plain:hover, .link-plain:active, .link-plain:visited {
+  color: currentColor !important;
+  text-decoration: none !important; }
+
+/**
+ * Colors
+ */
+.text-balanced {
+  color: #008000 !important; }
+
+.text-energized {
+  color: #F7931D !important; }
+
+.text-positive {
+  color: #009EDB !important; }
+
+.text-calm {
+  color: #e8e8e8 !important; }
+
+.text-white {
+  color: #fff !important; }
+
+.bg-balanced {
+  background-color: #008000 !important; }
+
+.bg-energized {
+  background-color: #F7931D !important; }
+
+.bg-positive {
+  background-color: #009EDB !important; }
+
+.bg-calm {
+  background-color: #e8e8e8 !important; }
+
+.bg-white {
+  background-color: #fff !important; }
