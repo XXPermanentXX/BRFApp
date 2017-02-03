@@ -94,6 +94,9 @@ angular.module('civis.youpower', [
     resolve: {
       Testbed: 'Testbed',
       Cooperative: 'Cooperatives',
+      isAuthenticated: function (AuthService) {
+        return AuthService.isAuthenticated();
+      },
       testbed: function (Testbed, $stateParams, $q) {
         if ($stateParams.tid) {
           // Wrapping in promise so it breaks silently

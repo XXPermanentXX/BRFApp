@@ -9418,18 +9418,31 @@ ul.rating li {
 .subaction {
   margin-left: 25px; }
 
-.full-height .scroll {
-  height: 100%; }
-
-.full-height .map-container {
-  width: 100%;
-  height: 80%;
-  position: relative; }
-
-.full-height .map {
-  height: 100%; }
-
-.full-height .center-map {
-  position: absolute;
-  top: 10px;
-  right: 10px; }
+.full-height {
+  /**
+   * Overwrite default flex grow to not compeete with map
+   */ }
+  .full-height .scroll {
+    display: flex;
+    flex-direction: column;
+    height: 100%; }
+  .full-height .button-bar {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto; }
+  .full-height .map-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative; }
+  .full-height .map {
+    flex-grow: 1; }
+  .full-height .call-to-action {
+    padding: 1em;
+    text-align: center; }
+  .full-height .center-map {
+    position: absolute;
+    top: 10px;
+    right: 10px; }

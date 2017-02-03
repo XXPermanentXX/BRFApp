@@ -402,7 +402,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 .controller('CooperativesCtrl', function(User, $scope, $state, Cooperatives, cooperatives, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
   $scope.cooperativesList = cooperatives;
   $scope.cooperatives = cooperatives;
-  User.get().$promise.then(function(user) {
+
+  User.get().$promise.then(function (user) {
     Cooperatives.get({
       id: user.cooperativeId
     }, function(data) {
@@ -678,7 +679,10 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         initialize();
       }, initialize);
     } else {
-      ionic.Platform.ready(initialize);
+      ionic.Platform.ready(function () {
+        // Ensure that view has time to update and apply layout
+        requestAnimationFrame(initialize);
+      });
     }
   });
 })
