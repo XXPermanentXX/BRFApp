@@ -240,7 +240,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativeActionAddCtrl', function($scope, $state, CooperativeActionTypePopup, Cooperatives, currentUser) {
+.controller('CooperativeActionAddCtrl', function($scope, $state, $translate, CooperativeActionTypePopup, Cooperatives, currentUser) {
   $scope.action = {};
 
   $scope.actionTypes = Cooperatives.getActionTypes();
@@ -255,11 +255,27 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }, $scope.action, function() {
       $state.go('^');
       mixpanel.track('Cooperative Action added', $scope.action);
+    }, function (err) {
+      $scope.errors = {};
+
+      err.data
+        .map(function (error) { return error.param; })
+        .reduce(function (list, param) {
+          return list.indexOf(param) === -1 ? list.concat([ param ]) : list;
+        }, [])
+        .forEach(function (err) {
+          if (!$scope.action[err]) {
+            $scope.errors[err] = $translate.instant('ERROR_REQUIRED');
+          } else {
+            $scope.errors[err] = $translate.instant('ERROR_MALFORMED');
+          }
+        });
+
     });
   };
 })
 
-.controller('CooperativeActionUpdateCtrl', function($scope, $state, $stateParams, CooperativeActionTypePopup, Cooperatives, currentUser) {
+.controller('CooperativeActionUpdateCtrl', function($scope, $state, $stateParams, $translate, CooperativeActionTypePopup, Cooperatives, currentUser) {
 
   $scope.actionTypes = Cooperatives.getActionTypes();
 
@@ -299,6 +315,22 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         id: $scope.action._id,
         name: $scope.action.name
       });
+    }, function (err) {
+      $scope.errors = {};
+
+      err.data
+        .map(function (error) { return error.param; })
+        .reduce(function (list, param) {
+          return list.indexOf(param) === -1 ? list.concat([ param ]) : list;
+        }, [])
+        .forEach(function (err) {
+          if (!$scope.action[err]) {
+            $scope.errors[err] = $translate.instant('ERROR_REQUIRED');
+          } else {
+            $scope.errors[err] = $translate.instant('ERROR_MALFORMED');
+          }
+        });
+
     });
   };
 })
