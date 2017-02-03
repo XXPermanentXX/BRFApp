@@ -9448,6 +9448,30 @@ ul.rating li {
     right: 10px; }
 
 /**
+ * Extension of Ionic native icons
+ */
+.icon-balanced, .icon-energized, .icon-positive, .icon-calm, .icon-white {
+  display: inline-block;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+  border-radius: 5px; }
+
+.icon-balanced {
+  background-color: #008000; }
+
+.icon-energized {
+  background-color: #F7931D; }
+
+.icon-positive {
+  background-color: #009EDB; }
+
+.icon-calm {
+  background-color: #e8e8e8; }
+
+.icon-white {
+  background-color: #fff; }
+
+/**
  * Utilities are used as building blocks for composing the desired design and
  * only to be used when there are no contextual selectors availible or when
  * applying a deviating design.
@@ -9473,6 +9497,18 @@ ul.rating li {
   float: left !important; }
 
 /**
+ * Visibility
+ */
+.hidden-visually {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important; }
+
+/**
  * Text
  */
 .text-normal {
@@ -9484,6 +9520,19 @@ ul.rating li {
 /**
  * Links
  */
+.link {
+  display: inline !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  font-size: inherit !important;
+  text-decoration: none !important;
+  -webkit-appearence: none !important; }
+  .link, .link:visited, .link:active {
+    color: #009EDB !important; }
+  .link:hover {
+    text-decoration: underline !important; }
+
 .link-plain, .link-plain:hover, .link-plain:active, .link-plain:visited {
   color: currentColor !important;
   text-decoration: none !important; }
@@ -9505,6 +9554,9 @@ ul.rating li {
 
 .text-white {
   color: #fff !important; }
+
+.text-dark {
+  color: #444 !important; }
 
 .bg-balanced {
   background-color: #008000 !important; }
