@@ -1,48 +1,43 @@
 <ion-list>
   <div class="item item-divider header-divider bg-energized text-white">
     <h2 class="text-white text-bold display-inline">{{'COOPERATIVE_ENERGY_ACTIONS'| translate}}</h2>
-    <a class="text-normal link-plain pull-right" href="#/app/cooperatives/my/edit/action">
-        <i class="icon ion-plus"></i> {{'Add_Action' | translate}}
+    <a class="text-normal link link-plain pull-right" href="#/app/cooperatives/my/edit/action">
+        <i class="icon ion-plus icon-white text-energized"></i> {{'Add_Action' | translate}}
     </a>
   </div>
-  <ion-item class="item-text-wrap" ng-repeat="action in filteredActions = cooperative.actions | orderBy:'date':true" ng-class="{'item-button-right':canEditActions, 'item-complex-left':!canEditActions}">
-    <div style="float:right; padding-right: 20px" ng-click="action.showExtra = !action.showExtra" >
-      <i class="icon" ng-class="action.showExtra ? 'ion-ios-arrow-down' : 'ion-ios-arrow-right'"></i>
-    </div>
+  <ion-item class="item-text-wrap" ng-repeat="action in filteredActions = cooperative.actions | orderBy:'date':true" ng-class="{'item-complex-left':showBadge}">
     <div class="item-complex-header">
-      <div style="width: 50%" ng-click="goToAction(action);scrollTo('graph'); trackActionClicked(action)">
-      <span class="badge badge-energized" ng-show="!canEditActions">{{filteredActions.length - $index}}</span>
-      <h2>
-        {{action.name}}
-      </h2>
-      <h4>
-        <span ng-repeat="id in action.types">{{'COOPERATIVE_ACTION_TYPE_' + id | translate}}{{$last?'':', '}}</span>
-      </h4>
+      <time class="pull-right padding-left">{{action.date | date:"MMM yyyy"}}</time>
+      <div class="padding-bottom" ng-click="goToAction(action);scrollTo('graph'); trackActionClicked(action)">
+        <span class="badge badge-energized" ng-show="showBadge">{{filteredActions.length - $index}}</span>
+        <h2 class="text-bold text-dark">{{action.name}}</h2>
       </div>
-      <p>
-        {{action.date | date:"MMM yyyy"}}
-        <span style="float:right" ng-show="action.comments.length > 0 && !action.showExtra && !canEditActions">
-          <i class="icon ion-chatbox"></i> <span>{{action.commentsCount}}</span>
-        </span>
-      </p>
     </div>
-    <p ng-show="action.showExtra">
-      <b ng-show="action.cost">{{ 'COOPERATIVE_ACTION_COST' | translate }}: {{action.cost}} SEK<br></b>
-      {{action.description}}
-    </p>
-    <button ng-if="canEditActions" class="button button-info clearfix"
-            ui-sref=".actionUpdate({id:action._id, action:action})">
-      <i class="icon ion-edit"></i>
-    </button>
 
-    <div ng-show="action.showExtra && !canEditActions">
-      <span style="float:right" ng-show="action.showExtra">
-        <i class="icon ion-chatbox"></i> <span ng-show="action.commentsCount > 0">{{action.commentsCount}}</span>
-      </span>
-      <div class="clearfix"></div>
+    <ul>
+      <li ng-show="action.cost">
+        <strong>{{ 'COOPERATIVE_ACTION_COST' | translate }}</strong>: {{action.cost}} SEK
+      </li>
+      <li ng-show="action.description">
+        <span class="hidden-visually">{{ 'COOPEARTIVE_ACTION_DESCRIPTION' | translate }}</span> {{action.description}}
+    </ul>
+
+    <div class="clearfix">
+      <button class="link pull-left space-top" ng-show="!action.showExtra" ng-click="action.showExtra = true">
+        <i class="icon ion-chatbox"></i>
+        <span ng-show="action.comments.length === 0">{{ 'ADD_COMMENT' | translate }}</span>
+        <span ng-show="action.comments.length > 0">{{ 'VIEW' | translate }} {{action.commentsCount}} {{ action.comments.length === 1 ? 'Comment' : 'Comments' | translate | lowercase }}</span>
+      </button>
+
+      <a class="link pull-right space-top" ng-href="#/app/cooperatives/my/edit/action/{{action._id}}">
+        {{'EDIT' | translate}}
+      </a>
+    </div>
+
+    <div ng-show="action.showExtra">
       <hr>
       <label class="item-input">
-        <textarea type="text" ng-model="action.newComment" placeholder={{"Give_your_comment"|translate}}></textarea>
+        <textarea type="text" ng-model="action.newComment" placeholder={{"ADD_COMMENT"|translate}}></textarea>
       </label>
       <button class="button button-small button-dark button-right " ng-disabled="_.isEmpty(action.newComment)" ng-click="commentAction(action)" translate>Post</button>
       <div class="clearfix"></div>
