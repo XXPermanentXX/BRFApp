@@ -294,12 +294,14 @@ router.post('/:id/meter', function(req, res) {
  *   }
  */
 router.post('/:id/action', function(req, res) {
-
-    req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkParams('id', 'Invalid cooperative id').isMongoId();
+  req.checkBody('name', 'Missing name').notEmpty();
+  req.checkBody('date', 'Missing date').notEmpty().isDate();
+  req.checkBody('types', 'Missing ventilation types').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+    res.status(500).json(err);
   } else {
     Cooperative.addAction(req.params.id, req.body, null, res.successRes);
 
@@ -351,10 +353,13 @@ router.post('/:id/action', function(req, res) {
 router.put('/:id/action/:actionId', function(req, res) {
   req.checkParams('id', 'Invalid cooperative id').isMongoId();
   req.checkParams('actionId', 'Invalid cooperative action id').isMongoId();
+  req.checkBody('name', 'Missing name').notEmpty();
+  req.checkBody('date', 'Missing date').notEmpty().isDate();
+  req.checkBody('types', 'Missing ventilation types').notEmpty();
 
   var err;
   if ((err = req.validationErrors())) {
-    res.status(500).send('There have been validation errors: ' + util.inspect(err));
+    res.status(500).json(err);
   } else {
     Cooperative.updateAction(req.params.id, req.params.actionId, req.body, null, res.successRes);
 
