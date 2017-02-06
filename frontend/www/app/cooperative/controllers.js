@@ -652,12 +652,11 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           showBackdrop: false
         });
 
-        navigator.geolocation.getCurrentPosition(function(pos) {
+        navigator.geolocation.getCurrentPosition(function (pos) {
           setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
           $ionicLoading.hide();
-        }, function(error) {
-          // eslint-disable-next-line no-alert
-          alert('Unable to get location: ' + error.message);
+        }, function () {
+          $ionicLoading.hide();
         });
       };
 
