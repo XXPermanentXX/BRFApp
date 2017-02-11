@@ -46,6 +46,7 @@
     "suitcss-utils-flex": "^1.1.1",
     "suitcss-utils-layout": "^1.0.1",
     "suitcss-utils-link": "^1.0.1",
+    "suitcss-utils-position": "^1.0.1",
     "suitcss-utils-size": "^2.0.0",
     "suitcss-utils-space": "^0.4.1",
     "suitcss-utils-text": "^1.0.0",

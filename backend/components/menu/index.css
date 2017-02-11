@@ -1,0 +1,32 @@
+/** @define Menu */
+
+.Menu {
+  width: 100%;
+  border: solid var(--color-light);
+  border-width: 0 1px 1px;
+
+  background-color: #fff;
+}
+
+.Menu-link,
+.Menu-link:visited {
+  display: block;
+  padding: var(--space-b) var(--space-s);
+
+  text-decoration: none;
+  font-style: italic;
+  color: var(--color-primary);
+}
+
+.Menu-link:hover,
+.Menu-link:active {
+  text-decoration: underline;
+}
+
+.Menu-item:last-child .Menu-link {
+  padding-bottom: var(--space-s);
+}
+
+.Menu-item:first-child .Menu-link {
+  padding-top: var(--space-s);
+}

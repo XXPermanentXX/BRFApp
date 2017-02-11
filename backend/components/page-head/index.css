@@ -1,0 +1,123 @@
+/** @define PageHead */
+
+.PageHead {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: var(--space-b) var(--space-s);
+  border-bottom: 1px solid var(--color-light);
+
+  position: relative;
+  z-index: 0;
+}
+
+.PageHead::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: -1;
+
+  background-color: #fff;
+}
+
+.PageHead-title {
+  margin-right: auto;
+
+  font-style: italic;
+  font-size: calc(27em / var(--base-font-size));
+  color: var(--color-pale);
+}
+
+.PageHead-navigation {
+  display: flex;
+}
+
+.PageHead-item {
+  display: inline;
+  list-style: none;
+}
+
+.PageHead-link,
+.PageHead-link:visited {
+  display: inline-block;
+  border: 0;
+  padding: 0.45em;
+  margin: 0 0.3em;
+
+  text-decoration: none;
+  background: none;
+  font-style: italic;
+  color: var(--color-primary);
+}
+
+.PageHead-link:hover,
+.PageHead-link:active {
+  text-decoration: underline;
+}
+
+.PageHead-menu {
+  width: 100%;
+  padding-top: 20px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  z-index: -2;
+  background: #fff;
+  transform: translateY(-100%);
+  transition: transform 250ms cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@media (--md-viewport), (--lg-viewport) {
+  .PageHead-menu {
+    width: auto;
+  }
+}
+
+.PageHead-trigger {
+  margin-right: 0;
+}
+
+.PageHead-trigger--large {
+  display: none;
+}
+
+@media (--md-viewport), (--lg-viewport) {
+  .PageHead-trigger--large {
+    display: block;
+  }
+
+  .PageHead-trigger--small {
+    display: none;
+  }
+}
+
+.PageHead-menu:target {
+  transform: translateY(calc(0% - 20px));
+}
+
+.PageHead-menu:target ~ .PageHead-trigger {
+  display: none;
+}
+
+.PageHead-untrigger {
+  display: none;
+  margin-right: 0;
+}
+
+.PageHead-untrigger::before {
+  content: attr(data-title-small);
+}
+
+@media (--md-viewport), (--lg-viewport) {
+  .PageHead-untrigger::before {
+    content: attr(data-title-large);
+  }
+}
+
+.PageHead-menu:target ~ .PageHead-untrigger {
+  display: block;
+}
