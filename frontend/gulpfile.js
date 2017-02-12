@@ -61,11 +61,13 @@ gulp.task('index', function(done) {
       transform: function (filePath, file) {
         const content = file.contents.toString('utf8');
 
-        return `<script>
-    ${ content.replace(/{{\s*(\w+)\s*}}/g, function (match, key) {
-      return process.env[key];
-    }).replace(/\n\s*/gm, '') }
-  </script>`;
+        return [
+          '<script>',
+          content.replace(/{{\s*(\w+)\s*}}/g, function (match, key) {
+            return process.env[key];
+          }).replace(/\n\s*/gm, ''),
+          '</script>'
+        ].join('');
       }
     }))
     .pipe(gulp.dest('./www'))
