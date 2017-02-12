@@ -47,38 +47,42 @@
 
 	<!-- your app's js -->
 	<script src="app/app.js"></script>
-	<!-- inject:js -->
-	<script src="app/actions/actionCtrl.js"></script>
-	<script src="app/actions/actionsCtrl.js"></script>
-	<script src="app/actions/actionsListCtrl.js"></script>
-	<script src="app/actions/formsCtrl.js"></script>
-	<script src="app/app/AppCtrl.js"></script>
-	<script src="app/communities/communitiesCtrl.js"></script>
-	<script src="app/cooperative/controllers.js"></script>
-	<script src="app/household/controllers.js"></script>
-	<script src="app/household/householdCtrl.js"></script>
-	<script src="app/household/memberCtrl.js"></script>
-	<script src="app/prosumption/dataVizCtrl.js"></script>
-	<script src="app/prosumption/prosumptionCtrl.js"></script>
-	<script src="app/settings/householdSettingsCtrl.js"></script>
-	<script src="app/settings/personalSettingsCtrl.js"></script>
-	<script src="app/settings/settingsCtrl.js"></script>
-	<script src="app/shared/actions.js"></script>
-	<script src="app/shared/authService.js"></script>
-	<script src="app/shared/compareTo.js"></script>
-	<script src="app/shared/config.js"></script>
-	<script src="app/shared/cooperatives.js"></script>
-	<script src="app/shared/energyGraph.js"></script>
-	<script src="app/shared/geoip.js"></script>
-	<script src="app/shared/household.js"></script>
-	<script src="app/shared/rating.js"></script>
-	<script src="app/shared/testbed.js"></script>
-	<script src="app/shared/translations.js"></script>
-	<script src="app/shared/user.js"></script>
-	<script src="app/welcome/controllers.js"></script>
-	<script src="app/welcome/signupCtrl.js"></script>
-	<script src="app/welcome/welcomeCtrl.js"></script>
-	<!-- endinject -->
+  <!-- inject:config -->
+  <script>
+    angular.module('civis.youpower').factory('Config', function() {return {host: 'http://localhost:3000'};});
+  </script>
+  <!-- endinject -->
+  <!-- inject:js -->
+  <script src="app/actions/actionCtrl.js"></script>
+  <script src="app/actions/actionsCtrl.js"></script>
+  <script src="app/actions/actionsListCtrl.js"></script>
+  <script src="app/actions/formsCtrl.js"></script>
+  <script src="app/app/AppCtrl.js"></script>
+  <script src="app/communities/communitiesCtrl.js"></script>
+  <script src="app/cooperative/controllers.js"></script>
+  <script src="app/household/controllers.js"></script>
+  <script src="app/household/householdCtrl.js"></script>
+  <script src="app/household/memberCtrl.js"></script>
+  <script src="app/prosumption/dataVizCtrl.js"></script>
+  <script src="app/prosumption/prosumptionCtrl.js"></script>
+  <script src="app/settings/householdSettingsCtrl.js"></script>
+  <script src="app/settings/personalSettingsCtrl.js"></script>
+  <script src="app/settings/settingsCtrl.js"></script>
+  <script src="app/shared/actions.js"></script>
+  <script src="app/shared/authService.js"></script>
+  <script src="app/shared/compareTo.js"></script>
+  <script src="app/shared/cooperatives.js"></script>
+  <script src="app/shared/energyGraph.js"></script>
+  <script src="app/shared/geoip.js"></script>
+  <script src="app/shared/household.js"></script>
+  <script src="app/shared/rating.js"></script>
+  <script src="app/shared/testbed.js"></script>
+  <script src="app/shared/translations.js"></script>
+  <script src="app/shared/user.js"></script>
+  <script src="app/welcome/controllers.js"></script>
+  <script src="app/welcome/signupCtrl.js"></script>
+  <script src="app/welcome/welcomeCtrl.js"></script>
+  <!-- endinject -->
 
   <script src="//maps.googleapis.com/maps/api/js?key=AIzaSyAI7j4LZI132q62VGRFRfOsZlIOIavRrk8"></script>
   <script src="lib/gmaps-marker-clusterer/src/markerclusterer.js"></script>

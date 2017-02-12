@@ -78,7 +78,7 @@ angular
     }
 
     function getCode() {
-      var url = '//localhost:3000/api/auth/metry';
+      var url = Config.host + '/api/auth/metry';
       var top = (screen.height - POPUP_HEIGHT) / 2;
       var left = (screen.width - POPUP_WIDTH) / 2;
       var features = 'width=' + POPUP_WIDTH +
