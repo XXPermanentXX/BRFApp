@@ -9,6 +9,7 @@ module.exports = function (state, prev, send) {
       ${ head(state) }
       <body>
         ${ header(state, prev, send) }
+        <a href="/auth/metry" class="Button Button--primary">Sign in with Metry</a>
         <pre>${ JSON.stringify(state, null, 2) }</pre>
         ${ scripts(state) }
       </body>
