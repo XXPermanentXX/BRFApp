@@ -121,23 +121,28 @@ router.get('/consumption/:type/:granularity', function (req, res) {
  */
 router.get('/:id', checkParams('id'), function (req, res) {
   const { params: { id }} = req;
+  const err = req.validationErrors();
 
-  Cooperative.get(id, null, (err, cooperative) => {
-    if (err) {
-      res.status(404).render('/404', { err: err.message });
-    } else {
-      res.render(`/cooperatives${ req.url }`, cooperative);
-    }
-  });
+  if (err) {
+    res.status(404).render('/404', { err: err.message });
+  } else {
+    Cooperative.get(id, null, (err, cooperative) => {
+      if (err) {
+        res.status(404).render('/404', { err: err.message });
+      } else {
+        res.render(`/cooperatives${ req.url }`, cooperative);
+      }
+    });
 
-  Log.create({
-    userId: req.user && req.user._id,
-    category: 'Cooperative',
-    type: 'get',
-    data: {
-      cooperativeId: id
-    }
-  });
+    Log.create({
+      userId: req.user && req.user._id,
+      category: 'Cooperative',
+      type: 'get',
+      data: {
+        cooperativeId: id
+      }
+    });
+  }
 });
 
 

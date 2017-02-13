@@ -1,4 +1,4 @@
-const auth = require('./auth');
+const User = require('../models/users');
 
 /**
  * Overwrite native `res.render` with one that conforms with request type and
@@ -9,10 +9,21 @@ module.exports = function render(req, res, next) {
   const orig = res.render;
 
   res.render = function (route, state) {
-    if (route && req.accepts('html')) {
-      orig.call(this, route, Object.assign({ user: req.user }, state));
+    const send = (route, state) => {
+      if (route && req.accepts('html')) {
+        orig.call(this, route, state);
+      } else {
+        res.json(state);
+      }
+    };
+
+    if (req.user) {
+      User.getProfile(req.user._id, (err, user) => {
+        if (err) { return res.status(500).render('/error'); }
+        send(route, Object.assign({ user }, state));
+      });
     } else {
-      res.json(state);
+      send(route, state);
     }
   };
 

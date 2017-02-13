@@ -3,7 +3,7 @@ const html = require('choo/html');
 const pages = {
   home: {
     href: state => state.user && `/cooperatives/${ state.user.cooperativeId }`,
-    title: state => state.user && (state.user.cooperativeId + '')//state.user.cooperative.name
+    title: state => state.user && state.user.cooperative.name
   },
   about: {
     href: () => '/about',
