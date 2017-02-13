@@ -3,6 +3,7 @@ const path = require('path');
 const postcss = require('postcss');
 const browserify = require('browserify');
 const watchify = require('watchify-middleware');
+const chokidar = require('chokidar');
 
 const ROOT = path.resolve(__dirname, '..');
 
@@ -22,14 +23,27 @@ const cssBundler = postcss([
   require('autoprefixer')()
 ]);
 
-function cssmiddleware(req, res) {
-  const file = path.resolve(ROOT, req.url.replace(/^\//, ''));
-  fs.readFile(file, (err, css) => {
-    cssBundler.process(css, { from: file, to: file }).then(result => {
-      res.set('Content-Type', 'text/css');
-      res.send(result.css);
+let deferred = processCSS();
+const watcher = chokidar.watch('**/*.css', { cwd: ROOT });
+watcher.on('all', () => {
+  deferred = processCSS();
+});
+
+function processCSS() {
+  return new Promise((resolve, reject) => {
+    const file = path.resolve(ROOT, 'index.css');
+    fs.readFile(file, (err, css) => {
+      if (err) { return reject(err); }
+      cssBundler.process(css, { from: file, to: file }).then(resolve, reject);
     });
   });
+}
+
+function cssmiddleware(req, res) {
+  deferred.then(result => {
+    res.set('Content-Type', 'text/css');
+    res.send(result.css);
+  }, err => res.status(500).send(err.stack));
 }
 
 module.exports = function (req, res, next) {
