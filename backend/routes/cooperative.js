@@ -81,7 +81,7 @@ router.get('/consumption/:type/:granularity', function (req, res) {
 
   Cooperative.getAvgConsumption(type, granularity, from, to, (err, data) => {
     if (err) {
-      res.status(404).render('/404', { err: err.message });
+      res.status(400).render('/error', { err: err.message });
     } else if (req.accepts('html')) {
       res.redirect('/cooperatives');
     } else {
@@ -171,7 +171,7 @@ router.get('/:id', checkParams('id'), function (req, res) {
 router.get('/', function (req, res) {
   Cooperative.all((err, cooperatives) => {
     if (err) {
-      res.status(404).render('/404', { err: err.message });
+      res.status(500).render('/error', { err: err.message });
     } else {
       res.render('/cooperatives', { cooperatives });
     }
