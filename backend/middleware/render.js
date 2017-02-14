@@ -9,7 +9,7 @@ module.exports = function render(req, res, next) {
   const orig = res.render;
 
   res.render = function (route, state) {
-    const send = (route, state) => {
+    const send = (state) => {
       if (route && req.accepts('html')) {
         orig.call(this, route, state);
       } else {
@@ -19,11 +19,14 @@ module.exports = function render(req, res, next) {
 
     if (req.user) {
       User.getProfile(req.user._id, (err, user) => {
-        if (err) { return res.status(500).render('/error'); }
-        send(route, Object.assign({ user }, state));
+        if (err) {
+          res.status(500).render('/error', { err: err.message });
+        } else {
+          send(Object.assign({ user }, state));
+        }
       });
     } else {
-      send(route, state);
+      send(state);
     }
   };
 
