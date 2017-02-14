@@ -121,28 +121,23 @@ router.get('/consumption/:type/:granularity', function (req, res) {
  */
 router.get('/:id', checkParams('id'), function (req, res) {
   const { params: { id }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.get(id, null, (err, cooperative) => {
-      if (err) {
-        res.status(404).render('/404', { err: err.message });
-      } else {
-        res.render(`/cooperatives${ req.url }`, cooperative);
-      }
-    });
+  Cooperative.get(id, null, (err, cooperative) => {
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else {
+      res.render(`/cooperatives${ req.url }`, cooperative);
+    }
+  });
 
-    Log.create({
-      userId: req.user && req.user._id,
-      category: 'Cooperative',
-      type: 'get',
-      data: {
-        cooperativeId: id
-      }
-    });
-  }
+  Log.create({
+    userId: req.user && req.user._id,
+    category: 'Cooperative',
+    type: 'get',
+    data: {
+      cooperativeId: id
+    }
+  });
 });
 
 
@@ -218,29 +213,24 @@ router.get('/', function (req, res) {
  */
 router.put('/:id', auth.authenticate(), checkParams('id'), function (req, res) {
   const { body, params: { id }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.update(id, body, (err, result) => {
-      if (err) {
-        res.status(500).render(
-          `/cooperatives/${ id }`,
-          Object.assign({ err: err.message }, body)
-        );
-      } else {
-        req.render(`/cooperatives/${ id }`, result);
-      }
-    });
+  Cooperative.update(id, body, (err, result) => {
+    if (err) {
+      res.status(500).render(
+        `/cooperatives/${ id }`,
+        Object.assign({ err: err.message }, body)
+      );
+    } else {
+      req.render(`/cooperatives/${ id }`, result);
+    }
+  });
 
-    Log.create({
-      userId: req.user._id,
-      category: 'Cooperative',
-      type: 'update',
-      data: body
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'Cooperative',
+    type: 'update',
+    data: body
+  });
 });
 
 /**
@@ -276,58 +266,48 @@ router.put('/:id', auth.authenticate(), checkParams('id'), function (req, res) {
  */
 router.post('/:id/actions', auth.authenticate(), checkParams('id'), function (req, res) {
   const { body, params: { id }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.addAction(id, body, null, (err, action) => {
-      if (err) {
-        res.status(500).render(
-          `/cooperatives${ req.url }`,
-          Object.assign({ err: err.message }, body)
-        );
-      } else {
-        res.render(`/cooperatives${ req.url }/${ action._id }`, action);
-      }
-    });
+  Cooperative.addAction(id, body, null, (err, action) => {
+    if (err) {
+      res.status(500).render(
+        `/cooperatives${ req.url }`,
+        Object.assign({ err: err.message }, body)
+      );
+    } else {
+      res.render(`/cooperatives${ req.url }/${ action._id }`, action);
+    }
+  });
 
-    Log.create({
-      userId: req.user._id,
-      category: 'Cooperative',
-      type: 'addAction',
-      data: {
-        cooperativeId: id,
-        action: body
-      }
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'Cooperative',
+    type: 'addAction',
+    data: {
+      cooperativeId: id,
+      action: body
+    }
+  });
 });
 
 router.get('/:id/actions', checkParams('id'), function (req, res) {
   const { params: { id }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.get(id, null, (err, cooperative) => {
-      if (err) {
-        res.status(404).render('/404', { err: err.message });
-      } else {
-        res.render(`/cooperatives${ req.url }`, { actions: cooperative.actions });
-      }
-    });
+  Cooperative.get(id, null, (err, cooperative) => {
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else {
+      res.render(`/cooperatives${ req.url }`, { actions: cooperative.actions });
+    }
+  });
 
-    Log.create({
-      userId: req.user && req.user._id,
-      category: 'Actions',
-      type: 'get',
-      data: {
-        cooperativeId: id
-      }
-    });
-  }
+  Log.create({
+    userId: req.user && req.user._id,
+    category: 'Actions',
+    type: 'get',
+    data: {
+      cooperativeId: id
+    }
+  });
 });
 
 
@@ -365,65 +345,55 @@ router.get('/:id/actions', checkParams('id'), function (req, res) {
  */
 router.put('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
   const { body, params: { id, actionId }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.updateAction(id, actionId, body, null, (err, action) => {
-      if (err) {
-        res.status(500).render(
-          `/cooperatives${ req.url }`,
-          Object.assign({ err: err.message }, body)
-        );
-      } else {
-        res.render(`/cooperatives${ req.url }`, action);
-      }
-    });
+  Cooperative.updateAction(id, actionId, body, null, (err, action) => {
+    if (err) {
+      res.status(500).render(
+        `/cooperatives${ req.url }`,
+        Object.assign({ err: err.message }, body)
+      );
+    } else {
+      res.render(`/cooperatives${ req.url }`, action);
+    }
+  });
 
-    Log.create({
-      userId: req.user._id,
-      category: 'Cooperative',
-      type: 'updateAction',
-      data: {
-        cooperativeId: id,
-        actionId: actionId,
-        action: body
-      }
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'Cooperative',
+    type: 'updateAction',
+    data: {
+      cooperativeId: id,
+      actionId: actionId,
+      action: body
+    }
+  });
 });
 
 router.get('/:id/actions/:actionId', checkParams('id', 'actionId'), function (req, res) {
   const { params: { id, actionId }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.get(id, null, (err, cooperative) => {
-      let action;
+  Cooperative.get(id, null, (err, cooperative) => {
+    let action;
 
-      if (!err) {
-        action = cooperative.actions.find(action => action._id.toString() === actionId);
-      }
+    if (!err) {
+      action = cooperative.actions.find(action => action._id.toString() === actionId);
+    }
 
-      if (err || !action) {
-        res.status(404).render('/404', { err: err && err.message });
-      } else {
-        res.render(`/cooperatives${ req.url }`, action);
-      }
-    });
+    if (err || !action) {
+      res.status(404).render('/404', { err: err && err.message });
+    } else {
+      res.render(`/cooperatives${ req.url }`, action);
+    }
+  });
 
-    Log.create({
-      userId: req.user && req.user._id,
-      category: 'Actions',
-      type: 'get',
-      data: {
-        cooperativeId: id
-      }
-    });
-  }
+  Log.create({
+    userId: req.user && req.user._id,
+    category: 'Actions',
+    type: 'get',
+    data: {
+      cooperativeId: id
+    }
+  });
 });
 
 /**
@@ -452,29 +422,24 @@ router.get('/:id/actions/:actionId', checkParams('id', 'actionId'), function (re
 
 router.delete('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
   const { params: { id, actionId }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.deleteAction(id, actionId, null, err => {
-      if (err) {
-        res.status(500).redirect(`/cooperatives${ req.url }`);
-      } else {
-        res.redirect(`/cooperatives/${ id }/actions`);
-      }
-    });
+  Cooperative.deleteAction(id, actionId, null, err => {
+    if (err) {
+      res.status(500).redirect(`/cooperatives${ req.url }`);
+    } else {
+      res.redirect(`/cooperatives/${ id }/actions`);
+    }
+  });
 
-    Log.create({
-      userId: req.user._id,
-      category: 'Cooperative',
-      type: 'deleteAction',
-      data: {
-        cooperativeId: req.params.id,
-        actionId: req.params.actionId
-      }
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'Cooperative',
+    type: 'deleteAction',
+    data: {
+      cooperativeId: req.params.id,
+      actionId: req.params.actionId
+    }
+  });
 });
 
 /**
@@ -506,33 +471,28 @@ router.delete('/:id/actions/:actionId', auth.authenticate(), checkParams('id', '
  */
 router.post('/:id/actions/:actionId/comments', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
   const { body, user, params: { id, actionId }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.commentAction(id, actionId, body, user, (err, comment) => {
-      if (err) {
-        req.status(500).render(
-          `/cooperatives${ req.url }`,
-          Object.assign({ err: err.message }, body)
-        );
-      } else {
-        res.render(`/cooperatives${ req.url }/${ id }`, comment);
-      }
-    });
+  Cooperative.commentAction(id, actionId, body, user, (err, comment) => {
+    if (err) {
+      req.status(500).render(
+        `/cooperatives${ req.url }`,
+        Object.assign({ err: err.message }, body)
+      );
+    } else {
+      res.render(`/cooperatives${ req.url }/${ id }`, comment);
+    }
+  });
 
-    Log.create({
-      userId: req.user._id,
-      category: 'Cooperative',
-      type: 'commentAction',
-      data: {
-        cooperativeId: id,
-        actionId: actionId,
-        comment: body
-      }
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'Cooperative',
+    type: 'commentAction',
+    data: {
+      cooperativeId: id,
+      actionId: actionId,
+      comment: body
+    }
+  });
 });
 
 /**
@@ -561,62 +521,52 @@ router.post('/:id/actions/:actionId/comments', auth.authenticate(), checkParams(
  */
 router.get('/:id/actions/:actionId/comments', checkParams('id', 'actionId'), function (req, res) {
   const { params: { id, actionId }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.getComments(id, actionId, null, (err, comments) => {
-      if (err) {
-        res.status(404).render('/404', { err: err.message });
-      } else {
-        res.render(`/cooperatives${ req.url }`, { comments });
-      }
-    });
+  Cooperative.getComments(id, actionId, null, (err, comments) => {
+    if (err) {
+      res.status(404).render('/404', { err: err.message });
+    } else {
+      res.render(`/cooperatives${ req.url }`, { comments });
+    }
+  });
 
-    Log.create({
-      userId: req.user && req.user._id,
-      category: 'Cooperative',
-      type: 'getComments',
-      data: {
-        cooperativeId: id,
-        actionId: actionId
-      }
-    });
-  }
+  Log.create({
+    userId: req.user && req.user._id,
+    category: 'Cooperative',
+    type: 'getComments',
+    data: {
+      cooperativeId: id,
+      actionId: actionId
+    }
+  });
 });
 
 router.get('/:id/actions/:actionId/comments/:commentId', checkParams('id', 'actionId', 'commentId'), function (req, res) {
   const { params: { id, actionId, commentId }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.getComments(id, actionId, null, (err, comments) => {
-      let comment;
+  Cooperative.getComments(id, actionId, null, (err, comments) => {
+    let comment;
 
-      if (!err) {
-        comment = comments.find(comment => comment._id.toString() === commentId);
-      }
+    if (!err) {
+      comment = comments.find(comment => comment._id.toString() === commentId);
+    }
 
-      if (err || !comment) {
-        res.status(404).render('/404', { err: err && err.message });
-      } else {
-        res.render(`/cooperatives${ req.url }`, comment);
-      }
-    });
+    if (err || !comment) {
+      res.status(404).render('/404', { err: err && err.message });
+    } else {
+      res.render(`/cooperatives${ req.url }`, comment);
+    }
+  });
 
-    Log.create({
-      userId: req.user && req.user._id,
-      category: 'Cooperative',
-      type: 'getComments',
-      data: {
-        cooperativeId: id,
-        actionId: actionId
-      }
-    });
-  }
+  Log.create({
+    userId: req.user && req.user._id,
+    category: 'Cooperative',
+    type: 'getComments',
+    data: {
+      cooperativeId: id,
+      actionId: actionId
+    }
+  });
 });
 
 /**
@@ -645,30 +595,25 @@ router.get('/:id/actions/:actionId/comments/:commentId', checkParams('id', 'acti
  */
 router.delete('/:id/actions/:actionId/comments/:commentId', auth.authenticate(), checkParams('id', 'actionId', 'commentId'), function(req, res) {
   const { params: { id, actionId, commentId }} = req;
-  const err = req.validationErrors();
 
-  if (err) {
-    res.status(404).render('/404', { err: err.message });
-  } else {
-    Cooperative.deleteActionComment(id, actionId, commentId, null, err => {
-      if (err) {
-        res.status(500).redirect(`/cooperatives${ req.url }`);
-      } else {
-        res.redirect(`/cooperatives/${ id }/actions/${ actionId }/comments`);
-      }
-    });
+  Cooperative.deleteActionComment(id, actionId, commentId, null, err => {
+    if (err) {
+      res.status(500).redirect(`/cooperatives${ req.url }`);
+    } else {
+      res.redirect(`/cooperatives/${ id }/actions/${ actionId }/comments`);
+    }
+  });
 
-    Log.create({
-      userId: req.user._id,
-      category: 'Cooperative',
-      type: 'deleteActionComment',
-      data: {
-        cooperativeId: id,
-        actionId: actionId,
-        commentId: commentId
-      }
-    });
-  }
+  Log.create({
+    userId: req.user._id,
+    category: 'Cooperative',
+    type: 'deleteActionComment',
+    data: {
+      cooperativeId: id,
+      actionId: actionId,
+      commentId: commentId
+    }
+  });
 });
 
 
