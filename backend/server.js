@@ -8,7 +8,7 @@ const session = require('express-session');
 const compression = require('compression');
 const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
-const dedent = require('dedent');
+const pages = require('./pages');
 const routes = require('./routes');
 const lang = require('./middleware/lang');
 const auth = require('./middleware/auth');
@@ -32,29 +32,33 @@ server.render = function (route, options, done) {
   const state = Object.assign({}, this.locals, options._locals, options);
   const cache = this.enabled('view cache');
 
-  let view;
+  let output;
 
   if (cache) {
     this.cache[state.lang] = this.cache[state.lang] || {};
-    view = this.cache[state.lang][route];
+    output = this.cache[state.lang][route];
   }
 
-  if (!view) {
+  if (!output) {
     try {
-      view = dedent`
-        <!DOCTYPE html>
-        ${ app.toString(route, state) }
-      `;
+      // Determine page wrapper for view
+      const page = route === '/' ? pages.landing : pages.app;
+
+      // Wrap app `toString` method with route for injection into page
+      const view = (...args) => app.toString(route, ...args);
+
+      // Inject view in page
+      output = page(view, state, state, () => {});
     } catch (err) {
       return done(err);
     }
   }
 
   if (cache) {
-    this.cache[state.lang][route] = view;
+    this.cache[state.lang][route] = output;
   }
 
-  done(null, view);
+  done(null, output);
 };
 
 /**
