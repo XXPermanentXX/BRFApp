@@ -1,6 +1,8 @@
 const html = require('choo/html');
 const header = require('../components/page-head');
 const performance = require('../components/performance');
+const { defintion } = require('../components/list');
+const { format } = require('../components/utils');
 
 module.exports = function (state, prev, send) {
   return html`
@@ -20,6 +22,13 @@ module.exports = function (state, prev, send) {
             </div>
           ` : html`<span class="u-sizeL">No energy actions</span>` }
         </div>
+        <hr class="u-marginVm" />
+        ${ defintion({
+          'Apartments': format(state.numOfApartments),
+          'Heated area': html`<span>${ format(state.area) } m<sup>2</sup></span>`,
+          'Constructed': state.yearOfConst,
+          'Ventilation type': state.ventilationType.join(', ')
+        }) }
       </div>
     </div>
   `;

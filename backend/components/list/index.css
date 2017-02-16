@@ -1,0 +1,28 @@
+/** @define List */
+
+.List {
+  margin: 0;
+  padding: 0;
+}
+
+.List--definition {
+  overflow: hidden;
+}
+
+.List-term {
+  float: left;
+  clear: left;
+  margin-right: 0.5em;
+  font-weight: var(--font-weight-bold);
+  -webkit-font-smoothing: antialiased;
+}
+
+.List-definition {
+  margin-bottom: 0.65em;
+  font-weight: var(--font-weight-light);
+  -webkit-font-smoothing: antialiased;
+}
+
+.List-definition:last-child {
+  margin-bottom: 0;
+}

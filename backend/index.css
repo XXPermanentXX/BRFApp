@@ -6,6 +6,7 @@
 @import "suitcss-components-grid";
 @import "./components/app";
 @import "./components/performance";
+@import "./components/list";
 @import "./components/menu";
 @import "./components/page-head";
 
@@ -56,6 +57,7 @@
 
 html, body {
   height: 100%;
+  color: var(--color-text);
   font-family: var(--font-family);
   font-weight: var(--font-weight-normal);
   font-size: calc(0.85px * var(--base-font-size));

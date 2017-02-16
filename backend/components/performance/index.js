@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const { getEnergyClass } = require('../utils');
+const { getEnergyClass, format } = require('../utils');
 
 const UNKNOWN_ENERGY_CLASS = '#bbbbbb';
 const ENERGY_CLASSES = {
@@ -52,7 +52,7 @@ module.exports = function (props) {
           </g>
         </svg>
       </figure>
-      ${ energyClass && html`<h2 class="Performance-title">${ Math.round( performance * 10 ) / 10 } kWh/m<sup>2</sup></h2>` }
+      ${ energyClass && html`<h2 class="Performance-title">${ format(performance) } kWh/m<sup>2</sup></h2>` }
     </div>
   `;
 };
