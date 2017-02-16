@@ -15,6 +15,7 @@
 @import "suitcss-utils-link";
 @import "suitcss-utils-position";
 @import "suitcss-utils-size";
+@import "suitcss-utils-space";
 @import "suitcss-utils-text";
 @import "./components/utils";
 
@@ -82,4 +83,10 @@ a:visited {
 a:hover,
 a:active {
   text-decoration: underline;
+}
+
+hr {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.075) 25%, rgba(0, 0, 0, 0.075) 75%, rgba(0, 0, 0, 0) 100%);
 }

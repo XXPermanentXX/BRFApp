@@ -1,0 +1,22 @@
+/** @define utilities */
+
+.u-sizeG {
+  font-size: calc(62rem / var(--base-font-size));
+  line-height: 0.8870967742;
+}
+
+.u-sizeL {
+  font-size: calc(32rem / var(--base-font-size));
+}
+
+.u-sizeM {
+  font-size: calc(18rem / var(--base-font-size));
+}
+
+.u-sizeB {
+  font-size: calc(1rem * var(--base-font-size));
+}
+
+.u-styleItalic {
+  font-style: italic;
+}
