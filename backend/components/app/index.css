@@ -1,0 +1,24 @@
+/** @define App */
+
+.App {
+
+}
+
+.App-container {
+  padding: 2.5vw;
+}
+
+@media (--lg-viewport) {
+  .App-container {
+    max-width: var(--lg-viewport);
+    padding: 0;
+    margin: 0 auto;
+    position: relative;
+  }
+}
+
+.App-title {
+  margin: 0.75em 0;
+  font-size: calc(32rem / var(--base-font-size));
+  font-weight: var(--font-weight-light);
+}

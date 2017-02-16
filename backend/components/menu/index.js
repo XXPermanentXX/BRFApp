@@ -6,8 +6,12 @@ const pages = {
     title: state => state.user && state.user.cooperative.name
   },
   about: {
-    href: () => '/about',
+    href: () => '/about-the-project',
     title: () => 'About the project'
+  },
+  faq: {
+    href: () => '/how-it-works',
+    title: () => 'How it works'
   },
   signout: {
     href: state => state.user && '/auth/signout',

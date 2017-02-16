@@ -9,7 +9,7 @@ module.exports = function (view, state, prev, send) {
       ${ head(state) }
       <body>
         ${ view(state, prev, send) }
-        <pre>${ JSON.stringify(state, null, 2) }</pre>
+        <pre style="width: 100%; overflow: auto;">${ JSON.stringify(state, null, 2) }</pre>
         ${ scripts(state) }
       </body>
     </html>

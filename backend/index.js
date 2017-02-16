@@ -5,6 +5,8 @@ const routes = [
   [ '/', require('./views/landing') ],
   [ '/auth', require('./views/auth') ],
   [ '/user', require('./views/user') ],
+  [ '/how-it-works', require('./views/faq') ],
+  [ '/about-the-project', require('./views/about') ],
   [ '/cooperatives', require('./views/map'), [
     [ '/:id', require('./views/cooperative'), [
       [ '/consumption', require('./views/consumption') ],

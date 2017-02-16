@@ -4,8 +4,10 @@
 
 @import "suitcss-components-button";
 @import "suitcss-components-grid";
-@import "./components/page-head";
+@import "./components/app";
+@import "./components/performance";
 @import "./components/menu";
+@import "./components/page-head";
 
 @import "suitcss-utils-display";
 @import "suitcss-utils-flex";
@@ -35,7 +37,7 @@
 
   --sm-viewport: 640px;
   --md-viewport: 900px;
-  --lg-viewport: 1400px;
+  --lg-viewport: 1280px;
 
   --Grid-gutter-size: 60px;
 
@@ -48,8 +50,8 @@
 }
 
 @custom-media --sm-viewport (min-width:400px) and (max-width:899px);
-@custom-media --md-viewport (min-width:900px) and (max-width:1399px);
-@custom-media --lg-viewport (min-width:1400px);
+@custom-media --md-viewport (min-width:900px) and (max-width:1280px);
+@custom-media --lg-viewport (min-width:1280px);
 
 html, body {
   height: 100%;
@@ -63,4 +65,21 @@ html, body {
   html, body {
     font-size: calc(1px * var(--base-font-size));
   }
+}
+
+a,
+a:visited {
+  display: inline;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  text-decoration: none;
+  font-style: italic;
+  color: var(--color-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+a:hover,
+a:active {
+  text-decoration: underline;
 }

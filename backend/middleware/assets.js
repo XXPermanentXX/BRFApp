@@ -43,7 +43,7 @@ function cssmiddleware(req, res) {
   deferred.then(result => {
     res.set('Content-Type', 'text/css');
     res.send(result.css);
-  }, err => res.status(500).send(err.stack));
+  }, err => res.status(500).send(err));
 }
 
 module.exports = function (req, res, next) {

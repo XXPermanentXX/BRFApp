@@ -12,15 +12,6 @@
 .Menu-link:visited {
   display: block;
   padding: var(--space-b) var(--space-s);
-
-  text-decoration: none;
-  font-style: italic;
-  color: var(--color-primary);
-}
-
-.Menu-link:hover,
-.Menu-link:active {
-  text-decoration: underline;
 }
 
 .Menu-item:last-child .Menu-link {

@@ -24,11 +24,17 @@
   background-color: #fff;
 }
 
+@media (--md-viewport), (--lg-viewport) {
+  .PageHead {
+    font-size: calc(18rem / var(--base-font-size));
+  }
+}
+
 .PageHead-title {
   margin-right: auto;
 
   font-style: italic;
-  font-size: calc(27em / var(--base-font-size));
+  font-size: calc(27rem / var(--base-font-size));
   color: var(--color-pale);
 }
 
@@ -47,16 +53,6 @@
   border: 0;
   padding: 0.45em;
   margin: 0 0.3em;
-
-  text-decoration: none;
-  background: none;
-  font-style: italic;
-  color: var(--color-primary);
-}
-
-.PageHead-link:hover,
-.PageHead-link:active {
-  text-decoration: underline;
 }
 
 .PageHead-menu {

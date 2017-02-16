@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const menu = require('../menu');
 
-const links = menu.extract([ 'about' ]);
+const links = menu.extract([ 'about', 'faq' ]);
 
 module.exports = function header(state, prev, send) {
   const trigger = menu.trigger(state, prev, send);

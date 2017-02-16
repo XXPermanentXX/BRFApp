@@ -1,0 +1,21 @@
+/** @define Performance */
+
+.Performance {
+
+}
+
+.Performance-graph {
+  margin: 0 -2.34375% 0.5em;
+  pointer-events: none;
+}
+
+.Performance-link {
+  margin-bottom: -0.85em;
+}
+
+.Performance-title {
+  text-align: center;
+  font-size: calc(24rem / var(--base-font-size));
+  font-weight: var(--font-weight-bold);
+  -webkit-font-smoothing: antialiased;
+}
