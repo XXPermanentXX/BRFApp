@@ -44,9 +44,9 @@ app.router({ default: '/404' }, [
 function localize(lang) {
   return ([ route, view, branches ]) => [
     // Extend route with lang prefix
-    `${ lang }${ route }`.replace(/\/$/, ''),
+    `/${ lang }${ route }`.replace(/\/$/, ''),
     // Inject lang prop in state
-    (state, prev, send) => view(Object.assign({}, state, lang), prev, send),
+    (state, prev, send) => view(Object.assign({}, state, { lang }), prev, send),
     // Forward branches as is
     branches
   ];

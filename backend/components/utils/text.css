@@ -1,22 +1,39 @@
 /** @define utilities */
 
-.u-sizeG {
-  font-size: calc(62rem / var(--base-font-size));
-  line-height: 0.8870967742;
+/**
+ * 1. Arbitary number for visual alignment in common cases
+ */
+
+.u-textG {
+  font-size: calc(62rem / var(--base-font-size)) !important;
+  line-height: 0.8870967742 !important; /* 1 */
 }
 
-.u-sizeL {
-  font-size: calc(32rem / var(--base-font-size));
+.u-textL {
+  font-size: calc(32rem / var(--base-font-size)) !important;
 }
 
-.u-sizeM {
-  font-size: calc(18rem / var(--base-font-size));
+.u-textM {
+  font-size: calc(18rem / var(--base-font-size)) !important;
 }
 
-.u-sizeB {
-  font-size: calc(1rem * var(--base-font-size));
+.u-textB {
+  font-size: calc(1rem * var(--base-font-size)) !important;
 }
 
-.u-styleItalic {
-  font-style: italic;
+.u-textS {
+  font-size: calc(14rem / var(--base-font-size)) !important;
+}
+
+.u-italic {
+  font-style: italic !important;
+}
+
+.u-light {
+  font-weight: var(--font-weight-light) !important;
+}
+
+.u-bold {
+  font-weight: var(--font-weight-bold) !important;
+  -webkit-font-smoothing: antialiased;
 }

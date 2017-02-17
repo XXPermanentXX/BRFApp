@@ -1,0 +1,28 @@
+/** @define utilities */
+
+.u-linkComplex,
+.u-linkComplex:hover,
+.u-linkComplex:focus,
+.u-linkComplex:active {
+  font-style: normal !important;
+  color: currentColor !important;
+  text-decoration: none !important;
+  -webkit-font-smoothing: initial;
+}
+
+.u-linkComplexTarget {
+  display: inline !important;
+  border: 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  text-decoration: none !important;
+  font-style: italic !important;
+  color: var(--color-primary) !important;
+  -webkit-font-smoothing: antialiased;
+}
+
+.u-linkComplex:hover .u-linkComplexTarget,
+.u-linkComplex:focus .u-linkComplexTarget,
+.u-linkComplex:active .u-linkComplexTarget {
+  text-decoration: underline !important;
+}

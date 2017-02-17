@@ -5,6 +5,12 @@
   padding: 0;
 }
 
+/**
+ * Definition list
+ * @example
+ * <dl class="List List--definition">…</dl>
+ */
+
 .List--definition {
   overflow: hidden;
 }
@@ -25,4 +31,33 @@
 
 .List-definition:last-child {
   margin-bottom: 0;
+}
+
+/**
+ * Definition list
+ * @example
+ * <ol class="List List--numbered">…</ol>
+ */
+
+.List--numbered {
+
+}
+
+.List-content {
+  overflow: hidden;
+}
+
+/**
+ * 1. Getting the circle as round as possible when there's only one digit in it
+ * 2. Verically align with adjacent content
+ */
+
+.List-number {
+  float: left;
+  padding: 0.1em 0.425em 0.175em; /* 1 */
+  margin: -0.1em 1em 0 0; /* 2 */
+  color: #fff;
+  font-size: calc(15rem / var(--base-font-size));
+  background-color: var(--color-secondary);
+  border-radius: 1em;
 }
