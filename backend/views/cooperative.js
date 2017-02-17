@@ -24,7 +24,7 @@ module.exports = function (state, prev, send) {
               <span class="u-floatLeft u-textG u-marginRb">${ state.actions.length }</span>
               <span class="u-textL">Energy actions</span>
               <br />
-              <a href="#actions">Show</a>
+              <a href="#actions-${ state._id }">Show</a>
             </div>
           ` : html`<span class="u-textL">No energy actions</span>` }
         </div>
@@ -38,7 +38,7 @@ module.exports = function (state, prev, send) {
           'Ventilation type': state.ventilationType.join(', ')
         }) }
 
-        <div class="u-marginVm" id="actions">
+        <div class="u-marginVm" id="actions-${ state._id }">
           ${ state.actions && numbered(state.actions.map(action => {
             const props = Object.assign({ cooperativeId: state._id }, action);
             return summary(props);
