@@ -1,0 +1,9 @@
+/** @define Type */
+
+.Type {
+
+}
+
+.Type p:not(:first-child):not(:last-child) {
+  margin: 1em 0;
+}

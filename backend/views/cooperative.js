@@ -4,6 +4,7 @@ const performance = require('../components/performance');
 const { defintion, numbered } = require('../components/list');
 const { format } = require('../components/utils');
 const { summary } = require('../components/action');
+const footer = require('../components/app/footer');
 
 module.exports = function (state, prev, send) {
   return html`
@@ -17,7 +18,7 @@ module.exports = function (state, prev, send) {
 
         <hr class="u-marginVm" />
 
-        <div class="u-flex u-flexJustifyCenter u-marginVm u-italic">
+        <div class="u-flex u-flexJustifyCenter u-marginVm u-textItalic">
           ${ state.actions.length ? html`
             <div>
               <span class="u-floatLeft u-textG u-marginRb">${ state.actions.length }</span>
@@ -44,6 +45,8 @@ module.exports = function (state, prev, send) {
           })) }
         </div>
       </div>
+
+      ${ footer(state, prev, send) }
     </div>
   `;
 };

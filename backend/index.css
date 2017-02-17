@@ -10,6 +10,7 @@
 @import "./components/list";
 @import "./components/menu";
 @import "./components/page-head";
+@import "./components/type";
 
 @import "suitcss-utils-display";
 @import "suitcss-utils-flex";
@@ -62,7 +63,6 @@ html, body {
   font-family: var(--font-family);
   font-weight: var(--font-weight-normal);
   font-size: calc(0.85px * var(--base-font-size));
-  background-color: var(--color-background);
 }
 
 @media (--sm-viewport), (--md-viewport), (--lg-viewport) {

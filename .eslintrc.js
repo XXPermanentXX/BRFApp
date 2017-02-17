@@ -172,6 +172,13 @@ module.exports = {
         "no-unmodified-loop-condition": "error",
         "no-unneeded-ternary": "off",
         "no-unused-expressions": "off",
+        "no-unused-vars": [
+          "error",
+          {
+            // Allow common express and choo parameters
+            "argsIgnorePattern": "req|res|next|state|prev|send"
+          }
+        ],
         "no-use-before-define": "off",
         "no-useless-call": "error",
         "no-useless-computed-key": "error",

@@ -25,15 +25,15 @@
   font-size: calc(14rem / var(--base-font-size)) !important;
 }
 
-.u-italic {
+.u-textItalic {
   font-style: italic !important;
 }
 
-.u-light {
+.u-textLight {
   font-weight: var(--font-weight-light) !important;
 }
 
-.u-bold {
+.u-textBold {
   font-weight: var(--font-weight-bold) !important;
   -webkit-font-smoothing: antialiased;
 }
