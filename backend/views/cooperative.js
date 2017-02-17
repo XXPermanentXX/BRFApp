@@ -24,7 +24,7 @@ module.exports = function (state, prev, send) {
               <span class="u-floatLeft u-textG u-marginRb">${ state.actions.length }</span>
               <span class="u-textL">Energy actions</span>
               <br />
-              <a href="#energy-actions">Show</a>
+              <a href="#actions">Show</a>
             </div>
           ` : html`<span class="u-textL">No energy actions</span>` }
         </div>
