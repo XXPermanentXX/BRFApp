@@ -39,7 +39,8 @@ router.post('/', auth.authenticate(), function (req, res) {
     } else {
       res.render(
         `/cooperatives${ req.url }/${ cooperative._id }`,
-        cooperative
+        cooperative,
+        (data, done) => done(null, { cooperatives: [ data ] })
       );
     }
   });
@@ -126,7 +127,11 @@ router.get('/:id', checkParams('id'), function (req, res) {
     if (err) {
       res.status(404).render('/404', { err: err.message });
     } else {
-      res.render(`/cooperatives${ req.url }`, cooperative);
+      res.render(
+        `/cooperatives${ req.url }`,
+        cooperative,
+        (data, done) => done(null, { cooperatives: [ data ] })
+      );
     }
   });
 
@@ -168,7 +173,11 @@ router.get('/', function (req, res) {
     if (err) {
       res.status(500).render('/error', { err: err.message });
     } else {
-      res.render('/cooperatives', { cooperatives });
+      res.render(
+        '/cooperatives',
+        cooperatives,
+        (data, done) => done(null, { cooperatives })
+      );
     }
   });
 
@@ -221,7 +230,11 @@ router.put('/:id', auth.authenticate(), checkParams('id'), function (req, res) {
         Object.assign({ err: err.message }, body)
       );
     } else {
-      req.render(`/cooperatives/${ id }`, result);
+      req.render(
+        `/cooperatives/${ id }`,
+        result,
+        (data, done) => done(null, { cooperatives: [ data ] })
+      );
     }
   });
 
@@ -274,7 +287,14 @@ router.post('/:id/actions', auth.authenticate(), checkParams('id'), function (re
         Object.assign({ err: err.message }, body)
       );
     } else {
-      res.render(`/cooperatives${ req.url }/${ action._id }`, action);
+      res.render(
+        `/cooperatives${ req.url }/${ action._id }`,
+        action,
+        (data, done) => Cooperative.get(id, null, (err, cooperative) => {
+          if (err) { return done(err); }
+          done(null, { cooperatives: [ cooperative ], actions: [ action ] });
+        })
+      );
     }
   });
 
@@ -296,7 +316,11 @@ router.get('/:id/actions', checkParams('id'), function (req, res) {
     if (err) {
       res.status(404).render('/404', { err: err.message });
     } else {
-      res.render(`/cooperatives${ req.url }`, { actions: cooperative.actions });
+      res.render(
+        `/cooperatives${ req.url }`,
+        cooperative.actions,
+        (data, done) => done(null, { cooperatives: [ cooperative ], actions: data })
+      );
     }
   });
 
@@ -353,7 +377,14 @@ router.put('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'act
         Object.assign({ err: err.message }, body)
       );
     } else {
-      res.render(`/cooperatives${ req.url }`, action);
+      res.render(
+        `/cooperatives${ req.url }`,
+        action,
+        (data, done) => Cooperative.get(id, null, (err, cooperative) => {
+          if (err) { return done(err); }
+          done(null, { cooperatives: [ cooperative ], actions: [ data ] });
+        })
+      );
     }
   });
 
@@ -382,7 +413,11 @@ router.get('/:id/actions/:actionId', checkParams('id', 'actionId'), function (re
     if (err || !action) {
       res.status(404).render('/404', { err: err && err.message });
     } else {
-      res.render(`/cooperatives${ req.url }`, action);
+      res.render(
+        `/cooperatives${ req.url }`,
+        action,
+        (data, done) => done(null, { cooperatives: [ cooperative ], actions: [ action ] })
+      );
     }
   });
 
@@ -479,7 +514,18 @@ router.post('/:id/actions/:actionId/comments', auth.authenticate(), checkParams(
         Object.assign({ err: err.message }, body)
       );
     } else {
-      res.render(`/cooperatives${ req.url }/${ id }`, comment);
+      res.render(
+        `/cooperatives${ req.url }/${ id }`,
+        comment,
+        (data, done) => Cooperative.get(id, null, (err, cooperative) => {
+          if (err) { return done(err); }
+          done(null, {
+            cooperatives: [ cooperative ],
+            actions: cooperative.actions,
+            comments: [ data ]
+          });
+        })
+      );
     }
   });
 
@@ -526,7 +572,18 @@ router.get('/:id/actions/:actionId/comments', checkParams('id', 'actionId'), fun
     if (err) {
       res.status(404).render('/404', { err: err.message });
     } else {
-      res.render(`/cooperatives${ req.url }`, { comments });
+      res.render(
+        `/cooperatives${ req.url }`,
+        comments,
+        (data, done) => Cooperative.get(id, null, (err, cooperative) => {
+          if (err) { return done(err); }
+          done(null, {
+            cooperatives: [ cooperative ],
+            actions: cooperative.actions,
+            comments: data
+          });
+        })
+      );
     }
   });
 
@@ -554,7 +611,18 @@ router.get('/:id/actions/:actionId/comments/:commentId', checkParams('id', 'acti
     if (err || !comment) {
       res.status(404).render('/404', { err: err && err.message });
     } else {
-      res.render(`/cooperatives${ req.url }`, comment);
+      res.render(
+        `/cooperatives${ req.url }`,
+        comment,
+        (data, done) => Cooperative.get(id, null, (err, cooperative) => {
+          if (err) { return done(err); }
+          done(null, {
+            cooperatives: [ cooperative ],
+            actions: cooperative.actions,
+            comments: comments
+          });
+        })
+      );
     }
   });
 

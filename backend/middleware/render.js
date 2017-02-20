@@ -8,25 +8,35 @@ const User = require('../models/users');
 module.exports = function render(req, res, next) {
   const orig = res.render;
 
-  res.render = function (route, state) {
-    const send = (state) => {
-      if (route && req.accepts('html')) {
-        orig.call(this, route, state);
-      } else {
-        res.json(state);
-      }
-    };
-
-    if (req.user) {
-      User.getProfile(req.user._id, (err, user) => {
-        if (err) {
-          res.status(500).render('/error', { err: err.message });
+  res.render = function (route, state, format) {
+    if (route && req.accepts('html')) {
+      const send = state => {
+        if (typeof format === 'function') {
+          format(state, (err, formated) => {
+            if (err) {
+              res.status(500).render('/error', { err: err.message });
+            } else {
+              orig.call(this, route, formated);
+            }
+          });
         } else {
-          send(Object.assign({ user }, state));
+          orig.call(this, route, state);
         }
-      });
+      };
+
+      if (req.user) {
+        User.getProfile(req.user._id, (err, user) => {
+          if (err) {
+            res.status(500).render('/error', { err: err.message });
+          } else {
+            send(Object.assign({ user }, state));
+          }
+        });
+      } else {
+        send(state);
+      }
     } else {
-      send(state);
+      res.json(state);
     }
   };
 

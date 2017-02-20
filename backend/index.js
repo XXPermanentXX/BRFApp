@@ -26,7 +26,10 @@ const routes = [
 app.model({
   reducers: {},
   state: {
-    lang: 'sv'
+    lang: 'sv',
+    cooperatives: [],
+    action: [],
+    comments: []
   }
 });
 
