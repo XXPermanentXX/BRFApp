@@ -18,7 +18,7 @@ const UserSchema = new Schema({
     name: String,
     language: {
       type: String,
-      default: 'en'
+      default: 'sv'
     }
   },
   cooperativeId: Schema.Types.ObjectId

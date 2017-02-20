@@ -1,5 +1,6 @@
 const html = require('choo/html');
 const menu = require('../menu');
+const { __ } = require('../../locale');
 
 const links = menu.extract([ 'about', 'faq' ]);
 
@@ -29,7 +30,7 @@ module.exports = function header(state, prev, send) {
           `) }
         </ul>
 
-        <a href="#page-menu-sm" class="PageHead-trigger PageHead-trigger--small PageHead-link" onclick=${ trigger }>Menu</a>
+        <a href="#page-menu-sm" class="PageHead-trigger PageHead-trigger--small PageHead-link" onclick=${ trigger }>${ __('Menu') }</a>
 
         ${ state.user ?
           // Render user menu anchor link
@@ -38,7 +39,7 @@ module.exports = function header(state, prev, send) {
           menu.extract([ 'signin' ])(state).map(props => html`<a class="PageHead-link PageHead-trigger PageHead-trigger--large" href=${ props.href}>${ props.title }</a>`)
         }
 
-        <a href="#page-head" class="PageHead-untrigger PageHead-link" hidden data-title-small="Close" data-title-large=${ state.user ? state.user.profile.name : 'Close' }></a>
+        <a href="#page-head" class="PageHead-untrigger PageHead-link" hidden data-title-small=${ __('Close') } data-title-large=${ state.user ? state.user.profile.name : __('Close') }></a>
       </nav>
     </div>
   `;

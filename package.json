@@ -5,11 +5,12 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "restart": "nodemon backend/server.js -i ./frontend",
+    "restart": "nodemon -i frontend -i backend/locale",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec",
-    "build:js": "browserify backend/index.js -g unassertify -t localenvify -t yo-yoify -t [ babelify --presets [ babel-preset-es2015 ] ] -g uglifyify | uglifyjs -o backend/public/index.js",
-    "build:css": "postcss backend/index.css -u postcss-import -u postcss-custom-media -u postcss-custom-properties -u autoprefixer -u postcss-csso -o backend/public/index.css"
+    "build:js": "browserify backend/index.js -t localenvify -t yo-yoify -t [ babelify --presets [ babel-preset-es2015 ] ] -g unassertify -g uglifyify | uglifyjs -o backend/public/index.js",
+    "build:css": "postcss backend/index.css -u postcss-import -u postcss-custom-media -u postcss-custom-properties -u autoprefixer -u postcss-csso -o backend/public/index.css",
+    "build": "npm run build:css && npm run build:js"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "mocha-jscs": "^1.1.0",
     "mocha-jshint": "^2.2.3",
     "postcss": "^5.2.11",
+    "postcss-cli": "^3.0.0-beta",
     "postcss-csso": "^1.1.2",
     "postcss-custom-media": "^5.0.1",
     "postcss-custom-properties": "^5.0.2",
@@ -85,6 +87,7 @@
     "request": "^2.55.0",
     "underscore": "^1.8.3",
     "xml2js": "^0.4.8",
+    "y18n": "^3.2.1",
     "yargs": "^3.15.0"
   }
 }

@@ -5,6 +5,7 @@ const { defintion, numbered } = require('../components/list');
 const { format } = require('../components/utils');
 const { summary } = require('../components/action');
 const footer = require('../components/app/footer');
+const { __, __n } = require('../locale');
 
 module.exports = function (state, prev, send) {
   return html`
@@ -22,20 +23,20 @@ module.exports = function (state, prev, send) {
           ${ state.actions.length ? html`
             <div>
               <span class="u-floatLeft u-textG u-marginRb">${ state.actions.length }</span>
-              <span class="u-textL">Energy actions</span>
+              <span class="u-textL">${ __n('Energy action', 'Energy actions', state.actions.length) }</span>
               <br />
-              <a href="#actions-${ state._id }">Show</a>
+              <a href="#actions-${ state._id }">${ __('Show') }</a>
             </div>
-          ` : html`<span class="u-textL">No energy actions</span>` }
+          ` : html`<span class="u-textL">${ __('No energy actions') }</span>` }
         </div>
 
         <hr class="u-marginVm" />
 
         ${ defintion({
-          'Apartments': format(state.numOfApartments),
-          'Heated area': html`<span>${ format(state.area) } m<sup>2</sup></span>`,
-          'Constructed': state.yearOfConst,
-          'Ventilation type': state.ventilationType.join(', ')
+          [__('Apartments')]: format(state.numOfApartments),
+          [__('Heated area')]: html`<span>${ format(state.area) } m<sup>2</sup></span>`,
+          [__('Constructed')]: state.yearOfConst,
+          [__('Ventilation type')]: state.ventilationType.join(', ')
         }) }
 
         <div class="u-marginVm" id="actions-${ state._id }">

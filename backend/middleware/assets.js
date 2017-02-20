@@ -6,7 +6,6 @@ const watchify = require('watchify-middleware');
 const chokidar = require('chokidar');
 
 const ROOT = path.resolve(__dirname, '..');
-
 const bundler = browserify('index.js', {
   basedir: ROOT,
   debug: true,

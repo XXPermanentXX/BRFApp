@@ -12,6 +12,7 @@ const pages = require('./pages');
 const routes = require('./routes');
 const lang = require('./middleware/lang');
 const auth = require('./middleware/auth');
+const locale = require('./locale');
 const app = require('./index');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
@@ -33,6 +34,8 @@ server.render = function (route, options, done) {
   const cache = this.enabled('view cache');
 
   let output;
+
+  locale.setLocale(state.lang);
 
   if (cache) {
     this.cache[state.lang] = this.cache[state.lang] || {};
@@ -95,7 +98,7 @@ server.use(session({
 server.use(expressValidator());
 server.use(auth.initialize());
 server.use(auth.session());
-server.use(routes);
+server.use(lang('sv'), routes);
 server.use('/en', lang('en'), routes);
 server.use(express.static('public'));
 

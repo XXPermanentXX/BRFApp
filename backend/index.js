@@ -8,12 +8,12 @@ const routes = [
   [ '/how-it-works', require('./views/faq') ],
   [ '/about-the-project', require('./views/about') ],
   [ '/cooperatives', require('./views/map'), [
-    [ '/:id', require('./views/cooperative'), [
+    [ '/:cooperative', require('./views/cooperative'), [
       [ '/consumption', require('./views/consumption') ],
       [ '/actions', require('./views/actions'), [
-        [ '/:id', require('./views/action'), [
+        [ '/:action', require('./views/action'), [
           [ '/comments', require('./views/comments'), [
-            [ '/:id', require('./views/comment') ]
+            [ '/:comment', require('./views/comment') ]
           ]]
         ]]
       ]],

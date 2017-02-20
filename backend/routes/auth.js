@@ -14,7 +14,7 @@ router.get('/', function (req, res) {
 });
 
 /**
- * Redirect to metry OAuth
+ * Redirect to Metry OAuth
  */
 
 router.get('/metry', passport.authenticate('metry'));
@@ -45,10 +45,14 @@ router.get('/signout', auth.authenticate(), function (req, res) {
   delete req.user.accessToken;
   req.user.markModified('accessToken');
   req.user.save(err => {
-    res.successRes(err ? 'Failed to unset access token' : null);
-  });
+    req.logout();
 
-  res.redirect('/');
+    if (err) {
+      res.status(500).render('/error');
+    } else {
+      res.redirect('/');
+    }
+  });
 });
 
 module.exports = router;

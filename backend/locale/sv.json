@@ -1,0 +1,21 @@
+{
+  "Show": "Visa",
+  "Apartments": "Antal lägenheter",
+  "Heated area": "Uppvärmd area",
+  "Constructed": "Byggår",
+  "Ventilation type": "Ventilationstyp",
+  "Energy action": {
+    "one": "Energiåtgärd",
+    "other": "Energiåtgärder"
+  },
+  "About the project": "Om projektet",
+  "How it works": "Hur funkar det?",
+  "Sign in": "Logga in",
+  "Menu": "Meny",
+  "Close": "Stäng",
+  "Leave a comment": "Skriv en kommentar",
+  "Learn about how we calculate energy performance": "Läs mer om hur vi beräknar prestanda",
+  "What's this?": "Vad är detta?",
+  "Sign out": "Logga ut",
+  "Sign in with Metry": "Logga in med Metry"
+}

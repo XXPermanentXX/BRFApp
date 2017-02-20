@@ -1,5 +1,4 @@
 const url = require('url');
-const crypto = require('crypto');
 const request = require('request');
 const passport = require('passport');
 const OAuth2Strategy = require('passport-oauth2').Strategy;

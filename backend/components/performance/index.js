@@ -1,5 +1,7 @@
 const html = require('choo/html');
+const resolve = require('../../resolve');
 const { getEnergyClass, format } = require('../utils');
+const { __ } = require('../../locale');
 
 const UNKNOWN_ENERGY_CLASS = '#bbbbbb';
 const ENERGY_CLASSES = {
@@ -22,7 +24,7 @@ module.exports = function (props) {
     <div class="Performance">
       <figure>
         <figcaption>
-          <a href="/how-it-works#energy-performance" class="Performance-link u-float${ linkPosition[0].toUpperCase() + linkPosition.substr(1) }" title="Learn more about how we calculate energy performance">What's this?</a>
+          <a href=${resolve('/how-it-works#energy-performance')} class="Performance-link u-float${ linkPosition[0].toUpperCase() + linkPosition.substr(1) }" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
         </figcaption>
         <svg class="Performance-graph" viewBox="0 0 512 93" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <defs>
