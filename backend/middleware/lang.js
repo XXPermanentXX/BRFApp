@@ -2,33 +2,41 @@ const url = require('url');
 
 module.exports = function (lang) {
   return (req, res, next) => {
+    const origRedirect = res.redirect;
 
     /**
-     * Attach language to response locals
+     * Have user defined language have precedence over Swedish (default)
      */
 
-    res.locals.lang = req.user ? req.user.profile.language || 'sv' : lang;
+    if (req.user) {
+      res.locals.lang = req.user.profile.language;
+    } else {
+      res.locals.lang = lang;
+      res.redirect = redirect;
+      res.resolve = resolve;
+    }
+
+    next();
 
     /**
-     * Add a resolve method to the response object that localizes urls
+     * Resolve urls per defined language
      */
 
-    const prefix = res.locals.lang === 'sv' ? '' : `/${ lang }`;
-    const resolve = res.resolve = function (...args) {
+    function resolve(...args) {
+      const prefix = lang === 'sv' ? '' : `/${ lang }`;
       const props = url.parse(args.length > 1 ? url.resolve(...args) : args[0]);
 
       props.pathname = prefix + props.pathname;
 
       return url.format(props);
-    };
+    }
 
     /**
-     * Overwrite the native `redirect` with a method that also resolves language
+     * Pipe all redirects through resolve
      */
 
-    const origRedirect = res.redirect;
-    res.redirect = pathname => origRedirect.call(res, resolve(pathname));
-
-    next();
+    function redirect(pathname) {
+      return origRedirect.call(res, resolve(pathname));
+    }
   };
 };

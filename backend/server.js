@@ -35,8 +35,6 @@ server.render = function (route, options, done) {
 
   let output;
 
-  locale.setLocale(state.lang);
-
   if (cache) {
     this.cache[state.lang] = this.cache[state.lang] || {};
     output = this.cache[state.lang][route];
@@ -44,11 +42,17 @@ server.render = function (route, options, done) {
 
   if (!output) {
     try {
+      // Determine whether route needs to be prefixed with language pathname
+      const prefix = state.lang === 'sv' ? '' : `/${ state.lang }`;
+
+      // Join route with prefix to generate actual view path
+      const pathname = `${ prefix }${ route }`.replace(/\/$/, '');
+
       // Determine page wrapper for view
       const page = route === '/' ? pages.landing : pages.app;
 
-      // Wrap app `toString` method with route for injection into page
-      const view = (...args) => app.toString(route, ...args);
+      // Wrap app `toString` method for injection into page
+      const view = (...args) => app.toString(pathname, ...args);
 
       // Inject view in page
       output = page(view, state, state, () => {});

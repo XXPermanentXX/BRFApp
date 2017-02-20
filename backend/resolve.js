@@ -6,5 +6,6 @@ module.exports = function (route) {
 
 function localize(route) {
   const locale = getLocale();
+  // FIXME: Should not prefix when logged in
   return locale === 'sv' ? route : `/${ locale }${ route }`;
 }
