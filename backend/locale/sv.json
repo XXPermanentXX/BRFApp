@@ -17,5 +17,8 @@
   "Learn about how we calculate energy performance": "Läs mer om hur vi beräknar prestanda",
   "What's this?": "Vad är detta?",
   "Sign out": "Logga ut",
-  "Sign in with Metry": "Logga in med Metry"
+  "Sign in with Metry": "Logga in med Metry",
+  "PROJECT_IN_SHORT": "BRF Energi Är ett pågående forskningsprojekt. Om du har några frågor är du välkomment att <a href=\"mailto:%s\">kontakta oss</a>.",
+  "LICENSE_NOTICE": "All källkod är släppt under <a href=\"https://www.apache.org/licenses/LICENSE-2.0\">Apache Licence 2.0</a> och publikt tillgänglig på <a href=\"%s\">Github</a>.",
+  "COPYRIGHT": "© %s KTH Kungliga Tekniska Högskolan"
 }
