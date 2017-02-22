@@ -119,9 +119,8 @@ router.get('/',auth.authenticate(),function(request,response,next){
                     });
                 });
                 requestprod.setTimeout(3000, function() {
-                // console.log("waiting under appliance id");
             });
-            
+
             }else {
                 response.sendStatus(500);
             }
@@ -198,7 +197,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                     type: 'get',
                                     data: {
                                         contractId: userid,
-                                        production: parseFloat(last.value)        
+                                        production: parseFloat(last.value)
                                     }
                                   });
 
@@ -213,10 +212,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                         response.error(e);
                     });
                 });
-            requestlast.setTimeout(3000, function() {
-                // console.log("waiting under production last");
-            });
-           
+
             }else {
                 response.sendStatus(500);
             }

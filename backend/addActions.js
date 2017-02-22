@@ -21,11 +21,9 @@ var createIfNotExist = function(model, key, doc, cb) {
       cb(err);
     } else if (!result) {
       // create model
-      // console.log('creating model ' + model + ': ' + JSON.stringify(doc));
       models[model].create(doc, cb);
     } else {
       // already exists, return doc from db
-      console.log(model + ' model already exists: ' + JSON.stringify(result, null, 4));
       cb(null, result);
     }
   });
@@ -53,10 +51,11 @@ db.once('open', function() {
         }, function(err) {
           cb(err);
         });
-      } 
+      }
   ], function(err) {
     if (err) {
-      console.log('an error occurred! ' + err);
+      // eslint-disable-next-line no-console
+      console.error('an error occurred! ' + err);
     }
     process.exit(err ? 1 : 0);
   });

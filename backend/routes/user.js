@@ -484,10 +484,6 @@ router.get('/profile/:userId', auth.authenticate(), function(req, res) {
  */
 router.get('/search', auth.authenticate(), function(req, res) {
 
-  // console.log("req.params:" + JSON.stringify(req.params, null, 4));
-  // console.log("req.body:" + JSON.stringify(req.body, null, 4));
-  // console.log("req.query:" + JSON.stringify(req.query, null, 4));
-
   User.find(req.query, true, 50, null, res.successRes);
 
   Log.create({

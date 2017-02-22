@@ -117,6 +117,7 @@ exports.create = function(household, cb) {
     // Find household cooperative if any
     Cooperative.getProfile(household.cooperativeId, null, function(err, cooperative){
       if(err){
+        // eslint-disable-next-line no-console
         console.log(err);
       }
       if(!err && cooperative){
@@ -129,6 +130,7 @@ exports.create = function(household, cb) {
     if(cooperative && cooperative.hasHouseholdData && household.uniqueCode){
       HouseholdLookup.findOne({uniqueCode:household.uniqueCode},function(err, lookupResult){
         if(err){
+          // eslint-disable-next-line no-console
           console.log(err);
         } else {
           if(!lookupResult) {
@@ -146,6 +148,7 @@ exports.create = function(household, cb) {
     if(lookupResult) {
       Household.findOne({apartmentId:lookupResult.apartmentId},function(err, eHousehold){
         if(err){
+          // eslint-disable-next-line no-console
           console.log(err);
         }
         cb(null, lookupResult, eHousehold);
@@ -294,11 +297,9 @@ exports.handleInvite = function(householdId, userId, accepted, cb) {
       household.pendingInvites.splice(index, 1);
 
       if (accepted.toLowerCase()==="true") {
-        //console.log('accepted?'+accepted);
         household.members.push(userId);
       }
 
-      //console.log("household.members: "+JSON.stringify(household.members, null, 4));
       household.save(cb);
     }
   });
@@ -566,6 +567,7 @@ exports.getAll = function(cb) {
       if(household.owner && household.owner.cooperativeId){
         Cooperative.getProfile(household.owner.cooperativeId, null, function(err, cooperative){
           if(err){
+            // eslint-disable-next-line no-console
             console.log(err);
           }
           if(!err && cooperative){

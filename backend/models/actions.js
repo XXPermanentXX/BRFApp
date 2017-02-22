@@ -133,14 +133,14 @@ exports.create = function(action, cb) {
     description: action.description,
     descriptionIt: action.descriptionIt,
     descriptionSe: action.descriptionSe,
-    category: action.category, 
-    type: action.type, 
-    season: action.season, 
+    category: action.category,
+    type: action.type,
+    season: action.season,
     //tag: action.tag,
     //tags: action.tags,
     //locationIn: action.locationIn,
     //locationNotIn: action.locationNotIn,
-    //activation: action.activation, 
+    //activation: action.activation,
     ratings: action.ratings || {},
     impact: action.impact,
     effort: action.effort,
@@ -160,19 +160,17 @@ exports.get = function(id, user, cb) {
     } else {
       action = action.toObject();
 
-      //console.log("user: "+JSON.stringify(user, null, 4));
-
       if (user.profile && user.profile.language === "Italian") {
         action.name = action.nameIt || action.name;
         action.description = action.descriptionIt || action.description;
-      }else if (user.profile && user.profile.language === "Swedish") { 
+      }else if (user.profile && user.profile.language === "Swedish") {
         action.name = action.nameSe || action.name;
         action.description = action.descriptionSe  || action.description;
       }
-      action.nameIt = undefined; 
-      action.nameSe = undefined; 
-      action.descriptionSe = undefined; 
-      action.descriptionIt = undefined; 
+      action.nameIt = undefined;
+      action.nameSe = undefined;
+      action.descriptionSe = undefined;
+      action.descriptionIt = undefined;
 
       includeRatingStats(action);
       includeMeanEffort(action);
@@ -186,7 +184,7 @@ exports.get = function(id, user, cb) {
       // fetch number of comments to this action
       actionComments.get(id, null, null, user, function(err, aComments) {
         if (err) {
-          return cb(err); 
+          return cb(err);
         }
 
         action.numComments = aComments.length;
@@ -270,11 +268,11 @@ exports.shared = function(id, cb) {
     } else {
 
       if (action.shares) {
-        action.shares ++; 
+        action.shares ++;
       }else{
-        action.shares = 1; 
+        action.shares = 1;
       }
-     
+
       action.markModified('shares');
       action.save(function(err) {
         cb(err, action.shares);
@@ -282,7 +280,7 @@ exports.shared = function(id, cb) {
     }
   });
 
-}; 
+};
 
 
 exports.rate = function(id, user, rating, effort, cb) {
@@ -290,13 +288,10 @@ exports.rate = function(id, user, rating, effort, cb) {
     return cb('Missing/invalid user');
   }
 
-  //commented out by Yilin. This code 
+  //commented out by Yilin. This code
   //make sure we're dealing with integers
   //rating = parseInt(rating);
   //effort = parseInt(effort);
-
-  //console.log("rating: "+JSON.stringify(rating, null, 4));
-  //console.log("effort: "+JSON.stringify(effort, null, 4));
 
   Action.findOne({
     _id: id
@@ -357,7 +352,7 @@ function shuffleArray(array) {
 
 exports.getSuggested = function(user, cb) {
 
-  var userActions = user.actions; 
+  var userActions = user.actions;
 
   if (user.profile && user.profile.language === "Italian") {
 
@@ -383,13 +378,13 @@ exports.getSuggested = function(user, cb) {
 
         for (var i = 0; i < actions.length; i++) {
           //actions[i] = actions[i].toObject();
-          actions[i].name = actions[i].nameIt; 
-          actions[i].description = actions[i].descriptionIt; 
-          actions[i].nameIt = undefined; 
-          actions[i].descriptionIt = undefined; 
+          actions[i].name = actions[i].nameIt;
+          actions[i].description = actions[i].descriptionIt;
+          actions[i].nameIt = undefined;
+          actions[i].descriptionIt = undefined;
         }
 
-        cb(err, actions); 
+        cb(err, actions);
       }
     });
 
@@ -417,17 +412,17 @@ exports.getSuggested = function(user, cb) {
 
         for (var i = 0; i < actions.length; i++) {
           //actions[i] = actions[i].toObject();
-          actions[i].name = actions[i].nameSe; 
+          actions[i].name = actions[i].nameSe;
           actions[i].description = actions[i].descriptionSe;
-          actions[i].nameSe = undefined; 
-          actions[i].descriptionSe = undefined; 
+          actions[i].nameSe = undefined;
+          actions[i].descriptionSe = undefined;
         }
 
-        cb(err, actions); 
+        cb(err, actions);
       }
     });
 
-  } else { //English 
+  } else { //English
     Action.find({
       $and: [
         {_id: {$nin: _.keys(userActions.done)}},
@@ -447,7 +442,7 @@ exports.getSuggested = function(user, cb) {
           actions = shuffleArray(actions).slice(0, 5);
         }
 
-        cb(err, actions); 
+        cb(err, actions);
       }
     });
   }

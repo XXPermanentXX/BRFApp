@@ -48,8 +48,6 @@ angular.module('civis.youpower', [
   };
 
   $rootScope.$on('$stateChangeError', function (event, next, nextParams, fromState, fromParams, error) {
-    //eslint-disable-next-line no-console
-    console.log('stateChangeError: 1.' + fromState.name + ' 2.' + next.name + ' ' + JSON.stringify(error, null, 4));
     if (next.name !== 'welcome' && next.name !== 'signup') {
       event.preventDefault();
       $state.go('welcome');

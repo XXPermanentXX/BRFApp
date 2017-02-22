@@ -1,3 +1,5 @@
+/* eslint no-console: off */
+
 // Load environement variables
 require('dotenv').config({ path: '../.env' });
 

@@ -13,7 +13,7 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
     CEdis -- corresponds to storo
     */
         var municipalityIdReal = ((municipalityId == 'CEIS') ? 'sanlorenzo' : 'storo');
-        
+
         $rootScope.chartConfigComparisonHistorical = {
             options: {
                 chart: {
@@ -44,8 +44,6 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
         $scope.getPersonalHistory = function(startDate, endDate) {
                 var historyStartDate = moment.utc(startDate).add('days', 1).format('YYYY-MM-DD');
                 var historyEndDate = moment.utc(endDate).add('days', 1).format('YYYY-MM-DD');
-                console.log(historyStartDate);
-                console.log(historyEndDate);
                 consumptionDataStore = '';
                 productionDataStore = '';
                 var promisedData = $q.all([
@@ -454,7 +452,6 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
             var lastProductionData = resp.data.production;
             production_Power_Level = resp.data.power_Level;
             $scope.productionTimeStamp = resp.data.startTime;
-            console.log("production power:", production_Power_Level);
             mixpanel.track('Trentino prosumption data requested:', { Category: "Last production data", ContractId: currentUserId, municipality: municipalityId, userEmail: userEmail, productionLevel: lastProductionData, date: moment().format('YYYY-MM-DDTHH:mm:ss') });
             $scope.chartConfigLastProduction.series = [{
                 name: 'produzione',
@@ -476,8 +473,6 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
             console.error(err.status);
             // err.status will contain the status code
         });
-
-        console.log("production power:", production_Power_Level);
 
         // list of appliances visualization part implementation
 
@@ -637,7 +632,7 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
             $http.get(Config.host+'/api/energyMeteo/meteodata?municipalityId='+municipalityIdReal).then(function(resp) {
                 meteoHistoryData = resp.data;
                 //get all usage points
-               
+
                 $http.get(Config.host+'/api/consumption/usagepoints?municipalityId='+municipalityIdReal).then(function(resp){
                     var usagepoints = resp.data;
                     var usagepointCopy = usagepoints;
@@ -668,7 +663,7 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
                                     }
                             }
 
-                            } // end of for -- consumption data 
+                            } // end of for -- consumption data
                             summaryInformation.push({
                                                     City: municipalityIdReal,
                                                     Green: totalConsumptionInGreen,
@@ -679,15 +674,15 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
                             console.dir(summaryInformation);
                             // return [{"red":totalConsumptionInRed},{"green":totalConsumptionInGreen}];
                         });
-                     
-                    } // end of usagepoints for 
-                   
-                }); 
-                
-        }); 
-            
+
+                    } // end of usagepoints for
+
+                });
+
+        });
+
             // $state.go('main.prosumption.vizHistoricalComparison');
-             
+
         }  */
 
         $scope.chartConfigPersonalConsumption = {
@@ -787,7 +782,6 @@ var dataVizModule = angular.module('civis.youpower.prosumption').controller('dat
             mixpanel.track('Trentino prosumption data requested:', { Category: "Personal/community power con. chart request", ContractId: currentUserId, userEmail: userEmail, municipality: municipalityId, date: moment().format('YYYY-MM-DDTHH:mm:ss') });
             var userId = usageSummaryData[usageSummaryData.length - 1];
             $scope.LastDateConsumptionRecord = usageSummaryData[0].DateTakenLast;
-            console.log($scope.LastDateConsumptionRecord);
             for (var i = 0; i < usageSummaryData.length - 1; i++) {
                 if (usageSummaryData[i].City == municipalityIdReal) {
                     totalConsumptionInRed += Number(usageSummaryData[i].Red) / 1000;

@@ -29,7 +29,6 @@ IntervalBlockSchema.index({apartmentId: 1, kind: 1, type:1}, {unique: true});
 var IntervalBlock = mongoose.model('IntervalBlock', IntervalBlockSchema);
 
 exports.create = function(intervalBlock, _apartmentId, from, to, cb) {
-  //console.log('TADA', intervalBlock, _apartmentId)
   IntervalBlock.create({
     apartmentId: intervalBlock.ApartmentID,
     _apartmentId: _apartmentId,
@@ -41,7 +40,6 @@ exports.create = function(intervalBlock, _apartmentId, from, to, cb) {
     }
   }, function(err, ib) {
     if (err) {
-      //console.log("ERROR creating IB", err);
       cb(err);
     }
     cb(null, ib);

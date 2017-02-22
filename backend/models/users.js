@@ -298,34 +298,6 @@ exports.getInvites = function(id, cb) {
   });
 };
 
-// //Display user's communities (member of which community?)
-// exports.getUserCommunities = function(id, cb) {
-//   User.findOne({_id: id}, function(err, user) {
-//     /* istanbul ignore if: db errors are hard to unit test */
-//     if (err) {
-//       return cb(err);
-//     }
-//     console.log(user._id);
-//     Community.model
-//     .find({members: {$in : user._id}})
-//     .exec(function(err, communities) {
-//       if (err) {
-//         return cb(err);
-//       }
-//       if (!communities) {
-//         return cb('Community not found');
-//       } else {
-//         console.log(communities);
-//         // convert every returned action into a raw object (remove mongoose magic)
-//         for (var i = 0; i < communities.length; i++) {
-//           communities[i] = communities[i].toObject();
-//         }
-//         cb(null, communities);
-//       }
-//     });
-//   });
-// };
-
 //Display user's actions
 //Display user's actions based on 'type' passed.
 //May be there is better way to do this?
@@ -371,9 +343,6 @@ exports.getUserActions = function(id, type, cb) {
 };*/
 
 exports.find = function(q, multi, limit, skip, cb) {
-
-  //console.log("q:" + JSON.stringify(q,null,4));
-
   var aQ = JSON.parse(JSON.stringify(q));
 
   for(var key in aQ) {
@@ -414,10 +383,6 @@ exports.find = function(q, multi, limit, skip, cb) {
 // authentication, and it would be wasteful to fetch it again here
 
 exports.updateProfile = function(user, profile, cb) {
-
-  //console.log("profile: "+JSON.stringify(profile, null, 4));
-  //console.log("user.profile1: "+JSON.stringify(user.profile, null, 4));
-
 
   // update any fields that are defined
   // not sure about this: need to see how to do this automatically
@@ -461,8 +426,6 @@ exports.updateProfile = function(user, profile, cb) {
     user.profile.toRehearse = profile.toRehearse;
   if (user.profile.toRehearse === null)
     user.profile.toRehearse = undefined;
-
-  //console.log("user.profile2: "+JSON.stringify(user.profile, null, 4));
 
   user.markModified('profile');
   // user.markModified('profile.name');
@@ -615,17 +578,14 @@ exports.getAchievements = function(user, cb) {
 };
 
 exports.fbfriends = function(user, cb) {
-  console.log('USER:',acct);
   var acct = user.accessToken;
+
   FB.setAccessToken(acct);
-  console.log('user Token:',acct);
   FB.api('me/friends', function(res) {
     if (!res || res.error) {
-      console.log('user foundYYY');
       cb('No data Received');
     } else {
       var tempArr = [];
-      console.log('user foundXXX');
       async.each(res.data, function(obj, callback) {
           User.findOne({facebookId: obj.id}, '_id profile', function(err, user) {
             if (err) {

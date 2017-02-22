@@ -12,29 +12,25 @@ function SettingsCtrl($scope, $filter, $translate, $state, User, Household) {
 	/*/
 	$scope.$on('$stateChangeStart', function(event, toState, toParams, fromState, fromParams){
 
-		console.log('state change');
-
-		if (fromState.name === 'main.settings.index' || 
+		if (fromState.name === 'main.settings.index' ||
 			fromState.name === 'main.settings.personal') {
 
 			if ($scope.isToSignout()){
-				$scope.clearToSignout(); 
-				$scope.postPersonalProfile($scope.logout); 
+				$scope.clearToSignout();
+				$scope.postPersonalProfile($scope.logout);
 			}else{
-				$scope.postPersonalProfile(); 
+				$scope.postPersonalProfile();
 			}
 
 		} else if (fromState.name === 'main.settings.household') {
 
 			if ($scope.isToSignout()){
-				$scope.clearToSignout(); 
-				$scope.postHouseholdProfile($scope.logout); 
+				$scope.clearToSignout();
+				$scope.postHouseholdProfile($scope.logout);
 			}else{
-				$scope.postHouseholdProfile(); 
+				$scope.postHouseholdProfile();
 			}
 
-		} else {
-			console.log("Do nothing: from state -- "+fromState.name); 
 		}
 	 });
 
@@ -43,37 +39,34 @@ function SettingsCtrl($scope, $filter, $translate, $state, User, Household) {
 
 		if ($scope.isPersonalProfileChanged()) {
 
-			var profile = $scope.currentUser.profile; 
+			var profile = $scope.currentUser.profile;
 
-			if (profile.name === "") profile.name = null; 
+			if (profile.name === "") profile.name = null;
 
 			for(var key in profile) {
 		        if(profile.hasOwnProperty(key) && profile[key] === null) {
-		            delete profile[key]; 
+		            delete profile[key];
 		        }
 		    }
 
 			User.profile({}, profile).$promise.then(function(data) {
 
-				$scope.currentUser.profile = data; 
-
-				console.log(data);
+				$scope.currentUser.profile = data;
 
 				if (data.dob && data.dob !== null){
 					$scope.currentUser.profile.dob = new Date(data.dob);
 				}
-				$scope.clearPersonalProfileChanged(); 
+				$scope.clearPersonalProfileChanged();
 				if (typeof cb === 'function') cb();
 			}, function(err){
-				console.log(err);
-				if (typeof cb === 'function') cb(); 
+				if (typeof cb === 'function') cb();
 			});
 		}
 	}
 
 	$scope.postHouseholdProfile = function(cb){
 
-		if (!$scope.isHouseholdProfileChanged()) return; 
+		if (!$scope.isHouseholdProfileChanged()) return;
 
 		var data = {};
 
@@ -94,19 +87,15 @@ function SettingsCtrl($scope, $filter, $translate, $state, User, Household) {
 
 		Household.update({id: $scope.currentUser.householdId}, data).$promise.then(function(data) {
 
-			$scope.households[$scope.currentUser.householdId] = data; 
-
-			console.log(data);
+			$scope.households[$scope.currentUser.householdId] = data;
 
 			// if (data.dob && data.dob !== null){
 			// 	$scope.currentUser.profile.dob = new Date(data.dob);
 			// }
-			$scope.clearHouseholdProfileChanged(); 
+			$scope.clearHouseholdProfileChanged();
 			if (typeof cb === 'function') cb();
 		}, function(err){
-			console.log(err);
-			if (typeof cb === 'function') cb(); 
+			if (typeof cb === 'function') cb();
 		});
 	}
 };
-
