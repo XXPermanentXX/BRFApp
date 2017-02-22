@@ -90,3 +90,15 @@
     display: table-row !important;
   }
 }
+
+.u-hiddenTarget:not(:target) {
+  display: none !important;
+}
+
+.u-hiddenTargetComplex:not(:target) .u-hiddenComplexTarget {
+  display: none !important;
+}
+
+.u-hiddenTargetComplex:target .u-hiddenTargetSlave {
+  display: none !important;
+}

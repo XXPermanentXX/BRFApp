@@ -10,6 +10,7 @@ module.exports = function (view, state, prev, send) {
       <body>
         ${ view(state, prev, send) }
         <pre>${ JSON.stringify(state, null, 2) }</pre>
+        ${ symbols() }
         ${ scripts(state) }
       </body>
     </html>

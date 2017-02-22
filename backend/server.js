@@ -12,7 +12,6 @@ const pages = require('./pages');
 const routes = require('./routes');
 const lang = require('./middleware/lang');
 const auth = require('./middleware/auth');
-const locale = require('./locale');
 const app = require('./index');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');

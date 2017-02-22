@@ -1,0 +1,18 @@
+/** @define Button */
+
+@import "suitcss-components-button";
+
+:root {
+  --Button-border-width: 0;
+  --Button-border-color: var(--color-primary);
+  --Button-color: #fff;
+  --Button-font: inherit;
+  --Button-padding: 1em;
+  --Button-disabled-opacity: 0.6;
+}
+
+.Button {
+  font-weight: var(--font-weight-bold);
+  background: var(--color-primary);
+  -webkit-font-smoothing: antialiased;
+}

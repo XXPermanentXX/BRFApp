@@ -21,5 +21,31 @@
   "PROJECT_IN_SHORT": "BRF Energi is an ongoing research project. For any inquiries or questions, please <a href=\"mailto:%s\">contact us</a>.",
   "LICENSE_NOTICE": "All source code and content is released under the <a href=\"https://www.apache.org/licenses/LICENSE-2.0\">Apache Licence 2.0</a> and publicly availible on <a href=\"%s\">Github</a>.",
   "COPYRIGHT": "© %s KTH Royal Institute of Technology",
-  "Sign out": "Sign out"
+  "Sign out": "Sign out",
+  "ACTION_TYPE_100": "Heating & hot water",
+  "ACTION_TYPE_101": "Control & optimisation",
+  "ACTION_TYPE_102": "Hot water",
+  "ACTION_TYPE_103": "Radiator system",
+  "ACTION_TYPE_105": "Sub metering",
+  "ACTION_TYPE_106": "Household actions",
+  "ACTION_TYPE_200": "Electricity",
+  "ACTION_TYPE_201": "Outdoor/roof heating",
+  "ACTION_TYPE_202": "Lighting",
+  "ACTION_TYPE_203": "Laundry room",
+  "ACTION_TYPE_204": "PV panels",
+  "ACTION_TYPE_205": "Sub metering",
+  "ACTION_TYPE_206": "Household actions",
+  "ACTION_TYPE_300": "Ventilation",
+  "ACTION_TYPE_301": "Control & optimisation",
+  "ACTION_TYPE_302": "Investments",
+  "Back to %s": "Back to %s",
+  "Category": {
+    "one": "Category",
+    "other": "Categories"
+  },
+  "Date": "Date",
+  "Cost": "Cost",
+  "Description": "Description",
+  "Save": "Save",
+  "Edit energy action": "Edit energy action"
 }

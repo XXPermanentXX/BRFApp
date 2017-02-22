@@ -2,11 +2,12 @@
 
 @import "suitcss-base";
 
-@import "suitcss-components-button";
 @import "suitcss-components-grid";
 @import "./components/action";
 @import "./components/app";
+@import "./components/button";
 @import "./components/performance";
+@import "./components/icons";
 @import "./components/list";
 @import "./components/menu";
 @import "./components/page-head";
@@ -69,6 +70,14 @@ html, body {
   html, body {
     font-size: calc(1px * var(--base-font-size));
   }
+}
+
+/**
+ * 1. Lightly lighten default bolded text
+ */
+
+h1, h2, h3, h4, h5, h6, strong, b, dt {
+  -webkit-font-smoothing: antialiased; /* 1 */
 }
 
 a,

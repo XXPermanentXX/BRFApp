@@ -20,5 +20,31 @@
   "Sign in with Metry": "Logga in med Metry",
   "PROJECT_IN_SHORT": "BRF Energi Är ett pågående forskningsprojekt. Om du har några frågor är du välkomment att <a href=\"mailto:%s\">kontakta oss</a>.",
   "LICENSE_NOTICE": "All källkod är släppt under <a href=\"https://www.apache.org/licenses/LICENSE-2.0\">Apache Licence 2.0</a> och publikt tillgänglig på <a href=\"%s\">Github</a>.",
-  "COPYRIGHT": "© %s KTH Kungliga Tekniska Högskolan"
+  "COPYRIGHT": "© %s KTH Kungliga Tekniska Högskolan",
+  "ACTION_TYPE_100": "Värme & varmvatten",
+  "ACTION_TYPE_101": "Kontroll & optimering",
+  "ACTION_TYPE_102": "Varmvatten",
+  "ACTION_TYPE_103": "Radiatorsystem",
+  "ACTION_TYPE_105": "Individuell mätning",
+  "ACTION_TYPE_106": "Hushållsaktiviteter",
+  "ACTION_TYPE_200": "El",
+  "ACTION_TYPE_201": "Utomhus/takvärme",
+  "ACTION_TYPE_202": "Belysning",
+  "ACTION_TYPE_203": "Tvättstuga",
+  "ACTION_TYPE_204": "Solceller",
+  "ACTION_TYPE_205": "Individuell mätning",
+  "ACTION_TYPE_206": "Hushållsaktiviteter",
+  "ACTION_TYPE_300": "Ventilation",
+  "ACTION_TYPE_301": "Kontroll & optimering",
+  "ACTION_TYPE_302": "Investeringar",
+  "Back to %s": "Back to %s",
+  "Category": {
+    "one": "Kategori",
+    "other": "Kategorier"
+  },
+  "Date": "Datum",
+  "Cost": "Kostnad",
+  "Description": "Beskrivning",
+  "Save": "Spara",
+  "Edit energy action": "Ändra energiåtgärd"
 }
