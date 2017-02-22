@@ -20,7 +20,7 @@ hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService, $translate, currentUser) {
+function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, $ionicSideMenuDelegate, User, Actions, Household, AuthService, $translate, currentUser) {
 
   $scope.currentUser = currentUser;
 
@@ -309,7 +309,9 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
     }, redirect);
 
     function redirect() {
-      $state.go('welcome');
+      $scope.currentUser = null;
+      $ionicSideMenuDelegate.toggleLeft();
+      $state.go('main.cooperative.list');
     }
   };
 
