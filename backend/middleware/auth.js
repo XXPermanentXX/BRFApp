@@ -14,7 +14,7 @@ const {
   METRY_CLIENT_ID,
   METRY_CLIENT_SECRET,
   METRY_PROFILE_PATH,
-  YOUPOWER_AUTH_URL
+  BRFENERGI_SERVICE_URL
 } = process.env;
 
 /**
@@ -53,7 +53,7 @@ exports.initialize = function initialize() {
     tokenURL: url.resolve(METRY_BASE_URL, METRY_PATH_TOKEN),
     clientID: METRY_CLIENT_ID,
     clientSecret: METRY_CLIENT_SECRET,
-    callbackURL: url.resolve(YOUPOWER_AUTH_URL, 'metry/callback')
+    callbackURL: url.resolve(BRFENERGI_SERVICE_URL, 'api/auth/metry/callback')
   }, (accessToken, refreshToken, profile, done) => {
     User.model.findOne({ metryId: profile._id }, (err, user) => {
       if (err) { return done(err); }

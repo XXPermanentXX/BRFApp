@@ -44,7 +44,7 @@ router.post('/invalidate', auth.authenticate(), function (req, res) {
 });
 
 function makeUrl(hash, query = null) {
-  const endpoint = url.parse(process.env.YOUPOWER_CLIENT_URL);
+  const endpoint = url.parse(process.env.BRFENERGI_CLIENT_URL);
   let hashed =  url.format(Object.assign(endpoint, {
     query: {},
     hash: `#/${ hash }`,
