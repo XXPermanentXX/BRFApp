@@ -568,7 +568,13 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }
 
     getLatLng.then(function (myLatLng) {
-      var mapOptions = {
+
+      /**
+       * Initialize map
+       * @type {google.maps.Map}
+       */
+
+      var map = new google.maps.Map(document.getElementById('map'), {
         mapTypeControl: false,
         streetViewControl: false,
         center: myLatLng,
@@ -576,9 +582,11 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         maxZoom: 16,
         minZoom: 5,
         mapTypeId: google.maps.MapTypeId.ROADMAP
-      };
+      });
 
-      var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+      /**
+       * Configure energy class pins
+       */
 
       var energyClasses = {
         A: '009036',
@@ -597,6 +605,10 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           new google.maps.Point(0, 0),
           new google.maps.Point(10, 34));
       });
+
+      /**
+       * Set up markers and accompanying info window
+       */
 
       var markers = [];
       var infowindow = new google.maps.InfoWindow();
@@ -625,7 +637,16 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         });
       });
 
-      setCenter(myLatLng);
+      /**
+       * Set initial map position
+       */
+
+      setInitialPosition(myLatLng, markers);
+
+      /**
+       * Set up marker cluster plugin
+       * @type {MarkerCLuster}
+       */
 
       new MarkerClusterer(map, markers, {
         maxZoom: 15,
@@ -639,6 +660,10 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
           iconAnchor: [20, 20]
         }]
       });
+
+      /**
+       * Expose some convenience properties on state
+       */
 
       $scope.map = map;
 
@@ -660,6 +685,37 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         });
       };
 
+      /**
+       * Try and start the map off with an as reasonable position as possible.
+       * If user is within a reasonable distance from the closest marker, fit
+       * user and markers in view. If the users is too far away (i.e. abroad or
+       * using a proxy service) just fit all cooperatives and ignore user
+       * position
+       */
+
+      function setInitialPosition(position, markers) {
+        var bounds;
+        var closestMarker = markers.map(function (marker) {
+          return getPositionDistance(myLatLng, marker.getPosition());
+        }).sort()[0];
+
+        if (closestMarker < 200) {
+          setCenter(myLatLng);
+        } else {
+          bounds = new google.maps.LatLngBounds();
+
+          markers
+            .map(function (marker) { return marker.getPosition(); })
+            .forEach(function (position) { bounds.extend(position); });
+
+          map.fitBounds(bounds);
+        }
+      }
+
+      /**
+       * Fit given position and a number of cooperatives in view
+       */
+
       function setCenter(center) {
         var bounds = new google.maps.LatLngBounds();
 
@@ -680,9 +736,17 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     });
   }
 
+  /**
+   * Convert degrees to radius
+   */
+
   function deg2rad(deg) {
     return deg * (Math.PI / 180);
   }
+
+  /**
+   * Calculate distance between two lat/lng points
+   */
 
   function getPositionDistance(posA, posB) {
     var lon1 = posA.lng();
@@ -702,6 +766,10 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 
     return d;
   }
+
+  /**
+   * Identify user and initialize the map
+   */
 
   AuthService.isAuthenticated().then(function (isAuthenticated) {
     if (isAuthenticated) {
