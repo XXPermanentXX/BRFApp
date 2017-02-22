@@ -19,7 +19,7 @@ $ npm install
 Create a file named `.env` in the project root (same folder as this file). Fill in the blanks and change properties as needed based on this example.
 
 ```bash
-# Generic OAuth
+# Server
 BRFENERGI_CLIENT_URL=http://localhost:8100/#/
 BRFENERGI_SERVICE_URL=http://localhost:3000
 
