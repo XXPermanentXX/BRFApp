@@ -1,6 +1,7 @@
 const dedent = require('dedent');
 const head = require('./partials/head');
 const scripts = require('./partials/scripts');
+const symbols = require('../components/icons/symbols');
 
 module.exports = function (view, state, prev, send) {
   return dedent`

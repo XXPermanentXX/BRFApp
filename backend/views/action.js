@@ -53,21 +53,21 @@ module.exports = function (state, prev, send) {
             ${ comments.length ? __n('Comment', 'Comments', comments.length) : __('No comments yet') }
           </h2>
 
-          ${ comments.length ? html`
-            <ol class="List">
+          <ol class="List">
             ${ comments.map(props => html`<li>${ comment(props) }</li>`) }
-            </ol>
-          ` : html`
-              <form action="comments" method="POST" class="Form">
-                <div class="Form-grid u-marginBb">
-                  <label class="Form-item">
-                    <span class="Form-label">${ __('Leave a comment') }</span>
-                    <textarea rows="3" class="Form-input"></textarea>
-                  </label>
-                </div>
-                <button type="submit" class="Button u-block u-sizeFull">${ __('Post') }</button>
-              </form>
-          ` }
+          </ol>
+
+          ${ state.user ? html`
+            <form action="comments" method="POST" class="Form">
+              <div class="Form-grid u-marginBb">
+                <label class="Form-item">
+                  <span class="Form-label">${ __('Leave a comment') }</span>
+                  <textarea rows="3" class="Form-input"></textarea>
+                </label>
+              </div>
+              <button type="submit" class="Button u-block u-sizeFull">${ __('Post') }</button>
+            </form>
+          ` : null }
         </div>
 
       </div>

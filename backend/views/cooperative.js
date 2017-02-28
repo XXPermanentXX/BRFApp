@@ -45,7 +45,7 @@ module.exports = function (state, prev, send) {
         <div class="u-marginVm" id="actions-${ id }">
           ${ cooperative.actions && numbered(cooperative.actions.map(action => {
             const props = Object.assign({ cooperativeId: id }, action);
-            return summary(props);
+            return summary(props, state);
           })) }
         </div>
       </div>

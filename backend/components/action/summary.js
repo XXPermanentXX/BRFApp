@@ -4,7 +4,7 @@ const comment = require('./comment');
 const resolve = require('../../resolve');
 const { __ } = require('../../locale');
 
-module.exports = function (props) {
+module.exports = function (props, state) {
   const numComments = props.comments.length;
   const href = resolve(`/cooperatives/${ props.cooperativeId }/actions/${ props._id }`);
 
@@ -16,9 +16,11 @@ module.exports = function (props) {
       </a>
       <div class="u-marginTb">
         ${ numComments ? comment(Object.assign({ slim: true }, props.comments[0])) : null }
-        <a class="u-block u-textS" href="${ href }#comments-${ props._id }">
-        ${ numComments > 1 ? __('View all %d comments', numComments) : __('Leave a comment') }
-        </a>
+        ${ state.user ? html`
+          <a class="u-block u-textS" href="${ href }#comments-${ props._id }">
+            ${ numComments > 1 ? __('View all %d comments', numComments) : __('Leave a comment') }
+          </a>
+        ` : null }
       </div>
     </article>
   `;
