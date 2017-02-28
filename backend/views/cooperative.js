@@ -16,7 +16,7 @@ module.exports = function (state, prev, send) {
       ${ header(state, prev, send) }
 
       <div class="App-container">
-        <h1 class="App-title">${ cooperative.name }</h1>
+        <h1 class="Display Display--1">${ cooperative.name }</h1>
 
         ${ performance({ performance: cooperative.performance }) }
 

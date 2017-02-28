@@ -23,10 +23,8 @@ const cssBundler = postcss([
 ]);
 
 let deferred = processCSS();
-const watcher = chokidar.watch('**/*.css', { cwd: ROOT });
-watcher.on('all', () => {
-  deferred = processCSS();
-});
+const watcher = chokidar.watch('**/*.css', { cwd: ROOT, ignoreInitial: true });
+watcher.on('all', () => { deferred = processCSS(); });
 
 function processCSS() {
   return new Promise((resolve, reject) => {

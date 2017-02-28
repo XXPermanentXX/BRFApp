@@ -5,14 +5,38 @@
 :root {
   --Button-border-width: 0;
   --Button-border-color: var(--color-primary);
+  --Button-background-color: var(--color-primary);
   --Button-color: #fff;
   --Button-font: inherit;
   --Button-padding: 1em;
   --Button-disabled-opacity: 0.6;
 }
 
-.Button {
+/**
+ * 1. Overwrite generic `:link` styles specifically
+ */
+
+.Button,
+.Button:link,
+.Button:visited {
+  cursor: default;
+  padding: var(--Button-padding); /* 1 */
+  color: var(--Button-color); /* 1 */
+  font-style: normal;  /* 1 */
   font-weight: var(--font-weight-bold);
-  background: var(--color-primary);
+  background-color: var(--Button-background-color);
   -webkit-font-smoothing: antialiased;
+}
+
+.Button:link:hover,
+.Button:link:focus,
+.Button:link:active {
+  text-decoration: none; /* 1 */
+}
+
+.Button--secondary,
+.Button--secondary:link,
+.Button--secondary:visited {
+  background-color: var(--color-dim);
+  border-color: var(--color-dim);
 }

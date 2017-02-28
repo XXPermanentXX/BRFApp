@@ -8,16 +8,16 @@
   background-color: #fff;
 }
 
-.Menu-link,
+.Menu-link:link,
 .Menu-link:visited {
   display: block;
   padding: var(--space-b) var(--space-s);
 }
 
-.Menu-item:last-child .Menu-link {
+.Menu-item:last-child .Menu-link:link {
   padding-bottom: var(--space-s);
 }
 
-.Menu-item:first-child .Menu-link {
+.Menu-item:first-child .Menu-link:link {
   padding-top: var(--space-s);
 }

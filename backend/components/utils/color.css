@@ -1,0 +1,37 @@
+/** @define utilities */
+
+.u-colorPrimary {
+  color: var(--color-primary) !important;
+}
+
+.u-colorAccent {
+  color: var(--color-accent) !important;
+}
+
+.u-colorSecondary {
+  color: var(--color-secondary) !important;
+}
+
+.u-colorBackground {
+  color: var(--color-background) !important;
+}
+
+.u-colorLight {
+  color: var(--color-light) !important;
+}
+
+.u-colorPale {
+  color: var(--color-pale) !important;
+}
+
+.u-colorDim {
+  color: var(--color-dim) !important;
+}
+
+.u-colorDark {
+  color: var(--color-dark) !important;
+}
+
+.u-colorText {
+  color: var(--color-text) !important;
+}

@@ -6,11 +6,13 @@
 @import "./components/action";
 @import "./components/app";
 @import "./components/button";
-@import "./components/performance";
+@import "./components/display";
+@import "./components/form";
 @import "./components/icons";
 @import "./components/list";
 @import "./components/menu";
 @import "./components/page-head";
+@import "./components/performance";
 @import "./components/type";
 
 @import "suitcss-utils-display";
@@ -44,13 +46,14 @@
   --md-viewport: 900px;
   --lg-viewport: 1280px;
 
-  --Grid-gutter-size: 60px;
+  --viewport-padding: 2vw;
+  --Grid-gutter-size: var(--viewport-padding);
 
   --space-n: 0;
   --space-b: calc(10rem / var(--base-font-size));
   --space-s: calc(14rem / var(--base-font-size));
   --space-m: calc(24rem / var(--base-font-size));
-  --space-l: calc(48rem / var(--base-font-size));
+  --space-l: calc(40rem / var(--base-font-size));
   --space-g: calc(50rem / var(--base-font-size));
 }
 
@@ -80,8 +83,8 @@ h1, h2, h3, h4, h5, h6, strong, b, dt {
   -webkit-font-smoothing: antialiased; /* 1 */
 }
 
-a,
-a:visited {
+:link,
+:visited {
   border: 0;
   padding: 0;
   background-color: transparent;
@@ -91,8 +94,13 @@ a:visited {
   -webkit-font-smoothing: antialiased;
 }
 
-a:hover,
-a:active {
+:visited[href^="http"],
+:visited[href^="//"] {
+  color: #AE38E8;
+}
+
+:link:hover,
+:link:active {
   text-decoration: underline;
 }
 

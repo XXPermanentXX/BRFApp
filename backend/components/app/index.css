@@ -5,7 +5,7 @@
 }
 
 .App-container {
-  padding: 2.5vw;
+  padding: var(--viewport-padding);
 }
 
 @media (--lg-viewport) {
@@ -15,12 +15,6 @@
     margin: 0 auto;
     position: relative;
   }
-}
-
-.App-title {
-  margin: 0.75em 0;
-  font-size: calc(32rem / var(--base-font-size));
-  font-weight: var(--font-weight-light);
 }
 
 .App-footer {

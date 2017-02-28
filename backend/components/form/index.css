@@ -1,0 +1,79 @@
+/** @define From */
+
+:root {
+  --Form-background-color: #fff;
+  --Form-border-color: var(--color-light);
+  --Form-padding-x: 0.6rem;
+  --Form-padding-y: 0.4rem;
+}
+
+.Form {
+
+}
+
+.Form-grid {
+  margin: 0 calc(var(--viewport-padding) * -1);
+}
+
+.Form-item {
+  display: flex;
+  align-items: baseline;
+  position: relative;
+  padding-top: calc(var(--Form-padding-x) + 1em);
+  border: 1px solid var(--Form-border-color);
+
+  background-color: #fff;
+}
+
+.Form-grid .Form-item {
+  border-width: 1px 0;
+}
+
+.Form-grid .Form-item + .Form-item {
+  border-width: 0 0 1px;
+}
+
+.Form-label {
+  position: absolute;
+  top: var(--Form-padding-y);
+  left: var(--Form-padding-x);
+
+  font-size: calc(14rem / var(--base-font-size));
+  font-weight: var(--font-weight-bold);
+  -webkit-font-smoothing: antialiased;
+}
+
+.Form-suffix {
+  padding: var(--Form-padding-y) var(--Form-padding-x);
+  font-size: calc(14rem / var(--base-font-size));
+  font-weight: var(--font-weight-bold);
+  -webkit-font-smoothing: antialiased;
+}
+
+.Form-input {
+  box-sizing: border-box;
+  display: block;
+  flex-grow: 1;
+  padding: var(--Form-padding-y) var(--Form-padding-x);
+  border: 0;
+
+  outline: 0;
+  -webkit-appearance: none;
+}
+
+.Form-input::-webkit-calendar-picker-indicator {
+  opacity: 1;
+}
+
+.Form-input::-webkit-clear-button,
+.Form-input::-webkit-inner-spin-button {
+  display: none;
+}
+
+.Form-select {
+  flex-grow: 1;
+  padding: var(--Form-padding-y) var(--Form-padding-x);
+  border: 0;
+  outline: 0;
+  -webkit-appearance: none;
+}
