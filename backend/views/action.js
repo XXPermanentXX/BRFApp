@@ -6,7 +6,7 @@ const footer = require('../components/app/footer');
 const comment = require('../components/comment');
 const resolve = require('../resolve');
 const { chevron } = require('../components/icons');
-const { format } = require('../components/utils');
+const { format, capitalize } = require('../components/utils');
 const { __, __n } = require('../locale');
 
 const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302 ];
@@ -79,11 +79,16 @@ module.exports = function (state, prev, send) {
 
 function form(action) {
   return html`
-    <form action="" method="PUT" class="Form">
+    <form action="" method="POST" class="Form" enctype="application/x-www-form-urlencoded">
+      <input type="hidden" name="_method" value="PUT">
       <div class="Form-grid u-marginBb">
         <label class="Form-item">
+          <span class="Form-label">${ __('Name') }</span>
+          <input type="text" class="Form-input" name="name" value=${ action.name } />
+        </label>
+        <label class="Form-item">
           <span class="Form-label">${ __n('Category', 'Categories', TYPES.length) }</span>
-          <select class="Form-select Form-select--multiple" multiple>
+          <select class="Form-select Form-select--multiple" name="types" multiple>
             ${ TYPES.filter(type => (type % 100) === 0).map(category => html`
               <optgroup label=${ __(`ACTION_TYPE_${ category }`) }>
                 <option selected=${ action.types.includes(category) } value=${ category }>
@@ -102,16 +107,16 @@ function form(action) {
         </label>
         <label class="Form-item">
           <span class="Form-label">${ __('Date') }</span>
-          <input type="date" class="Form-input Form-input--date" value=${ moment(action.date).format('YYYY-MM-DD') } />
+          <input type="date" class="Form-input Form-input--date" name="date" value=${ moment(action.date).format('YYYY-MM-DD') } />
         </label>
         <label class="Form-item">
           <span class="Form-label">${ __('Cost') }</span>
-          <input type="text" class="Form-input" value=${ action.cost || '' } />
+          <input type="number" class="Form-input Form-input--number" name="cost" value=${ action.cost || '' } />
           <span class="Form-suffix">kr</span>
         </label>
         <label class="Form-item">
           <span class="Form-label">${ __('Description') }</span>
-          <textarea rows="3" class="Form-input">${ action.description }</textarea>
+          <textarea rows="3" class="Form-input" name="description">${ action.description }</textarea>
         </label>
       </div>
 
@@ -125,7 +130,7 @@ function properties(action) {
   const types = action.types.map(type => __(`ACTION_TYPE_${ type }`)).join(', ');
   const props = {
     [__n('Category', 'Categories', action.types.length)]: types,
-    [__('Date')]: moment(action.date).format('MMMM YYYY')
+    [__('Date')]: capitalize(moment(action.date).format('MMMM YYYY'))
   };
 
   if (action.cost) {

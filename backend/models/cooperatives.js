@@ -188,7 +188,7 @@ exports.addAction = function(id, action, user, cb) {
   });
 };
 
-exports.updateAction = function(id, actionId, newAction, user, cb) {
+exports.updateAction = function(id, actionId, newAction, cb) {
   Cooperative.findOne({
     _id: id
   }, function(err, cooperative){
@@ -201,22 +201,18 @@ exports.updateAction = function(id, actionId, newAction, user, cb) {
       if(!action) {
         cb('Cooperative action not found');
       } else {
-        action.name = newAction.name;
-        action.date = newAction.date;
-        action.description = newAction.description;
-        action.cost = newAction.cost;
-        action.types = newAction.types;
+        Object.assign(action, newAction);
         cooperative.markModified('actions');
         cooperative.save(function(err){
           if (err) { return cb(err); }
-          cb(err,cooperative);
+          cb(err, action);
         });
       }
     }
   });
 };
 
-exports.deleteAction = function(id, actionId, user, cb) {
+exports.deleteAction = function(id, actionId, cb) {
   Cooperative.findOne({
     _id: id
   }, function(err, cooperative){

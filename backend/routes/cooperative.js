@@ -370,7 +370,7 @@ router.get('/:id/actions', checkParams('id'), function (req, res) {
 router.put('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
   const { body, params: { id, actionId }} = req;
 
-  Cooperative.updateAction(id, actionId, body, null, (err, action) => {
+  Cooperative.updateAction(id, actionId, body, (err, action) => {
     if (err) {
       res.status(500).render(
         `/cooperatives${ req.url }`,
@@ -458,7 +458,7 @@ router.get('/:id/actions/:actionId', checkParams('id', 'actionId'), function (re
 router.delete('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
   const { params: { id, actionId }} = req;
 
-  Cooperative.deleteAction(id, actionId, null, err => {
+  Cooperative.deleteAction(id, actionId, err => {
     if (err) {
       res.status(500).redirect(`/cooperatives${ req.url }`);
     } else {

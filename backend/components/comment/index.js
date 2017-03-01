@@ -33,7 +33,8 @@ module.exports = function (props, action, state) {
 
   function form() {
     return html`
-      <form action="${ action._id }/comments/${ props._id }?_method=DELETE" method="POST" class="Form">
+      <form action="${ action._id }/comments/${ props._id }" method="POST" class="Form" enctype="application/x-www-form-urlencoded">
+        <input type="hidden" name="_method" value="DELETE">
         <button type="submit" class="Comment-delete">${ __('Delete') }</button>
       </form>
     `;
