@@ -1,4 +1,11 @@
 const Y18N = require('y18n');
+const moment = require('moment');
+
+/**
+ * Include locales in browser build
+ */
+
+require('moment/locale/sv');
 const lang = {
   sv: require('./sv'),
   en: require('./en')
@@ -16,6 +23,10 @@ const My18N = function (options) {
 };
 
 My18N.prototype = Object.create(Y18N.prototype);
+My18N.prototype.setLocale = function (locale) {
+  moment.locale(locale);
+  return Y18N.prototype.setLocale.call(this, locale);
+};
 
 /**
  * Adaption for browser bundle

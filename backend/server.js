@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const compression = require('compression');
 const expressValidator = require('express-validator');
+const methodOverride = require('method-override');
 const mongoose = require('mongoose');
 const pages = require('./pages');
 const routes = require('./routes');
@@ -93,6 +94,7 @@ server.use(cookieParser());
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.raw());
+server.use(methodOverride('_method'));
 server.use(session({
   secret: process.env.BRFENERGI_SESSION_SECRET,
   resave: false,

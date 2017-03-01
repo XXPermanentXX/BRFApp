@@ -1,0 +1,29 @@
+/** @define Comment */
+
+.Comment {
+  margin: var(--space-b) 0;
+  font-weight: var(--font-weight-light);
+  font-size: calc(14rem / var(--base-font-size));
+  line-height: calc(20rem / var(--base-font-size));
+}
+
+.Comment-date {
+  float: right;
+  padding-left: 1em;
+  color: var(--color-dim);
+  font-weight: var(--font-weight-bold);
+  -webkit-font-smoothing: antialiased;
+}
+
+.Comment--slim {
+  margin: calc(var(--space-b) / 2) 0;
+}
+
+.Comment-author {
+  font-weight: var(--font-weight-bold);
+  -webkit-font-smoothing: antialiased;
+}
+
+.Comment-delete {
+  -webkit-font-smoothing: initial;
+}

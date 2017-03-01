@@ -9,7 +9,11 @@ module.exports = function render(req, res, next) {
   const orig = res.render;
 
   res.render = function (route, state, format) {
-    if (route && req.accepts('html')) {
+    if (typeof route === 'object' && !state) {
+      state = route;
+    }
+
+    if (typeof route === 'string' && req.accepts('html')) {
 
       /**
        * Pipe given state through (optional) format function before sending
@@ -56,29 +60,7 @@ module.exports = function render(req, res, next) {
           }
         });
       } else {
-        orig.call(res, route, Object.assign({
-          'user': {
-            '_id': '560bef1de0d64de648ae2538',
-            'cooperativeId': '5638c9656579012957b5e273',
-            'email': 'hannaha@kth.se',
-            'metryId': '57dbc0e5637e2562008b463a',
-            'accessToken': '40ef4afd1a0ce0586b846d20ec0b1cbd723cbb19',
-            'profile': {
-              'name': 'Hanna Hasselqvist',
-              'toRehearse': {
-                'setByUser': true,
-                'na': true,
-                'declined': true,
-                'done': true
-              },
-              'language': 'sv'
-            },
-            'cooperative': {
-              'name': 'Brf Älven',
-              '_id': '5638c9656579012957b5e273'
-            }
-          }
-        }, state));
+        orig.call(res, route, state);
       }
     }
   };

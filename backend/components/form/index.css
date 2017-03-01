@@ -58,6 +58,7 @@
   border: 0;
 
   outline: 0;
+  font-size: 16px;
   -webkit-appearance: none;
 }
 
@@ -75,5 +76,6 @@
   padding: var(--Form-padding-y) var(--Form-padding-x);
   border: 0;
   outline: 0;
+  font-size: 16px;
   -webkit-appearance: none;
 }

@@ -35,3 +35,7 @@ exports.format = function (src) {
 
   return spaced;
 };
+
+exports.capitalize = function (str) {
+  return str[0].toUpperCase() + str.substr(1);
+};

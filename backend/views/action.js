@@ -3,7 +3,7 @@ const moment = require('moment');
 const header = require('../components/page-head');
 const { defintion } = require('../components/list');
 const footer = require('../components/app/footer');
-const comment = require('../components/action/comment');
+const comment = require('../components/comment');
 const resolve = require('../resolve');
 const { chevron } = require('../components/icons');
 const { format } = require('../components/utils');
@@ -53,16 +53,16 @@ module.exports = function (state, prev, send) {
             ${ comments.length ? __n('Comment', 'Comments', comments.length) : __('No comments yet') }
           </h2>
 
-          <ol class="List">
-            ${ comments.map(props => html`<li>${ comment(props) }</li>`) }
+          <ol class="List u-marginVm">
+            ${ comments.map(props => html`<li>${ comment(props, action, state) }</li>`) }
           </ol>
 
           ${ state.user ? html`
-            <form action="comments" method="POST" class="Form">
+            <form action="${ action._id }/comments" method="POST" class="Form">
               <div class="Form-grid u-marginBb">
                 <label class="Form-item">
                   <span class="Form-label">${ __('Leave a comment') }</span>
-                  <textarea rows="3" class="Form-input"></textarea>
+                  <textarea name="comment" rows="3" class="Form-input"></textarea>
                 </label>
               </div>
               <button type="submit" class="Button u-block u-sizeFull">${ __('Post') }</button>

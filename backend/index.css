@@ -6,6 +6,7 @@
 @import "./components/action";
 @import "./components/app";
 @import "./components/button";
+@import "./components/comment";
 @import "./components/display";
 @import "./components/form";
 @import "./components/icons";
@@ -84,12 +85,14 @@ h1, h2, h3, h4, h5, h6, strong, b, dt {
 }
 
 :link,
-:visited {
+:visited,
+button {
   border: 0;
   padding: 0;
   background-color: transparent;
   text-decoration: none;
   font-style: italic;
+  cursor: pointer;
   color: var(--color-primary);
   -webkit-font-smoothing: antialiased;
 }
@@ -100,7 +103,9 @@ h1, h2, h3, h4, h5, h6, strong, b, dt {
 }
 
 :link:hover,
-:link:active {
+:link:active,
+button:hover,
+button:active {
   text-decoration: underline;
 }
 

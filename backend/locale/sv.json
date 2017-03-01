@@ -53,5 +53,7 @@
     "other": "%d Kommentarer"
   },
   "No comments yet": "Inga kommentarer än",
-  "Post": "Skicka"
+  "Post": "Skicka",
+  "View all %d comments": "Visa alla %d kommentarer",
+  "Delete": "Ta bort"
 }

@@ -91,6 +91,10 @@
   }
 }
 
+/**
+ * Utilities for toggling visibility with the target selector
+ */
+
 .u-hiddenTarget:not(:target) {
   display: none !important;
 }

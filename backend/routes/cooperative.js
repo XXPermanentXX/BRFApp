@@ -514,18 +514,11 @@ router.post('/:id/actions/:actionId/comments', auth.authenticate(), checkParams(
         Object.assign({ err: err.message }, body)
       );
     } else {
-      res.render(
-        `/cooperatives${ req.url }/${ id }`,
-        comment,
-        (data, done) => Cooperative.get(id, null, (err, cooperative) => {
-          if (err) { return done(err); }
-          done(null, {
-            cooperatives: [ cooperative ],
-            actions: cooperative.actions,
-            comments: [ data ]
-          });
-        })
-      );
+      if (req.accepts('html')) {
+        res.redirect(`/cooperatives/${ id }/actions/${ actionId }`);
+      } else {
+        res.render(`/cooperatives${ req.url }/${ id }`, comment);
+      }
     }
   });
 
@@ -572,18 +565,11 @@ router.get('/:id/actions/:actionId/comments', checkParams('id', 'actionId'), fun
     if (err) {
       res.status(404).render('/404', { err: err.message });
     } else {
-      res.render(
-        `/cooperatives${ req.url }`,
-        comments,
-        (data, done) => Cooperative.get(id, null, (err, cooperative) => {
-          if (err) { return done(err); }
-          done(null, {
-            cooperatives: [ cooperative ],
-            actions: cooperative.actions,
-            comments: data
-          });
-        })
-      );
+      if (req.accepts('html')) {
+        res.redirect(`/cooperatives/${ id }/actions/${ actionId }`);
+      } else {
+        res.render(`/cooperatives${ req.url }`, comments);
+      }
     }
   });
 
