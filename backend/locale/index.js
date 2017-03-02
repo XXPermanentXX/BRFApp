@@ -1,4 +1,4 @@
-const Y18N = require('y18n');
+const y18n = require('y18n');
 const moment = require('moment');
 
 /**
@@ -14,35 +14,32 @@ const lang = {
 const options = { directory: __dirname };
 
 /**
- * Custom extension of y18n
- * @param {Object} options Options for i18n
- */
-
-const My18N = function (options) {
-  return Y18N.call(this, options);
-};
-
-My18N.prototype = Object.create(Y18N.prototype);
-My18N.prototype.setLocale = function (locale) {
-  moment.locale(locale);
-  return Y18N.prototype.setLocale.call(this, locale);
-};
-
-/**
  * Adaption for browser bundle
  */
 
 if (typeof window !== 'undefined') {
   options.updateFiles = false;
   options.locale = process.env.BRFENERGI_LANG;
+}
 
-  /**
-   * Extend y18n with custom (static) `_readLocaleFile`
-   */
+const my18n = module.exports = y18n(options);
 
-  My18N.prototype._readLocaleFile = function () {
+/**
+ * Hijack native `setLocale` to configure moment at the same time
+ */
+
+const orig = my18n.setLocale;
+my18n.setLocale = function (locale) {
+  moment.locale(locale);
+  return orig.call(this, locale);
+};
+
+/**
+ * Extend y18n with custom (static) `_readLocaleFile`
+ */
+
+if (typeof window !== 'undefined') {
+  my18n._readLocaleFile = function () {
     this.cache[this.locale] = lang[this.locale];
   };
 }
-
-module.exports = new My18N(options);

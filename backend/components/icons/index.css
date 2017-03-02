@@ -4,3 +4,14 @@
   height: 1em;
   width: 1em;
 }
+
+.Icon--large {
+  width: calc(80rem / var(--base-font-size));
+  height: calc(80rem / var(--base-font-size));
+}
+
+.Icon--center {
+  display: block;
+  margin: 0 auto;
+  position: relative;
+}

@@ -5,18 +5,27 @@ const { defintion } = require('../components/list');
 const footer = require('../components/app/footer');
 const comment = require('../components/comment');
 const resolve = require('../resolve');
-const { chevron } = require('../components/icons');
-const { format, capitalize } = require('../components/utils');
+const { chevron, loader } = require('../components/icons');
+const { format, capitalize, className } = require('../components/utils');
 const { __, __n } = require('../locale');
 
+const IS_LIVE = typeof window !== 'undefined';
 const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302 ];
 
 module.exports = function (state, prev, send) {
   const { cooperatives, actions, location: { params }} = state;
-  const action = actions.find(props => props._id === params.action);
-  const cooperative = cooperatives.find(props => props._id === action.cooperative);
+  const action = actions.items.find(props => props._id === params.action);
 
-  // return html`<div />`;
+  if (!action) {
+    send('actions:fetch', params.action);
+    return loading(state, prev, send);
+  }
+
+  const cooperative = cooperatives.items.find(props => props._id === action.cooperative);
+  if (!cooperative) {
+    send('cooperatives:fetch', action.cooperative);
+    return loading(state, prev, send);
+  }
 
   return html`
     <div class="App">
@@ -28,19 +37,25 @@ module.exports = function (state, prev, send) {
           ${ chevron('left') }${ __('Back to %s', cooperative.name) }
         </a>
 
-        <div class="u-hiddenTargetComplex u-marginTm u-marginBl" id="form-${ action._id }">
-          <div class="u-hiddenTargetSlave" id="details-${ action._id }">
-            ${ defintion(properties(action)) }
-          </div>
-
-          ${ state.user ? html`
-            <div class="u-hiddenComplexTarget">
-              ${ form(action) }
+        <div class=${ className('u-marginTm u-marginBl', { 'u-hiddenTargetComplex': !IS_LIVE }) } id="form-${ action._id }">
+          ${ !IS_LIVE || state.actions.isEditing !== action._id ? html`
+            <div class=${ className({ 'u-hiddenTargetSlave': !IS_LIVE }) } id="details-${ action._id }">
+              ${ defintion(properties(action)) }
             </div>
           ` : null }
 
-          ${ state.user ? html`
-            <a class="Button u-block u-marginVs u-hiddenTargetSlave" href="#form-${ action._id }">
+          ${ state.user._id && (!IS_LIVE || state.actions.isEditing === action._id) ? html`
+            <div class=${ className({ 'u-hiddenComplexTarget': !IS_LIVE }) }>
+              ${ form(action, toggleForm(false)) }
+            </div>
+          ` : null }
+
+
+          ${ state.user._id && (!IS_LIVE || state.actions.isEditing !== action._id) ? html`
+            <a  href="#form-${ action._id }"
+              data-no-routing="true"
+              onclick=${ toggleForm(true) }
+              class=${ className('Button u-block u-marginVs', { 'u-hiddenTargetSlave': !IS_LIVE }) }>
               ${ __('Edit energy action') }
             </a>
           ` : null }
@@ -55,7 +70,7 @@ module.exports = function (state, prev, send) {
             ${ action.comments.map(props => html`<li>${ comment(props, action, state) }</li>`) }
           </ol>
 
-          ${ state.user ? html`
+          ${ state.user._id ? html`
             <form action="${ action._id }/comments" method="POST" class="Form">
               <div class="Form-grid u-marginBb">
                 <label class="Form-item">
@@ -73,9 +88,21 @@ module.exports = function (state, prev, send) {
       ${ footer(state, prev, send) }
     </div>
   `;
+
+  function toggleForm(toggle) {
+    return event => {
+      if (toggle) {
+        send('actions:edit', action._id);
+      } else {
+        send('actions:cancel');
+      }
+
+      event.preventDefault();
+    };
+  }
 };
 
-function form(action) {
+function form(action, cancel) {
   return html`
     <form action="" method="POST" class="Form" enctype="application/x-www-form-urlencoded">
       <input type="hidden" name="_method" value="PUT">
@@ -118,9 +145,20 @@ function form(action) {
         </label>
       </div>
 
-      <a href="#details-${ action._id }" class="Button Button--secondary u-block u-marginBb">${ __('Cancel') }</a>
+      <a href="#details-${ action._id }" data-no-routing="true" onclick=${ cancel } class="Button Button--secondary u-block u-marginBb">${ __('Cancel') }</a>
       <button type="submit" class="Button u-block u-sizeFull">${ __('Save') }</button>
     </form>
+  `;
+}
+
+function loading(state, prev, send) {
+  return html`
+    <div class="App">
+      ${ header(state, prev, send) }
+      <div class="App-container">
+        ${ loader() }
+      </div>
+    </div>
   `;
 }
 

@@ -9,7 +9,9 @@ module.exports = function (view, state, prev, send) {
     <html lang="${ state.lang }">
       ${ head(state) }
       <body>
-        ${ view(state, prev, send) }
+        <div class="js-static">
+          ${ view(state, prev, send) }
+        </div>
         <pre style="width: 100%; overflow: auto;">${ JSON.stringify(state, null, 2) }</pre>
         ${ symbols() }
         ${ scripts(state) }

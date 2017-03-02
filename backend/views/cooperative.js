@@ -4,18 +4,39 @@ const performance = require('../components/performance');
 const { defintion, numbered } = require('../components/list');
 const { format } = require('../components/utils');
 const { summary } = require('../components/action');
+const { loader } = require('../components/icons');
 const footer = require('../components/app/footer');
 const { __, __n } = require('../locale');
 
 module.exports = function (state, prev, send) {
   const { cooperative: id } = state.location.params;
-  const cooperative = state.cooperatives.find(props => props._id === id);
-  const actions = state.actions.filter(props => props.cooperative === id);
+  const cooperative = state.cooperatives.items.find(props => props._id === id);
+  const actions = state.actions.items.filter(props => props.cooperative === id);
   const currentYear = cooperative.performances.find(props => {
     return props.year === (new Date()).getFullYear();
   });
 
-  // return html`<div />`;
+  if (!cooperative) {
+    send('cooperatives:fetch', id);
+
+    return html`
+      <div class="App">
+        ${ header(state, prev, send) }
+        <div class="App-container">
+          ${ performance() }
+          ${ loader() }
+        </div>
+      </div>
+    `;
+  }
+
+  const hasAllActions = actions.length === cooperative.actions.length;
+  if (!hasAllActions) {
+    const missing = cooperative.actions.filter(id => {
+      return !actions.find(action => action._id === id);
+    });
+    send('actions:fetch', missing);
+  }
 
   return html`
     <div class="App">
@@ -49,7 +70,7 @@ module.exports = function (state, prev, send) {
         }) }
 
         <div class="u-marginVm" id="actions-${ id }">
-          ${ numbered(actions.map(action => summary(action, state))) }
+          ${ hasAllActions ? numbered(actions.map(action => summary(action, state))) : loader() }
         </div>
       </div>
 

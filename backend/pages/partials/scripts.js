@@ -1,7 +1,8 @@
 const html = require('choo/html');
 
-module.exports = function () {
-  return html`
-    <script src="/index.js"></script>
-  `;
+module.exports = function (state) {
+  return [
+    html`<script type="application/json" class="js-initialState">${ JSON.stringify(state) }</script>`,
+    html`<script src="/index.js"></script>`
+  ];
 };

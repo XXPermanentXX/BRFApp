@@ -14,3 +14,11 @@ exports.chevron = function (direction) {
     </icon>
   `;
 };
+
+exports.loader = function () {
+  return html`
+    <svg class="Icon Icon--large Icon--center">
+      <use class="Icon-path" xlink:href="#icon-loader" />
+    </icon>
+  `;
+};

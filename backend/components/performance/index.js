@@ -14,9 +14,9 @@ const ENERGY_CLASSES = {
   G: '#E2001A'
 };
 
-module.exports = function (props) {
+module.exports = function (props = {}) {
   const { performance } = props;
-  const energyClass = getEnergyClass(performance);
+  const energyClass = performance && getEnergyClass(performance);
   const classPosition = energyClass ? Object.keys(ENERGY_CLASSES).indexOf(energyClass) : 3;
   const linkPosition = classPosition > Object.keys(ENERGY_CLASSES).length / 2 ? 'left' : 'right';
 

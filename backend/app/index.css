@@ -3,18 +3,18 @@
 @import "suitcss-base";
 
 @import "suitcss-components-grid";
-@import "./components/action";
-@import "./components/app";
-@import "./components/button";
-@import "./components/comment";
-@import "./components/display";
-@import "./components/form";
-@import "./components/icons";
-@import "./components/list";
-@import "./components/menu";
-@import "./components/page-head";
-@import "./components/performance";
-@import "./components/type";
+@import "../components/action";
+@import "../components/app";
+@import "../components/button";
+@import "../components/comment";
+@import "../components/display";
+@import "../components/form";
+@import "../components/icons";
+@import "../components/list";
+@import "../components/menu";
+@import "../components/page-head";
+@import "../components/performance";
+@import "../components/type";
 
 @import "suitcss-utils-display";
 @import "suitcss-utils-flex";
@@ -24,7 +24,7 @@
 @import "suitcss-utils-size";
 @import "suitcss-utils-space";
 @import "suitcss-utils-text";
-@import "./components/utils";
+@import "../components/utils";
 
 :root {
   --font-family: "Lato", sans-serif;

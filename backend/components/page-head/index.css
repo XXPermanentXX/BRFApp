@@ -91,11 +91,13 @@
   }
 }
 
+.PageHead-menu.is-open,
 .PageHead-menu:target {
   transform: translateY(calc(0% - 20px));
   transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.PageHead-menu.is-open ~ .PageHead-trigger,
 .PageHead-menu:target ~ .PageHead-trigger {
   display: none;
 }
@@ -115,6 +117,7 @@
   }
 }
 
+.PageHead-menu.is-open ~ .PageHead-untrigger,
 .PageHead-menu:target ~ .PageHead-untrigger {
   display: block;
 }

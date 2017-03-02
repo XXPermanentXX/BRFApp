@@ -13,7 +13,7 @@ const routes = require('./routes');
 const lang = require('./middleware/lang');
 const auth = require('./middleware/auth');
 const method = require('./middleware/method');
-const app = require('./index');
+const app = require('./app');
 
 mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
 

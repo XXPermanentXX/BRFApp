@@ -5,7 +5,7 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "restart": "nodemon -x 'node -r ./hotfix backend/server.js' -i frontend -i backend/locale -i backend/views -i backend/components",
+    "restart": "nodemon -x 'node -r ./hotfix backend/server.js' -i frontend -i backend/locale -i backend/views -i backend/components -i backend/app",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec",
     "build:js": "browserify backend/index.js -t localenvify -t yo-yoify -t [ babelify --presets [ babel-preset-es2015 ] ] -g unassertify -g uglifyify | uglifyjs -o backend/public/index.js",

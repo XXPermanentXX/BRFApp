@@ -6,7 +6,7 @@ const watchify = require('watchify-middleware');
 const chokidar = require('chokidar');
 
 const ROOT = path.resolve(__dirname, '..');
-const bundler = browserify('index.js', {
+const bundler = browserify('app/index.js', {
   basedir: ROOT,
   debug: true,
   transform: [
@@ -28,7 +28,7 @@ watcher.on('all', () => { deferred = processCSS(); });
 
 function processCSS() {
   return new Promise((resolve, reject) => {
-    const file = path.resolve(ROOT, 'index.css');
+    const file = path.resolve(ROOT, 'app/index.css');
     fs.readFile(file, (err, css) => {
       if (err) { return reject(err); }
       cssBundler.process(css, { from: file, to: file }).then(resolve, reject);

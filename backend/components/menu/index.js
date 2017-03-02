@@ -4,11 +4,11 @@ const { __ } = require('../../locale');
 
 const pages = {
   home: {
-    href: state => state.user && resolve(`/cooperatives/${ state.user.cooperative }`),
+    href: state => state.user._id && resolve(`/cooperatives/${ state.user.cooperative }`),
     title: state => {
-      if (!state.user) { return; }
+      if (!state.user._id) { return; }
 
-      const cooperative = state.cooperatives.find(props => {
+      const cooperative = state.cooperatives.items.find(props => {
         return props._id === state.user.cooperative;
       });
 
@@ -24,11 +24,11 @@ const pages = {
     title: () => __('How it works')
   },
   signout: {
-    href: state => state.user && resolve('/auth/signout'),
+    href: state => state.user._id && resolve('/auth/signout'),
     title: () => __('Sign out')
   },
   signin: {
-    href: state => !state.user && resolve('/auth'),
+    href: state => !state.user._id && resolve('/auth'),
     title: () => __('Sign in')
   }
 };
@@ -38,15 +38,13 @@ const extract = links => state => Object.keys(pages)
   .map(key => ({ href: pages[key].href(state), title: pages[key].title(state) }))
   .filter(page => page.href);
 
-exports.trigger = (state, prev, send) => () => send('menu:open', true);
-
 exports.extract = extract;
 
-exports.list = links => state => html`
+exports.list = links => (state, prev, send) => html`
   <ul class="Menu">
     ${ (extract(links || Object.keys(pages))(state)).map(props => html`
       <li class="Menu-item">
-        <a href=${ props.href } class="Menu-link">${ props.title }</a>
+        <a href=${ props.href } onclick=${ () => send('menu:close') } class="Menu-link">${ props.title }</a>
       </li>
     `) }
   </ul>

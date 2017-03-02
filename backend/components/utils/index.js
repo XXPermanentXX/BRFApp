@@ -39,3 +39,16 @@ exports.format = function (src) {
 exports.capitalize = function (str) {
   return str[0].toUpperCase() + str.substr(1);
 };
+
+exports.className = function (...args) {
+  const classList = typeof args[0] === 'string' ? args[0].split(' ') : [];
+  const hash = typeof args[0] === 'object' ? args[0] : args[1] || {};
+
+  Object.keys(hash).forEach(key => {
+    if (hash[key]) {
+      classList.push(key);
+    }
+  });
+
+  return classList.join(' ');
+};

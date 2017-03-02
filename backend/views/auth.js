@@ -7,7 +7,7 @@ module.exports = function (state, prev, send) {
   return html`
     <div class="App">
       ${ header(state, prev, send) }
-      <a href=${ resolve('/auth/metry') } class="Button Button--primary">${ __('Sign in with Metry') }</a>
+      <a href=${ resolve('/auth/metry') } data-no-routing="true" class="Button Button--primary">${ __('Sign in with Metry') }</a>
     </div>
   `;
 };

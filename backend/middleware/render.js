@@ -48,9 +48,7 @@ module.exports = function render(req, res, next) {
       if (req.user) {
         User.getProfile(req.user._id, (err, user) => {
           if (err) {
-            res.status(500).render('/error', {
-              err: err.message
-            });
+            res.status(500).render('/error', { err: err.message });
           } else {
             orig.call(res, route, Object.assign({ user }, state));
           }

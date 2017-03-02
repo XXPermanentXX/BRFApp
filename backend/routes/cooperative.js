@@ -18,7 +18,7 @@ router.post('/', auth.authenticate(), function (req, res) {
       res.render(
         `/cooperatives/${ cooperative._id }`,
         cooperative,
-        (data, done) => done(null, { cooperatives: [ data ] })
+        (data, done) => done(null, { cooperatives: { items: [ data ] }})
       );
     }
   });
@@ -65,8 +65,8 @@ router.get('/:id', isMongoId('id'), function (req, res) {
         `/cooperatives${ req.url }`,
         cooperative,
         (data, done) => done(null, {
-          cooperatives: [ data ],
-          actions: data.actions
+          cooperatives: { items: [ data ]},
+          actions: { items: data.actions }
         })
       );
     }
@@ -90,7 +90,7 @@ router.get('/', function (req, res) {
       res.render(
         '/cooperatives',
         cooperatives,
-        (data, done) => done(null, { cooperatives })
+        (data, done) => done(null, { cooperatives: { items: data }})
       );
     }
   });
@@ -115,7 +115,7 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), function (req, res) {
       req.render(
         `/cooperatives/${ id }`,
         result,
-        (data, done) => done(null, { cooperatives: [ data ] })
+        (data, done) => done(null, { cooperatives: { items: [ data ] }})
       );
     }
   });
@@ -152,10 +152,10 @@ router.delete('/:id/editor/:editorId', auth.authenticate(), isMongoId('id', 'edi
   Users.get(req.params.editorId, (err, user) => {
     Cooperatives.deleteEditor(req.params.id, user, err => {
       if (err) {
-        res.status(500);
+        res.status(500).render('/error', { err: err.message });
+      } else {
+        res.redirect(`/cooperatives/${ req.params.id }`);
       }
-
-      res.redirect(`/cooperatives/${ req.params.id }`);
     });
   });
 

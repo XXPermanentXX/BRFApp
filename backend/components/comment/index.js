@@ -4,13 +4,13 @@ const { __ } = require('../../locale');
 
 const SHORT_LENGTH = 50;
 
-module.exports = function (props, action, state) {
+module.exports = function (comment, action, state) {
   const classList = [ 'Comment' ];
   const { user } = state;
-  let content = props.comment;
-  const isAuthor = user && (user._id === props.user);
+  let content = comment.comment;
+  const isAuthor = user._id && comment.user;
 
-  if (props.short) {
+  if (comment.short) {
     classList.push('Comment--slim');
 
     if (content.length > SHORT_LENGTH) {
@@ -19,21 +19,21 @@ module.exports = function (props, action, state) {
   }
 
   return html`
-    <div class=${ classList.join(' ') } id="comment-${ props._id }">
-      ${ props.short ? null : html`
-        <time class="Comment-date" datetime=${ JSON.stringify(props.data) }>
-          ${ moment(props.date).fromNow() }
+    <div class=${ classList.join(' ') } id="comment-${ comment._id }">
+      ${ comment.short ? null : html`
+        <time class="Comment-date" datetime=${ JSON.stringify(comment.date) }>
+          ${ moment(comment.date).fromNow() }
         </time>
       ` }
-      <strong class="Comment-author">${ props.author }</strong>
-      ${ props.short ? content : html`<div class="Comment-body">${ content }</div>` }
-      ${ !props.short && isAuthor ? form() : null }
+      <strong class="Comment-author">${ comment.author }</strong>
+      ${ comment.short ? content : html`<div class="Comment-body">${ content }</div>` }
+      ${ !comment.short && isAuthor ? form() : null }
     </div>
   `;
 
   function form() {
     return html`
-      <form action="${ action._id }/comments/${ props._id }" method="POST" class="Form" enctype="application/x-www-form-urlencoded">
+      <form action="${ action._id }/comments/${ comment._id }" method="POST" class="Form" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="_method" value="DELETE">
         <button type="submit" class="Comment-delete">${ __('Delete') }</button>
       </form>
