@@ -10,6 +10,7 @@ const { __, __n } = require('../locale');
 module.exports = function (state, prev, send) {
   const { cooperative: id } = state.location.params;
   const cooperative = state.cooperatives.find(props => props._id.toString() === id);
+  const actions = state.actions.filter(props => props.cooperative.toString() === id);
 
   return html`
     <div class="App">
@@ -43,10 +44,7 @@ module.exports = function (state, prev, send) {
         }) }
 
         <div class="u-marginVm" id="actions-${ id }">
-          ${ cooperative.actions && numbered(cooperative.actions.map(action => {
-            const props = Object.assign({ cooperativeId: id }, action);
-            return summary(props, state);
-          })) }
+          ${ numbered(actions.map(action => summary(action, state))) }
         </div>
       </div>
 

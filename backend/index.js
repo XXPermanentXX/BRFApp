@@ -10,15 +10,11 @@ const routes = [
   [ '/about-the-project', require('./views/about') ],
   [ '/cooperatives', require('./views/map'), [
     [ '/:cooperative', require('./views/cooperative'), [
-      [ '/consumption', require('./views/consumption') ],
-      [ '/actions', require('./views/actions'), [
-        [ '/:action', require('./views/action'), [
-          [ '/comments', require('./views/comments'), [
-            [ '/:comment', require('./views/comment') ]
-          ]]
-        ]]
-      ]],
+      [ '/consumption', require('./views/consumption') ]
     ]],
+  ]],
+  [ '/actions', require('./views/actions'), [
+    [ '/:action', require('./views/action') ]
   ]],
   [ '/404', require('./views/error') ],
   [ '/error', require('./views/error') ]
@@ -29,8 +25,7 @@ app.model({
   state: {
     lang: 'sv',
     cooperatives: [],
-    action: [],
-    comments: []
+    actions: []
   }
 });
 

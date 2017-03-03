@@ -1,7 +1,7 @@
 'use strict';
 
 exports.actions = require('./actions');
-exports.actionComments = require('./actionComments');
+exports.actionComments = require('./comments');
 exports.communities = require('./communities');
 exports.communityComments = require('./communityComments');
 exports.consumption = require('./consumption');
