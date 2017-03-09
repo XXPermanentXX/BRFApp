@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   err: null,
   user: {},
   cooperatives: { items: [] },
-  actions: { isEditing: null }
+  actions: { items: [] }
 };
 
 /**
@@ -35,7 +35,9 @@ const routes = [
     ]],
   ]],
   [ '/actions', require('../views/actions'), [
-    [ '/:action', require('../views/action') ]
+    [ '/:action', require('../views/action'), [
+      [ '/edit', require('../views/edit-action') ]
+    ]]
   ]],
   [ '/404', require('../views/error') ],
   [ '/error', require('../views/error') ]

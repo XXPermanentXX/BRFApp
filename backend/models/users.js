@@ -1,11 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
-const PUBLIC_PROPS = {
-  email: true,
-  profile: true,
-  cooperative: true
-};
+const LEGACY_PROPS = [
+  'achievements',
+  'actions',
+  'cooperativeId',
+  'hash',
+  'isAdmin',
+  'numFeedback',
+  'production',
+  'salt',
+  'testbed',
+  'token',
+];
 
 const UserSchema = new Schema({
   email: {
@@ -41,6 +48,12 @@ const UserSchema = new Schema({
 UserSchema.methods.toJSON = function toJSON() {
   const props = this.toObject();
 
+  for (let prop of LEGACY_PROPS) {
+    delete props[prop];
+  }
+
+  delete props.metryId;
+  delete props.accessToken;
   props.cooperative = props.cooperative._id || props.cooperative;
 
   return props;
@@ -63,16 +76,9 @@ exports.create = function(props, done) {
   }, done);
 };
 
-exports.get = function (id, done) {
+exports.getProfile = exports.get = function (id, done) {
   User
     .findOne({ _id: id })
-    .populate('cooperative')
-    .exec(done);
-};
-
-exports.getProfile = function(id, done) {
-  User
-    .findOne({ _id: id }, PUBLIC_PROPS)
     .populate('cooperative')
     .exec(done);
 };

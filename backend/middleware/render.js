@@ -50,6 +50,14 @@ module.exports = function render(req, res, next) {
           if (err) {
             res.status(500).render('/error', { err: err.message });
           } else {
+            state.cooperatives = state.cooperatives || { items: [] };
+            const cooperatives = state.cooperatives.items;
+            const id = user.cooperative.toString();
+
+            if (!cooperatives.find(props => props._id.toString() === id)) {
+              cooperatives.push(user.cooperative);
+            }
+
             orig.call(res, route, Object.assign({ user }, state));
           }
         });

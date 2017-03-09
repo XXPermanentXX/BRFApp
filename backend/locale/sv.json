@@ -37,7 +37,7 @@
   "ACTION_TYPE_300": "Ventilation",
   "ACTION_TYPE_301": "Kontroll & optimering",
   "ACTION_TYPE_302": "Investeringar",
-  "Back to %s": "Back to %s",
+  "Back to %s": "Tillbaka till %s",
   "Category": {
     "one": "Kategori",
     "other": "Kategorier"
@@ -47,7 +47,7 @@
   "Description": "Beskrivning",
   "Save": "Spara",
   "Edit energy action": "Ändra energiåtgärd",
-  "Cancel": "Cancel",
+  "Cancel": "Avbryt",
   "Comment": {
     "one": "%d Kommentar",
     "other": "%d Kommentarer"
@@ -57,5 +57,5 @@
   "View all %d comments": "Visa alla %d kommentarer",
   "Delete": "Ta bort",
   "Name": "Namn",
-  "No energy actions": "No energy actions"
+  "No energy actions": "Inga energiåtgärder"
 }

@@ -188,12 +188,41 @@ router.get('/:id', isMongoId('id'), (req, res) => {
   });
 });
 
+router.get('/:id/edit', isMongoId('id'), auth.authenticate(), (req, res) => {
+  if (!req.accepts('html')) {
+    res.redirect(`/actions/${ req.params.id }`);
+  } else {
+    Actions.get(req.params.id, (err, action) => {
+      if (err) {
+        res.status(404).render('/error', { err: err.message });
+      } else {
+        res.render(
+          `/actions/${ req.params.id }/edit`,
+          action,
+          (data, done) => done(null, {
+            cooperatives: { items: [ data.cooperative ]},
+            actions: { items: [ data ]}
+          })
+        );
+      }
+    });
+
+    Log.create({
+      userId: req.user._id,
+      category: 'Action',
+      type: 'edit',
+      data: {
+        actionId: req.params.id
+      }
+    });
+  }
+});
+
 router.delete('/:id', isMongoId('id'), auth.authenticate(), (req, res) => {
   Actions.get(req.params.id, (err, action) => {
     if (err) {
       res.status(404).render('/error', { err: err.message });
-    }
-    else {
+    } else {
       Actions.delete(req.params.id, err => {
         if (err) {
           res.status(500).render('/error', { err: err.message });

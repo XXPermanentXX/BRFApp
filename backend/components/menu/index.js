@@ -12,7 +12,7 @@ const pages = {
         return props._id === state.user.cooperative;
       });
 
-      return cooperative.name;
+      return cooperative && cooperative.name;
     }
   },
   about: {
