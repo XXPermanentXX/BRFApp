@@ -1,0 +1,129 @@
+/**
+ * Utilities are used as building blocks for composing the desired design and
+ * only to be used when there are no contextual selectors availible or when
+ * applying a deviating design.
+ * All rules are applied with `!important` to ensure that the utilites take
+ * presidence over any contextually nested mess that may be lurking around.
+ */
+
+/**
+ * Layout
+ */
+
+.display-inline {
+  display: inline !important;
+}
+
+.display-block {
+ display: block !important;
+}
+
+.display-inline-block {
+ display: inline-block !important;
+}
+
+.pull-right {
+  float: right !important;
+}
+
+.pull-left {
+  float: left !important;
+}
+
+/**
+ * Visibility
+ */
+
+.hidden-visually {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important;
+}
+
+/**
+ * Text
+ */
+
+.text-normal {
+  font-weight: normal !important;
+}
+
+.text-bold {
+  font-weight: bold !important;
+}
+
+/**
+ * Links
+ */
+
+.link {
+  display: inline !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  text-decoration: none !important;
+  -webkit-appearence: none !important;
+
+  &,
+  &:visited,
+  &:active {
+    color: $positive !important;
+  }
+
+  &:hover {
+    text-decoration: underline !important;
+  }
+}
+
+.link-plain {
+  &,
+  &:hover,
+  &:active,
+  &:visited {
+    color: currentColor !important;
+    text-decoration: none !important;
+  }
+}
+
+/**
+ * Colors
+ */
+
+.text-balanced {
+  color: $balanced !important;
+}
+.text-energized {
+  color: $energized !important;
+}
+.text-positive {
+  color: $positive !important;
+}
+.text-calm {
+  color: $calm !important;
+}
+.text-white {
+  color: #fff !important;
+}
+.text-dark {
+  color: $dark !important;
+}
+
+.bg-balanced {
+  background-color: $balanced !important;
+}
+.bg-energized {
+  background-color: $energized !important;
+}
+.bg-positive {
+  background-color: $positive !important;
+}
+.bg-calm {
+  background-color: $calm !important;
+}
+.bg-white {
+  background-color: #fff !important;
+}

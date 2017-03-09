@@ -34,7 +34,6 @@ var sensorSchema = new Schema({
 var Sensor = mongoose.model('Sensor', sensorSchema);
 
 exports.create = function(sensor, up, cb) {
-  //console.log('SENSOR', sensor, up);
   Sensor.create({
     sensorNumber: sensor.sensorNumber,
     sensorType: sensor.sensorType,
@@ -47,7 +46,6 @@ exports.create = function(sensor, up, cb) {
       cb (err);
     } else {
       sen.save();
-      //console.log('SENSOR Createrd', sensor.sensorNumber);
       cb(null, sen);
     }
   });

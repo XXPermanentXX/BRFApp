@@ -14,7 +14,6 @@ var Household = require('./households');
 var normalisation = require('../common/normalisation')
 
 exports.create = function(usagePt, cb1) {
-  //console.log('TETS', usagePt);
   usagePoint.create(usagePt.ApartmentID, function(err, up) {
     if (err) {
       cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false, 'ERROR': err});
@@ -23,7 +22,6 @@ exports.create = function(usagePt, cb1) {
         sensor.create(obj, up, callback);
       }, function(err) {
         if (err) {
-          console.log('EROR in SENSOR');
           cb1(err, {'ApartmentID': usagePt.ApartmentID, 'Success': false});
         }
         cb1(null, {ApartmentID:usagePt.ApartmentID, Success: true, UsagePoint:up});
@@ -133,9 +131,8 @@ exports.getAllSensorsForUser = function(userId, cb) {
     if (err) {
       cb(err);
     } else {
-      //console.log('Household',household);
       var applianceList = [{appliances : household.appliancesList}];
-      //console.log('APPLIANCELIST',applianceList);
+
       exports.getUsagePoint(household.apartmentId, function(err, up) {
         if (err) {
           cb(err);
@@ -180,7 +177,7 @@ exports.downloadMyData = function(usagepoint, from, to, resType, ctype, cb) {
             if (!up) {
               cb(null, 'UsagePoint not found');
             }
-            //console.log('UP',up);
+
             intervalBlock.create(result.feed.UsagePoint, up._id, from, to, function(err, ib) {
               if (err) {
                 cb(err);
@@ -236,7 +233,7 @@ var energimolnetHeaders = {
 
 var getConsumptionFromAPI = function(meterId, granularity, from, to, cb) {
   var to = to ? '-' + to : '';
-  //console.log(meterId,granularity,from,to);
+
   request({
       url: 'https://app.energimolnet.se/api/2.0/consumptions/'+ meterIDs[meterId] + '/' + granularity + '/' + from + to + '/'
       //,    headers: energimolnetHeaders
@@ -284,8 +281,6 @@ var getRawEnergimolnetConsumption = async.memoize(function(meters, type, granula
 
 exports.getEnergimolnetConsumption = function(meters, type, granularity, from, to, normalized, cb) {
   getRawEnergimolnetConsumption(meters,type,granularity,from,to,function(err, results){
-    console.log('Meters', meters);
-    console.log('Type', type);
     if(normalized == 'true') {
       normalisation.normalizeHeating(meters,from,to,results,getRawEnergimolnetConsumption,cb);
     } else {
@@ -366,16 +361,20 @@ function readMeterData(){
         }
       }, function(err){
         if(err){
-          console.log("Static Stockholm consumption data not found ",err.message);
-          console.log(err.stack);
+          // eslint-disable-next-line no-console
+          console.error("Static Stockholm consumption data not found ",err.message);
+          // eslint-disable-next-line no-console
+          console.error(err.stack);
           return;
         }
         // Create unique IDs
         _.each(meterdata.EL,function(value, key){
           var code = computeCheckDigit(key.replace(/-/g,'')) + String("0000" + parseInt(key.split("-")[1])*3).slice(-4);
+
           Household.lookup.findOne({apartmentId:key},function(err,lookupResult){
             if(err) {
-              console.log("Error generating code for:", key);
+              // eslint-disable-next-line no-console
+              console.error("Error generating code for:", key);
             } else {
               if(!lookupResult) {
                 Household.lookup.create({apartmentId:key, uniqueCode: code});
@@ -390,7 +389,8 @@ function readMeterData(){
 
       });
     }catch(x){
-    	console.log("Static Stockholm consumption data not found ", x.message);
+      // eslint-disable-next-line no-console
+    	console.error("Static Stockholm consumption data not found ", x.message);
     }
 }
 

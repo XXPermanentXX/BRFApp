@@ -9418,9 +9418,156 @@ ul.rating li {
 .subaction {
   margin-left: 25px; }
 
-.full-height .scroll {
-  height: 100%; }
+.full-height {
+  /**
+   * Overwrite default flex grow to not compeete with map
+   */ }
+  .full-height .scroll {
+    display: flex;
+    flex-direction: column;
+    height: 100%; }
+  .full-height .button-bar {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto; }
+  .full-height .map-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative; }
+  .full-height .map {
+    flex-grow: 1; }
+  .full-height .call-to-action {
+    padding: 1em;
+    text-align: center; }
+  .full-height .center-map {
+    position: absolute;
+    top: 10px;
+    right: 10px; }
 
-.full-height #map {
-  width: 100%;
-  height: 80%; }
+/**
+ * Extension of Ionic native icons
+ */
+.icon-balanced, .icon-energized, .icon-positive, .icon-calm, .icon-white {
+  display: inline-block;
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+  border-radius: 5px; }
+
+.icon-balanced {
+  background-color: #008000; }
+
+.icon-energized {
+  background-color: #F7931D; }
+
+.icon-positive {
+  background-color: #009EDB; }
+
+.icon-calm {
+  background-color: #e8e8e8; }
+
+.icon-white {
+  background-color: #fff; }
+
+/**
+ * Utilities are used as building blocks for composing the desired design and
+ * only to be used when there are no contextual selectors availible or when
+ * applying a deviating design.
+ * All rules are applied with `!important` to ensure that the utilites take
+ * presidence over any contextually nested mess that may be lurking around.
+ */
+/**
+ * Layout
+ */
+.display-inline {
+  display: inline !important; }
+
+.display-block {
+  display: block !important; }
+
+.display-inline-block {
+  display: inline-block !important; }
+
+.pull-right {
+  float: right !important; }
+
+.pull-left {
+  float: left !important; }
+
+/**
+ * Visibility
+ */
+.hidden-visually {
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px) !important;
+  height: 1px !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  position: absolute !important;
+  width: 1px !important; }
+
+/**
+ * Text
+ */
+.text-normal {
+  font-weight: normal !important; }
+
+.text-bold {
+  font-weight: bold !important; }
+
+/**
+ * Links
+ */
+.link {
+  display: inline !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: none !important;
+  text-decoration: none !important;
+  -webkit-appearence: none !important; }
+  .link, .link:visited, .link:active {
+    color: #009EDB !important; }
+  .link:hover {
+    text-decoration: underline !important; }
+
+.link-plain, .link-plain:hover, .link-plain:active, .link-plain:visited {
+  color: currentColor !important;
+  text-decoration: none !important; }
+
+/**
+ * Colors
+ */
+.text-balanced {
+  color: #008000 !important; }
+
+.text-energized {
+  color: #F7931D !important; }
+
+.text-positive {
+  color: #009EDB !important; }
+
+.text-calm {
+  color: #e8e8e8 !important; }
+
+.text-white {
+  color: #fff !important; }
+
+.text-dark {
+  color: #444 !important; }
+
+.bg-balanced {
+  background-color: #008000 !important; }
+
+.bg-energized {
+  background-color: #F7931D !important; }
+
+.bg-positive {
+  background-color: #009EDB !important; }
+
+.bg-calm {
+  background-color: #e8e8e8 !important; }
+
+.bg-white {
+  background-color: #fff !important; }

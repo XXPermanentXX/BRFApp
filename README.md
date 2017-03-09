@@ -19,9 +19,9 @@ $ npm install
 Create a file named `.env` in the project root (same folder as this file). Fill in the blanks and change properties as needed based on this example.
 
 ```bash
-# Generic OAuth
-YOUPOWER_AUTH_URL=http://localhost:3000/api/auth/
-YOUPOWER_CLIENT_URL=http://localhost:8100/#/
+# Server
+BRFENERGI_CLIENT_URL=http://localhost:8100/#/
+BRFENERGI_SERVICE_URL=http://localhost:3000
 
 # Metry OAuth credentials
 METRY_CLIENT_ID=<CLIENT_ID_HERE>

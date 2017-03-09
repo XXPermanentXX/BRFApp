@@ -48,8 +48,6 @@ angular.module('civis.youpower', [
   };
 
   $rootScope.$on('$stateChangeError', function (event, next, nextParams, fromState, fromParams, error) {
-    //eslint-disable-next-line no-console
-    console.log('stateChangeError: 1.' + fromState.name + ' 2.' + next.name + ' ' + JSON.stringify(error, null, 4));
     if (next.name !== 'welcome' && next.name !== 'signup') {
       event.preventDefault();
       $state.go('welcome');
@@ -94,6 +92,9 @@ angular.module('civis.youpower', [
     resolve: {
       Testbed: 'Testbed',
       Cooperative: 'Cooperatives',
+      isAuthenticated: function (AuthService) {
+        return AuthService.isAuthenticated();
+      },
       testbed: function (Testbed, $stateParams, $q) {
         if ($stateParams.tid) {
           // Wrapping in promise so it breaks silently
@@ -151,11 +152,36 @@ angular.module('civis.youpower', [
     url: '/app',
     abstract: true,
     templateUrl: 'app/app/menu.html',
-    //    controller: 'AppCtrl',
+    controller: 'AppCtrl',
     resolve: {
       User: 'User',
       Testbed: 'Testbed',
-      Cooperatives: 'Cooperatives'
+      Cooperatives: 'Cooperatives',
+      currentUser: function (User, Testbed, Cooperatives, AuthService) {
+        return AuthService.isAuthenticated().then(function (isAuthenticated) {
+          if (!isAuthenticated) {
+            return null;
+          }
+
+          return User.get().$promise.then(function (user) {
+            if (user.cooperative) {
+              user.cooperative = new Cooperatives(user.cooperative);
+            }
+
+            mixpanel.identify(user._id);
+
+            mixpanel.people.set({
+              $name: user.profile.name,
+              $created: new Date(parseInt(user._id.toString().slice(0, 8), 16) * 1000),
+              $email: user.email,
+              Testbed: (user.testbed || {}).name,
+              Cooperative: (user.cooperative || {}).name,
+            });
+
+            return user;
+          });
+        });
+      }
     }
   })
 

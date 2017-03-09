@@ -277,6 +277,7 @@ router.put('/:id', auth.authenticate(), checkParams('id'), function (req, res) {
  *     ...
  *   }
  */
+
 router.post('/:id/actions', auth.authenticate(), checkParams('id'), function (req, res) {
   const { body, params: { id }} = req;
 
@@ -367,6 +368,7 @@ router.get('/:id/actions', checkParams('id'), function (req, res) {
  *     ...
  *   }
  */
+
 router.put('/:id/actions/:actionId', auth.authenticate(), checkParams('id', 'actionId'), function (req, res) {
   const { body, params: { id, actionId }} = req;
 

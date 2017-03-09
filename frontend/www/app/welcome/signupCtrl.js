@@ -1,12 +1,12 @@
 angular.module('civis.youpower.welcome').controller('SignupCtrl', SignupCtrl);
 
 
-function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthService, testbed, cooperative) {
+function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthService, isAuthenticated, testbed, cooperative) {
 
   $scope.testbed = testbed;
   $scope.cooperative = cooperative;
 
-  if (AuthService.isAuthenticated()) {
+  if (isAuthenticated) {
       $state.go('main.actions.yours');
   }
 
@@ -101,5 +101,3 @@ function SignupCtrl($translate, $scope, $state, $stateParams, $ionicPopup, AuthS
   }
 
 };
-
-

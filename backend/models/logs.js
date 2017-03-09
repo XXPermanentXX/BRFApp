@@ -41,9 +41,8 @@ exports.create = function(log, cb) {
     if (err) {
       /* istanbul ignore if: suppress messages when unit testing */
       if (process.env.NODE_ENV !== 'test') {
-        console.log('error while logging:');
+        // eslint-disable-next-line no-console
         console.log(err);
-        console.log('this should never happen! fix your logging code to include required fields.');
       }
     }
     if (cb) {

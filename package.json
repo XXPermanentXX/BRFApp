@@ -43,6 +43,7 @@
     "postcss-custom-media": "^5.0.1",
     "postcss-custom-properties": "^5.0.2",
     "postcss-import": "^9.1.0",
+    "public-ip": "^2.0.1",
     "suitcss-base": "^2.0.0",
     "suitcss-components-button": "^6.0.0",
     "suitcss-components-grid": "^3.0.3",

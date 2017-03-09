@@ -1,3 +1,8 @@
+/* eslint no-console: off */
+
+// Load environement variables
+require('dotenv').config({ path: '../.env' });
+
 var gulp = require('gulp');
 var gutil = require('gulp-util');
 var bower = require('bower');
@@ -13,6 +18,7 @@ var paths = {
   sass: ['./scss/**/*.scss'],
   javascript: [
     './www/**/*.js',
+    '!./www/app/shared/config.js',
     '!./www/admin/**',
     '!./www/app/app.js',
     '!./www/lib/**'
@@ -50,12 +56,24 @@ gulp.task('sass-admin', function(done) {
 });
 
 gulp.task('index', function(done) {
-    gulp.src('./www/index.html')
-      .pipe(inject(
-          gulp.src(paths.javascript,
-              {read: false}), {relative: true}))
-      .pipe(gulp.dest('./www'))
-      .on('end', done);
+  gulp.src('./www/index.html')
+    .pipe(inject(gulp.src(paths.javascript, {starttag: '<!-- inject:js -->', read: false}), {relative: true}))
+    .pipe(inject(gulp.src(['./www/app/shared/config.js']), {
+      starttag: '<!-- inject:config -->',
+      transform: function (filePath, file) {
+        const content = file.contents.toString('utf8');
+
+        return [
+          '<script>',
+          content.replace(/{{\s*(\w+)\s*}}/g, function (match, key) {
+            return process.env[key];
+          }).replace(/\n\s*/gm, ''),
+          '</script>'
+        ].join('');
+      }
+    }))
+    .pipe(gulp.dest('./www'))
+    .on('end', done);
 });
 
 gulp.task('watch', function() {

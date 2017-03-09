@@ -122,8 +122,6 @@ exports.normalizeHeating = function(meters, from, to, values, getValuesFn, cb) {
       callback(err,results);
     })}
   },function(err, result){
-    console.log(values);
-    console.log(result);
     result = _.map(values, function(value, index){
       var month = moment(from).add(index,'M').month();
       if(month >=5 && month <=7) {
@@ -133,12 +131,6 @@ exports.normalizeHeating = function(meters, from, to, values, getValuesFn, cb) {
         return value * dd + result.heatingAndHotWaterJulyToAugust[index] * (1 - dd)
       }
     })
-    console.log(result);
     cb(err,result);
   })
 }
-
-
-
-
-

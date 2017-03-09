@@ -114,7 +114,7 @@ router.get('/',auth.authenticate(),function(request,response,next){
                                     contractId: userid,
                                     from: from,
                                     to: to,
-                                    consumption: ms       
+                                    consumption: ms
                                 }
                               });
 
@@ -206,7 +206,7 @@ router.get('/last',auth.authenticate(),function(request,response,next){
                                 type: 'get',
                                 data: {
                                     contractId: userid,
-                                    consumption: parseFloat(last.value) 
+                                    consumption: parseFloat(last.value)
                                 }
                               });
 
@@ -331,7 +331,7 @@ router.get('/appliance',auth.authenticate(),function(request,response,next){
                 });
             applianceRequest.setTimeout(3000, function() {
             });
-              
+
             }else {
                 response.sendStatus(500);
             }
@@ -440,7 +440,7 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                                     }
                                 });
                                 response.type('json').status('200').send(ms);
-                                
+
                                 Log.create({
                                 category: 'Specific appliance data',
                                 type: 'get',
@@ -462,7 +462,6 @@ router.get('/appliance/:applID',auth.authenticate(),function(request,response,ne
                     });
                 });
                 applianceRequest.setTimeout(3000, function() {
-                // console.log("waiting under appliance id");
             });
 
             }else {
@@ -526,7 +525,7 @@ router.get('/allUsagePointsSummary',auth.authenticate(),function(request,respons
                                 data: {
                                     contractId: userid                                    }
                               });
-        }); 
+        });
     }
     });
 });

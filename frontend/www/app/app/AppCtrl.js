@@ -13,26 +13,6 @@ angular.module('civis.youpower.main', [])
       });
     };
   })
-  .directive('logOut', function ($state, $timeout, $ionicHistory, AuthService) {
-    return {
-      link: function ($scope, element) {
-        element.on('click', function () {
-          AuthService.logout().then(function () {
-            redirect();
-
-            $timeout(function () {
-              $ionicHistory.clearCache();
-              $ionicHistory.clearHistory();
-            }, 1500);
-          }, redirect);
-
-          function redirect() {
-            $state.go('welcome');
-          }
-        });
-      }
-    };
-  })
   .controller('AppCtrl', AppCtrl);
 
 /* The controller that should always be on top of routing
@@ -40,9 +20,9 @@ hierarchy as it will be loaded with abstract main state.
 Here we can do the general app stuff like getting the user's
 details (since this is after the user logs in).
 ----------------------------------------------*/
-function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, User, Actions, Household, AuthService, $translate, currentUser) {
+function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $ionicLoading, $ionicSideMenuDelegate, User, Actions, Household, AuthService, $translate, currentUser) {
 
-  $scope.userPictures = {};
+  $scope.currentUser = currentUser;
 
   $scope.actions = {}; //save action details
 
@@ -52,10 +32,6 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
   $scope.households = {}; //save information of households
 
   $scope.users = {}; //save user details. not the current user, the other household members and invited members
-
-
-  $scope.currentUser = currentUser;
-
 
   $scope.loadHouseholdsDetails = function (households) {
 
@@ -308,6 +284,9 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
     return $scope.profileChanged.personal;
   };
 
+  $scope.login = function () {
+    $state.go('welcome');
+  };
 
   $scope.signout = function () {
     if ($scope.isProfileChanged()) {
@@ -330,7 +309,9 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
     }, redirect);
 
     function redirect() {
-      $state.go('welcome');
+      $scope.currentUser = null;
+      $ionicSideMenuDelegate.toggleLeft();
+      $state.go('main.cooperative.list');
     }
   };
 
@@ -344,31 +325,6 @@ function AppCtrl($scope, $state, $ionicHistory, $timeout, $ionicViewSwitcher, $i
   $scope.hideLoading = function () {
     $ionicLoading.hide();
   };
-
-
-  // Load all additional user information
-
-  if ($scope.currentUser.profile.dob && $scope.currentUser.profile.dob !== null) {
-    $scope.currentUser.profile.dob = new Date($scope.currentUser.profile.dob);
-  }
-
-  $translate.use($scope.currentUser.profile.language);
-
-  //whether the user wants to rehearse the actions, inite the variable
-  //this can be loaded from the backend TODO post the data to the backend
-  //$scope.currentUser.profile.toRehearse = { setByUser: false } ;
-  //$scope.currentUser.profile.language = 'English' ;
-
-  //get the user's picture
-  User.getPicture({
-    userId: $scope.currentUser._id
-  }).$promise.then(function (data) {
-    var b64 = btoa(data); //this doesnot work
-    $scope.userPictures[$scope.currentUser._id] = ({
-      _id: $scope.currentUser._id,
-      image: b64
-    });
-  });
 
   $scope.isStateOrParent = function (stateName) {
     return $state.includes(stateName);

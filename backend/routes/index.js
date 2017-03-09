@@ -16,5 +16,6 @@ router.use('/cooperatives', require('./cooperative'));
 // router.use('/testbed', require('./testbed'));
 // router.use('/admin', require('./admin'));
 router.use('/auth', require('./auth'));
+router.use('/services', require('./services'));
 
 module.exports = router;

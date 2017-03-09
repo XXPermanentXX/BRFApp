@@ -240,7 +240,7 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativeActionAddCtrl', function($scope, $state, CooperativeActionTypePopup, Cooperatives, currentUser) {
+.controller('CooperativeActionAddCtrl', function($scope, $state, $translate, CooperativeActionTypePopup, Cooperatives, currentUser) {
   $scope.action = {};
 
   $scope.actionTypes = Cooperatives.getActionTypes();
@@ -255,11 +255,27 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
     }, $scope.action, function() {
       $state.go('^');
       mixpanel.track('Cooperative Action added', $scope.action);
+    }, function (err) {
+      $scope.errors = {};
+
+      err.data
+        .map(function (error) { return error.param; })
+        .reduce(function (list, param) {
+          return list.indexOf(param) === -1 ? list.concat([ param ]) : list;
+        }, [])
+        .forEach(function (err) {
+          if (!$scope.action[err]) {
+            $scope.errors[err] = $translate.instant('ERROR_REQUIRED');
+          } else {
+            $scope.errors[err] = $translate.instant('ERROR_MALFORMED');
+          }
+        });
+
     });
   };
 })
 
-.controller('CooperativeActionUpdateCtrl', function($scope, $state, $stateParams, CooperativeActionTypePopup, Cooperatives, currentUser) {
+.controller('CooperativeActionUpdateCtrl', function($scope, $state, $stateParams, $translate, CooperativeActionTypePopup, Cooperatives, currentUser) {
 
   $scope.actionTypes = Cooperatives.getActionTypes();
 
@@ -299,6 +315,22 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
         id: $scope.action._id,
         name: $scope.action.name
       });
+    }, function (err) {
+      $scope.errors = {};
+
+      err.data
+        .map(function (error) { return error.param; })
+        .reduce(function (list, param) {
+          return list.indexOf(param) === -1 ? list.concat([ param ]) : list;
+        }, [])
+        .forEach(function (err) {
+          if (!$scope.action[err]) {
+            $scope.errors[err] = $translate.instant('ERROR_REQUIRED');
+          } else {
+            $scope.errors[err] = $translate.instant('ERROR_MALFORMED');
+          }
+        });
+
     });
   };
 })
@@ -402,7 +434,8 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
 .controller('CooperativesCtrl', function(User, $scope, $state, Cooperatives, cooperatives, cooperativeSelection, CooperativesFilterPopup, $ionicPopup, $translate) {
   $scope.cooperativesList = cooperatives;
   $scope.cooperatives = cooperatives;
-  User.get().$promise.then(function(user) {
+
+  User.get().$promise.then(function (user) {
     Cooperatives.get({
       id: user.cooperativeId
     }, function(data) {
@@ -520,96 +553,237 @@ angular.module('civis.youpower.cooperatives', ['highcharts-ng'])
   };
 })
 
-.controller('CooperativesMapCtrl', function($scope, $compile, $ionicLoading, $translate) {
+.controller('CooperativesMapCtrl', function(User, $q, $scope, $compile, $ionicLoading, $translate, AuthService, GeoIP) {
 
   function initialize() {
-    //      var myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
-    //      var myLatlng = new google.maps.LatLng(myCoop.lat, myCoop.lng);
-    var myLatlng = new google.maps.LatLng(59.3036, 18.1025);
+    var getLatLng, myCoop;
 
-    var mapOptions = {
-      mapTypeControl: false,
-      streetViewControl: false,
-      center: myLatlng,
-      zoom: 14,
-      mapTypeId: google.maps.MapTypeId.ROADMAP
-    };
-    var map = new google.maps.Map(document.getElementById('map'),
-      mapOptions);
-
-
-
-    var energyClasses = {
-      A: '009036',
-      B: '55AB26',
-      C: 'C8D200',
-      D: 'FFED00',
-      E: 'FBBA00',
-      F: 'EB6909',
-      G: 'E2001A',
-      unknown: 'bbbbbb'
-    };
-
-    var energyClassPins = _.mapObject(energyClasses, function(value) {
-      return new google.maps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + value,
-        new google.maps.Size(21, 34),
-        new google.maps.Point(0, 0),
-        new google.maps.Point(10, 34));
-    });
-
-    var infowindow = new google.maps.InfoWindow();
-
-    angular.forEach($scope.cooperatives, function(coop) {
-      //Marker + infowindow + angularjs compiled ng-click
-      var contentString = '<div ng-click="cooperativeClick(\'' +
-        coop._id + '\')"><h5>' +
-        coop.name + '</h5>' +
-        '{{' + coop.performance + ' | number:0}}' + ' kWh/m2 <br><p>' +
-        $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ': <b class="energized">' +
-        coop.actions.length + '</b></p></div>';
-      var compiled = $compile(contentString)($scope);
-
-      var marker = new google.maps.Marker({
-        position: new google.maps.LatLng(coop.lat, coop.lng),
-        map: map,
-        title: coop.name,
-        icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
+    if ($scope.currentUser) {
+      myCoop = _.findWhere($scope.cooperatives,{_id:$scope.currentUser.cooperativeId});
+      getLatLng = $q.when(new google.maps.LatLng(myCoop.lat, myCoop.lng));
+    } else {
+      getLatLng = GeoIP.getLatLng().then(function (latlng) {
+        return new google.maps.LatLng(latlng[0], latlng[1]);
       });
-
-      google.maps.event.addListener(marker, 'click', function() {
-        infowindow.setContent(compiled[0]);
-        infowindow.open(map, marker);
-      });
-    });
-
-    $scope.map = map;
-  }
-  ionic.Platform.ready(initialize);
-
-  $scope.centerOnMe = function() {
-    if (!$scope.map) {
-      return;
     }
 
-    $scope.loading = $ionicLoading.show({
-      content: 'Getting current location...',
-      showBackdrop: false
+    getLatLng.then(function (myLatLng) {
+
+      /**
+       * Initialize map
+       * @type {google.maps.Map}
+       */
+
+      var map = new google.maps.Map(document.getElementById('map'), {
+        mapTypeControl: false,
+        streetViewControl: false,
+        center: myLatLng,
+        zoom: 14,
+        maxZoom: 16,
+        minZoom: 5,
+        mapTypeId: google.maps.MapTypeId.ROADMAP
+      });
+
+      /**
+       * Configure energy class pins
+       */
+
+      var energyClasses = {
+        A: '009036',
+        B: '55AB26',
+        C: 'C8D200',
+        D: 'FFED00',
+        E: 'FBBA00',
+        F: 'EB6909',
+        G: 'E2001A',
+        unknown: 'bbbbbb'
+      };
+
+      var energyClassPins = _.mapObject(energyClasses, function(value) {
+        return new google.maps.MarkerImage('http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=%E2%80%A2|' + value,
+          new google.maps.Size(21, 34),
+          new google.maps.Point(0, 0),
+          new google.maps.Point(10, 34));
+      });
+
+      /**
+       * Set up markers and accompanying info window
+       */
+
+      var markers = [];
+      var infowindow = new google.maps.InfoWindow();
+
+      angular.forEach($scope.cooperatives, function(coop) {
+        //Marker + infowindow + angularjs compiled ng-click
+        var contentString = '<div ng-click="cooperativeClick(\'' +
+          coop._id + '\')"><h5>' +
+          coop.name + '</h5>' +
+          '{{' + coop.performance + ' | number:0}}' + ' kWh/m2 <br><p>' +
+          $translate.instant('COOPERATIVE_ENERGY_ACTIONS') + ': <b class="energized">' +
+          coop.actions.length + '</b></p></div>';
+        var compiled = $compile(contentString)($scope);
+
+        var marker = new google.maps.Marker({
+          position: new google.maps.LatLng(coop.lat, coop.lng),
+          title: coop.name,
+          icon: energyClassPins[coop.getEnergyClass()] || energyClassPins['unknown']
+        });
+
+        markers.push(marker);
+
+        google.maps.event.addListener(marker, 'click', function() {
+          infowindow.setContent(compiled[0]);
+          infowindow.open(map, marker);
+        });
+      });
+
+      /**
+       * Set initial map position
+       */
+
+      setInitialPosition(myLatLng, markers);
+
+      /**
+       * Set up marker cluster plugin
+       * @type {MarkerCLuster}
+       */
+
+      new MarkerClusterer(map, markers, {
+        maxZoom: 15,
+        styles: [{
+          url: '/img/cluster-pin.png',
+          height: 45,
+          width: 48,
+          anchor: [3, 6],
+          textColor: '#ffffff',
+          textSize: 11,
+          iconAnchor: [20, 20]
+        }]
+      });
+
+      /**
+       * Expose some convenience properties on state
+       */
+
+      $scope.map = map;
+
+      $scope.centerOnMe = function() {
+        if (!$scope.map) {
+          return;
+        }
+
+        $ionicLoading.show({
+          content: 'Getting current location...',
+          showBackdrop: false
+        });
+
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+          $ionicLoading.hide();
+        }, function () {
+          $ionicLoading.hide();
+        });
+      };
+
+      /**
+       * Try and start the map off with an as reasonable position as possible.
+       * If user is within a reasonable distance from the closest marker, fit
+       * user and markers in view. If the users is too far away (i.e. abroad or
+       * using a proxy service) just fit all cooperatives and ignore user
+       * position
+       */
+
+      function setInitialPosition(position, markers) {
+        var bounds;
+        var closestMarker = markers.map(function (marker) {
+          return getPositionDistance(myLatLng, marker.getPosition());
+        }).sort()[0];
+
+        if (closestMarker < 200) {
+          setCenter(myLatLng);
+        } else {
+          bounds = new google.maps.LatLngBounds();
+
+          markers
+            .map(function (marker) { return marker.getPosition(); })
+            .forEach(function (position) { bounds.extend(position); });
+
+          map.fitBounds(bounds);
+        }
+      }
+
+      /**
+       * Fit given position and a number of cooperatives in view
+       */
+
+      function setCenter(center) {
+        var bounds = new google.maps.LatLngBounds();
+
+        bounds.extend(center);
+
+        _.chain(markers)
+          .sort(function (a, b) {
+            var aDistance = getPositionDistance(center, a.getPosition());
+            var bDistance = getPositionDistance(center, b.getPosition());
+
+            return aDistance > bDistance ? 1 : -1;
+          })
+          .first(5)
+          .forEach(function (marker) { bounds.extend(marker.getPosition()); });
+
+        map.fitBounds(bounds);
+      }
     });
+  }
 
-    navigator.geolocation.getCurrentPosition(function(pos) {
-      $scope.map.setCenter(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
-      $scope.loading.hide();
-    }, function(error) {
-      // eslint-disable-next-line no-alert
-      alert('Unable to get location: ' + error.message);
-    });
-  };
+  /**
+   * Convert degrees to radius
+   */
 
-  $scope.clickTest = function() {
-    // eslint-disable-next-line no-alert
-    alert('Example of infowindow with ng-click');
-  };
+  function deg2rad(deg) {
+    return deg * (Math.PI / 180);
+  }
 
+  /**
+   * Calculate distance between two lat/lng points
+   */
+
+  function getPositionDistance(posA, posB) {
+    var lon1 = posA.lng();
+    var lat1 = posA.lat();
+    var lon2 = posB.lng();
+    var lat2 = posB.lat();
+
+    var R = 6371; // Radius of the earth in km
+    var dLat = deg2rad(lat2 - lat1); // deg2rad above
+    var dLon = deg2rad(lon2 - lon1);
+    var a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    var d = R * c; // Distance in km
+
+    return d;
+  }
+
+  /**
+   * Identify user and initialize the map
+   */
+
+  AuthService.isAuthenticated().then(function (isAuthenticated) {
+    if (isAuthenticated) {
+      User.get().$promise.then(function (user) {
+        $scope.currentUser = user;
+        initialize();
+      }, initialize);
+    } else {
+      ionic.Platform.ready(function () {
+        // Ensure that view has time to update and apply layout
+        requestAnimationFrame(initialize);
+      });
+    }
+  });
 })
 
 .service('cooperativeSelection', function() {
