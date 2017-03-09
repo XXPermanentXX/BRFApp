@@ -41,18 +41,9 @@ router.get('/callback',
  * Sign out
  */
 
-router.get('/signout', auth.authenticate(), function (req, res) {
-  delete req.user.accessToken;
-  req.user.markModified('accessToken');
-  req.user.save(err => {
-    req.logout();
-
-    if (err) {
-      res.status(500).render('/error');
-    } else {
-      res.redirect('/');
-    }
-  });
+router.get('/signout', auth.authenticate(), (req, res) => {
+  req.logout();
+  res.redirect('/');
 });
 
 module.exports = router;
