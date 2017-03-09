@@ -9,7 +9,7 @@ router.get('/', function (req, res) {
   if (!req.user) {
     res.render('/auth');
   } else {
-    res.redirect(`/cooperatives/${ req.user.cooperativeId }`);
+    res.redirect(`/cooperatives/${ req.user.cooperative }`);
   }
 });
 
@@ -28,7 +28,7 @@ router.get('/callback',
     failWithError: true
   }),
   (req, res) => res.redirect(url.format({
-    pathname: `/cooperatives/${ req.user.cooperativeId }`,
+    pathname: `/cooperatives/${ req.user.cooperative }`,
     query: { access_token: req.user.accessToken }
   })),
   (err, req, res) => res.redirect(url.format({

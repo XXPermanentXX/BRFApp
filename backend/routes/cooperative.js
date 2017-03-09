@@ -2,7 +2,6 @@ const express = require('express');
 const auth = require('../middleware/auth');
 const router = express.Router();
 const Users = require('../models/users');
-const Actions = require('../models/actions');
 const Cooperatives = require('../models/cooperatives');
 const Log = require('../models').logs;
 
@@ -65,9 +64,9 @@ router.get('/:id', isMongoId('id'), function (req, res) {
       res.render(
         `/cooperatives${ req.url }`,
         cooperative,
-        (data, done) => Actions.getByCooperative(cooperative, (err, actions) => {
-          if (err) { return done(err); }
-          done(null, { cooperatives: [ data ], actions });
+        (data, done) => done(null, {
+          cooperatives: [ data ],
+          actions: data.actions
         })
       );
     }

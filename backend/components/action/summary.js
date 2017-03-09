@@ -8,7 +8,6 @@ const { capitalize } = require('../utils');
 module.exports = function (action, state) {
   const numComments = action.comments.length;
   const href = resolve(`/actions/${ action._id }`);
-  const firstComment = action.comments[numComments - 1];
 
   return html`
     <article class="Action" id="action-${ action._id }">
@@ -19,7 +18,7 @@ module.exports = function (action, state) {
         <h3 class="u-linkComplexTarget Action-title">${ action.name }</h3>
       </a>
       <div class="u-marginTb">
-        ${ numComments ? comment(Object.assign({ short: true }, firstComment), action, state) : null }
+        ${ numComments ? comment(Object.assign({ short: true }, action.comments[numComments - 1]), action, state) : null }
         ${ state.user ? html`
           <a class="u-block u-textS" href="${ href }#comments-${ action._id }">
             ${ numComments > 1 ? __('View all %d comments', numComments) : __('Leave a comment') }

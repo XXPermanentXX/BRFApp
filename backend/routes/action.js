@@ -3,28 +3,18 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 const Actions = require('../models/actions');
 const Cooperatives = require('../models/cooperatives');
-const Comments = require('../models/comments');
 const Log = require('../models').logs;
 
 router.post('/:id/comments', isMongoId('id'), auth.authenticate(), (req, res) => {
-  Actions.get(req.params.id, (err, action) => {
+  Actions.addComment(req.params.id, req.body, req.user, (err, comment) => {
     if (err) {
-      res.status(500).render(
-        `/actions/${ req.params.id }`,
-        Object.assign({ err: err.message }, req.body)
-      );
+      res.status(500).render('/error', { err: err.message });
     } else {
-      Comment.create(req.body, req.user, action, (err, comment) => {
-        if (err) {
-          res.status(500).render('/error', { err: err.message });
-        } else {
-          if (req.accepts('html')) {
-            res.redirect(`/actions/${ req.params.id }`);
-          } else {
-            res.render(comment);
-          }
-        }
-      });
+      if (req.accepts('html')) {
+        res.redirect(`/actions/${ req.params.id }`);
+      } else {
+        res.render(comment);
+      }
     }
   });
 
@@ -44,13 +34,30 @@ router.get('/:id/comments', isMongoId('id'), (req, res) => {
       if (err) {
         res.status(404).render('/error', { err: err.message });
       } else {
-        Comments.getByAction(action, req.query.limit, (err, comments) => {
-          if (err) {
-            res.status(500).render('/error', { err: err.message });
-          } else {
-            res.render(comments);
-          }
-        });
+        res.render(action.comments);
+      }
+    });
+
+    Log.create({
+      userId: req.user && req.user._id,
+      category: 'Action Comments',
+      type: 'all',
+      data: {
+        actionId: req.params.id
+      }
+    });
+  }
+});
+
+router.get('/:id/comments/:commentId', isMongoId('id', 'commentId'), (req, res) => {
+  if (req.accepts('html')) {
+    res.redirect(`/actions/${ req.params.id }`);
+  } else {
+    Actions.getComment(req.params.commentId, (err, comment) => {
+      if (err) {
+        res.status(404).render('/error', { err: err.message });
+      } else {
+        res.render(comment);
       }
     });
 
@@ -60,19 +67,21 @@ router.get('/:id/comments', isMongoId('id'), (req, res) => {
       type: 'get',
       data: {
         actionId: req.params.id,
-        limit: req.query.limit
+        commentId: req.params.commentId
       }
     });
   }
 });
 
-router.delete('/:id/comment/:commentId', isMongoId('id', 'commentId'), auth.authenticate(), (req, res) => {
-  Comments.delete(req.params.commentId, err => {
+router.delete('/:id/comments/:commentId', isMongoId('id', 'commentId'), auth.authenticate(), (req, res) => {
+  Actions.deleteComment(req.params.commentId, err => {
     if (err) {
-      res.status(500);
+      res.status(500).render('/error', { err: err.message });
+    } else if (req.accepts('html')) {
+      res.redirect(`/actions/${ req.params.id }`);
+    } else {
+      res.redirect(`/actions/${ req.params.id }/comments`);
     }
-
-    res.redirect(`/actions/${ req.params.id }/comments`);
   });
 
   Log.create({
@@ -103,7 +112,10 @@ router.post('/', auth.authenticate(), (req, res) => {
           action,
           (data, done) => Cooperatives.get(action.cooperative, (err, cooperative) => {
             if (err) { return done(err); }
-            done(null, { cooperatives: [ cooperative ], actions: [ action ] });
+            done(null, {
+              cooperatives: [ cooperative ],
+              actions: [ action ]
+            });
           })
         );
       }
@@ -118,6 +130,38 @@ router.post('/', auth.authenticate(), (req, res) => {
   });
 });
 
+router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
+  const { body, params: { id }} = req;
+
+  Actions.update(id, body, (err, action) => {
+    if (err) {
+      res.status(500).render(
+        `/cooperatives${ req.url }`,
+        Object.assign({ err: err.message }, body)
+      );
+    } else {
+      res.render(
+        `/cooperatives${ req.url }`,
+        action,
+        (data, done) => done(null, {
+          cooperatives: [ data.cooperative ],
+          actions: [ data ]
+        })
+      );
+    }
+  });
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Cooperative',
+    type: 'updateAction',
+    data: {
+      actionId: id,
+      action: body
+    }
+  });
+});
+
 router.get('/:id', isMongoId('id'), (req, res) => {
   Actions.get(req.params.id, (err, action) => {
     if (err) {
@@ -126,9 +170,9 @@ router.get('/:id', isMongoId('id'), (req, res) => {
       res.render(
         `/actions${ req.url }`,
         action,
-        (data, done) => Cooperatives.get(action.cooperative, (err, cooperative) => {
-          if (err) { return done(err); }
-          done(null, { cooperatives: [ cooperative ], actions: [ action ] });
+        (data, done) => done(null, {
+          cooperatives: [ data.cooperative ],
+          actions: [ data ]
         })
       );
     }

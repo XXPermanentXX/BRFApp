@@ -12,13 +12,11 @@ const { __, __n } = require('../locale');
 const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302 ];
 
 module.exports = function (state, prev, send) {
-  const {
-    cooperatives, actions,
-    location: { params: { action: actionId, cooperative: cooperativeId }}
-  } = state;
-  const cooperative = cooperatives.find(props => props._id.toString() === cooperativeId);
-  const action = actions.find(props => props._id.toString() === actionId);
-  const { comments } = action;
+  const { cooperatives, actions, location: { params }} = state;
+  const action = actions.find(props => props._id === params.action);
+  const cooperative = cooperatives.find(props => props._id === action.cooperative);
+
+  // return html`<div />`;
 
   return html`
     <div class="App">
@@ -26,12 +24,12 @@ module.exports = function (state, prev, send) {
 
       <div class="App-container">
         <h1 class="Display Display--4">${ action.name }</h1>
-        <a href=${ resolve(`/cooperatives/${ cooperativeId }`) }>
+        <a href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
           ${ chevron('left') }${ __('Back to %s', cooperative.name) }
         </a>
 
-        <div class="u-hiddenTargetComplex u-marginTm u-marginBl" id="form-${ actionId }">
-          <div class="u-hiddenTargetSlave" id="details-${ actionId }">
+        <div class="u-hiddenTargetComplex u-marginTm u-marginBl" id="form-${ action._id }">
+          <div class="u-hiddenTargetSlave" id="details-${ action._id }">
             ${ defintion(properties(action)) }
           </div>
 
@@ -42,7 +40,7 @@ module.exports = function (state, prev, send) {
           ` : null }
 
           ${ state.user ? html`
-            <a class="Button u-block u-marginVs u-hiddenTargetSlave" href="#form-${ actionId }">
+            <a class="Button u-block u-marginVs u-hiddenTargetSlave" href="#form-${ action._id }">
               ${ __('Edit energy action') }
             </a>
           ` : null }
@@ -50,11 +48,11 @@ module.exports = function (state, prev, send) {
 
         <div id="comments-${ action._id }">
           <h2 class="Display Display--3 u-textItalic">
-            ${ comments.length ? __n('Comment', 'Comments', comments.length) : __('No comments yet') }
+            ${ action.comments.length ? __n('Comment', 'Comments', action.comments.length) : __('No comments yet') }
           </h2>
 
           <ol class="List u-marginVm">
-            ${ comments.map(props => html`<li>${ comment(props, action, state) }</li>`) }
+            ${ action.comments.map(props => html`<li>${ comment(props, action, state) }</li>`) }
           </ol>
 
           ${ state.user ? html`

@@ -8,7 +8,7 @@ module.exports = function (props, action, state) {
   const classList = [ 'Comment' ];
   const { user } = state;
   let content = props.comment;
-  const isAuthor = user && (user._id.toString() === props.user._id.toString());
+  const isAuthor = user && (user._id === props.user);
 
   if (props.short) {
     classList.push('Comment--slim');
@@ -25,7 +25,7 @@ module.exports = function (props, action, state) {
           ${ moment(props.date).fromNow() }
         </time>
       ` }
-      <strong class="Comment-author">${ props.user.profile.name }</strong>
+      <strong class="Comment-author">${ props.author }</strong>
       ${ props.short ? content : html`<div class="Comment-body">${ content }</div>` }
       ${ !props.short && isAuthor ? form() : null }
     </div>

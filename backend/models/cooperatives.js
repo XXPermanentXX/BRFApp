@@ -62,6 +62,19 @@ CooperativeSchema.pre('remove', next => {
   this.model('Action').remove({ cooperative: this._id }, next);
 });
 
+/**
+ * Prevent JSON responses from including populated fields
+ */
+
+CooperativeSchema.methods.toJSON = function toJSON() {
+  const props = this.toObject();
+
+  props.actions = props.actions.map(action => action._id || action);
+  props.editors = props.editors.map(editor => editor._id || editor);
+
+  return props;
+};
+
 const Cooperatives = mongoose.model('Cooperative', CooperativeSchema);
 
 function getConsumption(cooperative, options, done) {
@@ -79,8 +92,7 @@ function calculatePerformance(props, done) {
   const performance = props.performances.find(perf => perf.year === year);
 
   if (performance) {
-    props.performance = performance.value;
-    return done(null, props);
+    return done(null);
   } else {
     const params = {
       type: 'heating',
@@ -103,7 +115,7 @@ function calculatePerformance(props, done) {
         () => 1
       );
 
-      done(null, props);
+      done(null);
     });
   }
 }
@@ -138,11 +150,15 @@ exports.get = function (id, done) {
   Cooperatives
     .findOne({ _id: id })
     .populate('actions')
+    .populate('editors')
     .exec((err, cooperative) => {
       if (err) { return done(err); }
       if (!cooperative) { return done(new Error('Cooperative not found')); }
 
-      calculatePerformance(cooperative, done);
+      calculatePerformance(cooperative.toObject(), err => {
+        if (err) { return done(err); }
+        done(null, cooperative);
+      });
     });
 };
 

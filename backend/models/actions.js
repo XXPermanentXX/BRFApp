@@ -2,6 +2,7 @@ const async = require('async');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const Cooperatives = require('./cooperatives');
+const Comments = require('./comments');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ActionSchema = new Schema({
@@ -21,13 +22,7 @@ const ActionSchema = new Schema({
     required: true,
     default: Date.now
   },
-  comments: {
-    type: [{
-      type: Schema.Types.ObjectId,
-      ref: 'Comment'
-    }],
-    default: []
-  },
+  comments: [ Comments.Schema ],
   user: {
     type: Schema.Types.ObjectId,
     required: true,
@@ -62,6 +57,20 @@ ActionSchema.pre('remove', next => {
   ], next);
 });
 
+/**
+ * Prevent JSON responses from including populated fields
+ */
+
+ActionSchema.methods.toJSON = function toJSON() {
+  const props = this.toObject();
+
+  props.cooperative = props.cooperative._id || props.cooperative;
+  props.user = props.user._id || props.user;
+  props.comments = this.comments.map(comment => comment.toJSON());
+
+  return props;
+};
+
 const Actions = mongoose.model('Action', ActionSchema);
 
 exports.create = function(props, user, cooperative, done) {
@@ -70,8 +79,9 @@ exports.create = function(props, user, cooperative, done) {
     description: props.description,
     cost: props.cost,
     types: props.types,
-    user: typeof user === 'object' ? user._id : user,
-    cooperative: typeof cooperative === 'object' ? cooperative._id : cooperative
+    user: user._id,
+    cooperative: cooperative._id,
+    comments: []
   }, (err, action) => {
     if (err) { return done(err); }
     Cooperatives.model.findOne({ _id: action.cooperative }, (err, cooperative) => {
@@ -89,15 +99,49 @@ exports.create = function(props, user, cooperative, done) {
 exports.get = function(id, done) {
   Actions
     .findOne({ _id: id })
-    .populate('comments')
+    .populate('comments.user')
+    .populate('cooperative')
+    .populate('user')
     .exec((err, action) => {
       if (err) {
         return done(err);
       } else if (!action) {
         return done(new Error('Action not found'));
       }
-      done(null, action.toObject());
+      done(null, action);
     });
+};
+
+exports.addComment = function(id, data, user, done) {
+  Actions
+    .findOne({ _id: id })
+    .populate('comments.user')
+    .populate('cooperative')
+    .populate('user')
+    .exec((err, action) => {
+      if (err) { return done(err); }
+      action.comments.push(Object.assign({
+        user: user._id,
+        author: user.profile.name
+      }, data));
+      action.markModified('comments');
+      action.save(err => done(err, action));
+    });
+};
+
+exports.getComment = function(id, done) {
+  Actions.findOne({ 'comments._id': id }, (err, action) => {
+    if (err) { return done(err); }
+    done(null, action.comments.find(comment => comment._id === id));
+  });
+};
+
+exports.deleteComment = function(id, done) {
+  Actions.findOne({ 'comments._id': id }, (err, action) => {
+    if (err) { return done(err); }
+    action.comments.id(id).remove();
+    action.save(done);
+  });
 };
 
 exports.getByCooperative = function(cooperative, limit, done) {
@@ -109,17 +153,21 @@ exports.getByCooperative = function(cooperative, limit, done) {
   Actions.find({ cooperative: cooperative._id })
     .sort({ date: -1 })
     .limit(limit)
-    .populate('comments')
+    .populate('comments.user')
+    .populate('cooperative')
+    .populate('user')
     .exec((err, actions) => {
       if (err) { return done(err); }
-      done(null, actions.map(action => action.toObject()));
+      done(null, actions);
     });
 };
 
 exports.update = function (id, props, done) {
   Actions
     .findByIdAndUpdate(id, { $set: props })
-    .populate('comments')
+    .populate('comments.user')
+    .populate('cooperative')
+    .populate('user')
     .exec(done);
 };
 
@@ -141,7 +189,7 @@ exports.getSuggested = function(user, done) {
     .select('name description')
     .exec((err, actions) => {
       if (err) { return done(err); }
-      done(null, actions.map(action => action.toObject()));
+      done(null, actions);
     });
 };
 
@@ -155,7 +203,7 @@ exports.search = function(str, done) {
     },
     (err, actions) => {
       if (err) { return done(err); }
-      done(null, actions.map(action => action.toObject()));
+      done(null, actions);
     });
 };
 
@@ -165,7 +213,13 @@ exports.getAll = function(limit, done){
     limit = null;
   }
 
-  Actions.find({}).limit(limit).populate('comments').exec(done);
+  Actions
+    .find({})
+    .limit(limit)
+    .populate('comments.user')
+    .populate('cooperative')
+    .populate('user')
+    .exec(done);
 };
 
 exports.model = Actions;

@@ -54,8 +54,8 @@ server.render = function (route, options, done) {
       // Wrap app `toString` method for injection into page
       const view = (...args) => app.toString(pathname, ...args);
 
-      // Inject view in page
-      output = page(view, state, state, () => {});
+      // Inject view in page and ensure that state is handled by `toJSON`
+      output = page(view, JSON.parse(JSON.stringify(state)), {}, () => {});
     } catch (err) {
       return done(err);
     }

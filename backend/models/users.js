@@ -10,17 +10,17 @@ const PUBLIC_PROPS = {
 const UserSchema = new Schema({
   email: {
     type: String,
-    required: true
+    // required: true
   },
   metryId: {
     type: String,
-    requried: true
+    // requried: true
   },
   accessToken: String,
   profile: {
     name: {
       type: String,
-      required: true
+      // required: true
     },
     language: {
       type: String,
@@ -30,9 +30,21 @@ const UserSchema = new Schema({
   cooperative: {
     type: Schema.Types.ObjectId,
     ref: 'Cooperative',
-    required: true
+    // required: true
   }
 });
+
+/**
+ * Prevent JSON responses from including populated fields
+ */
+
+UserSchema.methods.toJSON = function toJSON() {
+  const props = this.toObject();
+
+  props.cooperative = props.cooperative._id || props.cooperative;
+
+  return props;
+};
 
 const User = mongoose.model('User', UserSchema);
 

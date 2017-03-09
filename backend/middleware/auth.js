@@ -59,6 +59,7 @@ exports.initialize = function initialize() {
         return done(null, false, { message: 'User not recognized' });
       }
 
+
       /**
        * Store access token to user
        */

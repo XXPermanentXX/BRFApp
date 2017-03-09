@@ -9,8 +9,13 @@ const { __, __n } = require('../locale');
 
 module.exports = function (state, prev, send) {
   const { cooperative: id } = state.location.params;
-  const cooperative = state.cooperatives.find(props => props._id.toString() === id);
-  const actions = state.actions.filter(props => props.cooperative.toString() === id);
+  const cooperative = state.cooperatives.find(props => props._id === id);
+  const actions = state.actions.filter(props => props.cooperative === id);
+  const currentYear = cooperative.performances.find(props => {
+    return props.year === (new Date()).getFullYear();
+  });
+
+  // return html`<div />`;
 
   return html`
     <div class="App">
@@ -19,7 +24,7 @@ module.exports = function (state, prev, send) {
       <div class="App-container">
         <h1 class="Display Display--1">${ cooperative.name }</h1>
 
-        ${ performance({ performance: cooperative.performance }) }
+        ${ performance({ performance: currentYear.value }) }
 
         <hr class="u-marginVm" />
 

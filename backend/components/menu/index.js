@@ -4,8 +4,16 @@ const { __ } = require('../../locale');
 
 const pages = {
   home: {
-    href: state => state.user && resolve(`/cooperatives/${ state.user.cooperativeId }`),
-    title: state => state.user && state.user.cooperative.name
+    href: state => state.user && resolve(`/cooperatives/${ state.user.cooperative }`),
+    title: state => {
+      if (!state.user) { return; }
+
+      const cooperative = state.cooperatives.find(props => {
+        return props._id === state.user.cooperative;
+      });
+
+      return cooperative.name;
+    }
   },
   about: {
     href: () => resolve('/about-the-project'),

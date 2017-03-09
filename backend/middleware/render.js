@@ -22,9 +22,7 @@ module.exports = function render(req, res, next) {
       if (typeof format === 'function') {
         format(state, (err, formated) => {
           if (err) {
-            res.status(500).render('/error', {
-              err: err.message
-            });
+            res.status(500).render('/error', { err: err.message });
           } else {
             send(formated);
           }
@@ -54,9 +52,7 @@ module.exports = function render(req, res, next) {
               err: err.message
             });
           } else {
-            orig.call(res, route, Object.assign({
-              user
-            }, state));
+            orig.call(res, route, Object.assign({ user }, state));
           }
         });
       } else {
