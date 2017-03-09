@@ -136,12 +136,12 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
   Actions.update(id, body, (err, action) => {
     if (err) {
       res.status(500).render(
-        `/cooperatives${ req.url }`,
+        `/actions/${ id }`,
         Object.assign({ err: err.message }, body)
       );
     } else {
       res.render(
-        `/cooperatives${ req.url }`,
+        `/actions/${ id }`,
         action,
         (data, done) => done(null, {
           cooperatives: [ data.cooperative ],
