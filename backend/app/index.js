@@ -4,13 +4,15 @@ const user = require('./models/user');
 const menu = require('./models/menu');
 const actions = require('./models/actions');
 const cooperatives = require('./models/cooperatives');
+const consumptions = require('./models/consumptions');
 
 const INITIAL_STATE = {
   lang: 'sv',
   err: null,
   user: {},
   cooperatives: { items: [] },
-  actions: { items: [] }
+  actions: { items: [] },
+  consumptions: { items: [] }
 };
 
 /**
@@ -55,6 +57,7 @@ app.model(menu());
 app.model(user(INITIAL_STATE.user));
 app.model(actions(INITIAL_STATE.actions));
 app.model(cooperatives(INITIAL_STATE.cooperatives));
+app.model(consumptions(INITIAL_STATE.consumptions));
 
 app.router({ default: '/404' }, [
   ...routes.map(localize('sv')),

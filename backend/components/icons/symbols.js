@@ -7,34 +7,34 @@ module.exports = function () {
         </g>
       </symbol>
       <symbol viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" id="icon-loader">
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(0 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(0 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(36 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(36 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.11000000000000001s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(72 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(72 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.22000000000000003s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(108 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(108 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.33s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(144 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(144 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.44000000000000006s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(180 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(180 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.55s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(216 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(216 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.66s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(252 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(252 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.7700000000000001s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(288 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(288 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.8800000000000001s' repeatCount='indefinite' />
         </rect>
-        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='#388ee8' transform='rotate(324 50 50) translate(0 -20)'>
+        <rect x='47.5' y='45' width='5' height='10' rx='2' ry='2' fill='currentColor' transform='rotate(324 50 50) translate(0 -20)'>
           <animate attributeName='opacity' from='1' to='0' dur='1.1s' begin='0.99s' repeatCount='indefinite' />
         </rect>
       </symbol>

@@ -172,9 +172,9 @@ router.delete('/:id/editor/:editorId', auth.authenticate(), isMongoId('id', 'edi
 
 router.get('/:id/consumption', isMongoId('id'), function (req, res) {
   const { params: { id }, query } = req;
-  const options = Object.assign({ id, normalized: false }, query);
+  const options = Object.assign({ type: 'electricity', normalized: true }, query);
 
-  Cooperatives.getConsumption(options, (err, consumption) => {
+  Cooperatives.getConsumption(id, options, (err, consumption) => {
     if (err) {
       res.status(404).render('/404', { err: err.message });
     } else {

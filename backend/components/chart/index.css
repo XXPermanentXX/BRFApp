@@ -1,0 +1,18 @@
+/** @define Graph */
+
+.Graph {
+  padding: var(--space-s) 0;
+
+  position: relative;
+
+  color: #fff;
+  background-color: var(--color-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+.Graph-legend {
+  position: absolute;
+  top: var(--space-b);
+  left: var(--space-b);
+  font-size: calc(14rem / var(--base-font-size));
+}

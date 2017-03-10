@@ -314,9 +314,9 @@ exports.addMeter = function(id, meterId, type, useInCalc, cb) {
   });
 };
 
-exports.getConsumption = function(options, cb) {
+exports.getConsumption = function(id, options, cb) {
   Cooperatives.findOne({
-    _id: options.id
+    _id: id
   },function(err,cooperative){
     if (err) {
       cb(err);

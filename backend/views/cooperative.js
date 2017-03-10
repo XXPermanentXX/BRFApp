@@ -1,6 +1,7 @@
 const html = require('choo/html');
 const header = require('../components/page-head');
 const performance = require('../components/performance');
+const chart = require('../components/chart');
 const { defintion, numbered } = require('../components/list');
 const { format } = require('../components/utils');
 const { summary } = require('../components/action');
@@ -69,6 +70,13 @@ module.exports = function (state, prev, send) {
           [__('Ventilation type')]: cooperative.ventilationType.join(', ')
         }) }
 
+      </div>
+
+      <div class="u-marginVm">
+        ${ chart(cooperative, state, send) }
+      </div>
+
+      <div class="App-container">
         <div class="u-marginVm" id="actions-${ id }">
           ${ hasAllActions ? numbered(actions.map(action => summary(action, state))) : loader() }
         </div>

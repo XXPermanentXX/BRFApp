@@ -1,5 +1,14 @@
 const User = require('../models/users');
 
+const INITIAL_STATE = {
+  lang: 'sv',
+  err: null,
+  user: {},
+  cooperatives: { items: [] },
+  actions: { items: [] },
+  consumptions: { items: [] }
+};
+
 /**
  * Overwrite native `res.render` with one that conforms with request type and
  * decorates (HTML) state with user data
@@ -45,6 +54,8 @@ module.exports = function render(req, res, next) {
      */
 
     function send(state) {
+      Object.assign(INITIAL_STATE, state);
+
       if (req.user) {
         User.getProfile(req.user._id, (err, user) => {
           if (err) {
