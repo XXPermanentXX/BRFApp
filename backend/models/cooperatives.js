@@ -1,10 +1,9 @@
 'use strict';
 
 var mongoose = require('mongoose');
+const moment = require('moment');
 var _ = require('underscore');
 var Schema = mongoose.Schema;
-var escapeStringRegexp = require('escape-string-regexp');
-var request = require('request');
 var async = require('async');
 var Consumption = require('./consumption');
 
@@ -55,14 +54,17 @@ var CooperativeSchema = new Schema({
     }]
   }],
   ventilationType: [String],
-  performances: [{
-    year: Number,
-    value: Number,
-    area: Number
-  }],
+  performances: [
+    new Schema({
+      year: Number,
+      month: Number,
+      value: Number,
+      area: Number
+    })
+  ],
   editors: [{
-      editorId: Schema.Types.ObjectId,
-      name: String,
+    editorId: Schema.Types.ObjectId,
+    name: String,
   }],
   extraInfo: Schema.Types.Mixed
 });
@@ -70,7 +72,6 @@ var CooperativeSchema = new Schema({
 var Cooperative = mongoose.model('Cooperative', CooperativeSchema);
 
 var getConsumption = function(cooperative, type, granularity, from, to,normalized, cb) {
-  var cooperative = cooperative;
   if(cooperative.constructor.name == 'model') {
     cooperative = cooperative.toObject();
   }
@@ -79,35 +80,76 @@ var getConsumption = function(cooperative, type, granularity, from, to,normalize
       return value / (cooperative.area ? cooperative.area : 1);
     });
     cb(null,results);
-    //console.log(results);
   });
-}
+};
 
-var calculatePerformance = function(cooperative,cb) {
-  cooperative = cooperative.toObject();
-  var year = new Date().getFullYear();
-  var performance = _.findWhere(cooperative.performances,{year: year});
-  if(performance){
-    cooperative.performance = performance.value;
-    return cb(null,cooperative);
+function calculatePerformance(cooperative, done) {
+  const props = cooperative.toObject();
+
+  const now = new Date();
+
+  let performance = cooperative.performances.find(match(now));
+  if (!performance) {
+    performance = cooperative.performances.find(
+      match(moment(now).subtract(1, 'months').toDate())
+    );
+  }
+
+  if (performance) {
+    props.performance = performance.value;
+    return done(null, props);
   } else {
-    getConsumption(cooperative, 'heating', 'month', year - 1, null, false, function(err, result){
-      if(!err) {
-        var value = _.reduce(result,function(memo,num){return memo + num;});
-        cooperative.performances.push({
-          year: year,
-          area: cooperative.area,
-          value: value
-        })
-        cooperative.performance = value;
-        Cooperative.findByIdAndUpdate(cooperative._id,{
-          $set : {
-            performances : cooperative.performances
-          }
-        },function(){return 1});
+    // Get the last 13 months to ensure 12 actual values
+    // since the current month may not have any value yet
+    const from = moment(now).subtract(12, 'months').format('YYYYMM');
+    const to = moment(now).format('YYYYMM');
+
+    getConsumption(props, 'heating', 'month', from, to, true, (err, result) => {
+      if (err) { return done(err); }
+
+      const value = result
+        // Remove any empty values (i.e. current month)
+        .filter(Boolean)
+        // Take the last 12 (last year)
+        .slice(-12)
+        // Summarize consumtion
+        .reduce((memo,num) => memo + num, 0);
+
+      props.performance = value;
+
+      if (!value) {
+        return done(null, props);
       }
-      cb(null, cooperative);
-    })
+
+      // Figure out whether the last month is missing
+      const missing = result[result.length - 1] ? 0 : 1;
+
+      cooperative.performances.push({
+        year: now.getFullYear(),
+        month: moment(now).subtract(missing, 'months').month(),
+        area: cooperative.area,
+        value: value
+      });
+
+      cooperative.save(err => {
+        if (err) { return done(err); }
+        done(null, props);
+      });
+    });
+  }
+
+  /**
+   * Create an iterator function that matches given date with
+   * year and month of iteratiee properties
+   * @param  {Date} date Date to match against
+   * @return {function}      Iterator function
+   */
+
+  function match(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    return props => props.year === year && props.month === month;
   }
 }
 
@@ -139,7 +181,7 @@ exports.all = function(cb) {
       });
     }
   });
-}
+};
 
 exports.get = function(id, user, cb) {
   Cooperative.findOne({
@@ -184,17 +226,28 @@ exports.getProfile = function(id, user, cb) {
   });
 };
 
-exports.update = function(id, cooperative, cb) {
-  Cooperative.findByIdAndUpdate(id, {
-    $set : {
-      name: cooperative.name,
-      email: cooperative.email,
-      yearOfConst: cooperative.yearOfConst,
-      area: cooperative.area,
-      numOfApartments: cooperative.numOfApartments,
-      ventilationType: cooperative.ventilationType,
+exports.update = function(id, data, done) {
+  Cooperative.findOne({ _id: id }, (err, cooperative) => {
+    if (err) { return done(err); }
+
+    const areaChanged = data.area && (cooperative.area !== data.area);
+
+    // Assign all data to cooperative
+    Object.assign(cooperative, data);
+
+    if (areaChanged) {
+      // Remove last perfomance calculation if area has changed
+      cooperative.performances.$pop();
+
+      // Recalculate latest performance
+      calculatePerformance(cooperative, err => {
+        if (err) { return done(err); }
+        done(null, cooperative);
+      });
+    } else {
+      cooperative.save(done);
     }
-  }, cb);
+  });
 };
 
 exports.addAction = function(id, action, user, cb) {
@@ -208,17 +261,17 @@ exports.addAction = function(id, action, user, cb) {
     } else {
       // cooperative = cooperative.toObject();
       if (!cooperative.actions){
-        cooperative.actions = []
+        cooperative.actions = [];
       }
       cooperative.actions.push(action);
       cooperative.markModified('actions');
       cooperative.save(function(err){
         cb(err,cooperative);
-      })
+      });
       // cb(null, cooperative);
     }
-  })
-}
+  });
+};
 
 exports.updateAction = function(id, actionId, newAction, user, cb) {
   Cooperative.findOne({
@@ -241,11 +294,11 @@ exports.updateAction = function(id, actionId, newAction, user, cb) {
         cooperative.markModified('actions');
         cooperative.save(function(err){
           cb(err,cooperative);
-        })
+        });
       }
     }
-  })
-}
+  });
+};
 
 exports.deleteAction = function(id, actionId, user, cb) {
   Cooperative.findOne({
@@ -264,11 +317,11 @@ exports.deleteAction = function(id, actionId, user, cb) {
         cooperative.markModified('actions');
         cooperative.save(function(err){
           cb(err,cooperative);
-        })
+        });
       }
     }
-  })
-}
+  });
+};
 
 exports.commentAction = function(id, actionId, comment, user, cb) {
   Cooperative.findOne({
@@ -290,17 +343,17 @@ exports.commentAction = function(id, actionId, comment, user, cb) {
         action.comments.push(comment);
         comment = _.last(action.comments).toObject();
         cooperative.markModified('actions');
-        cooperative.save(function(err,cooperative){
+        cooperative.save(function(err){
           comment.user = {
             _id: user._id,
             profile: user.profile
           };
           cb(err,comment);
-        })
+        });
       }
     }
-  })
-}
+  });
+};
 
 exports.getMoreComments = function(id, actionId, lastCommentId, user, cb) {
   Cooperative.findOne({
@@ -331,7 +384,7 @@ exports.getMoreComments = function(id, actionId, lastCommentId, user, cb) {
       }
     }
   });
-}
+};
 
 exports.deleteActionComment = function(id, actionId, commentId, user, cb) {
   Cooperative.findOne({
@@ -354,45 +407,45 @@ exports.deleteActionComment = function(id, actionId, commentId, user, cb) {
         cooperative.markModified('actions');
         cooperative.save(function(err){
           cb(err);
-        })
+        });
       }
     }
-  })
-}
+  });
+};
 
 exports.addEditor = function(id, editor, user, cb) {
-    // find the editor name and save it as well, to avoid an extra query when listing editors
-    require('../models').users.model.findOne({
-        _id:editor.editorId
-    }, function(err,user){
+  // find the editor name and save it as well, to avoid an extra query when listing editors
+  require('../models').users.model.findOne({
+    _id:editor.editorId
+  }, function(err,user){
+    if (err) {
+      cb(err);
+    } else if (!user) {
+      cb('User not found');
+    } else {
+      editor.name=user.profile.name;
+      Cooperative.findOne({
+        _id: id
+      }, function(err, cooperative){
         if (err) {
-            cb(err);
-        } else if (!user) {
-            cb('User not found');
+          cb(err);
+        } else if (!cooperative) {
+          cb('Cooperative not found');
         } else {
-            editor.name=user.profile.name;
-            Cooperative.findOne({
-                _id: id
-            }, function(err, cooperative){
-                if (err) {
-                    cb(err);
-                } else if (!cooperative) {
-                    cb('Cooperative not found');
-                } else {
-                    if (!cooperative.editors){
-                        cooperative.editors = []
-                    }
+          if (!cooperative.editors){
+            cooperative.editors = [];
+          }
 
-                    cooperative.editors.push(editor);
-                    cooperative.markModified('editors');
-                    cooperative.save(function(err){
-                        cb(err,cooperative);
-                    })
-                }
-            })
+          cooperative.editors.push(editor);
+          cooperative.markModified('editors');
+          cooperative.save(function(err){
+            cb(err,cooperative);
+          });
         }
-    })
-}
+      });
+    }
+  });
+};
 
 
 exports.deleteEditor = function(id, coopEditorId, user, cb) {
@@ -412,11 +465,11 @@ exports.deleteEditor = function(id, coopEditorId, user, cb) {
         cooperative.markModified('editors');
         cooperative.save(function(err){
           cb(err,cooperative);
-        })
+        });
       }
     }
-  })
-}
+  });
+};
 
 exports.getAvgConsumption = function(type, granularity, from, to, cb) {
   Cooperative.find({},function(err,cooperatives){
@@ -426,16 +479,16 @@ exports.getAvgConsumption = function(type, granularity, from, to, cb) {
       var avg = _.chain(coopsData)
       .reject(_.isEmpty)
       .unzip()
-      .map(function(data,index){
+      .map(function(data){
         return _.reduce(data,function(memo, num){
-          return memo + num
+          return memo + num;
         },0)/data.length;
       })
-      .value()
+      .value();
       cb(null,avg);
-    })
+    });
   });
-}
+};
 
 exports.addMeter = function(id, meterId, type, useInCalc, cb) {
   Cooperative.findOne({
@@ -454,10 +507,10 @@ exports.addMeter = function(id, meterId, type, useInCalc, cb) {
       cooperative.markModified('meters');
       cooperative.save(function(err){
         cb(err,cooperative);
-      })
+      });
     }
-  })
-}
+  });
+};
 
 exports.getConsumption = function(id, type, granularity, from, to, normalized, cb) {
   Cooperative.findOne({
@@ -470,12 +523,12 @@ exports.getConsumption = function(id, type, granularity, from, to, normalized, c
     } else {
       getConsumption(cooperative,type,granularity,from,to,normalized,cb);
     }
-  })
-}
+  });
+};
 
 exports.getAll = function(cb){
   Cooperative.find({},cb);
-}
+};
 
 
 exports.model = Cooperative;
