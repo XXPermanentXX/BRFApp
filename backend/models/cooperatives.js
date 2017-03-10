@@ -63,8 +63,8 @@ var CooperativeSchema = new Schema({
     })
   ],
   editors: [{
-    type: Schema.Types.ObjectId,
-    ref: 'User'
+    editorId: Schema.Types.ObjectId,
+    name: String
   }],
   extraInfo: Schema.Types.Mixed
 });
