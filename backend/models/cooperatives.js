@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
+const moment = require('moment');
 const _ = require('underscore');
 const Schema = mongoose.Schema;
 const async = require('async');
 const { getEnergimolnetConsumption } = require('./consumption');
+
 
 const DYNAMIC_KEYS = [
   'name',
@@ -34,11 +36,14 @@ const CooperativeSchema = new Schema({
     useInCalc: Boolean,
     meterId: String,
   }],
-  performances: [{
-    year: Number,
-    value: Number,
-    area: Number
-  }],
+  performances: [
+    new Schema({
+      year: Number,
+      month: Number,
+      value: Number,
+      area: Number
+    })
+  ],
   actions: {
     type: [{
       type: Schema.Types.ObjectId,
@@ -46,12 +51,10 @@ const CooperativeSchema = new Schema({
     }],
     default: []
   },
-  editors: {
-    type: [{
-      type: Schema.Types.ObjectId,
-      ref: 'User'
-    }]
-  }
+  editors: [{
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  }]
 });
 
 /**
@@ -87,36 +90,73 @@ function getConsumption(cooperative, options, done) {
   });
 }
 
-function calculatePerformance(props, done) {
-  const year = new Date().getFullYear();
-  const performance = props.performances.find(perf => perf.year === year);
+function calculatePerformance(cooperative, done) {
+  const props = cooperative.toObject();
+
+  const now = new Date();
+
+  let performance = cooperative.performances.find(match(now));
+  if (!performance) {
+    performance = cooperative.performances.find(
+      match(moment(now).subtract(1, 'months').toDate())
+    );
+  }
 
   if (performance) {
-    return done(null);
+    props.performance = performance.value;
+    return done(null, props);
   } else {
-    const params = {
-      type: 'heating',
-      granularity: 'month',
-      from: year - 1,
-      to: null,
-      normalized: false
-    };
+    // Get the last 13 months to ensure 12 actual values
+    // since the current month may not have any value yet
+    const from = moment(now).subtract(12, 'months').format('YYYYMM');
+    const to = moment(now).format('YYYYMM');
 
-    getConsumption(props, params, (err, result) => {
+    getConsumption(props, 'heating', 'month', from, to, true, (err, result) => {
       if (err) { return done(err); }
 
-      const value = result.reduce((sum, num) => sum + num, 0);
+      const value = result
+        // Remove any empty values (i.e. current month)
+        .filter(Boolean)
+        // Take the last 12 (last year)
+        .slice(-12)
+        // Summarize consumtion
+        .reduce((memo,num) => memo + num, 0);
 
       props.performance = value;
-      props.performances.push({ year, value, area: props.area });
-      Cooperatives.findByIdAndUpdate(
-        props._id,
-        { $set: { performances: props.performances }},
-        () => 1
-      );
 
-      done(null);
+      if (!value) {
+        return done(null, props);
+      }
+
+      // Figure out whether the last month is missing
+      const missing = result[result.length - 1] ? 0 : 1;
+
+      cooperative.performances.push({
+        year: now.getFullYear(),
+        month: moment(now).subtract(missing, 'months').month(),
+        area: cooperative.area,
+        value: value
+      });
+
+      cooperative.save(err => {
+        if (err) { return done(err); }
+        done(null, props);
+      });
     });
+  }
+
+  /**
+   * Create an iterator function that matches given date with
+   * year and month of iteratiee properties
+   * @param  {Date} date Date to match against
+   * @return {function}      Iterator function
+   */
+
+  function match(date) {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    return props => props.year === year && props.month === month;
   }
 }
 
@@ -171,14 +211,33 @@ exports.getProfile = function(id, done) {
   });
 };
 
-exports.update = function(id, props, done) {
-  const selection = {};
+exports.update = function(id, data, done) {
+  Cooperatives.findOne({ _id: id }, (err, cooperative) => {
+    if (err) { return done(err); }
 
-  Object.keys(props).filter(key => DYNAMIC_KEYS.includes(key)).forEach(key => {
-    selection[key] = props[key];
+    const selection = {};
+    const areaChanged = data.area && (cooperative.area !== data.area);
+
+    Object.keys(data).filter(key => DYNAMIC_KEYS.includes(key)).forEach(key => {
+      selection[key] = data[key];
+    });
+
+    // Assign all data to cooperative
+    Object.assign(cooperative, selection);
+
+    if (areaChanged) {
+      // Remove last perfomance calculation if area has changed
+      cooperative.performances.$pop();
+
+      // Recalculate latest performance
+      calculatePerformance(cooperative, err => {
+        if (err) { return done(err); }
+        done(null, cooperative);
+      });
+    } else {
+      cooperative.save(done);
+    }
   });
-
-  Cooperatives.findByIdAndUpdate(id, { $set : selection }, done);
 };
 
 exports.addEditor = function(id, user, done) {

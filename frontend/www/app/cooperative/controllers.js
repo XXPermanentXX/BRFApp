@@ -4,7 +4,6 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
   $scope.actionTypes = Cooperatives.getActionTypes();
   $scope.cooperatives = Cooperatives.query();
 
-
   $scope.$on('$ionicView.enter', function() {
     // A cooperative have been selected to compare with
     if (!(_.isEmpty(cooperativeSelection.getSelection().cooperative))) {
@@ -20,6 +19,13 @@ function coop(id, $scope, $timeout, $state, $q, $stateParams, $translate, $ionic
       $scope.cooperative.actions = _.sortBy($scope.cooperative.actions, function(a) {
         return new Date(a.date);
       }).reverse();
+
+      if ($scope.currentUser) {
+        $scope.isEditor = !!_.find(data.editors, function (editor) {
+          return editor.editorId === $scope.currentUser._id;
+        });
+      }
+
       $scope.$broadcast('civisEnergyGraph.init');
       mixpanel.track('Cooperative viewed', {
         name: data.name

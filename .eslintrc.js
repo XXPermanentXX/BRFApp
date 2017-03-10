@@ -6,7 +6,8 @@ module.exports = {
       "ionic": true,
       "google": true,
       "mixpanel": true,
-      "MarkerClusterer": true
+      "MarkerClusterer": true,
+      "moment": true
     },
     "env": {
         "browser": true,
