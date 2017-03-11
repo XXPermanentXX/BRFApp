@@ -179,7 +179,7 @@ exports.all = function(done) {
   Cooperatives.find({}, (err, cooperatives) => {
     if (err) { return done(err); }
     async.map(
-      cooperatives.map(cooperative => cooperative.toObject()),
+      cooperatives,
       calculatePerformance,
       done
     );
@@ -195,7 +195,7 @@ exports.get = function (id, done) {
       if (err) { return done(err); }
       if (!cooperative) { return done(new Error('Cooperative not found')); }
 
-      calculatePerformance(cooperative.toObject(), err => {
+      calculatePerformance(cooperative, err => {
         if (err) { return done(err); }
         done(null, cooperative);
       });
