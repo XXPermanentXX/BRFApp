@@ -18,10 +18,8 @@ module.exports = function cooperative(state, prev, send) {
   });
 
   if (!cooperative) {
-    send('cooperatives:fetch', id);
-
     return html`
-      <div class="App">
+      <div class="App" onload=${ () => send('cooperatives:fetch', id) }>
         ${ header(state, prev, send) }
         <div class="App-container">
           ${ performance() }
@@ -32,12 +30,9 @@ module.exports = function cooperative(state, prev, send) {
   }
 
   const hasAllActions = actions.length === cooperative.actions.length;
-  if (!hasAllActions) {
-    const missing = cooperative.actions.filter(id => {
-      return !actions.find(action => action._id === id);
-    });
-    send('actions:fetch', missing);
-  }
+  const missingActions = !hasAllActions && cooperative.actions.filter(id => {
+    return !actions.find(action => action._id === id);
+  });
 
   return html`
     <div class="App">
@@ -73,12 +68,19 @@ module.exports = function cooperative(state, prev, send) {
       </div>
 
       <div class="u-marginVm">
-        ${ chart(cooperative, state, send) }
+        ${ chart(cooperative, state, prev, send) }
       </div>
 
       <div class="App-container">
-        <div class="u-marginVm" id="actions-${ id }">
-          ${ hasAllActions ? numbered(actions.map(action => summary(action, state))) : loader() }
+        <div id="actions-${ id }">
+          ${ hasAllActions ?
+            numbered(actions.map(action => summary(action, state))) :
+            html`
+              <div onload=${ () => send('actions:fetch', missingActions) }>
+                ${ loader() }
+              </div>
+            `
+          }
         </div>
       </div>
 

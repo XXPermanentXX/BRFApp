@@ -79,6 +79,7 @@
     "express-validator": "^2.10.0",
     "highcharts": "^5.0.9",
     "i18n": "^0.5.0",
+    "lodash.merge": "^4.6.0",
     "method-override": "^2.3.7",
     "moment": "^2.11.2",
     "mongoose": "^4.0.5",

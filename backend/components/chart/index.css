@@ -1,6 +1,6 @@
 /** @define Graph */
 
-.Graph {
+.Chart {
   padding: var(--space-s) 0;
 
   position: relative;
@@ -10,9 +10,38 @@
   -webkit-font-smoothing: antialiased;
 }
 
-.Graph-legend {
-  position: absolute;
-  top: var(--space-b);
-  left: var(--space-b);
+.Chart-tooltip {
+  display: block;
+  padding: 3px 10px 5px 24px;
+
+  position: relative;
+
+  color: var(--color-text);
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 3px;
   font-size: calc(14rem / var(--base-font-size));
+}
+
+.Chart-tooltip--alignRight {
+  padding: 3px 24px 5px 10px;
+}
+
+.Chart-tooltip::after {
+  box-sizing: content-box;
+  content: "";
+  width: 7px;
+  height: 7px;
+  border: 2px solid #fff;
+
+  position: absolute;
+  left: 8px;
+  top: 9px;
+
+  background-color: var(--color-primary);
+  border-radius: 7px;
+}
+
+.Chart-tooltip--alignRight::after {
+  left: auto;
+  right: 8px;
 }

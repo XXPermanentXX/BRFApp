@@ -1,6 +1,9 @@
 const url = require('url');
+const moment = require('moment');
 
-module.exports = function (state) {
+const FORMAT = 'YYYYMM';
+
+module.exports = function consumtions(state) {
   return {
     namespace: 'consumptions',
     state: Object.assign({
@@ -8,7 +11,8 @@ module.exports = function (state) {
       isLoading: false
     }, state),
     reducers: {
-      add(state, { body, id, key }) {
+      fetching: state => Object.assign({}, state, { isLoading: true }),
+      add(state, { values, id, query }) {
         const items = state.items.slice();
         let item = items.find(item => item.cooperative === id);
 
@@ -17,28 +21,42 @@ module.exports = function (state) {
           items.push(item);
         }
 
-        item.values[key] = body;
+        // Cache result by query used to fetch it
+        item.values[query] = values;
 
-        return Object.assign({}, state, { items });
+        return Object.assign({}, state, { items, isLoading: false });
       }
     },
     effects: {
       fetch(state, options, send, done) {
         const id = options.cooperative._id;
-        const { granularity, from, to } = options;
-        const key = JSON.stringify({ granularity, from, to });
+        const { from, to, granularity = 'month' } = options;
+        const query = JSON.stringify({ granularity, from, to });
 
         fetch(
           url.format({
             pathname: `/cooperatives/${ id }/consumption`,
-            query: { granularity, from, to }
+            query: {
+              granularity: granularity,
+              from: moment(from).format(FORMAT),
+              to: moment(to).format(FORMAT)
+            }
           }),
           { headers: { accept: 'application/json' }}
         )
-        .then(body => body.json())
-        .then(body => send('consumptions:add', { body, id, key }, (err, value) => {
-          if (err) { return done(err); }
-          done(null, value);
+        .then(body => body.json().then(body => {
+          const values = body
+            // Index values by date
+            .map((value, index) => {
+              const date = moment(from, FORMAT).add(index, granularity + 's').toDate();
+              return { value, date };
+            })
+            // Remove any empty values (i.e. current month)
+            .filter(item => !!item.value);
+
+          send('consumptions:add', { values, id, query }, err => {
+            if (err) { return done(err); }
+          });
         }), done);
       }
     }
