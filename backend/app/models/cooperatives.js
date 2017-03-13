@@ -1,4 +1,4 @@
-module.exports = function (state) {
+module.exports = function cooperatives(state) {
   return {
     namespace: 'cooperatives',
     state: state,

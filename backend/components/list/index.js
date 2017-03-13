@@ -1,6 +1,6 @@
 const html = require('choo/html');
 
-exports.defintion = function (props) {
+exports.definition = function definition(props) {
   return html`
     <dl class="List List--definition">
       ${ Object.keys(props).reduce((list, key) => list.concat([
@@ -11,7 +11,7 @@ exports.defintion = function (props) {
   `;
 };
 
-exports.numbered = function (list) {
+exports.numbered = function numbered(list) {
   return html`
     <ol class="List List--numbered">
       ${ list.map((item, index) => html`

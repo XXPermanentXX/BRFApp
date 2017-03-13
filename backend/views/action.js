@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const moment = require('moment');
 const header = require('../components/page-head');
-const { defintion } = require('../components/list');
+const { definition } = require('../components/list');
 const footer = require('../components/app/footer');
 const comment = require('../components/comment');
 const resolve = require('../resolve');
@@ -9,7 +9,7 @@ const { chevron, loader } = require('../components/icons');
 const { format, capitalize } = require('../components/utils');
 const { __, __n } = require('../locale');
 
-module.exports = function (state, prev, send) {
+module.exports = function action(state, prev, send) {
   const { cooperatives, actions, location: { params }} = state;
   const action = actions.items.find(props => props._id === params.action);
 
@@ -35,7 +35,7 @@ module.exports = function (state, prev, send) {
         </a>
 
         <div class="u-marginTm u-marginBl">
-          ${ defintion(properties(action)) }
+          ${ definition(properties(action)) }
 
           ${ state.user._id ? html`
             <a href="/actions/${ action._id }/edit" class="Button u-block u-marginVs">

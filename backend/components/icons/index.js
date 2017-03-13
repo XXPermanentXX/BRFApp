@@ -1,6 +1,6 @@
 const html = require('choo/html');
 
-exports.chevron = function (direction) {
+exports.chevron = function chevron(direction) {
   const deg = {
     up: 90,
     right: 180,
@@ -15,7 +15,7 @@ exports.chevron = function (direction) {
   `;
 };
 
-exports.loader = function () {
+exports.loader = function loader() {
   return html`
     <svg class="Icon Icon--large Icon--center">
       <use class="Icon-path" xlink:href="#icon-loader" />

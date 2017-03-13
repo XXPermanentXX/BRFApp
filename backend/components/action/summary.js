@@ -5,7 +5,7 @@ const resolve = require('../../resolve');
 const { __ } = require('../../locale');
 const { capitalize } = require('../utils');
 
-module.exports = function (action, state) {
+module.exports = function summary(action, state) {
   const numComments = action.comments.length;
   const href = resolve(`/actions/${ action._id }`);
 

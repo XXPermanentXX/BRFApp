@@ -18,7 +18,7 @@ exports.getEnergyClass = function getEnergyClass(performance) {
 };
 
 const DECIMAL_SIGN = (0.5 + '').match(/0(.{1})5/)[1];
-exports.format = function (src) {
+exports.format = function format(src) {
   const factor = src > 1 ? 10 : 100;
   const [ whole, decimal ] = ((Math.round( src * factor ) / factor) + '').split(/,|\./);
   const spaced = whole
@@ -36,11 +36,11 @@ exports.format = function (src) {
   return spaced;
 };
 
-exports.capitalize = function (str) {
+exports.capitalize = function capitalize(str) {
   return str[0].toUpperCase() + str.substr(1);
 };
 
-exports.className = function (...args) {
+exports.className = function className(...args) {
   const classList = typeof args[0] === 'string' ? args[0].split(' ') : [];
   const hash = typeof args[0] === 'object' ? args[0] : args[1] || {};
 

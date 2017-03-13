@@ -1,4 +1,4 @@
-module.exports = function (state = {}) {
+module.exports = function actions(state = {}) {
   return {
     namespace: 'actions',
     reducers: {

@@ -2,14 +2,14 @@ const html = require('choo/html');
 const header = require('../components/page-head');
 const performance = require('../components/performance');
 const chart = require('../components/chart');
-const { defintion, numbered } = require('../components/list');
+const { definition, numbered } = require('../components/list');
 const { format } = require('../components/utils');
 const { summary } = require('../components/action');
 const { loader } = require('../components/icons');
 const footer = require('../components/app/footer');
 const { __, __n } = require('../locale');
 
-module.exports = function (state, prev, send) {
+module.exports = function cooperative(state, prev, send) {
   const { cooperative: id } = state.location.params;
   const cooperative = state.cooperatives.items.find(props => props._id === id);
   const actions = state.actions.items.filter(props => props.cooperative === id);
@@ -63,7 +63,7 @@ module.exports = function (state, prev, send) {
 
         <hr class="u-marginVm" />
 
-        ${ defintion({
+        ${ definition({
           [__('Apartments')]: format(cooperative.numOfApartments),
           [__('Heated area')]: html`<span>${ format(cooperative.area) } m<sup>2</sup></span>`,
           [__('Constructed')]: cooperative.yearOfConst,

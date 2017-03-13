@@ -4,7 +4,7 @@ const { __ } = require('../../locale');
 
 const SHORT_LENGTH = 50;
 
-module.exports = function (comment, action, state) {
+module.exports = function comment(comment, action, state) {
   const classList = [ 'Comment' ];
   const { user } = state;
   let content = comment.comment;
