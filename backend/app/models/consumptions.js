@@ -3,7 +3,10 @@ const url = require('url');
 module.exports = function (state) {
   return {
     namespace: 'consumptions',
-    state: state,
+    state: Object.assign({
+      items: [],
+      isLoading: false
+    }, state),
     reducers: {
       add(state, { body, id, key }) {
         const items = state.items.slice();

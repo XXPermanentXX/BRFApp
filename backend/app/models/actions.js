@@ -3,6 +3,8 @@ module.exports = function actions(state = {}) {
     namespace: 'actions',
     reducers: {
     },
-    state: state
+    state: Object.assign({
+      items: [],
+    }, state)
   };
 };

@@ -8,11 +8,7 @@ const consumptions = require('./models/consumptions');
 
 const INITIAL_STATE = {
   lang: 'sv',
-  err: null,
-  user: {},
-  cooperatives: { items: [] },
-  actions: { items: [] },
-  consumptions: { items: [] }
+  err: null
 };
 
 /**

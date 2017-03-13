@@ -6,8 +6,8 @@ module.exports = function menu(state) {
       close: state => Object.assign({}, state, { isOpen: false }),
       toggle: state => Object.assign({}, state, { isOpen: !state.isOpen })
     },
-    state: state || {
+    state: Object.assign({
       open: false
-    }
+    }, state)
   };
 };

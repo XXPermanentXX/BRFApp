@@ -1,7 +1,9 @@
 module.exports = function cooperatives(state) {
   return {
     namespace: 'cooperatives',
-    state: state,
+    state: Object.assign({
+      items: [],
+    }, state),
     reducers: {
       add(state, cooperative) {
         const items = [ ...state.items, cooperative ];
