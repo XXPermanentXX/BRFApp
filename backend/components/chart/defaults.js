@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { capitalize, format } = require('../utils');
+const { format } = require('../utils');
 const { __ } = require('../../locale');
 
 module.exports = {
@@ -26,6 +26,7 @@ module.exports = {
     verticalAlign: 'top',
     layout: 'vertical',
     margin: 0,
+    padding: 0,
     itemStyle: {
       color: 'currentColor',
       textDecoration: 'none',
@@ -47,19 +48,7 @@ module.exports = {
     backgroundColor: 'transparent',
     useHTML: true,
     shadow: false,
-    shared: true,
-    formatter() {
-      return `
-        <span class="Chart-tooltip js-tooltip">
-          <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
-          ${ this.points.reduce((str, point) => `
-            ${ str }
-            <br />
-            <strong>${ point.series.name }</strong> ${ format(point.y) } kWh/m<sup>2</sup>
-          `, '') }
-        </span>
-      `;
-    },
+    shared: false,
     style: {
       fontSize: 'inherit',
       color: 'inherit',
@@ -72,7 +61,7 @@ module.exports = {
     tickWidth: 0,
     crosshair: {
       width: 1,
-      color: 'currentColor'
+      color: 'rgba(255, 255, 255, 0.26)'
     },
     labels: {
       step: 3,
@@ -93,7 +82,6 @@ module.exports = {
     spline: {
       dataLabels: {
         enabled: true,
-        verticalAlign: 'bottom',
         formatter() {
           return format(this.y);
         },
@@ -101,7 +89,7 @@ module.exports = {
         style: {
           color: 'currentColor',
           textOutline: 'none',
-          fontWeight: 'normal'
+          fontWeight: 'bold'
         }
       },
       lineWidth: 2,
@@ -112,10 +100,16 @@ module.exports = {
       },
       events: {
         mouseOver() {
-          this.dataLabelsGroup.hide();
+          this.chart.series.forEach(serie => serie.dataLabelsGroup.hide());
         },
         mouseOut() {
-          setTimeout(() => this.dataLabelsGroup.show(), 500);
+          setTimeout(() => {
+            this.chart.series.forEach(serie => {
+              if (serie.visible) {
+                serie.dataLabelsGroup.show();
+              }
+            });
+          }, 500);
         }
       }
     }
@@ -128,6 +122,7 @@ module.exports = {
 
     {
       color: 'currentColor',
+      zIndex: 1,
       marker: {
         fillColor: '#388EE8',
         lineWidth: 2,
@@ -146,6 +141,15 @@ module.exports = {
 
     {
       color: '#19DDC0',
+      dataLabels: {
+        style: {
+          color: '#19DDC0'
+        }
+      },
+      tooltip: {
+        enabled: false
+      },
+      enableMouseTracking: false,
       marker: {
         fillColor: '#19DDC0',
         lineColor: '#19DDC0',

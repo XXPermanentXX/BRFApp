@@ -29,36 +29,78 @@ module.exports = function consumtions(state) {
     },
     effects: {
       fetch(state, options, send, done) {
-        const id = options.cooperative._id;
-        const { from, to, granularity = 'month' } = options;
-        const query = JSON.stringify({ granularity, from, to });
+        if (Array.isArray(options)) {
+          /**
+           * Perform concurrent fetch if given array of options
+           */
 
-        fetch(
-          url.format({
-            pathname: `/cooperatives/${ id }/consumption`,
-            query: {
-              granularity: granularity,
-              from: moment(from).format(FORMAT),
-              to: moment(to).format(FORMAT)
-            }
-          }),
-          { headers: { accept: 'application/json' }}
-        )
-        .then(body => body.json().then(body => {
-          const values = body
-            // Index values by date
-            .map((value, index) => {
-              const date = moment(from, FORMAT).add(index, granularity + 's').toDate();
-              return { value, date };
-            })
-            // Remove any empty values (i.e. current month)
-            .filter(item => !!item.value);
+          Promise.all(options.map(doFetch)).then(results => {
 
-          send('consumptions:add', { values, id, query }, err => {
-            if (err) { return done(err); }
-          });
-        }), done);
+            /**
+             * Compose a recursive send queue that executes a send for each
+             * result as a callback to the previous send
+             */
+
+            const queue = results.reduce((callback, result) => {
+              return (err) => {
+                if (err) { return done(err); }
+                send('consumptions:add', result, callback);
+              };
+            }, err => {
+              if (err) { return done(err); }
+            });
+
+            /**
+             * Start queue
+             */
+
+            queue();
+          }, done);
+        } else {
+          doFetch(options).then(result => {
+            send('consumptions:add', result, err => {
+              if (err) { return done(err); }
+            });
+          }, done);
+        }
       }
     }
   };
 };
+
+/**
+ * Fetch consumtion for given cooperative with query parameterss granularity,
+ * from and to
+ * @param  {Object} options Hash with cooperative and query parameters
+ * @return {Promise}        Resolves to parsed response
+ */
+
+function doFetch(options) {
+  const id = options.cooperative._id;
+  const { from, to, granularity = 'month' } = options;
+  const query = JSON.stringify({ granularity, from, to });
+
+  return fetch(
+    url.format({
+      pathname: `/cooperatives/${ id }/consumption`,
+      query: {
+        granularity: granularity,
+        from: moment(from).format(FORMAT),
+        to: moment(to).format(FORMAT)
+      }
+    }),
+    { headers: { accept: 'application/json' }}
+  )
+  .then(body => body.json().then(body => {
+    const values = body
+      // Index values by date
+      .map((value, index) => {
+        const date = moment(from, FORMAT).add(index, granularity + 's').toDate();
+        return { value, date };
+      })
+      // Remove any empty values (i.e. current month)
+      .filter(item => !!item.value);
+
+    return { values, id, query };
+  }));
+}
