@@ -85,6 +85,7 @@ module.exports = {
           return format(this.y);
         },
         y: -8,
+        verticalAlign: 'bottom',
         style: {
           color: 'currentColor',
           textOutline: 'none',
