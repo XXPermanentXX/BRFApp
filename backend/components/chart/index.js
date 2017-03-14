@@ -43,13 +43,25 @@ module.exports = function chart(cooperative, state, prev, send) {
   }
 
   const actions = state.actions.items
+    // Find cooperative's actions
     .filter(action => action.cooperative === cooperative._id)
-    .filter(action => moment(action.date).isBetween(queries.current.from, queries.current.to))
-    .map((action, index) => ({
-      name: index + 1,
-      date: action.date,
-      value: current[current.findIndex(point => new Date(point.date) > new Date(action.date)) - 1].value
-    }));
+    // Filter out only those who are within given time span
+    .filter(action => moment(action.date).isBetween(
+      queries.current.from,
+      queries.current.to
+    ))
+    // Put together a chart compatible object
+    .map((action, index) => {
+      const match = current.findIndex(point => {
+        return new Date(point.date) > new Date(action.date);
+      });
+
+      return {
+        name: index + 1,
+        date: action.date,
+        value: current[match - 1].value
+      };
+    });
 
   return html`
     <div class="Chart">

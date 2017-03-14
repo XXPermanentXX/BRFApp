@@ -120,7 +120,9 @@ module.exports = {
       },
       events: {
         mouseOver() {
-          this.chart.series.slice(0, 2).forEach(serie => serie.dataLabelsGroup.hide());
+          this.chart.series.slice(0, 2).forEach(serie => {
+            serie.dataLabelsGroup.hide();
+          });
         },
         mouseOut() {
           setTimeout(() => {
