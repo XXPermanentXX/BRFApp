@@ -4,7 +4,6 @@ const { __ } = require('../../locale');
 
 module.exports = {
   chart: {
-    type: 'spline',
     backgroundColor: 'transparent',
     style: {
       fontFamily: 'inherit',
@@ -56,7 +55,7 @@ module.exports = {
     }
   },
   xAxis: {
-    categories: [],
+    type: 'datetime',
     lineWidth: 0,
     tickWidth: 0,
     crosshair: {
@@ -64,7 +63,6 @@ module.exports = {
       color: 'rgba(255, 255, 255, 0.26)'
     },
     labels: {
-      step: 3,
       formatter() {
         return moment(this.value).format('MMM YYYY ');
       },
@@ -100,11 +98,11 @@ module.exports = {
       },
       events: {
         mouseOver() {
-          this.chart.series.forEach(serie => serie.dataLabelsGroup.hide());
+          this.chart.series.slice(0, 2).forEach(serie => serie.dataLabelsGroup.hide());
         },
         mouseOut() {
           setTimeout(() => {
-            this.chart.series.forEach(serie => {
+            this.chart.series.slice(0, 2).forEach(serie => {
               if (serie.visible) {
                 serie.dataLabelsGroup.show();
               }
@@ -121,6 +119,7 @@ module.exports = {
      */
 
     {
+      type: 'spline',
       color: 'currentColor',
       zIndex: 1,
       marker: {
@@ -140,6 +139,7 @@ module.exports = {
      */
 
     {
+      type: 'spline',
       color: '#19DDC0',
       dataLabels: {
         style: {
@@ -160,6 +160,36 @@ module.exports = {
           }
         }
       },
+      data: []
+    },
+
+    /**
+     * Actions
+     */
+
+    {
+      type: 'scatter',
+      showInLegend: false,
+      tooltip: {
+        enabled: false
+      },
+      marker: {
+        enabled: false
+      },
+      dataLabels: {
+        enabled: true,
+        align: 'right',
+        color: 'currentColor',
+        useHTML: true,
+        formatter() {
+          return `
+            <span class="Chart-action">
+              ${ this.point.name }
+            </span>
+          `;
+        }
+      },
+      enableMouseTracking: false,
       data: []
     }
   ]

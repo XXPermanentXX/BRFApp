@@ -29,40 +29,40 @@ module.exports = function consumtions(state) {
     },
     effects: {
       fetch(state, options, send, done) {
-        if (Array.isArray(options)) {
-          /**
-           * Perform concurrent fetch if given array of options
-           */
+        send('consumptions:fetching', null, err => {
+          if (err) { return done(err); }
 
-          Promise.all(options.map(doFetch)).then(results => {
-
+          if (Array.isArray(options)) {
             /**
-             * Compose a recursive send queue that executes a send for each
-             * result as a callback to the previous send
+             * Perform concurrent fetch if given array of options
              */
 
-            const queue = results.reduce((callback, result) => {
-              return (err) => {
-                if (err) { return done(err); }
-                send('consumptions:add', result, callback);
-              };
-            }, err => {
-              if (err) { return done(err); }
-            });
+            Promise.all(options.map(doFetch)).then(results => {
 
-            /**
-             * Start queue
-             */
+              /**
+               * Compose a recursive send queue that executes a send for each
+               * result as a callback to the previous send
+               */
 
-            queue();
-          }, done);
-        } else {
-          doFetch(options).then(result => {
-            send('consumptions:add', result, err => {
-              if (err) { return done(err); }
-            });
-          }, done);
-        }
+              const queue = results.reduce((callback, result) => {
+                return (err) => {
+                  if (err) { return done(err); }
+                  send('consumptions:add', result, callback);
+                };
+              }, done);
+
+              /**
+               * Start queue
+               */
+
+              queue();
+            }, done);
+          } else {
+            doFetch(options).then(result => {
+              send('consumptions:add', result, done);
+            }, done);
+          }
+        });
       }
     }
   };

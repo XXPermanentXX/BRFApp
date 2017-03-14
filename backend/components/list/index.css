@@ -48,15 +48,18 @@
 }
 
 /**
- * 1. Getting the circle as round as possible when there's only one digit in it
- * 2. Verically align with adjacent content
+ * 1. Verically align with adjacent content
  */
 
 .List-number {
+  box-sizing: border-box;
   float: left;
-  padding: 0.1em 0.425em 0.175em; /* 1 */
-  margin: -0.1em 1em 0 0; /* 2 */
+  min-width: 1.5em;
+  padding-bottom: 0.1em;
+  margin: -0.1em 1em 0 0; /* 1 */
   color: #fff;
+  text-align: center;
+  line-height: 1.4em;
   font-size: calc(15rem / var(--base-font-size));
   background-color: var(--color-secondary);
   border-radius: 1em;

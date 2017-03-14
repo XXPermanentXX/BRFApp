@@ -50,14 +50,15 @@ module.exports = function createContainer() {
         formatter() {
           // Get point index and a list of all series
           const { point: { index }, series: { chart: { series }} } = this;
+          const sets = series.slice(0, 2).filter(serie => serie.visible);
 
           return `
             <span class="Chart-tooltip js-tooltip">
               <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
-              ${ series.reduce((str, serie) => `
+              ${ sets.reduce((str, serie) => `
                 ${ str }
                 <br />
-                <strong>${ serie.name }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
+                <strong>${ moment(serie.data[index].name).format('YYYY') }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
               `, '') }
             </span>
           `;
@@ -72,36 +73,45 @@ module.exports = function createContainer() {
    * @return {Element}     Highcharts container
    */
 
-  return data => {
-    const props = {
-      xAxis: {
-        categories: data[0].values.map(props => props.date)
-      },
-      series: data.map(set => {
-        const high = set.values.reduce(findHigh);
-        const low = set.values.reduce(findLow);
+  return (actions, data) => {
+    const series = data.map(set => {
+      const high = set.values.reduce(findHigh);
+      const low = set.values.reduce(findLow);
 
-        return {
-          name: set.name,
-          data: set.values.map(props => ({
-            dataLabels: {
-              // Disable labels for all points that are not extremes
-              enabled: !(high !== props.value && low !== props.value)
-            },
-            y: props.value
-          }))
-        };
-      })
-    };
+      return {
+        name: set.name,
+        pointStart: (new Date(set.values[0].date)).getTime(),
+        pointInterval: moment(set.values[1].date).diff(set.values[0].date),
+        data: set.values.map((props, index) => ({
+          dataLabels: {
+            // Disable labels for all points that are not extremes
+            enabled: !(high !== props.value && low !== props.value)
+          },
+          // Set the actual date as name
+          name: props.date,
+          // All series align to main serie xAxis
+          x: (new Date(data[0].values[index].date)).getTime(),
+          y: props.value
+        }))
+      };
+    });
+
+    series.push({
+      data: actions.map(action => ({
+        name: action.name,
+        x: (new Date(action.date)).getTime(),
+        y: action.value
+      }))
+    });
 
     /**
      * If the chart isn't inialized yet, store properties for initialization
      */
 
     if (!chart) {
-      initial = props;
+      initial = { series };
     } else {
-      chart.update(props);
+      series.forEach((serie, index) => chart.series[index].setData(serie));
     }
 
     return div;

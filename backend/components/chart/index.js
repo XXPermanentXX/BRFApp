@@ -23,8 +23,8 @@ module.exports = function chart(cooperative, state, prev, send) {
     to: moment(queries.current.from).subtract(1, 'month').toDate()
   };
 
-  const item = state.consumptions.items.find(props => {
-    return props.cooperative === cooperative._id;
+  const item = state.consumptions.items.find(item => {
+    return item.cooperative === cooperative._id;
   });
   const current = item && item.values[JSON.stringify(queries.current)];
   const compare = item && item.values[JSON.stringify(queries.compare)];
@@ -38,13 +38,26 @@ module.exports = function chart(cooperative, state, prev, send) {
     query.push(Object.assign({ cooperative }, queries.compare));
   }
 
-  if (query.length && !state.consumptions.isLoading) {
-    return loading(() => send('consumptions:fetch', query));
+  if (query.length) {
+    if (!state.consumptions.isLoading) {
+      return loading(() => send('consumptions:fetch', query));
+    }
+
+    return loading();
   }
+
+  const actions = state.actions.items
+    .filter(action => action.cooperative === cooperative._id)
+    .filter(action => moment(action.date).isBetween(queries.current.from, queries.current.to))
+    .map((action, index) => ({
+      name: index + 1,
+      date: action.date,
+      value: current[current.findIndex(point => new Date(point.date) > new Date(action.date)) - 1].value
+    }));
 
   return html`
     <div class="Chart">
-      ${ container([
+      ${ container(actions, [
         { name: __('Current year'), values: current },
         { name: __('Previous year'), values: compare }
       ]) }
@@ -52,7 +65,7 @@ module.exports = function chart(cooperative, state, prev, send) {
   `;
 };
 
-function loading(onload) {
+function loading(onload = null) {
   return html`
     <div class="Chart" onload=${ onload }>
       ${ loader() }

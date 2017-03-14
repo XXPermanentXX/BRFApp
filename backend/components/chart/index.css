@@ -45,3 +45,16 @@
   left: auto;
   right: 8px;
 }
+
+.Chart-action {
+  box-sizing: border-box;
+  display: inline-block;
+  min-width: 1.5em;
+  padding-bottom: 0.1em;
+  color: #fff;
+  text-align: center;
+  line-height: 1.4em;
+  font-size: calc(15rem / var(--base-font-size));
+  background-color: var(--color-secondary);
+  border-radius: 1em;
+}
