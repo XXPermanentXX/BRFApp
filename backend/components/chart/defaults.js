@@ -205,6 +205,7 @@ module.exports = {
         align: 'right',
         color: 'currentColor',
         useHTML: true,
+        zIndex: 0,
         formatter() {
           return `
             <span class="Chart-action">
