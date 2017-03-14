@@ -5,6 +5,7 @@ const { __ } = require('../../locale');
 module.exports = {
   chart: {
     backgroundColor: 'transparent',
+    spacing: [ 0, 12, 0, 12 ],
     style: {
       fontFamily: 'inherit',
       fontSize: '14px'

@@ -1,7 +1,7 @@
 /** @define Graph */
 
 .Chart {
-  padding: var(--space-s) 0;
+  padding: var(--space-m) 0;
 
   position: relative;
 

@@ -71,7 +71,7 @@ module.exports = function cooperative(state, prev, send) {
         ${ chart(cooperative, state, prev, send) }
       </div>
 
-      <div class="App-container">
+      <div class="App-container u-marginVm">
         <div id="actions-${ id }">
           ${ hasAllActions ?
             numbered(actions.map(action => summary(action, state))) :
