@@ -39,11 +39,7 @@ module.exports = function chart(cooperative, state, prev, send) {
   }
 
   if (query.length) {
-    if (!state.consumptions.isLoading) {
-      return loading(() => send('consumptions:fetch', query));
-    }
-
-    return loading();
+    return loading(() => send('consumptions:fetch', query));
   }
 
   const actions = state.actions.items

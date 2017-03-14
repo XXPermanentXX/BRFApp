@@ -7,62 +7,44 @@ module.exports = function consumtions(state) {
   return {
     namespace: 'consumptions',
     state: Object.assign({
-      items: [],
-      isLoading: false
+      items: []
     }, state),
     reducers: {
-      fetching: state => Object.assign({}, state, { isLoading: true }),
-      add(state, { values, id, query }) {
+      add(state, data) {
         const items = state.items.slice();
-        let item = items.find(item => item.cooperative === id);
 
-        if (!item) {
-          item = { cooperative: id, values: {} };
-          items.push(item);
+        if (Array.isArray(data)) {
+          data.forEach(addItem);
+        } else {
+          addItem(data);
         }
 
-        // Cache result by query used to fetch it
-        item.values[query] = values;
+        function addItem({ values, id, query }) {
+          let item = items.find(item => item.cooperative === id);
 
-        return Object.assign({}, state, { items, isLoading: false });
+          if (!item) {
+            item = { cooperative: id, values: {} };
+            items.push(item);
+          }
+
+          // Cache result by query used to fetch it
+          item.values[query] = values;
+        }
+
+        return Object.assign({}, state, { items });
       }
     },
     effects: {
       fetch(state, options, send, done) {
-        send('consumptions:fetching', null, err => {
-          if (err) { return done(err); }
-
-          if (Array.isArray(options)) {
-            /**
-             * Perform concurrent fetch if given array of options
-             */
-
-            Promise.all(options.map(doFetch)).then(results => {
-
-              /**
-               * Compose a recursive send queue that executes a send for each
-               * result as a callback to the previous send
-               */
-
-              const queue = results.reduce((callback, result) => {
-                return (err) => {
-                  if (err) { return done(err); }
-                  send('consumptions:add', result, callback);
-                };
-              }, done);
-
-              /**
-               * Start queue
-               */
-
-              queue();
-            }, done);
-          } else {
-            doFetch(options).then(result => {
-              send('consumptions:add', result, done);
-            }, done);
-          }
-        });
+        if (Array.isArray(options)) {
+          Promise.all(options.map(fetchConsumtion)).then(results => {
+            send('consumptions:add', results, done);
+          }, done);
+        } else {
+          fetchConsumtion(options).then(result => {
+            send('consumptions:add', result, done);
+          }, done);
+        }
       }
     }
   };
@@ -75,7 +57,7 @@ module.exports = function consumtions(state) {
  * @return {Promise}        Resolves to parsed response
  */
 
-function doFetch(options) {
+function fetchConsumtion(options) {
   const id = options.cooperative._id;
   const { from, to, granularity = 'month' } = options;
   const query = JSON.stringify({ granularity, from, to });
