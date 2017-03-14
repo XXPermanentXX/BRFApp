@@ -36,10 +36,10 @@ module.exports = function createContainer() {
               tooltip.classList.add('Chart-tooltip--alignRight');
             });
 
-            return { x: point.plotX - width + 23, y: point.plotY - 4 };
+            return { x: point.plotX - width + 25, y: point.plotY - 14 };
           }
 
-          return { x: point.plotX - 4, y: point.plotY - 4 };
+          return { x: point.plotX - 2, y: point.plotY - 15 };
         },
 
         /**
