@@ -5,6 +5,7 @@ const moment = require('moment');
 const Highcharts = require('highcharts');
 const defaults = require('./defaults');
 const { capitalize, format } = require('../utils');
+const { __ } = require('../../locale');
 
 module.exports = function createContainer() {
   let chart;
@@ -20,6 +21,16 @@ module.exports = function createContainer() {
 
       function onload(el) {
         chart = Highcharts.chart(el, merge({
+          legend: {
+            title: {
+
+              /**
+               * Localization needs to be defined on render to adhere to locale
+               */
+
+              text: `${ __('Energy use') } (kWh/m<sup>2</sup>)`
+            }
+          },
           tooltip: {
 
             /**

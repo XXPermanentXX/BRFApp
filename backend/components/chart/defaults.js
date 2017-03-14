@@ -1,6 +1,5 @@
 const moment = require('moment');
 const { format } = require('../utils');
-const { __ } = require('../../locale');
 
 module.exports = {
   chart: {
@@ -39,8 +38,7 @@ module.exports = {
   title: { text: null },
   legend: {
     title: {
-      style: { color: 'currentColor' },
-      text: `${ __('Energy use') } (kWh/m<sup>2</sup>)`
+      style: { color: 'currentColor' }
     },
     useHTML: true,
     floating: true,
