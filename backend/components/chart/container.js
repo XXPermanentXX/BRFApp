@@ -65,7 +65,7 @@ module.exports = function createContainer() {
           }
         }, defaults, {
           series: compose(actions, data)
-        }));
+        }), chart => chart.reflow());
       }
 
       return html`<div onload=${ onload } onunload=${ onunload } />`;

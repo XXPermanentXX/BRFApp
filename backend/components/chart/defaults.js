@@ -4,12 +4,34 @@ const { __ } = require('../../locale');
 
 module.exports = {
   chart: {
+    height: '80%',
     backgroundColor: 'transparent',
     spacing: [ 0, 12, 0, 12 ],
     style: {
       fontFamily: 'inherit',
       fontSize: '14px'
     }
+  },
+  responsive: {
+    rules: [{
+      chartOptions: {
+        chart:  {
+          height: '50%'
+        }
+      },
+      condition: {
+        minWidth: 400
+      }
+    }, {
+      chartOptions: {
+        chart:  {
+          height: '40%'
+        }
+      },
+      condition: {
+        minWidth: 900
+      }
+    }],
   },
   credits: {
     enabled: false
