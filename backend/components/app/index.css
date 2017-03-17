@@ -18,6 +18,7 @@
 }
 
 .App-footer {
+  padding: var(--space-b) 0;
   font-size: calc(14rem / var(--base-font-size));
   background-color: #fff;
   color: var(--color-pale);

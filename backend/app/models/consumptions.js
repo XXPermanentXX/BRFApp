@@ -7,9 +7,13 @@ module.exports = function consumtions(state) {
   return {
     namespace: 'consumptions',
     state: Object.assign({
-      items: []
+      items: [],
+      type: 'electricity',
+      compare: 'prev_year',
+      granularity: 'month'
     }, state),
     reducers: {
+      type: (state, type) => Object.assign({}, state, { type }),
       add(state, data) {
         const items = state.items.slice();
 
@@ -37,13 +41,20 @@ module.exports = function consumtions(state) {
     effects: {
       fetch(state, options, send, done) {
         if (Array.isArray(options)) {
-          Promise.all(options.map(fetchConsumtion)).then(results => {
-            send('consumptions:add', results, done);
-          }, done);
+          Promise
+            .all(options.map(defaults).map(fetchConsumtion))
+            .then(results => send('consumptions:add', results, done), done);
         } else {
-          fetchConsumtion(options).then(result => {
+          fetchConsumtion(defaults(options)).then(result => {
             send('consumptions:add', result, done);
           }, done);
+        }
+
+        function defaults(options) {
+          return Object.assign({
+            type: state.type,
+            granularity: state.granularity
+          }, options);
         }
       }
     }
@@ -59,13 +70,14 @@ module.exports = function consumtions(state) {
 
 function fetchConsumtion(options) {
   const id = options.cooperative._id;
-  const { from, to, granularity = 'month' } = options;
-  const query = JSON.stringify({ granularity, from, to });
+  const { from, to, type, granularity } = options;
+  const query = JSON.stringify({ type, granularity, from, to });
 
   return fetch(
     url.format({
       pathname: `/cooperatives/${ id }/consumption`,
       query: {
+        type: type,
         granularity: granularity,
         from: moment(from).format(FORMAT),
         to: moment(to).format(FORMAT)

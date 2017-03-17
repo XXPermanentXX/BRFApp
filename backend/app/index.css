@@ -52,7 +52,7 @@
   --Grid-gutter-size: var(--viewport-padding);
 
   --space-n: 0;
-  --space-b: calc(10rem / var(--base-font-size));
+  --space-b: var(--viewport-padding);
   --space-s: calc(14rem / var(--base-font-size));
   --space-m: calc(24rem / var(--base-font-size));
   --space-l: calc(40rem / var(--base-font-size));

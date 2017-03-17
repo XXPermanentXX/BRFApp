@@ -60,5 +60,9 @@
   "No energy actions": "Inga energiåtgärder",
   "Energy use": "Energianvändning",
   "Current year": "Nuvarande år",
-  "Previous year": "Föregående år"
+  "Previous year": "Föregående år",
+  "Compare with": "Jämför med",
+  "Neighborhood average": "Snitt för kvarteret",
+  "Heating & Hot water": "Värme och varmvatten",
+  "Electricity": "Elektricitet"
 }

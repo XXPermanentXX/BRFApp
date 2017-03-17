@@ -5,7 +5,7 @@ const Users = require('../models/users');
 const Cooperatives = require('../models/cooperatives');
 const Log = require('../models').logs;
 
-router.post('/', auth.authenticate(), function (req, res) {
+router.post('/', auth.authenticate(), (req, res) => {
   const { body } = req;
 
   Cooperatives.create(body, req.user, (err, cooperative) => {
@@ -31,7 +31,7 @@ router.post('/', auth.authenticate(), function (req, res) {
   });
 });
 
-router.get('/consumption/:type/:granularity', function (req, res) {
+router.get('/consumption/:type/:granularity', (req, res) => {
   const { params: { type, granularity }, query: { from, to }} = req;
 
   Cooperatives.getAvgConsumption(type, granularity, from, to, (err, data) => {
@@ -54,7 +54,7 @@ router.get('/consumption/:type/:granularity', function (req, res) {
   });
 });
 
-router.get('/:id', isMongoId('id'), function (req, res) {
+router.get('/:id', isMongoId('id'), (req, res) => {
   const { params: { id }} = req;
 
   Cooperatives.get(id, (err, cooperative) => {
@@ -82,7 +82,7 @@ router.get('/:id', isMongoId('id'), function (req, res) {
   });
 });
 
-router.get('/', function (req, res) {
+router.get('/', (req, res) => {
   Cooperatives.all((err, cooperatives) => {
     if (err) {
       res.status(500).render('/error', { err: err.message });
@@ -102,7 +102,7 @@ router.get('/', function (req, res) {
   });
 });
 
-router.put('/:id', auth.authenticate(), isMongoId('id'), function (req, res) {
+router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
   const { body, params: { id }} = req;
 
   Cooperatives.update(id, body, (err, result) => {
@@ -170,7 +170,7 @@ router.delete('/:id/editor/:editorId', auth.authenticate(), isMongoId('id', 'edi
   });
 });
 
-router.get('/:id/consumption', isMongoId('id'), function (req, res) {
+router.get('/:id/consumption', isMongoId('id'), (req, res) => {
   const { params: { id }, query } = req;
   const options = Object.assign({ type: 'electricity', normalized: true }, query);
 

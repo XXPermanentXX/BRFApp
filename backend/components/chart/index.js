@@ -4,6 +4,15 @@ const createContainer = require('./container');
 const { loader } = require('../icons');
 const { __ } = require('../../locale');
 
+const TYPES = [ 'heating', 'electricity' ];
+const COMPERATIVE = [ 'prev_year', 'average' ];
+const STRINGS = {
+  'prev_year': 'Previous year',
+  'average': 'Neighborhood average',
+  'heating': 'Heating & Hot water',
+  'electricity': 'Electricity'
+};
+
 const container = createContainer();
 
 module.exports = function chart(cooperative, state, prev, send) {
@@ -13,21 +22,23 @@ module.exports = function chart(cooperative, state, prev, send) {
 
   const queries = {};
   queries.current = {
-    granularity: 'month',
-    from: moment().subtract(1, 'year').startOf('month').toDate(),
-    to: moment().endOf('month').toDate()
+    type: state.consumptions.type,
+    granularity: state.consumptions.granularity,
+    from: moment().subtract(1, 'year').startOf('month').toJSON(),
+    to: moment().endOf('month').toJSON()
   };
   queries.compare = {
-    granularity: 'month',
-    from: moment(queries.current.from).subtract(1, 'year').toDate(),
-    to: moment(queries.current.from).subtract(1, 'month').toDate()
+    type: state.consumptions.type,
+    granularity: state.consumptions.granularity,
+    from: moment(queries.current.from).subtract(1, 'year').toJSON(),
+    to: moment(queries.current.from).subtract(1, 'month').toJSON()
   };
 
   const item = state.consumptions.items.find(item => {
     return item.cooperative === cooperative._id;
   });
-  const current = item && item.values[JSON.stringify(queries.current)];
-  const compare = item && item.values[JSON.stringify(queries.compare)];
+  const current = item && readCache(item.values, queries.current);
+  const compare = item && readCache(item.values, queries.compare);
 
   const query = [];
   if (!current) {
@@ -39,7 +50,7 @@ module.exports = function chart(cooperative, state, prev, send) {
   }
 
   if (query.length) {
-    return loading(() => send('consumptions:fetch', query));
+    return loading(state, send, () => send('consumptions:fetch', query));
   }
 
   const actions = state.actions.items
@@ -69,14 +80,68 @@ module.exports = function chart(cooperative, state, prev, send) {
         { name: __('Current year'), values: current },
         { name: __('Previous year'), values: compare }
       ]) }
+      ${ settings(state, send) }
     </div>
   `;
 };
 
-function loading(onload = null) {
+function settings(state, send) {
+  return html`
+    <form class="Form u-marginTm u-paddingHb u-flex u-flexCol u-flexAlignItemsStretch">
+
+      <label class="Form-item Form-item--pill">
+        <span class="Form-label">${ __('Show') }</span>
+        <select class="Form-select" name="type" onchange=${ setType }>
+          ${ TYPES.map(value => html`
+              <option value=${ value } selected=${ state.consumptions.type === value }>
+                ${ __(STRINGS[value]) }
+              </option>
+          `) }
+        </select>
+      </label>
+
+      <label class="Form-item Form-item--pill u-marginTb">
+        <span class="Form-label">${ __('Compare with') }</span>
+        <select class="Form-select" name="compare">
+          ${ COMPERATIVE.map(value => html`
+              <option value=${ value } selected=${ state.consumptions.compare === value }>
+                ${ __(STRINGS[value]) }
+              </option>
+          `) }
+        </select>
+      </label>
+    </form>
+  `;
+
+  function setType(event) {
+    send('consumptions:type', event.target.value);
+  }
+}
+
+function readCache(cache, target) {
+  const keys = Object.keys(target);
+
+  const match = Object.keys(cache).find(str => {
+    let match = true;
+    const attrs = JSON.parse(str);
+
+    for (let key of keys) {
+      if (attrs[key] !== target[key]) {
+        match = false;
+      }
+    }
+
+    return match;
+  });
+
+  return cache[match];
+}
+
+function loading(state, send, onload = null) {
   return html`
     <div class="Chart" onload=${ onload }>
       ${ loader() }
+      ${ settings(state, send) }
     </div>
   `;
 }

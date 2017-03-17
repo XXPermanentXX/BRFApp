@@ -38,6 +38,7 @@
   top: var(--Form-padding-y);
   left: var(--Form-padding-x);
 
+  color: var(--color-text);
   font-size: calc(14rem / var(--base-font-size));
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
@@ -73,9 +74,49 @@
 
 .Form-select {
   flex-grow: 1;
-  padding: var(--Form-padding-y) var(--Form-padding-x);
+  padding: 0;
   border: 0;
   outline: 0;
   font-size: 16px;
+  background: none;
+  border-radius: 0;
   -webkit-appearance: none;
+}
+
+.Form-select--multiple {
+  padding: var(--Form-padding-y) var(--Form-padding-x);
+}
+
+/**
+ * Pill
+ */
+
+ .Form-item--pill {
+   align-items: stretch;
+   padding: 0;
+   border: 0;
+   background-color: transparent;
+   font-size: calc(14rem / var(--base-font-size));
+ }
+
+ .Form-item--pill .Form-label {
+   padding: 0.5em 0.8em;
+   position: static;
+   font-size: 1em;
+   color: var(--color-primary);
+   font-weight: normal;
+   font-size: 1em;
+   background-color: #fff;
+   border-radius: 1em 0 0 1em;
+ }
+
+ .Form-item--pill .Form-select {
+   padding: 0 2em 0 0.75em;
+   border: 1px solid currentColor;
+   font-size: 1em;
+   color: currentColor;
+   border-radius: 0 1em 1em 0;
+   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='8'><polygon stroke='none' fill='#ffffff' fill-rule='evenodd' points='0.641242789 -0.641242789 -0.419417382 0.419417382 5.77817459 6.61700936 11.9757666 0.419417382 10.9151064 -0.641242789 5.77817459 4.49568901' /></svg>");
+   background-repeat: no-repeat;
+   background-position: calc(100% - 0.5em) calc(50% + 1px);
 }
