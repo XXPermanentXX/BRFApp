@@ -14,6 +14,9 @@ module.exports = function consumtions(state) {
     }, state),
     reducers: {
       type: (state, type) => Object.assign({}, state, { type }),
+      granularity: (state, granularity) => Object.assign({}, state, {
+        granularity: granularity
+      }),
       add(state, data) {
         const items = state.items.slice();
 
@@ -53,7 +56,7 @@ module.exports = function consumtions(state) {
         function defaults(options) {
           return Object.assign({
             type: state.type,
-            granularity: state.granularity
+            granularity: 'month'
           }, options);
         }
       }

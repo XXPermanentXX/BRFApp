@@ -18,7 +18,7 @@ module.exports = {
           height: '50%'
         },
         yAxis: {
-          maxPadding: 0.4
+          maxPadding: 0.7
         }
       },
       condition: {
@@ -91,7 +91,7 @@ module.exports = {
     },
     labels: {
       formatter() {
-        return moment(this.value).format('MMM YYYY ');
+        return moment(this.value).format('MMM YYYY');
       },
       style: {
         color: 'currentColor'
@@ -103,7 +103,7 @@ module.exports = {
     labels: { enabled: false },
     gridLineWidth: 0,
     maxPadding: 0.4,
-    minPadding: 0.1
+    minPadding: 0.2
   },
   plotOptions: {
     spline: {
