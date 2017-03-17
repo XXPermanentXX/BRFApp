@@ -11,7 +11,24 @@
 
 }
 
+/**
+ * Have labels (on left) aling in with column
+ * <label     > <input>
+ * <long label> <input>
+ */
+
 .Form-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  align-items: baseline;
+}
+
+/**
+ * Collapse margins and borders on form elements
+ */
+
+.Form-collapse {
   margin: 0 calc(var(--viewport-padding) * -1);
 }
 
@@ -25,11 +42,11 @@
   background-color: #fff;
 }
 
-.Form-grid .Form-item {
+.Form-collapse .Form-item {
   border-width: 1px 0;
 }
 
-.Form-grid .Form-item + .Form-item {
+.Form-collapse .Form-item + .Form-item {
   border-width: 0 0 1px;
 }
 
@@ -91,32 +108,27 @@
  * Pill
  */
 
- .Form-item--pill {
-   align-items: stretch;
-   padding: 0;
-   border: 0;
-   background-color: transparent;
-   font-size: calc(14rem / var(--base-font-size));
- }
+.Form-label--pill {
+  float: left;
+  clear: left;
+  padding: 0.5em 0.8em;
+  position: static;
+  white-space: nowrap;
+  color: var(--color-primary);
+  font-weight: normal;
+  background-color: #fff;
+  border-radius: 1em 0 0 1em;
+  font-size: calc(14rem / var(--base-font-size));
+}
 
- .Form-item--pill .Form-label {
-   padding: 0.5em 0.8em;
-   position: static;
-   font-size: 1em;
-   color: var(--color-primary);
-   font-weight: normal;
-   font-size: 1em;
-   background-color: #fff;
-   border-radius: 1em 0 0 1em;
- }
-
- .Form-item--pill .Form-select {
-   padding: 0 2em 0 0.75em;
-   border: 1px solid currentColor;
-   font-size: 1em;
-   color: currentColor;
-   border-radius: 0 1em 1em 0;
-   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='8'><polygon stroke='none' fill='#ffffff' fill-rule='evenodd' points='0.641242789 -0.641242789 -0.419417382 0.419417382 5.77817459 6.61700936 11.9757666 0.419417382 10.9151064 -0.641242789 5.77817459 4.49568901' /></svg>");
-   background-repeat: no-repeat;
-   background-position: calc(100% - 0.5em) calc(50% + 1px);
+.Form-select--pill {
+  float: left;
+  padding: calc(0.5em - 1px) 2em calc(0.5em - 1px) 0.75em;
+  border: 1px solid currentColor;
+  color: currentColor;
+  border-radius: 0 1em 1em 0;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='8'><polygon stroke='none' fill='#ffffff' fill-rule='evenodd' points='0.641242789 -0.641242789 -0.419417382 0.419417382 5.77817459 6.61700936 11.9757666 0.419417382 10.9151064 -0.641242789 5.77817459 4.49568901' /></svg>");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 0.5em) calc(50% + 1px);
+  font-size: calc(14rem / var(--base-font-size));
 }

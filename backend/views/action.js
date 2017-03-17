@@ -55,7 +55,7 @@ module.exports = function action(state, prev, send) {
 
           ${ state.user._id ? html`
             <form action="${ action._id }/comments" method="POST" class="Form">
-              <div class="Form-grid u-marginBb">
+              <div class="Form-collapse u-marginBb">
                 <label class="Form-item">
                   <span class="Form-label">${ __('Leave a comment') }</span>
                   <textarea name="comment" rows="3" class="Form-input"></textarea>

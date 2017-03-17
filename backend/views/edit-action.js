@@ -23,7 +23,7 @@ module.exports = function (state, prev, send) {
         <form action="/actions/${ action._id }" method="POST" class="Form" enctype="application/x-www-form-urlencoded">
           <input type="hidden" name="_method" value="PUT">
 
-          <div class="Form-grid u-marginBb">
+          <div class="Form-collapse u-marginBb">
 
             <label class="Form-item">
               <span class="Form-label">${ __('Name') }</span>

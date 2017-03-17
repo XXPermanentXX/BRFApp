@@ -88,28 +88,25 @@ module.exports = function chart(cooperative, state, prev, send) {
 function settings(state, send) {
   return html`
     <form class="Form u-marginTm u-paddingHb u-flex u-flexCol u-flexAlignItemsStretch">
-
-      <label class="Form-item Form-item--pill">
-        <span class="Form-label">${ __('Show') }</span>
-        <select class="Form-select" name="type" onchange=${ setType }>
+      <div class="Form-grid">
+        <label for="form_type" class="Form-label Form-label--pill">${ __('Show') }</label>
+        <select id="form_type" class="Form-select Form-select--pill u-marginBb" name="type" onchange=${ setType }>
           ${ TYPES.map(value => html`
               <option value=${ value } selected=${ state.consumptions.type === value }>
                 ${ __(STRINGS[value]) }
               </option>
           `) }
         </select>
-      </label>
 
-      <label class="Form-item Form-item--pill u-marginTb">
-        <span class="Form-label">${ __('Compare with') }</span>
-        <select class="Form-select" name="compare">
+        <label for="form_compare" class="Form-label Form-label--pill">${ __('Compare with') }</label>
+        <select id="form_compare" class="Form-select Form-select--pill" name="compare">
           ${ COMPERATIVE.map(value => html`
               <option value=${ value } selected=${ state.consumptions.compare === value }>
                 ${ __(STRINGS[value]) }
               </option>
           `) }
         </select>
-      </label>
+      </div>
     </form>
   `;
 
