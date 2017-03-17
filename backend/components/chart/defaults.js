@@ -16,6 +16,9 @@ module.exports = {
       chartOptions: {
         chart:  {
           height: '50%'
+        },
+        yAxis: {
+          maxPadding: 0.4
         }
       },
       condition: {
@@ -25,6 +28,9 @@ module.exports = {
       chartOptions: {
         chart:  {
           height: '40%'
+        },
+        yAxis: {
+          maxPadding: 0.3
         }
       },
       condition: {
@@ -95,7 +101,9 @@ module.exports = {
   yAxis: {
     title: { text: null },
     labels: { enabled: false },
-    gridLineWidth: 0
+    gridLineWidth: 0,
+    maxPadding: 0.4,
+    minPadding: 0.1
   },
   plotOptions: {
     spline: {
@@ -212,7 +220,9 @@ module.exports = {
               ${ this.point.name }
             </span>
           `;
-        }
+        },
+        y: 0,
+        x: 3
       },
       enableMouseTracking: false,
       data: []
