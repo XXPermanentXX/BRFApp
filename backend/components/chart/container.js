@@ -8,78 +8,77 @@ const { capitalize, format } = require('../utils');
 const { __ } = require('../../locale');
 
 module.exports = function createContainer() {
-  let chart;
+  let chart, initial;
 
   const cached = widget({
     onupdate(el, actions, data) {
       chart.update({ series: compose(actions, data) });
     },
-    render(actions, data) {
-      function onunload() {
-        chart.destroy();
-      }
 
-      function onload(el) {
-        chart = Highcharts.chart(el, merge({
-          legend: {
-            title: {
+    onunload() {
+      chart.destroy();
+    },
 
-              /**
-               * Localization needs to be defined on render to adhere to locale
-               */
-
-              text: `${ __('Energy use') } (kWh/m<sup>2</sup>)`
-            }
-          },
-          tooltip: {
+    onload(el) {
+      chart = Highcharts.chart(el, merge({
+        legend: {
+          title: {
 
             /**
-             * Position tooltip relative to chart width
+             * Localization needs to be defined on render to adhere to locale
              */
 
-            positioner(width, height, point) {
-              // Align to right when there's no room
-              if ((width + point.plotX) > chart.plotWidth) {
-                // Apply right align modifier as soon as the element is in the DOM
-                requestAnimationFrame(() => {
-                  const tooltip = el.querySelector('.js-tooltip');
-                  tooltip.classList.add('Chart-tooltip--alignRight');
-                });
-
-                return { x: point.plotX - width + 25, y: point.plotY - 14 };
-              }
-
-              return { x: point.plotX - 2, y: point.plotY - 15 };
-            },
-
-            /**
-             * Shared tooltips throw off the `positioner`, so we include all
-             * series points for given index in main serie's tooltip
-             */
-
-            formatter() {
-              // Get point index and a list of all series
-              const { point: { index }, series: { chart: { series }} } = this;
-              const sets = series.slice(0, 2).filter(serie => serie.visible);
-
-              return `
-                <span class="Chart-tooltip js-tooltip">
-                  <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
-                  ${ sets.reduce((str, serie) => `
-                    ${ str }
-                    <br />
-                    <strong>${ moment(serie.data[index].name).format('YYYY') }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
-                  `, '') }
-                </span>
-              `;
-            }
+            text: `${ __('Energy use') } (kWh/m<sup>2</sup>)`
           }
-        }, defaults, {
-          series: compose(actions, data)
-        }), chart => chart.reflow());
-      }
+        },
+        tooltip: {
 
-      return html`<div onload=${ onload } onunload=${ onunload } />`;
+          /**
+           * Position tooltip relative to chart width
+           */
+
+          positioner(width, height, point) {
+            // Align to right when there's no room
+            if ((width + point.plotX) > chart.plotWidth) {
+              // Apply right align modifier as soon as the element is in the DOM
+              requestAnimationFrame(() => {
+                const tooltip = el.querySelector('.js-tooltip');
+                tooltip.classList.add('Chart-tooltip--alignRight');
+              });
+
+              return { x: point.plotX - width + 25, y: point.plotY - 14 };
+            }
+
+            return { x: point.plotX - 2, y: point.plotY - 15 };
+          },
+
+          /**
+           * Shared tooltips throw off the `positioner`, so we include all
+           * series points for given index in main serie's tooltip
+           */
+
+          formatter() {
+            // Get point index and a list of all series
+            const { point: { index }, series: { chart: { series }} } = this;
+            const sets = series.slice(0, 2).filter(serie => serie.visible);
+
+            return `
+              <span class="Chart-tooltip js-tooltip">
+                <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
+                ${ sets.reduce((str, serie) => `
+                  ${ str }
+                  <br />
+                  <strong>${ moment(serie.data[index].name).format('YYYY') }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
+                `, '') }
+              </span>
+            `;
+          }
+        }
+      }, defaults, initial), chart => chart.reflow());
+    },
+    render(actions, data) {
+      initial = { series: compose(actions, data) };
+      return html`<div />`;
     }
   });
 
