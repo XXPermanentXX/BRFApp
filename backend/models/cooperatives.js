@@ -110,8 +110,9 @@ function calculatePerformance(cooperative, done) {
     // since the current month may not have any value yet
     const from = moment(now).subtract(12, 'months').format('YYYYMM');
     const to = moment(now).format('YYYYMM');
+    const options = { type: 'heating', granularity: 'month', from, to, normalized: false };
 
-    getConsumption(props, 'heating', 'month', from, to, true, (err, result) => {
+    getConsumption(props, options, (err, result) => {
       if (err) { return done(err); }
 
       const value = result
