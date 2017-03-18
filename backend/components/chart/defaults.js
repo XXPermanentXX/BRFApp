@@ -18,7 +18,8 @@ module.exports = {
           height: '50%'
         },
         yAxis: {
-          maxPadding: 0.7
+          maxPadding: 0.7,
+          minPadding: 0.3
         }
       },
       condition: {
