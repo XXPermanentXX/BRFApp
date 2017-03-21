@@ -1,4 +1,3 @@
-const moment = require('moment');
 const { format } = require('../utils');
 
 module.exports = {
@@ -91,9 +90,6 @@ module.exports = {
       color: 'rgba(255, 255, 255, 0.26)'
     },
     labels: {
-      formatter() {
-        return moment(this.value).format('MMM YYYY');
-      },
       style: {
         color: 'currentColor'
       }

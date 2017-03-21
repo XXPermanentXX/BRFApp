@@ -1,5 +1,6 @@
 const url = require('url');
 const moment = require('moment');
+const hash = require('object-hash');
 
 const FORMAT = 'YYYYMM';
 
@@ -18,24 +19,14 @@ module.exports = function consumtions(state) {
         granularity: granularity
       }),
       add(state, data) {
-        const items = state.items.slice();
+        const items = Object.assign({}, state.items);
 
         if (Array.isArray(data)) {
-          data.forEach(addItem);
+          data.forEach(({ values, options }) => {
+            items[hash(options)] = values;
+          });
         } else {
-          addItem(data);
-        }
-
-        function addItem({ values, id, query }) {
-          let item = items.find(item => item.cooperative === id);
-
-          if (!item) {
-            item = { cooperative: id, values: {} };
-            items.push(item);
-          }
-
-          // Cache result by query used to fetch it
-          item.values[query] = values;
+          items[hash(data.options)] = data.values;
         }
 
         return Object.assign({}, state, { items });
@@ -45,11 +36,13 @@ module.exports = function consumtions(state) {
       fetch(state, options, send, done) {
         if (Array.isArray(options)) {
           Promise
-            .all(options.map(defaults).map(fetchConsumtion))
+            .all(options.map(options => {
+              return fetchConsumtion(defaults(options)).then(values => ({ values, options }));
+            }))
             .then(results => send('consumptions:add', results, done), done);
         } else {
-          fetchConsumtion(defaults(options)).then(result => {
-            send('consumptions:add', result, done);
+          fetchConsumtion(defaults(options)).then(values => {
+            send('consumptions:add', { values, options }, done);
           }, done);
         }
 
@@ -72,9 +65,7 @@ module.exports = function consumtions(state) {
  */
 
 function fetchConsumtion(options) {
-  const id = options.cooperative._id;
-  const { from, to, type, granularity } = options;
-  const query = JSON.stringify({ type, granularity, from, to });
+  const { from, to, type, granularity, cooperative: id } = options;
 
   return fetch(
     url.format({
@@ -98,6 +89,6 @@ function fetchConsumtion(options) {
       // Remove any empty values (i.e. current month)
       .filter(item => !!item.value);
 
-    return { values, id, query };
+    return values;
   }));
 }

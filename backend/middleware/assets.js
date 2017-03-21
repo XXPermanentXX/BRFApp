@@ -9,6 +9,7 @@ const ROOT = path.resolve(__dirname, '..');
 const bundler = browserify('app/index.js', {
   basedir: ROOT,
   debug: true,
+  noparse: [ '../node_modules/highcharts/highcharts.js' ],
   transform: [
     require('localenvify')
   ]

@@ -3,7 +3,7 @@ const head = require('./partials/head');
 const scripts = require('./partials/scripts');
 const symbols = require('../components/icons/symbols');
 
-module.exports = function (view, state, prev, send) {
+module.exports = function app(view, state, prev, send) {
   return dedent`
     <!doctype html>
     <html lang="${ state.lang }">
@@ -14,7 +14,7 @@ module.exports = function (view, state, prev, send) {
         </div>
         <pre style="width: 100%; overflow: auto;">${ JSON.stringify(state, null, 2) }</pre>
         ${ symbols() }
-        ${ scripts(state) }
+        ${ scripts(state).join('\n') }
       </body>
     </html>
   `;
