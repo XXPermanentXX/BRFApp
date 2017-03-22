@@ -8,8 +8,7 @@ const escapeStringRegexp = require('escape-string-regexp');
 const ActionSchema = new Schema({
   name: {
     type: String,
-    required: true,
-    unique: true
+    required: true
   },
   types: {
     type: [String],
