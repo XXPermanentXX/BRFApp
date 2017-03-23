@@ -1,4 +1,5 @@
 const html = require('choo/html');
+const cache = require('cache-element');
 const resolve = require('../../resolve');
 const { getEnergyClass, format } = require('../utils');
 const { __ } = require('../../locale');
@@ -14,7 +15,7 @@ const ENERGY_CLASSES = {
   G: '#E2001A'
 };
 
-module.exports = function performance(props = {}) {
+module.exports = cache(function performance(props = {}) {
   const { performance } = props;
   const energyClass = performance && getEnergyClass(performance);
   const classPosition = energyClass ? Object.keys(ENERGY_CLASSES).indexOf(energyClass) : 3;
@@ -57,4 +58,4 @@ module.exports = function performance(props = {}) {
       ${ energyClass && html`<h2 class="Performance-title">${ format(performance) } kWh/m<sup>2</sup></h2>` }
     </div>
   `;
-};
+});
