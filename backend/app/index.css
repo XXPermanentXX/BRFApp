@@ -6,12 +6,13 @@
 @import "../components/action";
 @import "../components/app";
 @import "../components/button";
+@import "../components/chart";
 @import "../components/comment";
 @import "../components/display";
 @import "../components/form";
-@import "../components/chart";
 @import "../components/icons";
 @import "../components/list";
+@import "../components/map";
 @import "../components/menu";
 @import "../components/page-head";
 @import "../components/performance";
