@@ -26,7 +26,9 @@ module.exports = function createMap() {
       markers = cooperatives.map(cooperative => ({
         coordinates: [ cooperative.lng, cooperative.lat ],
         properties: {
+          name: cooperative.name,
           performance: cooperative.performance,
+          actions: cooperative.actions,
           energyClass: getEnergyClass(cooperative.performance).toLowerCase(),
           id: cooperative._id
         }
@@ -60,18 +62,18 @@ module.exports = function createMap() {
         });
 
         map.addLayer({
-          id: 'unclustered-points',
+          id: 'cooperative-points',
           type: 'symbol',
           source: 'cooperatives',
           filter: ['!has', 'point_count'],
           layout: {
-            // 'text-field': '{performance}',
-            'icon-image': 'marker-{energyClass}'
+            'icon-image': 'marker-{energyClass}',
+            'icon-offset': [0, -20]
           }
         });
 
         map.addLayer({
-          id: 'cluster-points',
+          id: 'cooperative-clusters',
           type: 'circle',
           source: 'cooperatives',
           paint: {
@@ -82,7 +84,7 @@ module.exports = function createMap() {
         });
 
         map.addLayer({
-          id: 'cluster-count',
+          id: 'cooperative-count',
           type: 'symbol',
           source: 'cooperatives',
           layout: {
@@ -92,9 +94,38 @@ module.exports = function createMap() {
           }
         });
 
-        map.fitBounds(getBounds(markers.map(marker => marker.coordinates)), {
+        map.fitBounds(markers.reduce((bounds, marker) => {
+          return bounds.extend(marker.coordinates);
+        }, new mapboxgl.LngLatBounds()), {
           padding: el.offsetWidth * 0.1,
-          duration: 0
+          animate: false
+        });
+
+        map.on('mousemove', event => {
+          const features = map.queryRenderedFeatures(event.point, {
+            layers: ['cooperative-points']
+          });
+
+          map.getCanvas().style.cursor = features.length ? 'pointer' : '';
+        });
+
+        map.on('click', event => {
+          const features = map.queryRenderedFeatures(event.point, {
+            layers: ['cooperative-points']
+          });
+
+          if (!features.length) {
+            return;
+          }
+
+          const feature = features[0];
+
+          new mapboxgl.Popup({ closeButton: false })
+            .setLngLat(feature.geometry.coordinates)
+            .setDOMContent(html`
+              <a href="/cooperatives/${ feature.properties.id }">${ feature.properties.name }</a>
+            `)
+            .addTo(map);
         });
       });
     },
@@ -105,28 +136,3 @@ module.exports = function createMap() {
 
   return container;
 };
-
-function getBounds(points) {
-  const ne = [];
-  const sw = [];
-
-  for (let [ lng, lat ] of points) {
-    if (!ne[0] || lng > ne[0]) {
-      ne[0] = lng;
-    }
-
-    if (!ne[1] || lat > ne[1]) {
-      ne[1] = lat;
-    }
-
-    if (!sw[0] || lng < sw[0]) {
-      sw[0] = lng;
-    }
-
-    if (!sw[1] || lat < sw[1]) {
-      sw[1] = lat;
-    }
-  }
-
-  return [ sw, ne ];
-}
