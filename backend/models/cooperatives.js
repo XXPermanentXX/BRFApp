@@ -196,9 +196,9 @@ exports.get = function (id, done) {
       if (err) { return done(err); }
       if (!cooperative) { return done(new Error('Cooperative not found')); }
 
-      calculatePerformance(cooperative, err => {
+      calculatePerformance(cooperative, (err, props) => {
         if (err) { return done(err); }
-        done(null, cooperative);
+        done(null, props);
       });
     });
 };
