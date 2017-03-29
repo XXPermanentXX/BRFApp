@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const cache = require('cache-element');
 const resolve = require('../../resolve');
-const { getEnergyClass, format } = require('../utils');
+const { getEnergyClass } = require('../utils');
 const { __ } = require('../../locale');
 
 const UNKNOWN_ENERGY_CLASS = '#bbbbbb';
@@ -55,7 +55,11 @@ module.exports = cache(function performance(props = {}) {
           </g>
         </svg>
       </figure>
-      ${ energyClass && html`<h2 class="Performance-title">${ format(performance) } kWh/m<sup>2</sup></h2>` }
+      ${ energyClass ? html`
+        <h2 class="Performance-title">
+          ${ Math.round(performance) } kWh/m<sup>2</sup>
+        </h2>
+      ` : null }
     </div>
   `;
 });

@@ -4,3 +4,22 @@
   position: relative;
   width: 100%;
 }
+
+.Map-popup {
+  padding: var(--space-b);
+  font-size: calc(14rem / var(--base-font-size));
+  line-height: calc(21 / 14);
+  font-family: var(--font-family);
+  background-color: rgba(255, 255, 255, 0.94);
+  border-radius: 3px;
+}
+
+.mapboxgl-popup-content {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+.mapboxgl-popup-tip {
+  display: none;
+}

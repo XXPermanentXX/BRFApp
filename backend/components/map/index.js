@@ -2,9 +2,11 @@
 
 const html = require('choo/html');
 const widget = require('cache-element/widget');
+const { energyClass, energyRepresentative, energyMap, target, lightChallenge } = require('../icons');
 const { getEnergyClass } = require('../utils');
+const { __, __n } = require('../../locale');
 
-const UNKNOWN_ENERGY_CLASS = '#bbbbbb';
+const CLUSTER_THRESHOLD = 12;
 
 module.exports = function createMap() {
   let features, map;
@@ -57,40 +59,36 @@ module.exports = function createMap() {
             features: features
           },
           cluster: true,
-          clusterMaxZoom: 12
+          clusterMaxZoom: CLUSTER_THRESHOLD
         });
 
         map.addLayer({
-          id: 'cooperative-points',
+          id: 'cooperative-markers',
           type: 'symbol',
           source: 'cooperatives',
           filter: ['!has', 'point_count'],
           layout: {
             'icon-allow-overlap': true,
             'icon-image': 'marker-{energyClass}',
-            'icon-offset': [0, -20]
+            'icon-offset': [0, -21]
           }
         });
 
         map.addLayer({
           id: 'cooperative-clusters',
-          type: 'circle',
-          source: 'cooperatives',
-          paint: {
-            'circle-color': UNKNOWN_ENERGY_CLASS,
-            'circle-radius': 18
-          },
-          filter: ['has', 'point_count'],
-        });
-
-        map.addLayer({
-          id: 'cooperative-count',
           type: 'symbol',
           source: 'cooperatives',
+          filter: ['has', 'point_count'],
           layout: {
+            'icon-allow-overlap': true,
+            'icon-image': 'marker-cluster',
             'text-field': '{point_count}',
             'text-font': [ 'Lato Bold' ],
-            'text-size': 14
+            'text-size': 14,
+            'text-offset': [ 0, 0.85 ]
+          },
+          paint: {
+            'text-color': '#fff'
           }
         });
 
@@ -103,7 +101,7 @@ module.exports = function createMap() {
 
         map.on('mousemove', event => {
           const features = map.queryRenderedFeatures(event.point, {
-            layers: ['cooperative-points']
+            layers: ['cooperative-markers', 'cooperative-clusters']
           });
 
           map.getCanvas().style.cursor = features.length ? 'pointer' : '';
@@ -111,7 +109,7 @@ module.exports = function createMap() {
 
         map.on('click', event => {
           const features = map.queryRenderedFeatures(event.point, {
-            layers: ['cooperative-points']
+            layers: ['cooperative-markers', 'cooperative-clusters']
           });
 
           if (!features.length) {
@@ -120,22 +118,57 @@ module.exports = function createMap() {
 
           const feature = features[0];
 
-          new mapboxgl.Popup({ closeButton: false })
-            .setLngLat(feature.geometry.coordinates)
-            .setDOMContent(html`
-              <a href="/cooperatives/${ feature.properties.id }">${ feature.properties.name }</a>
-            `)
-            .addTo(map);
+          if (feature.properties.cluster) {
+            map.flyTo({
+              center: feature.geometry.coordinates,
+              zoom: CLUSTER_THRESHOLD + 1
+            });
+          } else {
+            new mapboxgl.Popup({ closeButton: false, anchor: 'top-left', offset: [ -20, -20 ] })
+              .setLngLat(feature.geometry.coordinates)
+              .setDOMContent(popup(feature))
+              .addTo(map);
+          }
         });
       });
-    },
-    onunload() {
-      // map.remove();
     }
   });
 
   return container;
 };
+
+function popup(feature) {
+  const { properties } = feature;
+
+  return html`
+    <div class="Map-popup">
+      <div class="u-floatLeft u-paddingRb">
+        ${ energyClass(properties.energyClass) }
+      </div>
+      <div class="u-nbfc">
+        <a class="u-textBold" href="/cooperatives/${ properties.id }">
+          ${ properties.name }
+        </a>
+        <br />
+        <span class="u-textBold">${ Math.round(properties.performance) }</span> kWh/m<sup>2</sup>
+        <br />
+        ${ properties.actions ? html`
+          <span>
+            <span class="u-textBold">${ properties.actions }</span>
+            ${ __n('Energy action', 'Energy actions', properties.actions) }
+          </span>
+        ` : __('No energy actions') }
+        <br />
+        <div class="u-nbfc u-marginTb">
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ energyRepresentative() }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ energyMap() }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ target() }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ lightChallenge()  }</div>
+        </div>
+      </div>
+    </div>
+  `;
+}
 
 function getFeatures(cooperatives) {
   return cooperatives.map(cooperative => ({
@@ -148,7 +181,7 @@ function getFeatures(cooperatives) {
       id: cooperative._id,
       name: cooperative.name,
       performance: cooperative.performance,
-      actions: cooperative.actions,
+      actions: cooperative.actions.length,
       energyClass: (getEnergyClass(cooperative.performance) || 'unknown').toLowerCase()
     }
   }));
