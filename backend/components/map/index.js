@@ -5,34 +5,37 @@ const widget = require('cache-element/widget');
 const { getEnergyClass } = require('../utils');
 
 const UNKNOWN_ENERGY_CLASS = '#bbbbbb';
-const ENERGY_CLASSES = {
-  A: '#009036',
-  B: '#55AB26',
-  C: '#C8D200',
-  D: '#FFED00',
-  E: '#FBBA00',
-  F: '#EB6909',
-  G: '#E2001A'
-};
 
 module.exports = function createMap() {
-  let map, markers;
+  let features, map;
+  let isLoaded = false;
 
   const container = widget({
-    onchange(cooperatives, state, next) {
+    onupdate(el, cooperatives, state, send) {
+      const features = getFeatures(cooperatives);
 
+      if (isLoaded) {
+        setData();
+      } else {
+        map.on('load', setData);
+      }
+
+      function setData() {
+        map.getSource('cooperatives').setData({
+          type: 'FeatureCollection',
+          features: features
+        });
+
+        map.fitBounds(features.reduce((bounds, feature) => {
+          return bounds.extend(feature.geometry.coordinates);
+        }, new mapboxgl.LngLatBounds()), {
+          padding: el.offsetWidth * 0.1,
+          animate: false
+        });
+      }
     },
     render(cooperatives, state, send) {
-      markers = cooperatives.map(cooperative => ({
-        coordinates: [ cooperative.lng, cooperative.lat ],
-        properties: {
-          name: cooperative.name,
-          performance: cooperative.performance,
-          actions: cooperative.actions,
-          energyClass: getEnergyClass(cooperative.performance).toLowerCase(),
-          id: cooperative._id
-        }
-      }));
+      features = getFeatures(cooperatives);
 
       return html`<div class="Map u-sizeFill" />`;
     },
@@ -40,25 +43,21 @@ module.exports = function createMap() {
       mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
       map = new mapboxgl.Map({
         container: el,
-        style: process.env.MAPBOX_STYLE
+        style: process.env.MAPBOX_STYLE,
+        maxZoom: 17
       });
 
       map.on('load', () => {
+        isLoaded = true;
+
         map.addSource('cooperatives', {
           type: 'geojson',
           data: {
             type: 'FeatureCollection',
-            features: markers.map(marker => ({
-              type: 'Feature',
-              geometry: {
-                type: 'Point',
-                coordinates: marker.coordinates
-              },
-              properties: marker.properties
-            }))
+            features: features
           },
           cluster: true,
-          clusterMaxZoom: 15
+          clusterMaxZoom: 12
         });
 
         map.addLayer({
@@ -67,6 +66,7 @@ module.exports = function createMap() {
           source: 'cooperatives',
           filter: ['!has', 'point_count'],
           layout: {
+            'icon-allow-overlap': true,
             'icon-image': 'marker-{energyClass}',
             'icon-offset': [0, -20]
           }
@@ -94,8 +94,8 @@ module.exports = function createMap() {
           }
         });
 
-        map.fitBounds(markers.reduce((bounds, marker) => {
-          return bounds.extend(marker.coordinates);
+        map.fitBounds(features.reduce((bounds, feature) => {
+          return bounds.extend(feature.geometry.coordinates);
         }, new mapboxgl.LngLatBounds()), {
           padding: el.offsetWidth * 0.1,
           animate: false
@@ -136,3 +136,20 @@ module.exports = function createMap() {
 
   return container;
 };
+
+function getFeatures(cooperatives) {
+  return cooperatives.map(cooperative => ({
+    type: 'Feature',
+    geometry: {
+      type: 'Point',
+      coordinates: [ cooperative.lng, cooperative.lat ]
+    },
+    properties: {
+      id: cooperative._id,
+      name: cooperative.name,
+      performance: cooperative.performance,
+      actions: cooperative.actions,
+      energyClass: (getEnergyClass(cooperative.performance) || 'unknown').toLowerCase()
+    }
+  }));
+}
