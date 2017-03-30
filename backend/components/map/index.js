@@ -2,9 +2,15 @@
 
 const html = require('choo/html');
 const widget = require('cache-element/widget');
-const { energyClass, energyRepresentative, energyMap, target, lightChallenge } = require('../icons');
 const { getEnergyClass } = require('../utils');
 const { __, __n } = require('../../locale');
+const {
+  energyRepresentative,
+  energyMap,
+  target,
+  lightChallenge,
+  electricCar
+} = require('../icons');
 
 const CLUSTER_THRESHOLD = 12;
 
@@ -124,7 +130,18 @@ module.exports = function createMap() {
               zoom: CLUSTER_THRESHOLD + 1
             });
           } else {
-            new mapboxgl.Popup({ closeButton: false, anchor: 'top-left', offset: [ -20, -20 ] })
+            const offset = {
+              'top': [0, -15],
+              'top-left': [0, -15],
+              'top-right': [0, -15],
+              'bottom': [0, -36],
+              'bottom-left': [0, -36],
+              'bottom-right': [0, -36],
+              'left': [6, -26],
+              'right': [-6, -26]
+            };
+
+            new mapboxgl.Popup({ closeButton: false, offset })
               .setLngLat(feature.geometry.coordinates)
               .setDOMContent(popup(feature))
               .addTo(map);
@@ -142,9 +159,6 @@ function popup(feature) {
 
   return html`
     <div class="Map-popup">
-      <div class="u-floatLeft u-paddingRb">
-        ${ energyClass(properties.energyClass) }
-      </div>
       <div class="u-nbfc">
         <a class="u-textBold" href="/cooperatives/${ properties.id }">
           ${ properties.name }
@@ -160,10 +174,11 @@ function popup(feature) {
         ` : __('No energy actions') }
         <br />
         <div class="u-nbfc u-marginTb">
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ energyRepresentative() }</div>
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ energyMap() }</div>
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ target() }</div>
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };">${ lightChallenge()  }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Designated Energyrepresentative') }>${ energyRepresentative(22) }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Energy mapping') }>${ energyMap(22) }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Contract for goal oriented energy management') }>${ target(22) }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Participating in belysningsutmaningen') }>${ lightChallenge(22)  }</div>
+          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Charger for electric cars') }>${ electricCar(22)  }</div>
         </div>
       </div>
     </div>
