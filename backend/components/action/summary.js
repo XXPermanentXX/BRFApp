@@ -18,9 +18,9 @@ module.exports = function summary(action, state) {
         <h3 class="u-linkComplexTarget Action-title">${ action.name }</h3>
       </a>
       ${ numComments ? comment(Object.assign({ short: true }, action.comments[numComments - 1]), action, state) : null }
-      ${ state.user ? html`
+      ${ numComments || state.user ? html`
         <a class="u-block u-textS" href="${ href }#comments-${ action._id }">
-          ${ numComments > 1 ? __('View all %d comments', numComments) : __('Leave a comment') }
+          ${ numComments ? __('View all %d comments', numComments) : __('Leave a comment') }
         </a>
       ` : null }
     </article>

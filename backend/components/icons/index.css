@@ -13,7 +13,4 @@
 .Icon--center {
   display: block;
   margin: 0 auto;
-  position: relative;
-  top: 50%;
-  transform: translateY(-50%);
 }

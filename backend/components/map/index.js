@@ -1,7 +1,7 @@
 /* global mapboxgl */
 
 const html = require('choo/html');
-const widget = require('cache-element/widget');
+const component = require('nanocomponent');
 const { getEnergyClass } = require('../utils');
 const { __, __n } = require('../../locale');
 const {
@@ -17,9 +17,10 @@ const CLUSTER_THRESHOLD = 12;
 module.exports = function createMap() {
   let features, map;
   let isLoaded = false;
+  const container = html`<div class="Map u-sizeFill" />`;
 
-  const container = widget({
-    onupdate(el, cooperatives, state, send) {
+  return component({
+    onupdate(el, cooperatives, state, emit) {
       const features = getFeatures(cooperatives);
 
       if (isLoaded) {
@@ -42,12 +43,14 @@ module.exports = function createMap() {
         });
       }
     },
-    render(cooperatives, state, send) {
+    render(cooperatives, state, emit) {
       features = getFeatures(cooperatives);
 
-      return html`<div class="Map u-sizeFill" />`;
+      return container;
     },
     onload(el) {
+      if (isLoaded) { return; }
+
       mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
       map = new mapboxgl.Map({
         container: el,
@@ -150,8 +153,6 @@ module.exports = function createMap() {
       });
     }
   });
-
-  return container;
 };
 
 function popup(feature) {

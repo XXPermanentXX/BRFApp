@@ -4,9 +4,9 @@ const { __ } = require('../../locale');
 
 const pages = {
   home: {
-    href: state => state.user._id && resolve(`/cooperatives/${ state.user.cooperative }`),
+    href: state => state.user && resolve(`/cooperatives/${ state.user.cooperative }`),
     title: state => {
-      if (!state.user._id) { return; }
+      if (!state.user) { return; }
 
       const cooperative = state.cooperatives.items.find(props => {
         return props._id === state.user.cooperative;
@@ -24,11 +24,11 @@ const pages = {
     title: () => __('How it works')
   },
   signout: {
-    href: state => state.user._id && resolve('/auth/signout'),
+    href: state => state.user && resolve('/auth/signout'),
     title: () => __('Sign out')
   },
   signin: {
-    href: state => !state.user._id && resolve('/auth'),
+    href: state => !state.user && resolve('/auth'),
     title: () => __('Sign in')
   }
 };
@@ -40,11 +40,11 @@ const extract = links => state => Object.keys(pages)
 
 exports.extract = extract;
 
-exports.list = links => (state, prev, send) => html`
+exports.list = links => (state, emit) => html`
   <ul class="Menu">
     ${ (extract(links || Object.keys(pages))(state)).map(props => html`
       <li class="Menu-item">
-        <a href=${ props.href } onclick=${ () => send('menu:close') } class="Menu-link">${ props.title }</a>
+        <a href=${ props.href } onclick=${ () => emit('menu:close') } class="Menu-link">${ props.title }</a>
       </li>
     `) }
   </ul>

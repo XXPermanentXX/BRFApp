@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const widget = require('cache-element/widget');
+const component = require('nanocomponent');
 const merge = require('lodash.merge');
 const moment = require('moment');
 const Highcharts = require('highcharts');
@@ -10,7 +10,7 @@ const { __ } = require('../../locale');
 module.exports = function createContainer() {
   let chart, initial;
 
-  const cached = widget({
+  return component({
     onupdate(el, granularity, actions, data) {
       const series = compose(actions, data);
 
@@ -81,61 +81,60 @@ module.exports = function createContainer() {
       return html`<div />`;
     }
   });
+};
 
-  /**
-   * Adapt xAxis labels to granularity
-   */
 
-  const labels = {
-    month() {
-      return moment(this.value).format('MMM YYYY');
-    },
-    year() {
-      return moment(this.value).format('YYYY');
-    }
-  };
+/**
+ * Adapt xAxis labels to granularity
+ */
 
-  /**
-   * Shared tooltips throw off the `positioner`, so we include all
-   * series points for given index in main serie's tooltip
-   */
+const labels = {
+  month() {
+    return moment(this.value).format('MMM YYYY');
+  },
+  year() {
+    return moment(this.value).format('YYYY');
+  }
+};
 
-  const formatters = {
-    month() {
-      // Get point index and a list of all series
-      const { point: { index }, series: { chart: { series }} } = this;
-      const sets = series.slice(0, 2).filter(serie => serie.visible && serie.data.length);
+/**
+ * Shared tooltips throw off the `positioner`, so we include all
+ * series points for given index in main serie's tooltip
+ */
 
-      return `
-        <span class="Chart-tooltip js-tooltip">
-          <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
-          ${ sets.reduce((str, serie) => `
-            ${ str }
-            <br />
-            <strong>${ moment(serie.data[index].name).format('YYYY') }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
-          `, '') }
-        </span>
-      `;
-    },
-    year() {
-      // Get point index and a list of all series
-      const { point: { index }, series: { chart: { series }} } = this;
-      const sets = series.slice(0, 2).filter(serie => serie.visible && serie.data.length);
+const formatters = {
+  month() {
+    // Get point index and a list of all series
+    const { point: { index }, series: { chart: { series }} } = this;
+    const sets = series.slice(0, 2).filter(serie => serie.visible && serie.data.length);
 
-      return `
-        <span class="Chart-tooltip js-tooltip">
-          <strong>${ capitalize(moment(this.x).format('YYYY')) }</strong>
-          ${ sets.reduce((str, serie) => `
-            ${ str }
-            <br />
-            <strong>${ serie.name }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
-          `, '') }
-        </span>
-      `;
-    }
-  };
+    return `
+      <span class="Chart-tooltip js-tooltip">
+        <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
+        ${ sets.reduce((str, serie) => `
+          ${ str }
+          <br />
+          <strong>${ moment(serie.data[index].name).format('YYYY') }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
+        `, '') }
+      </span>
+    `;
+  },
+  year() {
+    // Get point index and a list of all series
+    const { point: { index }, series: { chart: { series }} } = this;
+    const sets = series.slice(0, 2).filter(serie => serie.visible && serie.data.length);
 
-  return cached;
+    return `
+      <span class="Chart-tooltip js-tooltip">
+        <strong>${ capitalize(moment(this.x).format('YYYY')) }</strong>
+        ${ sets.reduce((str, serie) => `
+          ${ str }
+          <br />
+          <strong>${ serie.name }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
+        `, '') }
+      </span>
+    `;
+  }
 };
 
 /**

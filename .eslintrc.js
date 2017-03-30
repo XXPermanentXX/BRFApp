@@ -178,7 +178,7 @@ module.exports = {
           "error",
           {
             // Allow common express and choo parameters
-            "argsIgnorePattern": "req|res|next|state|prev|send"
+            "argsIgnorePattern": "req|res|next|state|emit|emitter"
           }
         ],
         "no-use-before-define": "off",

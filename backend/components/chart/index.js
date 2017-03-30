@@ -16,7 +16,11 @@ const STRINGS = {
 
 const container = createContainer();
 
-module.exports = function chart(cooperative, state, prev, send) {
+module.exports = function render(cooperative, state, emit) {
+  if (!state.consumptions) {
+    return loading();
+  }
+
   const { type, granularity, compare, items } = state.consumptions;
 
   let queries = [];
@@ -58,7 +62,8 @@ module.exports = function chart(cooperative, state, prev, send) {
    */
 
   if (queries.length) {
-    return loading(state, send, () => send('consumptions:fetch', queries));
+    emit('consumptions:fetch', queries);
+    return loading();
   }
 
   /**
@@ -97,7 +102,7 @@ module.exports = function chart(cooperative, state, prev, send) {
   return html`
     <div class="Chart">
       ${ container(granularity, actions, data) }
-      ${ settings(state, send) }
+      ${ settings(state, emit) }
     </div>
   `;
 };
@@ -119,35 +124,37 @@ function composeYears(data) {
   }, []);
 }
 
-function settings(state, send) {
+function settings(state, emit) {
+  const { consumptions } = state;
+
   return html`
     <form class="Form u-marginTm u-paddingHb u-flex u-flexCol u-flexAlignItemsStretch">
       <fieldset class="u-marginBb">
         <div class="u-flex">
           <label class="Form-toggle u-flexGrow1">
-            <input class="u-hiddenVisually" type="radio" name="granularity" value="month" onchange=${ setGranularity } checked=${ state.consumptions.granularity === 'month' } />
+            <input class="u-hiddenVisually" type="radio" name="granularity" value="month" onchange=${ setGranularity } checked=${ consumptions && consumptions.granularity === 'month' } disabled=${ state.disabled }/>
             <span class="Form-label">${ __('Montly') }</span>
           </label>
           <label class="Form-toggle u-flexGrow1">
-            <input class="u-hiddenVisually" type="radio" name="granularity" value="year" onchange=${ setGranularity } checked=${ state.consumptions.granularity === 'year' } />
+            <input class="u-hiddenVisually" type="radio" name="granularity" value="year" onchange=${ setGranularity } checked=${ consumptions && consumptions.granularity === 'year' } disabled=${ state.disabled } />
             <span class="Form-label">${ __('Yearly') }</span>
           </label>
         </div>
       </fieldset>
       <div class="Form-grid">
         <label for="form_type" class="Form-label Form-label--pill">${ __('Show') }</label>
-        <select id="form_type" class="Form-select Form-select--pill u-marginBb" name="type" onchange=${ setType }>
+        <select id="form_type" class="Form-select Form-select--pill u-marginBb" name="type" onchange=${ setType } disabled=${ state.disabled }>
           ${ TYPES.map(value => html`
-              <option value=${ value } selected=${ state.consumptions.type === value }>
+              <option value=${ value } selected=${ consumptions && consumptions.type === value }>
                 ${ __(STRINGS[value]) }
               </option>
           `) }
         </select>
 
         <label for="form_compare" class="Form-label Form-label--pill">${ __('Compare with') }</label>
-        <select id="form_compare" class="Form-select Form-select--pill" name="compare">
+        <select id="form_compare" class="Form-select Form-select--pill" name="compare" disabled=${ state.disabled }>
           ${ COMPERATIVE.map(value => html`
-              <option value=${ value } selected=${ state.consumptions.compare === value }>
+              <option value=${ value } selected=${ consumptions && consumptions.compare === value }>
                 ${ __(STRINGS[value]) }
               </option>
           `) }
@@ -157,11 +164,11 @@ function settings(state, send) {
   `;
 
   function setType(event) {
-    send('consumptions:type', event.target.value);
+    emit('consumptions:type', event.target.value);
   }
 
   function setGranularity(event) {
-    send('consumptions:granularity', event.target.value);
+    emit('consumptions:granularity', event.target.value);
   }
 }
 
@@ -179,11 +186,11 @@ function getPeriod(granularity, now = Date.now()) {
   }
 }
 
-function loading(state, send, onload = null) {
+function loading(state = { disabled: true }) {
   return html`
-    <div class="Chart" onload=${ onload }>
+    <div class="Chart">
       ${ loader() }
-      ${ settings(state, send) }
+      ${ settings(state) }
     </div>
   `;
 }

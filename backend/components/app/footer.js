@@ -2,7 +2,7 @@ const html = require('choo/html');
 const moment = require('moment');
 const { __ } = require('../../locale');
 
-module.exports = function footer(state, prev, send) {
+module.exports = function footer(state, emit) {
   return html`
     <footer class="App-footer">
       <div class="App-container">

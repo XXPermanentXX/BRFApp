@@ -9,8 +9,8 @@ const { chevron, loader } = require('../components/icons');
 const footer = require('../components/app/footer');
 const { __, __n } = require('../locale');
 
-module.exports = function cooperative(state, prev, send) {
-  const { cooperative: id } = state.location.params;
+module.exports = function cooperative(state, emit) {
+  const { cooperative: id } = state.params;
   const cooperative = state.cooperatives.items.find(props => props._id === id);
   const actions = state.actions.items.filter(props => props.cooperative === id);
   const currentYear = cooperative.performances.find(props => {
@@ -19,8 +19,8 @@ module.exports = function cooperative(state, prev, send) {
 
   if (!cooperative) {
     return html`
-      <div class="App" onload=${ () => send('cooperatives:fetch', id) }>
-        ${ header(state, prev, send) }
+      <div class="App" onload=${ () => emit('cooperatives:fetch', id) }>
+        ${ header(state, emit) }
         <div class="App-container">
           <a href="/cooperatives">
             ${ chevron('left') }${ __('Show All Cooperatives') }
@@ -39,7 +39,7 @@ module.exports = function cooperative(state, prev, send) {
 
   return html`
     <div class="App">
-      ${ header(state, prev, send) }
+      ${ header(state, emit) }
 
       <div class="App-container">
         <h1 class="Display Display--1 u-marginBb">${ cooperative.name }</h1>
@@ -76,7 +76,7 @@ module.exports = function cooperative(state, prev, send) {
       </div>
 
       <div class="u-marginVm">
-        ${ chart(cooperative, state, prev, send) }
+        ${ chart(cooperative, state, emit) }
       </div>
 
       <div class="App-container u-marginVm">
@@ -84,7 +84,7 @@ module.exports = function cooperative(state, prev, send) {
           ${ hasAllActions ?
             numbered(actions.map(action => summary(action, state))) :
             html`
-              <div onload=${ () => send('actions:fetch', missingActions) }>
+              <div onload=${ () => emit('actions:fetch', missingActions) }>
                 ${ loader() }
               </div>
             `
@@ -92,7 +92,7 @@ module.exports = function cooperative(state, prev, send) {
         </div>
       </div>
 
-      ${ footer(state, prev, send) }
+      ${ footer(state, emit) }
     </div>
   `;
 };

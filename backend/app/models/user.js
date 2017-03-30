@@ -1,7 +1,5 @@
-module.exports = function user(state) {
-  return {
-    namespace: 'user',
-    state: state || {},
-    reducers: {}
+module.exports = function user(initialState) {
+  return (state, emitter) => {
+    state.user = initialState;
   };
 };

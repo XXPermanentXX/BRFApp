@@ -1,13 +1,20 @@
-module.exports = function menu(state) {
-  return {
-    namespace: 'menu',
-    reducers: {
-      open: state => Object.assign({}, state, { isOpen: true }),
-      close: state => Object.assign({}, state, { isOpen: false }),
-      toggle: state => Object.assign({}, state, { isOpen: !state.isOpen })
-    },
-    state: Object.assign({
-      open: false
-    }, state)
+module.exports = function menu() {
+  return (state, emitter) => {
+    state.isMenuOpen = false;
+
+    emitter.on('menu:open', () => {
+      state.isMenuOpen = true;
+      emitter.emit('render');
+    });
+
+    emitter.on('menu:close', () => {
+      state.isMenuOpen = false;
+      emitter.emit('render');
+    });
+
+    emitter.on('menu:toggle', () => {
+      state.isMenuOpen = !state.isMenuOpen;
+      emitter.emit('render');
+    });
   };
 };

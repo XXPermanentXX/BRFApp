@@ -7,17 +7,17 @@ const { loader } = require('../components/icons');
 const map = createMap();
 let isInitialized = false;
 
-module.exports = function (state, prev, send) {
+module.exports = function (state, emit) {
   if (!isInitialized) {
     return html`
       <div class="App">
         <div class="u-flex u-flexCol u-fillViewportV">
-          ${ header(state, prev, send) }
-          <div class="u-flexGrow1 u-flex u-flexCol" onload=${ onload }>
+          ${ header(state, emit) }
+          <div class="u-flexGrow1 u-flex u-flexCol u-flexJustifyCenter" onload=${ onload }>
             ${ loader() }
           </div>
 
-          ${ footer(state, prev, send) }
+          ${ footer(state, emit) }
         </div>
       </div>
     `;
@@ -26,18 +26,18 @@ module.exports = function (state, prev, send) {
   return html`
     <div class="App">
       <div class="u-flex u-flexCol u-fillViewportV">
-        ${ header(state, prev, send) }
+        ${ header(state, emit) }
         <div class="u-flexGrow1 u-flex u-flexCol">
-          ${ map(state.cooperatives.items, state, send) }
+          ${ map(state.cooperatives.items, state, emit) }
         </div>
 
-        ${ footer(state, prev, send) }
+        ${ footer(state, emit) }
       </div>
     </div>
   `;
 
   function onload() {
-    send('cooperatives:fetch');
+    emit('cooperatives:fetch');
     isInitialized = true;
   }
 };

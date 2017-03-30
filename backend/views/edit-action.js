@@ -7,13 +7,13 @@ const { __, __n } = require('../locale');
 
 const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302 ];
 
-module.exports = function (state, prev, send) {
+module.exports = function (state, emit) {
   const { actions, location: { params }} = state;
   const action = actions.items.find(props => props._id === params.action);
 
   return html`
     <div class="App">
-      ${ header(state, prev, send) }
+      ${ header(state, emit) }
       <div class="App-container">
 
         <a class="u-inlineBlock u-marginVs" href=${ resolve(`/actions/${ action._id }`) }>

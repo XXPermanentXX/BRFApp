@@ -6,9 +6,8 @@ const SHORT_LENGTH = 50;
 
 module.exports = function comment(comment, action, state) {
   const classList = [ 'Comment' ];
-  const { user } = state;
   let content = comment.comment;
-  const isAuthor = user._id && comment.user;
+  const isAuthor = state.user && state.user._id === comment.user;
 
   if (comment.short) {
     classList.push('Comment--slim');

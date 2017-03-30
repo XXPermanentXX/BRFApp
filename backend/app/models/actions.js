@@ -1,35 +1,28 @@
-module.exports = function actions(state = {}) {
-  return {
-    namespace: 'actions',
-    reducers: {
-      add(state, data) {
-        const items = state.items.splice();
+module.exports = function actions(initialState) {
+  return (state, emitter) => {
+    state.actions = initialState || { items: [] };
 
-        if (Array.isArray(data)) {
-          items.push(...data);
-        } else {
-          items.push(data);
-        }
+    emitter.on('actions:add', data => {
+      if (Array.isArray(data)) {
+        state.actions.items.push(...data);
+      } else {
+        state.actions.items.push(data);
+      }
 
-        return Object.assign({}, state, { items });
+      emitter.emit('render');
+    });
+
+    emitter.on('actions:fetch', id => {
+      if (Array.isArray(id)) {
+        Promise.all(id.map(fetchAction)).then(results => {
+          emitter.emit('actions:add', results);
+        }, err => emitter.emit('error', err));
+      } else {
+        fetchAction(id).then(result => {
+          emitter.emit('actions:add', result);
+        }, err => emitter.emit('error', err));
       }
-    },
-    effects: {
-      fetch(state, options, send, done) {
-        if (Array.isArray(options)) {
-          Promise.all(options.map(fetchAction)).then(results => {
-            send('actions:add', results, done);
-          }, done);
-        } else {
-          fetchAction(options).then(result => {
-            send('actions:add', result, done);
-          }, done);
-        }
-      }
-    },
-    state: Object.assign({
-      items: []
-    }, state)
+    });
   };
 };
 
