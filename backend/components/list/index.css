@@ -5,6 +5,10 @@
   padding: 0;
 }
 
+.List-item:not(:last-child) {
+  margin-bottom: 1.5em;
+}
+
 /**
  * Definition list
  * @example

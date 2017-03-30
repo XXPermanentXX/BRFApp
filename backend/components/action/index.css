@@ -1,6 +1,7 @@
 /** @define Action */
 
 .Action {
+  line-height: calc(21rem / var(--base-font-size));
 }
 
 .Action-title {
