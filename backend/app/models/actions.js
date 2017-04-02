@@ -1,12 +1,12 @@
 module.exports = function actions(initialState) {
   return (state, emitter) => {
-    state.actions = initialState || { items: [] };
+    state.actions = initialState || [];
 
     emitter.on('actions:add', data => {
       if (Array.isArray(data)) {
-        state.actions.items.push(...data);
+        state.actions.push(...data);
       } else {
-        state.actions.items.push(data);
+        state.actions.push(data);
       }
 
       emitter.emit('render');

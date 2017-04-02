@@ -1,54 +1,34 @@
 const html = require('choo/html');
-const component = require('nanocomponent');
 const merge = require('lodash.merge');
 const moment = require('moment');
 const Highcharts = require('highcharts');
 const defaults = require('./defaults');
-const { capitalize, format } = require('../utils');
+const { capitalize, format, id } = require('../utils');
 const { __ } = require('../../locale');
 
 module.exports = function createContainer() {
-  let chart, initial;
+  let _args, chart, container;
+  const uid = `container_${ id() }`;
 
-  return component({
-    onupdate(el, granularity, actions, data) {
-      const series = compose(actions, data);
+  return function render(...args) {
+    if (!container) {
+      container = html`<div id=${ uid } onload=${ onload } />`;
+      container.isSameNode = target => target.id === uid;
+    } else if (shouldUpdate(args, _args)) {
+      chart.update(getConfig(...args));
+    }
 
-      chart.update({
-        series: series,
-        tooltip: {
-          formatter: formatters[granularity]
-        },
-        xAxis: {
-          labels: {
-            formatter: labels[granularity]
-          }
-        }
-      });
-    },
+    _args = args;
 
-    onunload() {
-      chart.destroy();
-    },
+    return container;
 
-    onload(el) {
+    function onload(el) {
+      // Exit early if Highcharts has been initialized already
+      if (chart) { return; }
+
       chart = Highcharts.chart(el, merge({
-        legend: {
-          title: {
-
-            /**
-             * Localization needs to be defined on render to adhere to locale
-             */
-
-            text: `${ __('Energy use') } (kWh/m<sup>2</sup>)`
-          }
-        },
         tooltip: {
-
-          /**
-           * Position tooltip relative to chart width
-           */
-
+          // Position tooltip relative to chart width
           positioner(width, height, point) {
             // Align to right when there's no room
             if ((width + point.plotX) > chart.plotWidth) {
@@ -64,24 +44,68 @@ module.exports = function createContainer() {
             return { x: point.plotX - 2, y: point.plotY - 15 };
           }
         }
-      }, defaults, initial), chart => chart.reflow());
-    },
-    render(granularity, actions, data) {
-      initial = {
-        series: compose(actions, data),
-        tooltip: {
-          formatter: formatters[granularity]
-        },
-        xAxis: {
-          labels: {
-            formatter: labels[granularity]
-          }
-        }
-      };
-      return html`<div />`;
+      }, defaults, getConfig(..._args)), chart => chart.reflow());
     }
-  });
+  };
 };
+
+/**
+ * Compare arguments to determine if component should update
+ * @param  {Array}    args Latest render arguments
+ * @param  {Array}    prev Previous render arguments
+ * @return {Boolean}       Should component update
+ */
+
+function shouldUpdate(args, prev) {
+  // Compare granularity
+  if (args[0] !== prev[0]) {
+    return true;
+  }
+
+  // Compare number of actions
+  if (args[1].length !== prev[1].length) {
+    return true;
+  }
+
+  // Compare number of data series
+  if (args[2].length !== prev[2].length) {
+    return true;
+  }
+
+  // Compare data series
+  return args[2].reduce((result, serie, serieIndex) => {
+    return result || serie.values.reduce((diff, value, index) => {
+      return diff || value !== prev[2][serieIndex].values[index];
+    }, false);
+  }, false);
+}
+
+/**
+ * Create Highcharts options based on data
+ * @param  {String} granularity Chart granularity setting
+ * @param  {Array}  actions     List of actions
+ * @param  {Array}  data        List of data series
+ * @return {Object}             Highcharts compatible options
+ */
+
+function getConfig(granularity, actions, data) {
+  return {
+    series: compose(actions, data),
+    legend: {
+      title: {
+        text: `${ __('Energy use') } (kWh/m<sup>2</sup>)`
+      }
+    },
+    tooltip: {
+      formatter: formatters[granularity]
+    },
+    xAxis: {
+      labels: {
+        formatter: labels[granularity]
+      }
+    }
+  };
+}
 
 
 /**

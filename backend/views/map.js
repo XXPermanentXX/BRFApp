@@ -28,7 +28,7 @@ module.exports = function (state, emit) {
       <div class="u-flex u-flexCol u-fillViewportV">
         ${ header(state, emit) }
         <div class="u-flexGrow1 u-flex u-flexCol">
-          ${ map(state.cooperatives.items, state, emit) }
+          ${ map(state.cooperatives) }
         </div>
 
         ${ footer(state, emit) }

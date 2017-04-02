@@ -36,6 +36,21 @@ exports.format = function format(src) {
   return spaced;
 };
 
+/**
+ * Generate a random 15 character long id
+ * @return {String}
+ */
+
+const id = exports.id = function () {
+  return Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 15);
+};
+
+/**
+ * Capitalize first letter of string
+ * @param  {String} str String that is to be captialized
+ * @return {String}
+ */
+
 exports.capitalize = function capitalize(str) {
   return str[0].toUpperCase() + str.substr(1);
 };
@@ -51,4 +66,48 @@ exports.className = function className(...args) {
   });
 
   return classList.join(' ');
+};
+
+exports.cache = function cache(props) {
+  let _args, _render, element;
+  const uid = `cache_${ id() }`;
+  const isSameNode = target => target.id === uid;
+
+  if (typeof props === 'function') {
+    _render = props;
+  } else if (typeof props === 'object') {
+    _render = props.render;
+  } else {
+    throw (new Error('Cache must be provided with a render function'));
+  }
+
+  const shouldUpdate = props.shouldUpdate || ((args, prev) => {
+    if (args.length !== prev.length) {
+      return true;
+    }
+
+    return args.reduce((diff, arg, index) => {
+      return diff || arg !== prev[index];
+    }, false);
+  });
+
+  return function render(...args) {
+    if (!element) {
+      element = _render(...args);
+      element.id = uid;
+      element.isSameNode = isSameNode;
+    } else if (shouldUpdate(args, _args || [])) {
+      if (props.update) {
+        props.update(args);
+      } else {
+        element = _render(...args);
+        element.id = uid;
+        element.isSameNode = isSameNode;
+      }
+    }
+
+    _args = args;
+
+    return element;
+  };
 };

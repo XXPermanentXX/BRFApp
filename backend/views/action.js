@@ -11,14 +11,14 @@ const { __, __n } = require('../locale');
 
 module.exports = function action(state, emit) {
   const { cooperatives, actions, params } = state;
-  const action = actions.items.find(props => props._id === params.action);
+  const action = actions.find(props => props._id === params.action);
 
   if (!action) {
     emit('actions:fetch', params.action);
     return loading(state, emit);
   }
 
-  const cooperative = cooperatives.items.find(props => props._id === action.cooperative);
+  const cooperative = cooperatives.find(props => props._id === action.cooperative);
   if (!cooperative) {
     emit('cooperatives:fetch', action.cooperative);
     return loading(state, emit);

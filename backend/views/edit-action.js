@@ -9,7 +9,7 @@ const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206,
 
 module.exports = function (state, emit) {
   const { actions, location: { params }} = state;
-  const action = actions.items.find(props => props._id === params.action);
+  const action = actions.find(props => props._id === params.action);
 
   return html`
     <div class="App">

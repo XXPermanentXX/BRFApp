@@ -2,17 +2,9 @@ const html = require('choo/html');
 const moment = require('moment');
 const hash = require('object-hash');
 const createContainer = require('./container');
+const form = require('./form');
 const { loader } = require('../icons');
 const { __ } = require('../../locale');
-
-const TYPES = [ 'heating', 'electricity' ];
-const COMPERATIVE = [ 'prev_year', 'average' ];
-const STRINGS = {
-  'prev_year': 'Previous year',
-  'average': 'Neighborhood average',
-  'heating': 'Heating & Hot water',
-  'electricity': 'Electricity'
-};
 
 const container = createContainer();
 
@@ -77,7 +69,25 @@ module.exports = function render(cooperative, state, emit) {
     }));
   }
 
-  const actions = state.actions.items
+  /**
+   * Find the shortest data set
+   */
+
+  const max = data.reduce((max, set) => {
+    return !max || (set.values.length < max) ? set.values.length : max;
+  }, 0);
+
+  /**
+   * Ensure all data sets are the same length
+   */
+
+  data.forEach(set => { set.values = set.values.slice(max * -1); });
+
+  /**
+   * Compile actions for data set period
+   */
+
+  const actions = state.actions
     // Find cooperative's actions
     .filter(action => action.cooperative === cooperative._id)
     // Filter out only those who are within given time span
@@ -102,7 +112,7 @@ module.exports = function render(cooperative, state, emit) {
   return html`
     <div class="Chart">
       ${ container(granularity, actions, data) }
-      ${ settings(state, emit) }
+      ${ form(state.consumptions, emit) }
     </div>
   `;
 };
@@ -124,54 +134,6 @@ function composeYears(data) {
   }, []);
 }
 
-function settings(state, emit) {
-  const { consumptions } = state;
-
-  return html`
-    <form class="Form u-marginTm u-paddingHb u-flex u-flexCol u-flexAlignItemsStretch">
-      <fieldset class="u-marginBb">
-        <div class="u-flex">
-          <label class="Form-toggle u-flexGrow1">
-            <input class="u-hiddenVisually" type="radio" name="granularity" value="month" onchange=${ setGranularity } checked=${ consumptions && consumptions.granularity === 'month' } disabled=${ state.disabled }/>
-            <span class="Form-label">${ __('Montly') }</span>
-          </label>
-          <label class="Form-toggle u-flexGrow1">
-            <input class="u-hiddenVisually" type="radio" name="granularity" value="year" onchange=${ setGranularity } checked=${ consumptions && consumptions.granularity === 'year' } disabled=${ state.disabled } />
-            <span class="Form-label">${ __('Yearly') }</span>
-          </label>
-        </div>
-      </fieldset>
-      <div class="Form-grid">
-        <label for="form_type" class="Form-label Form-label--pill">${ __('Show') }</label>
-        <select id="form_type" class="Form-select Form-select--pill u-marginBb" name="type" onchange=${ setType } disabled=${ state.disabled }>
-          ${ TYPES.map(value => html`
-              <option value=${ value } selected=${ consumptions && consumptions.type === value }>
-                ${ __(STRINGS[value]) }
-              </option>
-          `) }
-        </select>
-
-        <label for="form_compare" class="Form-label Form-label--pill">${ __('Compare with') }</label>
-        <select id="form_compare" class="Form-select Form-select--pill" name="compare" disabled=${ state.disabled }>
-          ${ COMPERATIVE.map(value => html`
-              <option value=${ value } selected=${ consumptions && consumptions.compare === value }>
-                ${ __(STRINGS[value]) }
-              </option>
-          `) }
-        </select>
-      </div>
-    </form>
-  `;
-
-  function setType(event) {
-    emit('consumptions:type', event.target.value);
-  }
-
-  function setGranularity(event) {
-    emit('consumptions:granularity', event.target.value);
-  }
-}
-
 function getPeriod(granularity, now = Date.now()) {
   switch (granularity) {
     case 'month': return {
@@ -186,11 +148,11 @@ function getPeriod(granularity, now = Date.now()) {
   }
 }
 
-function loading(state = { disabled: true }) {
+function loading(props = { disabled: true }) {
   return html`
     <div class="Chart">
       ${ loader() }
-      ${ settings(state) }
+      ${ form(props) }
     </div>
   `;
 }

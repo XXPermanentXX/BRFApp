@@ -62,7 +62,7 @@ module.exports = function render(req, res, next) {
             res.status(500).render('/error', { err: err.message });
           } else {
             state.cooperatives = state.cooperatives || { items: [] };
-            const cooperatives = state.cooperatives.items;
+            const cooperatives = state.cooperatives;
             const id = user.cooperative.toString();
 
             if (!cooperatives.find(props => props._id.toString() === id)) {

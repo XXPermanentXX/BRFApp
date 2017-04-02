@@ -11,8 +11,8 @@ const { __, __n } = require('../locale');
 
 module.exports = function cooperative(state, emit) {
   const { cooperative: id } = state.params;
-  const cooperative = state.cooperatives.items.find(props => props._id === id);
-  const actions = state.actions.items.filter(props => props.cooperative === id);
+  const cooperative = state.cooperatives.find(props => props._id === id);
+  const actions = state.actions.filter(props => props.cooperative === id);
   const currentYear = cooperative.performances.find(props => {
     return props.year === (new Date()).getFullYear();
   });
@@ -49,7 +49,7 @@ module.exports = function cooperative(state, emit) {
           </a>
         </div>
 
-        ${ performance({ performance: currentYear.value }) }
+        ${ performance(currentYear.value) }
 
         <hr class="u-marginVm" />
 

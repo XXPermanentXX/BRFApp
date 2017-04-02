@@ -1,6 +1,6 @@
 module.exports = function cooperatives(initialState) {
   return (state, emitter) => {
-    state.cooperatives = initialState || { items: [] };
+    state.cooperatives = initialState || [];
 
     emitter.on('cooperatives:add', data => {
       if (Array.isArray(data)) {
@@ -22,7 +22,7 @@ module.exports = function cooperatives(initialState) {
     });
 
     function inject(props) {
-      const items = state.cooperatives.items;
+      const items = state.cooperatives;
       const index = items.findIndex(item => item._id === props._id);
 
       if (index !== -1) {

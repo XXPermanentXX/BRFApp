@@ -18,7 +18,7 @@ router.post('/', auth.authenticate(), (req, res) => {
       res.render(
         `/cooperatives/${ cooperative._id }`,
         cooperative,
-        (data, done) => done(null, { cooperatives: { items: [ data ] }})
+        (data, done) => done(null, { cooperatives: [ data ], actions: [] })
       );
     }
   });
@@ -65,8 +65,8 @@ router.get('/:id', isMongoId('id'), (req, res) => {
         `/cooperatives${ req.url }`,
         cooperative,
         (data, done) => done(null, {
-          cooperatives: { items: [ data ]},
-          actions: { items: data.actions }
+          cooperatives: [ data ],
+          actions: data.actions
         })
       );
     }
@@ -90,7 +90,7 @@ router.get('/', (req, res) => {
       res.render(
         '/cooperatives',
         cooperatives,
-        (data, done) => done(null, { cooperatives: { items: data }})
+        (data, done) => done(null, { cooperatives: data })
       );
     }
   });
@@ -115,7 +115,10 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
       req.render(
         `/cooperatives/${ id }`,
         result,
-        (data, done) => done(null, { cooperatives: { items: [ data ] }})
+        (data, done) => done(null, {
+          cooperatives: [ data ],
+          actions: data.actions
+        })
       );
     }
   });

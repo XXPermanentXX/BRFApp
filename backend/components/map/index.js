@@ -1,29 +1,32 @@
 /* global mapboxgl */
 
 const html = require('choo/html');
-const component = require('nanocomponent');
-const { getEnergyClass } = require('../utils');
-const { __, __n } = require('../../locale');
-const {
-  energyRepresentative,
-  energyMap,
-  target,
-  lightChallenge,
-  electricCar
-} = require('../icons');
+const { getEnergyClass, id } = require('../utils');
+const popup = require('./popup');
 
 const CLUSTER_THRESHOLD = 12;
 
 module.exports = function createMap() {
-  let features, map;
-  let isLoaded = false;
-  const container = html`<div class="Map u-sizeFill" />`;
+  let _args, container, map;
+  const uid = `map_${ id() }`;
 
-  return component({
-    onupdate(el, cooperatives, state, emit) {
+  return function (...args) {
+    if (!container) {
+      container = html`<div class="Map u-sizeFill" id=${ uid } onload=${ onload } />`;
+      container.isSameNode = target => target.id === uid;
+    } else if (shouldUpdate(args, _args)) {
+      const [ cooperatives  ] = args;
+      onupdate(cooperatives);
+    }
+
+    _args = args;
+
+    return container;
+
+    function onupdate(cooperatives) {
       const features = getFeatures(cooperatives);
 
-      if (isLoaded) {
+      if (map) {
         setData();
       } else {
         map.on('load', setData);
@@ -38,18 +41,17 @@ module.exports = function createMap() {
         map.fitBounds(features.reduce((bounds, feature) => {
           return bounds.extend(feature.geometry.coordinates);
         }, new mapboxgl.LngLatBounds()), {
-          padding: el.offsetWidth * 0.1,
+          padding: container.offsetWidth * 0.1,
           animate: false
         });
       }
-    },
-    render(cooperatives, state, emit) {
-      features = getFeatures(cooperatives);
+    }
 
-      return container;
-    },
-    onload(el) {
-      if (isLoaded) { return; }
+    function onload(el) {
+      if (map) { return; }
+
+      const [ cooperatives  ] = args;
+      const features = getFeatures(cooperatives);
 
       mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
       map = new mapboxgl.Map({
@@ -59,8 +61,6 @@ module.exports = function createMap() {
       });
 
       map.on('load', () => {
-        isLoaded = true;
-
         map.addSource('cooperatives', {
           type: 'geojson',
           data: {
@@ -152,38 +152,17 @@ module.exports = function createMap() {
         });
       });
     }
-  });
+  };
 };
 
-function popup(feature) {
-  const { properties } = feature;
+function shouldUpdate(args, prev) {
+  if (args.length !== prev.length) {
+    return true;
+  }
 
-  return html`
-    <div class="Map-popup">
-      <div class="u-nbfc">
-        <a class="u-textBold" href="/cooperatives/${ properties.id }">
-          ${ properties.name }
-        </a>
-        <br />
-        <span class="u-textBold">${ Math.round(properties.performance) }</span> kWh/m<sup>2</sup>
-        <br />
-        ${ properties.actions ? html`
-          <span>
-            <span class="u-textBold">${ properties.actions }</span>
-            ${ __n('Energy action', 'Energy actions', properties.actions) }
-          </span>
-        ` : __('No energy actions') }
-        <br />
-        <div class="u-nbfc u-marginTb">
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Designated Energyrepresentative') }>${ energyRepresentative(22) }</div>
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Energy mapping') }>${ energyMap(22) }</div>
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Contract for goal oriented energy management') }>${ target(22) }</div>
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Participating in belysningsutmaningen') }>${ lightChallenge(22)  }</div>
-          <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Charger for electric cars') }>${ electricCar(22)  }</div>
-        </div>
-      </div>
-    </div>
-  `;
+  return args.reduce((diff, cooperative, index) => {
+    return diff || cooperative._id !== prev[index]._id;
+  }, false);
 }
 
 function getFeatures(cooperatives) {

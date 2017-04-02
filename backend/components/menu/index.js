@@ -8,7 +8,7 @@ const pages = {
     title: state => {
       if (!state.user) { return; }
 
-      const cooperative = state.cooperatives.items.find(props => {
+      const cooperative = state.cooperatives.find(props => {
         return props._id === state.user.cooperative;
       });
 
