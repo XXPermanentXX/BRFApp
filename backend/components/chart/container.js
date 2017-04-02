@@ -3,82 +3,71 @@ const merge = require('lodash.merge');
 const moment = require('moment');
 const Highcharts = require('highcharts');
 const defaults = require('./defaults');
-const { capitalize, format, id } = require('../utils');
+const { capitalize, format, cache } = require('../utils');
 const { __ } = require('../../locale');
 
 module.exports = function createContainer() {
-  let _args, chart, container;
-  const uid = `container_${ id() }`;
+  let chart;
 
-  return function render(...args) {
-    if (!container) {
-      container = html`<div id=${ uid } onload=${ onload } />`;
-      container.isSameNode = target => target.id === uid;
-    } else if (shouldUpdate(args, _args)) {
-      chart.update(getConfig(...args));
-    }
+  return cache({
+    shouldUpdate(args, prev) {
+      // Compare granularity
+      if (args[0] !== prev[0]) {
+        return true;
+      }
 
-    _args = args;
+      // Compare number of actions
+      if (args[1].length !== prev[1].length) {
+        return true;
+      }
 
-    return container;
+      // Compare number of data series
+      if (args[2].length !== prev[2].length) {
+        return true;
+      }
 
-    function onload(el) {
-      // Exit early if Highcharts has been initialized already
-      if (chart) { return; }
+      // Compare data series
+      return args[2].reduce((result, serie, serieIndex) => {
+        return result || serie.values.reduce((diff, value, index) => {
+          return diff || value !== prev[2][serieIndex].values[index];
+        }, false);
+      }, false);
+    },
 
-      chart = Highcharts.chart(el, merge({
-        tooltip: {
-          // Position tooltip relative to chart width
-          positioner(width, height, point) {
-            // Align to right when there's no room
-            if ((width + point.plotX) > chart.plotWidth) {
-              // Apply right align modifier as soon as the element is in the DOM
-              requestAnimationFrame(() => {
-                const tooltip = el.querySelector('.js-tooltip');
-                tooltip.classList.add('Chart-tooltip--alignRight');
-              });
+    update(granularity, actions, data) {
+      chart.update(getConfig(granularity, actions, data));
+    },
 
-              return { x: point.plotX - width + 25, y: point.plotY - 14 };
+    render(granularity, actions, data) {
+      return html`<div onload=${ onload } />`;
+
+      function onload(el) {
+        // Exit early if Highcharts has been initialized already
+        if (chart) { return; }
+
+        chart = Highcharts.chart(el, merge({
+          tooltip: {
+            // Position tooltip relative to chart width
+            positioner(width, height, point) {
+              // Align to right when there's no room
+              if ((width + point.plotX) > chart.plotWidth) {
+                // Apply right align modifier as soon as the element is in the DOM
+                requestAnimationFrame(() => {
+                  const tooltip = el.querySelector('.js-tooltip');
+                  tooltip.classList.add('Chart-tooltip--alignRight');
+                });
+
+                return { x: point.plotX - width + 25, y: point.plotY - 14 };
+              }
+
+              return { x: point.plotX - 2, y: point.plotY - 15 };
             }
-
-            return { x: point.plotX - 2, y: point.plotY - 15 };
           }
-        }
-      }, defaults, getConfig(..._args)), chart => chart.reflow());
+        }, defaults, getConfig(granularity, actions, data)), chart => chart.reflow());
+      }
     }
-  };
+  });
 };
-
-/**
- * Compare arguments to determine if component should update
- * @param  {Array}    args Latest render arguments
- * @param  {Array}    prev Previous render arguments
- * @return {Boolean}       Should component update
- */
-
-function shouldUpdate(args, prev) {
-  // Compare granularity
-  if (args[0] !== prev[0]) {
-    return true;
-  }
-
-  // Compare number of actions
-  if (args[1].length !== prev[1].length) {
-    return true;
-  }
-
-  // Compare number of data series
-  if (args[2].length !== prev[2].length) {
-    return true;
-  }
-
-  // Compare data series
-  return args[2].reduce((result, serie, serieIndex) => {
-    return result || serie.values.reduce((diff, value, index) => {
-      return diff || value !== prev[2][serieIndex].values[index];
-    }, false);
-  }, false);
-}
 
 /**
  * Create Highcharts options based on data

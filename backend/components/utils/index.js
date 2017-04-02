@@ -1,23 +1,40 @@
 const REQ_VALUE = 70;
+const DECIMAL_SIGN = (0.5 + '').match(/0(.{1})5/)[1];
+
+/**
+ * Calculate energy class based on cooperative performance
+ * @param  {Number} performance Performance (a-temp)
+ * @return {String}             Grade from A-G or `null`
+ */
+
 exports.getEnergyClass = function getEnergyClass(performance) {
   if (performance <= REQ_VALUE * 0.5) {
     return 'A';
-  } else if(performance > REQ_VALUE * 0.5 && performance <= REQ_VALUE * 0.75) {
+  } else if (performance > REQ_VALUE * 0.5 && performance <= REQ_VALUE * 0.75) {
     return 'B';
-  } else if(performance > REQ_VALUE * 0.75 && performance <= REQ_VALUE * 1.0) {
+  } else if (performance > REQ_VALUE * 0.75 && performance <= REQ_VALUE * 1.0) {
     return 'C';
-  } else if(performance > REQ_VALUE * 1.0 && performance <= REQ_VALUE * 1.35) {
+  } else if (performance > REQ_VALUE * 1.0 && performance <= REQ_VALUE * 1.35) {
     return 'D';
-  } else if(performance > REQ_VALUE * 1.35 && performance <= REQ_VALUE * 1.8) {
+  } else if (performance > REQ_VALUE * 1.35 && performance <= REQ_VALUE * 1.8) {
     return 'E';
-  } else if(performance > REQ_VALUE * 1.8 && performance <= REQ_VALUE * 2.35) {
+  } else if (performance > REQ_VALUE * 1.8 && performance <= REQ_VALUE * 2.35) {
     return 'F';
-  } else if(performance > REQ_VALUE * 2.35) {
+  } else if (performance > REQ_VALUE * 2.35) {
     return 'G';
   }
+
+  return null;
 };
 
-const DECIMAL_SIGN = (0.5 + '').match(/0(.{1})5/)[1];
+
+/**
+ * Format number with localized decimal sign, spaced by thousands and no more
+ * than two decimals
+ * @param  {Number} src Number to be formated
+ * @return {String}     Formated string
+ */
+
 exports.format = function format(src) {
   const factor = src > 1 ? 10 : 100;
   const [ whole, decimal ] = ((Math.round( src * factor ) / factor) + '').split(/,|\./);
@@ -55,6 +72,18 @@ exports.capitalize = function capitalize(str) {
   return str[0].toUpperCase() + str.substr(1);
 };
 
+/**
+ * Compile class name based on booleans.
+ * Takes either a default class and an object with switches or just the object
+ *
+ * @example
+ * const classList = className('Foo', { 'Foo-bar': true, 'Foo-baz': false });
+ * const classList = className({ 'is-open': true, 'in-transition': false });
+ *
+ * @param  {Mixed} args  String and Object or just Object
+ * @return {String}      Space speerated list of class names
+ */
+
 exports.className = function className(...args) {
   const classList = typeof args[0] === 'string' ? args[0].split(' ') : [];
   const hash = typeof args[0] === 'object' ? args[0] : args[1] || {};
@@ -67,6 +96,30 @@ exports.className = function className(...args) {
 
   return classList.join(' ');
 };
+
+/**
+ * Cache an element for performance sake.
+ * Takes either a function or an object with an optional update method and
+ * diffing algorithm.
+ *
+ * @example
+ * cache(profile => html`<a href="/users/${ profile._id }`>${ profile.name }</a>`)
+ * cache({
+ *   shouldUpdate(args, prev) {
+ *     return args[0]._id !== prev[0]._id;
+ *   },
+ *   update(profile) {
+ *     fetch('/users/${ profile._id }').then(user => emit('users:add', user));
+ *   },
+ *   render(profile) {
+ *     return html`<a href="/users/${ profile._id }`>${ profile.name }</a>`;
+ *   }
+ * })
+ *
+ *
+ * @param  {Mixed}    props Function or Object
+ * @return {Function}       Cached render function
+ */
 
 exports.cache = function cache(props) {
   let _args, _render, element;
@@ -98,7 +151,7 @@ exports.cache = function cache(props) {
       element.isSameNode = isSameNode;
     } else if (shouldUpdate(args, _args || [])) {
       if (props.update) {
-        props.update(args);
+        props.update(...args);
       } else {
         element = _render(...args);
         element.id = uid;
