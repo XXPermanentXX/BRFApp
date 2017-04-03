@@ -99,23 +99,30 @@ exports.className = function className(...args) {
 
 /**
  * Cache an element for performance sake.
- * Takes either a function or an object with an optional update method and
- * diffing algorithm.
+ * Takes either a function or an object with a render and optional update method
+ * and diffing algorithm.
  *
  * @example
- * cache(profile => html`<a href="/users/${ profile._id }`>${ profile.name }</a>`)
+ * cache(user => html`<a href="/users/${ user._id }`>${ user.name }</a>`)
+ *
+ * @example
+ * let map;
  * cache({
  *   shouldUpdate(args, prev) {
- *     return args[0]._id !== prev[0]._id;
+ *     return args[0].lng !== prev[0].lng || args[0].lat !== prev[0].lat;
  *   },
- *   update(profile) {
- *     fetch('/users/${ profile._id }').then(user => emit('users:add', user));
+ *   update(coordinates, emit) {
+ *     map.setCenter([coordinates.lng, coordinates.lat]);
  *   },
- *   render(profile) {
- *     return html`<a href="/users/${ profile._id }`>${ profile.name }</a>`;
+ *   render(coordinates, emit) {
+ *     return html`<div onload=${ el => {
+ *       map = new mapboxgl.Map({
+ *         container: el,
+ *         center: [coordinates.lng, coordinates.lat],
+ *       });
+ *     } />`;
  *   }
  * })
- *
  *
  * @param  {Mixed}    props Function or Object
  * @return {Function}       Cached render function
