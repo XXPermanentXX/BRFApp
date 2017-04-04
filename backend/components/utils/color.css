@@ -35,3 +35,7 @@
 .u-colorText {
   color: var(--color-text) !important;
 }
+
+.u-colorCurrent {
+  color: currentColor !important
+}

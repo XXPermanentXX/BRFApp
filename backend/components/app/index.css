@@ -25,3 +25,16 @@
   border-top: 1px solid var(--color-light);
   -webkit-font-smoothing: antialiased;
 }
+
+.App-error {
+  max-height: 3rem;
+  position: relative;
+  z-index: 2;
+  color: #fff;
+  background-color: var(--color-secondary);
+  transition: max-height 250ms linear;
+}
+
+.App-error:empty {
+  max-height: 0;
+}

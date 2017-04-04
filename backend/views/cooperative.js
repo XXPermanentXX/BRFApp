@@ -6,6 +6,7 @@ const { definition, numbered } = require('../components/list');
 const { format } = require('../components/utils');
 const { summary } = require('../components/action');
 const { chevron, loader } = require('../components/icons');
+const error = require('../components/app/error');
 const footer = require('../components/app/footer');
 const { __, __n } = require('../locale');
 
@@ -20,6 +21,7 @@ module.exports = function cooperative(state, emit) {
   if (!cooperative) {
     return html`
       <div class="App" onload=${ () => emit('cooperatives:fetch', id) }>
+        ${ error(state, emit) }
         ${ header(state, emit) }
         <div class="App-container">
           <a href="/cooperatives">
@@ -39,6 +41,7 @@ module.exports = function cooperative(state, emit) {
 
   return html`
     <div class="App">
+      ${ error(state, emit) }
       ${ header(state, emit) }
 
       <div class="App-container">
