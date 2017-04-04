@@ -47,6 +47,9 @@ module.exports = function render(req, res, next) {
     function send(state) {
       let geoip;
 
+      // Ensure actions in state
+      state.actions = state.actions || [];
+
       // Expose client ip for geolocation
       if (process.env.NODE_ENV === 'development') {
         geoip = require('public-ip').v4();

@@ -79,7 +79,7 @@ module.exports = function cooperative(state, emit) {
       </div>
 
       <div class="u-marginVm">
-        ${ chart(cooperative, state, emit) }
+        ${ chart(Date.now(), cooperative, actions, state, emit) }
       </div>
 
       <div class="App-container u-marginVm">

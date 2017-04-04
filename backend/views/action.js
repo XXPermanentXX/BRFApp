@@ -2,6 +2,7 @@ const html = require('choo/html');
 const moment = require('moment');
 const header = require('../components/page-head');
 const { definition } = require('../components/list');
+const chart = require('../components/chart');
 const footer = require('../components/app/footer');
 const comment = require('../components/comment');
 const resolve = require('../resolve');
@@ -34,7 +35,7 @@ module.exports = function action(state, emit) {
           ${ chevron('left') }${ __('Back to %s', cooperative.name) }
         </a>
 
-        <div class="u-marginTm u-marginBl">
+        <div class="u-marginTm">
           ${ definition(properties(action)) }
 
           ${ state.user ? html`
@@ -43,7 +44,13 @@ module.exports = function action(state, emit) {
             </a>
           ` : null }
         </div>
+      </div>
 
+      <div class="u-marginVm">
+        ${ chart(Date.parse(action.date), cooperative, [Object.assign({title: ''}, action)], state, emit) }
+      </div>
+
+      <div class="App-container">
         <div id="comments-${ action._id }">
           <h2 class="Display Display--3 u-textItalic">
             ${ action.comments.length ? __n('Comment', 'Comments', action.comments.length) : __('No comments yet') }

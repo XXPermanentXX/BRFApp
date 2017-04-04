@@ -8,19 +8,26 @@ const { __ } = require('../../locale');
 
 const container = createContainer();
 
-module.exports = function render(cooperative, state, emit) {
+module.exports = function render(center, cooperative, actions, state, emit) {
   if (!state.consumptions) {
     return loading();
   }
 
   const { type, granularity, compare, items } = state.consumptions;
 
+  /**
+   * Figure out where (when) to center the graph
+   */
+
+  const offset = Math.abs(moment(center).diff(Date.now(), granularity));
+  const now = offset > 6 ? moment(center).add(6, granularity) : moment().subtract(1, 'month');
+
   let queries = [];
   queries.push(Object.assign({
     name: granularity === 'month' ? __('Current year') : cooperative.name,
     type: type,
     cooperative: cooperative._id
-  }, getPeriod(granularity, moment().subtract(1, 'month'))));
+  }, getPeriod(granularity, now)));
 
   if (granularity === 'month' && compare === 'prev_year') {
     const from = moment(queries[0].from).subtract(1, 'month');
@@ -87,10 +94,8 @@ module.exports = function render(cooperative, state, emit) {
    * Compile actions for data set period
    */
 
-  const actions = state.actions
-    // Find cooperative's actions
-    .filter(action => action.cooperative === cooperative._id)
-    // Filter out only those who are within given time span
+  const actionPoints = actions
+    // Filter out only those who are within the given time span
     .filter(action => {
       const min = data[0].values[0].date;
       const max = data[0].values[data[0].values.length - 1].date;
@@ -98,6 +103,7 @@ module.exports = function render(cooperative, state, emit) {
     })
     // Put together a chart compatible object
     .map((action, index) => {
+      // Find closest data point to latch on to
       const match = data[0].values.findIndex(point => {
         return new Date(point.date) > new Date(action.date);
       });
@@ -111,7 +117,7 @@ module.exports = function render(cooperative, state, emit) {
 
   return html`
     <div class="Chart">
-      ${ container(granularity, actions, data) }
+      ${ container(granularity, actionPoints, data) }
       ${ form(state.consumptions, emit) }
     </div>
   `;

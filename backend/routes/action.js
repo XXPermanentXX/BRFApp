@@ -113,8 +113,8 @@ router.post('/', auth.authenticate(), (req, res) => {
           (data, done) => Cooperatives.get(action.cooperative, (err, cooperative) => {
             if (err) { return done(err); }
             done(null, {
-              cooperatives: { items: [ cooperative ]},
-              actions: { items: [ action ]}
+              cooperatives: [ cooperative ],
+              actions: [ action ]
             });
           })
         );
@@ -144,8 +144,8 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
         `/actions/${ id }`,
         action,
         (data, done) => done(null, {
-          cooperatives: { items: [ data.cooperative ]},
-          actions: { items: [ data ]}
+          cooperatives: [ data.cooperative ],
+          actions: [ data ]
         })
       );
     }
@@ -171,8 +171,8 @@ router.get('/:id', isMongoId('id'), (req, res) => {
         `/actions${ req.url }`,
         action,
         (data, done) => done(null, {
-          cooperatives: { items: [ data.cooperative ]},
-          actions: { items: [ data ]}
+          cooperatives: [ data.cooperative ],
+          actions: [ data ]
         })
       );
     }
@@ -200,8 +200,8 @@ router.get('/:id/edit', isMongoId('id'), auth.authenticate(), (req, res) => {
           `/actions/${ req.params.id }/edit`,
           action,
           (data, done) => done(null, {
-            cooperatives: { items: [ data.cooperative ]},
-            actions: { items: [ data ]}
+            cooperatives: [ data.cooperative ],
+            actions: [ data ]
           })
         );
       }
@@ -251,7 +251,7 @@ router.get('/', function(req, res) {
       res.render(
         '/actions',
         actions,
-        (data, done) => done(null, { actions: { items: [ data ]}})
+        (data, done) => done(null, { actions: [ data ]})
       );
     }
   });
@@ -269,9 +269,7 @@ router.get('/search', (req, res) => {
     if (err) {
       res.status(500).render('/error', { err: err.message });
     } else {
-      res.render('/search', actions, (data, done) => done(null, {
-        actions: { items: actions }
-      }));
+      res.render('/search', actions, (data, done) => done(null, { actions }));
     }
   });
 

@@ -49,6 +49,7 @@
 .Chart-action {
   box-sizing: border-box;
   display: inline-block;
+  height: 1.5em;
   min-width: 1.5em;
   padding-bottom: 0.1em;
   color: #fff;

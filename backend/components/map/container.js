@@ -5,6 +5,16 @@ const createPopup = require('./popup');
 const { getEnergyClass, cache } = require('../utils');
 
 const CLUSTER_THRESHOLD = 12;
+const POPUP_OFFSET = {
+  'top': [0, -15],
+  'top-left': [0, -15],
+  'top-right': [0, -15],
+  'bottom': [0, -36],
+  'bottom-left': [0, -36],
+  'bottom-right': [0, -36],
+  'left': [6, -26],
+  'right': [-6, -26]
+};
 
 module.exports = function createMap() {
   let map;
@@ -44,18 +54,7 @@ module.exports = function createMap() {
     },
 
     render(cooperatives, center) {
-      const offset = {
-        'top': [0, -15],
-        'top-left': [0, -15],
-        'top-right': [0, -15],
-        'bottom': [0, -36],
-        'bottom-left': [0, -36],
-        'bottom-right': [0, -36],
-        'left': [6, -26],
-        'right': [-6, -26]
-      };
-
-      const popup = new mapboxgl.Popup({ closeButton: false, offset });
+      const popup = new mapboxgl.Popup({ closeButton: false, POPUP_OFFSET });
 
       return html`<div class="Map u-sizeFill" onload=${ onload } onunload=${ onunload }></div>`;
 
