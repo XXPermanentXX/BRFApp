@@ -158,7 +158,7 @@ exports.cache = function cache(props) {
       element.isSameNode = isSameNode;
     } else if (shouldUpdate(args, _args || [])) {
       if (props.update) {
-        props.update(...args);
+        props.update(element, ...args);
       } else {
         element = _render(...args);
         element.id = uid;

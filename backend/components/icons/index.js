@@ -25,7 +25,7 @@ exports.loader = function loader() {
 
 exports.energyRepresentative = function energyRepresentative(size = 18) {
   return html`
-    <svg class="Icon" style="width: ${ size }; height: ${ size };">
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-energyRepresentative" />
     </icon>
   `;
@@ -33,7 +33,7 @@ exports.energyRepresentative = function energyRepresentative(size = 18) {
 
 exports.energyMap = function energyMap(size = 18) {
   return html`
-    <svg class="Icon" style="width: ${ size }; height: ${ size };">
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-energyMap" />
     </icon>
   `;
@@ -41,7 +41,7 @@ exports.energyMap = function energyMap(size = 18) {
 
 exports.target = function target(size = 18) {
   return html`
-    <svg class="Icon" style="width: ${ size }; height: ${ size };">
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-target" />
     </icon>
   `;
@@ -49,7 +49,7 @@ exports.target = function target(size = 18) {
 
 exports.lightChallenge = function lightChallenge(size = 18) {
   return html`
-    <svg class="Icon" style="width: ${ size }; height: ${ size };">
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-lightChallenge" />
     </icon>
   `;
@@ -57,7 +57,7 @@ exports.lightChallenge = function lightChallenge(size = 18) {
 
 exports.electricCar = function electricCar(size = 18) {
   return html`
-    <svg class="Icon" style="width: ${ size }; height: ${ size };">
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-electricCar" />
     </icon>
   `;

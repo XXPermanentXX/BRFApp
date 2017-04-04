@@ -34,9 +34,34 @@
   text-decoration: none; /* 1 */
 }
 
+.Button:focus {
+  outline: none;
+  box-shadow: 0 0 5px var(--color-primary);
+}
+
+.Button--link {
+  padding: 0;
+  cursor: pointer;
+  font-style: italic;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-normal);
+  background-color: transparent;
+}
+
+.Button--link:hover,
+.Button--link:focus,
+.Button--link:active {
+  text-decoration: underline;
+}
+
 .Button--secondary,
 .Button--secondary:link,
 .Button--secondary:visited {
   background-color: var(--color-dim);
   border-color: var(--color-dim);
+}
+
+.Button--round {
+  padding: calc(var(--Button-padding) / 2) var(--Button-padding);
+  border-radius: calc(1em + var(--Button-padding));
 }

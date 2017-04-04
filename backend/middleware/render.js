@@ -1,14 +1,5 @@
 const User = require('../models/users');
 
-const INITIAL_STATE = {
-  lang: 'sv',
-  err: null,
-  user: {},
-  cooperatives: { items: [] },
-  actions: { items: [] },
-  consumptions: { items: [] }
-};
-
 /**
  * Overwrite native `res.render` with one that conforms with request type and
  * decorates (HTML) state with user data
@@ -54,27 +45,37 @@ module.exports = function render(req, res, next) {
      */
 
     function send(state) {
-      Object.assign(INITIAL_STATE, state);
+      let geoip;
 
-      if (req.user) {
-        User.getProfile(req.user._id, (err, user) => {
-          if (err) {
-            res.status(500).render('/error', { err: err.message });
-          } else {
-            state.cooperatives = state.cooperatives || { items: [] };
-            const cooperatives = state.cooperatives;
-            const id = user.cooperative.toString();
-
-            if (!cooperatives.find(props => props._id.toString() === id)) {
-              cooperatives.push(user.cooperative);
-            }
-
-            orig.call(res, route, Object.assign({ user }, state));
-          }
-        });
+      // Expose client ip for geolocation
+      if (process.env.NODE_ENV === 'development') {
+        geoip = require('public-ip').v4();
       } else {
-        orig.call(res, route, state);
+        geoip = Promise.resolve(req.ip);
       }
+
+      geoip.then(ip => {
+        state.ip = ip;
+
+        if (req.user) {
+          User.getProfile(req.user._id, (err, user) => {
+            if (err) {
+              res.status(500).render('/error', { err: err.message });
+            } else {
+              const cooperatives = state.cooperatives = state.cooperatives || [];
+              const id = user.cooperative.toString();
+
+              if (!cooperatives.find(props => props._id.toString() === id)) {
+                cooperatives.push(user.cooperative);
+              }
+
+              orig.call(res, route, Object.assign({ user }, state));
+            }
+          });
+        } else {
+          orig.call(res, route, state);
+        }
+      });
     }
   };
 

@@ -34,7 +34,7 @@ module.exports = function createContainer() {
       }, false);
     },
 
-    update(granularity, actions, data) {
+    update(element, granularity, actions, data) {
       chart.update(getConfig(granularity, actions, data));
     },
 

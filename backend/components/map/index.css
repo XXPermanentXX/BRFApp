@@ -5,6 +5,12 @@
   width: 100%;
 }
 
+.Map-locate {
+  position: absolute;
+  top: var(--space-b);
+  right: var(--space-b);
+}
+
 .Map-popup {
   padding: var(--space-b);
   font-size: calc(14rem / var(--base-font-size));

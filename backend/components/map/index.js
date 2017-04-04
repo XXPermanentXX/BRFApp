@@ -1,173 +1,45 @@
-/* global mapboxgl */
-
 const html = require('choo/html');
-const { getEnergyClass, cache } = require('../utils');
-const popup = require('./popup');
+const createMap = require('./container');
+const { __ } = require('../../locale');
+const { loader } = require('../icons');
 
-const CLUSTER_THRESHOLD = 12;
+const container = createMap();
 
-module.exports = function createMap() {
-  let map;
+module.exports = function map(state, emit) {
+  let center;
+  const { cooperatives, user, geoip } = state;
 
-  return cache({
-    shouldUpdate(args, prev) {
-      if (args.length !== prev.length) {
-        return true;
-      }
+  if (user) {
+    const home = cooperatives.find(item => item._id === user.cooperative);
+    center = home && { longitude: home.lng, latitude: home.lat };
+  }
 
-      return args.reduce((diff, cooperative, index) => {
-        return diff || cooperative._id !== prev[index]._id;
-      }, false);
-    },
+  if (!center && geoip.longitude) {
+    center = {
+      longitude: geoip.longitude,
+      latitude: geoip.latitude,
+      isLoading: geoip.isLoading
+    };
+  }
 
-    update(cooperatives) {
-      const features = getFeatures(cooperatives);
+  return html`
+    <div class="Map u-sizeFill u-flex u-flexCol u-flexJustifyCenter" onload=${ onload }>
+      ${ center ? container(state.cooperatives.slice(), center) : loader() }
+      <div class="Map-locate">
+        <button class="Button Button--round u-textS" onclick=${ onclick } disabled=${ !!geoip.isLoading }>
+          ${ __('Show closest') }
+        </button>
+      </div>
+    </div>
+  `;
 
-      if (map) {
-        setData();
-      } else {
-        map.on('load', setData);
-      }
+  function onclick() {
+    emit('geoip:getPosition');
+  }
 
-      function setData() {
-        map.getSource('cooperatives').setData({
-          type: 'FeatureCollection',
-          features: features
-        });
-
-        map.fitBounds(features.reduce((bounds, feature) => {
-          return bounds.extend(feature.geometry.coordinates);
-        }, new mapboxgl.LngLatBounds()), {
-          padding: map.container.offsetWidth * 0.1,
-          animate: false
-        });
-      }
-    },
-
-    render(cooperatives) {
-      return html`<div class="Map u-sizeFill" onload=${ onload } />`;
-
-      function onload(el) {
-        if (map) { return; }
-
-        const features = getFeatures(cooperatives);
-
-        mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
-        map = new mapboxgl.Map({
-          container: el,
-          style: process.env.MAPBOX_STYLE,
-          maxZoom: 17
-        });
-
-        map.on('load', () => {
-          map.addSource('cooperatives', {
-            type: 'geojson',
-            data: {
-              type: 'FeatureCollection',
-              features: features
-            },
-            cluster: true,
-            clusterMaxZoom: CLUSTER_THRESHOLD
-          });
-
-          map.addLayer({
-            id: 'cooperative-markers',
-            type: 'symbol',
-            source: 'cooperatives',
-            filter: ['!has', 'point_count'],
-            layout: {
-              'icon-allow-overlap': true,
-              'icon-image': 'marker-{energyClass}',
-              'icon-offset': [0, -21]
-            }
-          });
-
-          map.addLayer({
-            id: 'cooperative-clusters',
-            type: 'symbol',
-            source: 'cooperatives',
-            filter: ['has', 'point_count'],
-            layout: {
-              'icon-allow-overlap': true,
-              'icon-image': 'marker-cluster',
-              'text-field': '{point_count}',
-              'text-font': [ 'Lato Bold' ],
-              'text-size': 14,
-              'text-offset': [ 0, 0.85 ]
-            },
-            paint: {
-              'text-color': '#fff'
-            }
-          });
-
-          map.fitBounds(features.reduce((bounds, feature) => {
-            return bounds.extend(feature.geometry.coordinates);
-          }, new mapboxgl.LngLatBounds()), {
-            padding: el.offsetWidth * 0.1,
-            animate: false
-          });
-
-          map.on('mousemove', event => {
-            const features = map.queryRenderedFeatures(event.point, {
-              layers: ['cooperative-markers', 'cooperative-clusters']
-            });
-
-            map.getCanvas().style.cursor = features.length ? 'pointer' : '';
-          });
-
-          map.on('click', event => {
-            const features = map.queryRenderedFeatures(event.point, {
-              layers: ['cooperative-markers', 'cooperative-clusters']
-            });
-
-            if (!features.length) {
-              return;
-            }
-
-            const feature = features[0];
-
-            if (feature.properties.cluster) {
-              map.flyTo({
-                center: feature.geometry.coordinates,
-                zoom: CLUSTER_THRESHOLD + 1
-              });
-            } else {
-              const offset = {
-                'top': [0, -15],
-                'top-left': [0, -15],
-                'top-right': [0, -15],
-                'bottom': [0, -36],
-                'bottom-left': [0, -36],
-                'bottom-right': [0, -36],
-                'left': [6, -26],
-                'right': [-6, -26]
-              };
-
-              new mapboxgl.Popup({ closeButton: false, offset })
-                .setLngLat(feature.geometry.coordinates)
-                .setDOMContent(popup(feature))
-                .addTo(map);
-            }
-          });
-        });
-      }
+  function onload() {
+    if (!center) {
+      emit('geoip:fetch');
     }
-  });
+  }
 };
-
-function getFeatures(cooperatives) {
-  return cooperatives.map(cooperative => ({
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [ cooperative.lng, cooperative.lat ]
-    },
-    properties: {
-      id: cooperative._id,
-      name: cooperative.name,
-      performance: cooperative.performance,
-      actions: cooperative.actions.length,
-      energyClass: (getEnergyClass(cooperative.performance) || 'unknown').toLowerCase()
-    }
-  }));
-}
