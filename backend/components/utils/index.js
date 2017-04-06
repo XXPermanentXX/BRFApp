@@ -1,3 +1,6 @@
+const moment = require('moment');
+
+const PERFORMANCE_FORMAT = 'YYYYMM';
 const REQ_VALUE = 70;
 const DECIMAL_SIGN = (0.5 + '').match(/0(.{1})5/)[1];
 
@@ -27,6 +30,15 @@ exports.getEnergyClass = function getEnergyClass(performance) {
   return null;
 };
 
+exports.getPerformance = function getPerformance(cooperative) {
+  const byDate = cooperative.performances.slice().sort((a, b) => {
+    const dateA = moment(`${ a.year }${ a.month }`, PERFORMANCE_FORMAT);
+    const dateB = moment(`${ b.year }${ b.month }`, PERFORMANCE_FORMAT);
+    return dateA.isAfter(dateB) ? -1 : 1;
+  });
+
+  return byDate.length ? byDate[0].value : undefined;
+};
 
 /**
  * Format number with localized decimal sign, spaced by thousands and no more

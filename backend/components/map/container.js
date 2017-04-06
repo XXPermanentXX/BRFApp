@@ -2,7 +2,7 @@
 
 const html = require('choo/html');
 const createPopup = require('./popup');
-const { getEnergyClass, cache } = require('../utils');
+const { getEnergyClass, cache, getPerformance } = require('../utils');
 
 const CLUSTER_THRESHOLD = 12;
 const POPUP_OFFSET = {
@@ -239,18 +239,22 @@ function getPositionDistance(posA, posB) {
 }
 
 function asFeatures(cooperatives) {
-  return cooperatives.map(cooperative => ({
-    type: 'Feature',
-    geometry: {
-      type: 'Point',
-      coordinates: [ cooperative.lng, cooperative.lat ]
-    },
-    properties: {
-      id: cooperative._id,
-      name: cooperative.name,
-      performance: cooperative.performance,
-      actions: cooperative.actions.length,
-      energyClass: (getEnergyClass(cooperative.performance) || 'unknown').toLowerCase()
-    }
-  }));
+  return cooperatives.map(cooperative => {
+    const performance = getPerformance(cooperative);
+
+    return {
+      type: 'Feature',
+      geometry: {
+        type: 'Point',
+        coordinates: [ cooperative.lng, cooperative.lat ]
+      },
+      properties: {
+        id: cooperative._id,
+        name: cooperative.name,
+        performance: performance,
+        actions: cooperative.actions.length,
+        energyClass: (getEnergyClass(performance) || 'unknown').toLowerCase()
+      }
+    };
+  });
 }

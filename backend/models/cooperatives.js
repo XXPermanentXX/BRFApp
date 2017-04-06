@@ -103,8 +103,7 @@ function calculatePerformance(cooperative, done) {
   }
 
   if (performance) {
-    props.performance = performance.value;
-    return done(null, props);
+    return done(null);
   } else {
     // Get the last 13 months to ensure 12 actual values
     // since the current month may not have any value yet
@@ -123,10 +122,8 @@ function calculatePerformance(cooperative, done) {
         // Summarize consumtion
         .reduce((memo,num) => memo + num, 0);
 
-      props.performance = value;
-
       if (!value) {
-        return done(null, props);
+        return done(null);
       }
 
       // Figure out whether the last month is missing
@@ -141,7 +138,7 @@ function calculatePerformance(cooperative, done) {
 
       cooperative.save(err => {
         if (err) { return done(err); }
-        done(null, props);
+        done(null);
       });
     });
   }
@@ -179,11 +176,15 @@ exports.create = function(props, user, done) {
 exports.all = function(done) {
   Cooperatives.find({}, (err, cooperatives) => {
     if (err) { return done(err); }
-    async.map(
-      cooperatives,
-      calculatePerformance,
-      done
-    );
+
+    const queue = cooperatives.map(cooperative => new Promise((resolve, reject) => {
+      calculatePerformance(cooperative, err => {
+        if (err) { return reject(err); }
+        resolve();
+      });
+    }));
+
+    Promise.all(queue).then(() => done(null, cooperatives), done);
   });
 };
 
@@ -196,9 +197,9 @@ exports.get = function (id, done) {
       if (err) { return done(err); }
       if (!cooperative) { return done(new Error('Cooperative not found')); }
 
-      calculatePerformance(cooperative, (err, props) => {
+      calculatePerformance(cooperative, err => {
         if (err) { return done(err); }
-        done(null, props);
+        done(null, cooperative);
       });
     });
 };

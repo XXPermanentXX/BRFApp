@@ -14,6 +14,7 @@ module.exports = function render(req, res, next) {
     }
 
     if (typeof route === 'string' && req.accepts('html')) {
+      state = state || {};
 
       /**
        * Pipe given state through (optional) format function before sending
@@ -49,6 +50,7 @@ module.exports = function render(req, res, next) {
 
       // Ensure actions in state
       state.actions = state.actions || [];
+      state.cooperatives = state.cooperatives || [];
 
       // Expose client ip for geolocation
       if (process.env.NODE_ENV === 'development') {
@@ -65,7 +67,7 @@ module.exports = function render(req, res, next) {
             if (err) {
               res.status(500).render('/error', { err: err.message });
             } else {
-              const cooperatives = state.cooperatives = state.cooperatives || [];
+              const cooperatives = state.cooperatives;
               const id = user.cooperative.toString();
 
               if (!cooperatives.find(props => props._id.toString() === id)) {

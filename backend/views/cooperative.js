@@ -3,7 +3,7 @@ const header = require('../components/page-head');
 const performance = require('../components/performance');
 const chart = require('../components/chart');
 const { definition, numbered } = require('../components/list');
-const { format } = require('../components/utils');
+const { format, getPerformance } = require('../components/utils');
 const { summary } = require('../components/action');
 const { chevron, loader } = require('../components/icons');
 const error = require('../components/app/error');
@@ -14,9 +14,6 @@ module.exports = function cooperative(state, emit) {
   const { cooperative: id } = state.params;
   const cooperative = state.cooperatives.find(props => props._id === id);
   const actions = state.actions.filter(props => props.cooperative === id);
-  const currentYear = cooperative.performances.find(props => {
-    return props.year === (new Date()).getFullYear();
-  });
 
   if (!cooperative) {
     return html`
@@ -52,7 +49,7 @@ module.exports = function cooperative(state, emit) {
           </a>
         </div>
 
-        ${ performance(currentYear.value) }
+        ${ performance(getPerformance(cooperative)) }
 
         <hr class="u-marginVm" />
 
