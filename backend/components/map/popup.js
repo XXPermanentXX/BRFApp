@@ -17,15 +17,27 @@ module.exports = function popup(feature) {
         <a class="u-textBold" href="/cooperatives/${ properties.id }">
           ${ properties.name }
         </a>
-        <br />
-        <span class="u-textBold">${ Math.round(properties.performance) }</span> kWh/m<sup>2</sup>
-        <br />
-        ${ properties.actions ? html`
-          <span>
-            <span class="u-textBold">${ properties.actions }</span>
-            ${ __n('Energy action', 'Energy actions', properties.actions) }
-          </span>
-        ` : __('No energy actions') }
+        ${ properties.performance ?
+          html`
+            <div>
+              <span class="u-textBold">${ Math.round(properties.performance) }</span> kWh/m<sup>2</sup>
+            </div>
+          ` :
+          html`
+            <div>
+              <em class="u-colorDim">${ __('No consumtion data') }</em>
+            </div>
+          `
+        }
+        ${ properties.actions ?
+          html`
+            <span>
+              <span class="u-textBold">${ properties.actions }</span>
+              ${ __n('Energy action', 'Energy actions', properties.actions) }
+            </span>
+          ` :
+          html`<em class="u-colorDim">${ __('No energy actions') }</span>`
+        }
         <br />
         <div class="u-nbfc u-marginTb">
           <div class="u-floatLeft u-marginRb" style="color: ${ Math.random() > 0.5 ? '#bbbbbb' : 'currentColor' };" title=${ __('Designated Energyrepresentative') }>${ energyRepresentative(22) }</div>
