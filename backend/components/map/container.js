@@ -54,12 +54,12 @@ module.exports = function createMap() {
     },
 
     render(cooperatives, center) {
-      const popup = new mapboxgl.Popup({ closeButton: false, POPUP_OFFSET });
+      let popup;
 
       return html`<div class="Map u-sizeFill" onload=${ onload } onunload=${ onunload }></div>`;
 
       function onunload() {
-        if (popup.isOpen()) {
+        if (popup && popup.isOpen()) {
           popup.remove();
         }
       }
@@ -145,6 +145,7 @@ module.exports = function createMap() {
                 zoom: CLUSTER_THRESHOLD + 1
               });
             } else {
+              popup = new mapboxgl.Popup({ closeButton: false, offset: POPUP_OFFSET });
               popup
                 .setLngLat(feature.geometry.coordinates)
                 .setDOMContent(createPopup(feature))
