@@ -8,7 +8,8 @@ module.exports = function consumtions(initialState) {
   return (state, emitter) => {
     state.consumptions = Object.assign({
       items: {},
-      type: 'electricity',
+      isLoading: false,
+      type: 'heating',
       compare: 'prev_year',
       granularity: 'month'
     }, initialState);
@@ -18,8 +19,18 @@ module.exports = function consumtions(initialState) {
       emitter.emit('render');
     });
 
+    emitter.on('consumptions:compare', compare => {
+      state.consumptions.compare = compare;
+      emitter.emit('render');
+    });
+
     emitter.on('consumptions:granularity', granularity => {
       state.consumptions.granularity = granularity;
+
+      if (granularity === 'year' && state.consumptions.compare === 'prev_year') {
+        state.consumptions.compare = null;
+      }
+
       emitter.emit('render');
     });
 
@@ -36,17 +47,21 @@ module.exports = function consumtions(initialState) {
     });
 
     emitter.on('consumptions:fetch', options => {
+      const done = () => { state.consumptions.isLoading = false; };
+      state.consumptions.isLoading = true;
+
       if (Array.isArray(options)) {
         Promise.all(options.map(options => {
           return fetchConsumtion(defaults(options)).then(values => ({ values, options }));
         })).then(
           results => emitter.emit('consumptions:add', results),
           err => emitter.emit('error', err)
-        );
+        ).then(done);
       } else {
-        fetchConsumtion(defaults(options)).then(values => {
-          emitter.emit('consumptions:add', { values, options });
-        }, err => emitter.emit('error', err));
+        fetchConsumtion(defaults(options)).then(
+          values => emitter.emit('consumptions:add', { values, options }),
+          err => emitter.emit('error', err)
+        ).then(done);
       }
     });
 

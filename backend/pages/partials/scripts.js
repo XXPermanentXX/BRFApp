@@ -8,7 +8,7 @@ module.exports = function scrips(state) {
   ];
 
   if (process.env.NODE_ENV !== 'development') {
-    tags.unshift(html`<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=fetch"></script>`);
+    tags.unshift(html`<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,fetch,Array.prototype.includes"></script>`);
   }
 
   return tags;

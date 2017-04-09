@@ -6,10 +6,13 @@ const form = require('./form');
 const { loader } = require('../icons');
 const { __ } = require('../../locale');
 
+const SELECTED_COOPERATIVE = /cooperative:(\w+)/;
+
 const container = createContainer();
+let isInitialized = false;
 
 module.exports = function render(center, cooperative, actions, state, emit) {
-  if (!state.consumptions) {
+  if (typeof window === 'undefined') {
     return loading();
   }
 
@@ -38,6 +41,20 @@ module.exports = function render(center, cooperative, actions, state, emit) {
       type: type,
       cooperative: cooperative._id
     }, period));
+  }
+
+  if (SELECTED_COOPERATIVE.test(compare)) {
+    const id = compare.match(SELECTED_COOPERATIVE)[1];
+    const other = state.cooperatives.find(item => item._id === id);
+
+    // Ensure tht primary serie is labeled by name and not 'Current year'
+    queries[0].name = cooperative.name;
+
+    // Have other cooperative inherit period from primary serie
+    queries.push(Object.assign({}, queries[0], {
+      cooperative: id,
+      name: other.name
+    }));
   }
 
   /**
@@ -116,11 +133,27 @@ module.exports = function render(center, cooperative, actions, state, emit) {
     });
 
   return html`
-    <div class="Chart">
+    <div class="Chart" onload=${ onload }>
       ${ container(granularity, actionPoints, data) }
-      ${ form(state.consumptions, emit) }
+      ${ form(cooperative, state, emit) }
     </div>
   `;
+
+  function loading() {
+    return html`
+      <div class="Chart" onload=${ onload }>
+        ${ loader() }
+        ${ form(cooperative, state, emit) }
+      </div>
+    `;
+  }
+
+  function onload() {
+    if (!isInitialized) {
+      emit('cooperatives:fetch');
+      isInitialized = true;
+    }
+  }
 };
 
 function composeYears(data) {
@@ -152,13 +185,4 @@ function getPeriod(granularity, now = Date.now()) {
     };
     default: throw (new Error(`Granularity "${ granularity }" not supported`));
   }
-}
-
-function loading(props = { disabled: true }) {
-  return html`
-    <div class="Chart">
-      ${ loader() }
-      ${ form(props) }
-    </div>
-  `;
 }
