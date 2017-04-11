@@ -14,11 +14,12 @@ module.exports = function map(state, emit) {
     center = home && { longitude: home.lng, latitude: home.lat };
   }
 
-  if (!center && geoip.longitude) {
+  if (!center && geoip.longitude && geoip.latitude) {
     center = {
       longitude: geoip.longitude,
       latitude: geoip.latitude,
-      isLoading: geoip.isLoading
+      isLoading: geoip.isLoading,
+      precission: geoip.precission
     };
   }
 
@@ -27,7 +28,7 @@ module.exports = function map(state, emit) {
       ${ center ? container(state.cooperatives.slice(), center) : loader() }
       <div class="Map-locate">
         <button class="Button Button--round u-textS" onclick=${ onclick } disabled=${ !!geoip.isLoading }>
-          ${ __('Show closest') }
+          ${ __('Find me') }
         </button>
       </div>
     </div>

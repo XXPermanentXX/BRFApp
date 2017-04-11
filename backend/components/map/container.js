@@ -2,6 +2,7 @@
 
 const html = require('choo/html');
 const createPopup = require('./popup');
+const { __ } = require('../../locale');
 const { getEnergyClass, cache, getPerformance } = require('../utils');
 
 const CLUSTER_THRESHOLD = 12;
@@ -17,7 +18,7 @@ const POPUP_OFFSET = {
 };
 
 module.exports = function createMap() {
-  let map;
+  let map, position;
 
   return cache({
     shouldUpdate(args, prev) {
@@ -42,13 +43,31 @@ module.exports = function createMap() {
       }
 
       function setData() {
+        // Recalculate bounds
+        const bounds = getBounds(cooperatives, getLngLat(center));
+
+        if (center.precission === 'exact') {
+          if (!position) {
+            // Create position marker for exact position
+            position = new mapboxgl.Marker(html`
+              <div><div class="Map-position">${ __('You are here') }</div></div>
+            `);
+          }
+
+          // Update position coordinates
+          position.setLngLat(getLngLat(center)).addTo(map);
+
+          // Ensure that exact position is included in bounds
+          bounds.extend(getLngLat(center));
+        }
+
+        // Fit new bounds in map
+        map.fitBounds(bounds, { padding: element.offsetWidth * 0.1 });
+
+        // Update map source
         map.getSource('cooperatives').setData({
           type: 'FeatureCollection',
           features: asFeatures(cooperatives)
-        });
-
-        map.fitBounds(getBounds(cooperatives, getCoordinates(center)), {
-          padding: element.offsetWidth * 0.1,
         });
       }
     },
@@ -74,7 +93,21 @@ module.exports = function createMap() {
           maxZoom: 17
         });
 
+        if (center.precission === 'exact') {
+          // Create a marker for exact position
+          position = new mapboxgl.Marker(html`
+            <div><div class="Map-position">${ __('You are here') }</div></div>
+          `)
+            .setLngLat(getLngLat(center))
+            .addTo(map);
+        }
+
         map.on('load', () => {
+
+          /**
+           * Add cooperatives as source
+           */
+
           map.addSource('cooperatives', {
             type: 'geojson',
             data: {
@@ -84,6 +117,10 @@ module.exports = function createMap() {
             cluster: true,
             clusterMaxZoom: CLUSTER_THRESHOLD
           });
+
+          /**
+           * Add all individual (unclustered cooperatives)
+           */
 
           map.addLayer({
             id: 'cooperative-markers',
@@ -96,6 +133,10 @@ module.exports = function createMap() {
               'icon-offset': [0, -21]
             }
           });
+
+          /**
+           * Add clusters
+           */
 
           map.addLayer({
             id: 'cooperative-clusters',
@@ -115,10 +156,26 @@ module.exports = function createMap() {
             }
           });
 
-          map.fitBounds(getBounds(cooperatives, getCoordinates(center)), {
+          /**
+           * Try and fit center and a couple cooperatives in map
+           */
+
+          map.fitBounds(getBounds(cooperatives, getLngLat(center)), {
             padding: el.offsetWidth * 0.1,
             animate: false
           });
+
+          /**
+           * Zoom out if center posiiton is unprecise
+           */
+
+          if (center.precission !== 'exact') {
+            map.setZoom(11);
+          }
+
+          /**
+           * Handle pointer
+           */
 
           map.on('mousemove', event => {
             const features = map.queryRenderedFeatures(event.point, {
@@ -128,7 +185,12 @@ module.exports = function createMap() {
             map.getCanvas().style.cursor = features.length ? 'pointer' : '';
           });
 
+          /**
+           * Handle clikcing on the map
+           */
+
           map.on('click', event => {
+            // Figure out which (if any) layers has been clicked
             const features = map.queryRenderedFeatures(event.point, {
               layers: ['cooperative-markers', 'cooperative-clusters']
             });
@@ -140,11 +202,13 @@ module.exports = function createMap() {
             const feature = features[0];
 
             if (feature.properties.cluster) {
+              // Reveal all cooperatives in cluster
               map.flyTo({
                 center: feature.geometry.coordinates,
                 zoom: CLUSTER_THRESHOLD + 1
               });
             } else {
+              // Show cooperative popup
               popup = new mapboxgl.Popup({ closeButton: false, offset: POPUP_OFFSET });
               popup
                 .setLngLat(feature.geometry.coordinates)
@@ -164,7 +228,7 @@ module.exports = function createMap() {
  * @return {Array}        LatLngLike (Mapbox compatible)
  */
 
-function getCoordinates(props) {
+function getLngLat(props) {
   return [
     props.longitude || props.lng,
     props.latitude || props.lat
@@ -182,20 +246,18 @@ function getBounds(cooperatives, center) {
   let include;
   const bounds = new mapboxgl.LngLatBounds();
   const closest = cooperatives.map(cooperative => {
-    return getPositionDistance(center, getCoordinates(cooperative));
+    return getPositionDistance(center, getLngLat(cooperative));
   }).sort()[0];
 
-  if (closest > 30) {
-    // Include center if it's way off to not confuse anyone
-    bounds.extend(center);
-  }
-
   if (closest < 200) {
+    // Include center
+    bounds.extend(center);
+
     // Include the closest five cooperatives if within reasonable distance
     include = cooperatives.slice()
       .sort((a, b) => {
-        const aDistance = getPositionDistance(center, getCoordinates(a));
-        const bDistance = getPositionDistance(center, getCoordinates(b));
+        const aDistance = getPositionDistance(center, getLngLat(a));
+        const bDistance = getPositionDistance(center, getLngLat(b));
         return aDistance > bDistance ? 1 : -1;
       })
       .filter((item, index) => index < 5);
@@ -204,7 +266,7 @@ function getBounds(cooperatives, center) {
     include = cooperatives;
   }
 
-  include.forEach(cooperative => bounds.extend(getCoordinates(cooperative)));
+  include.forEach(cooperative => bounds.extend(getLngLat(cooperative)));
 
   return bounds;
 }

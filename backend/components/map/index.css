@@ -11,6 +11,35 @@
   right: var(--space-b);
 }
 
+.Map-position {
+  padding: 0.5em 1em;
+
+  position: relative;
+
+  color: #fff;
+  line-height: 1rem;
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-bold);
+  font-size: calc(14rem / var(--base-font-size));
+  border-radius: 2em;
+  background-color: var(--color-primary);
+  transform: translate(-50%, calc(-100% - 7px));
+  -webkit-font-smoothing: antialiased;
+}
+
+.Map-position::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border: 7px solid;
+  border-color: var(--color-primary) transparent transparent;
+
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%);
+}
+
 .Map-popup {
   padding: var(--space-b);
   font-size: calc(14rem / var(--base-font-size));
