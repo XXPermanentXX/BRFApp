@@ -10,7 +10,7 @@ const { chevron, loader } = require('../components/icons');
 const { format, capitalize } = require('../components/utils');
 const { __, __n } = require('../locale');
 
-module.exports = function action(state, emit) {
+module.exports = function (state, emit) {
   const { cooperatives, actions, params } = state;
   const action = actions.find(props => props._id === params.action);
 
@@ -29,21 +29,11 @@ module.exports = function action(state, emit) {
     <div class="App">
       ${ header(state, emit) }
 
-      <div class="App-container">
+      <div class="App-container u-flexInitial">
         <h1 class="Display Display--4">${ action.name }</h1>
         <a href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
           ${ chevron('left') }${ __('Back to %s', cooperative.name) }
         </a>
-
-        <div class="u-marginTm">
-          ${ definition(properties(action)) }
-
-          ${ state.user ? html`
-            <a href="/actions/${ action._id }/edit" class="Button u-block u-marginVs">
-              ${ __('Edit energy action') }
-            </a>
-          ` : null }
-        </div>
       </div>
 
       <div class="u-marginVm">
@@ -51,6 +41,14 @@ module.exports = function action(state, emit) {
       </div>
 
       <div class="App-container">
+        ${ definition(properties(action)) }
+
+        ${ state.user ? html`
+          <a href="/actions/${ action._id }/edit" class="Button u-block u-marginVs">
+            ${ __('Edit energy action') }
+          </a>
+        ` : null }
+
         <div id="comments-${ action._id }">
           <h2 class="Display Display--3 u-textItalic">
             ${ action.comments.length ? __n('Comment', 'Comments', action.comments.length) : __('No comments yet') }

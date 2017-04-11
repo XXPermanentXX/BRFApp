@@ -10,7 +10,7 @@ const error = require('../components/app/error');
 const footer = require('../components/app/footer');
 const { __, __n } = require('../locale');
 
-module.exports = function cooperative(state, emit) {
+module.exports = function (state, emit) {
   const { cooperative: id } = state.params;
   const cooperative = state.cooperatives.find(props => props._id === id);
   const actions = state.actions.filter(props => props.cooperative === id);
@@ -79,7 +79,7 @@ module.exports = function cooperative(state, emit) {
         ${ chart(Date.now(), cooperative, actions, state, emit) }
       </div>
 
-      <div class="App-container u-marginVm">
+      <div class="App-container u-marginBm">
         <div id="actions-${ id }">
           ${ hasAllActions ?
             numbered(actions.map(action => summary(action, state))) :
