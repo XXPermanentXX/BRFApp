@@ -2,9 +2,9 @@ const html = require('choo/html');
 
 exports.chevron = function chevron(direction) {
   const deg = {
-    up: 90,
-    right: 180,
-    down: 270,
+    up: '90 6 11',
+    right: '180 7 10',
+    down: '270 7 10',
     left: 0
   };
 

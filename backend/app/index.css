@@ -11,6 +11,7 @@
 @import "../components/display";
 @import "../components/form";
 @import "../components/icons";
+@import "../components/link";
 @import "../components/list";
 @import "../components/map";
 @import "../components/menu";
@@ -87,27 +88,29 @@ h1, h2, h3, h4, h5, h6, strong, b, dt {
 }
 
 :link,
-:visited,
-button {
-  border: 0;
-  padding: 0;
-  background-color: transparent;
+:visited {
   text-decoration: none;
   font-style: italic;
-  cursor: pointer;
   color: var(--color-primary);
   -webkit-font-smoothing: antialiased;
 }
 
-:visited[href^="http"],
+/**
+ * 1. Don't colorize visited internal links
+ */
+
+:visited[href^="#"],
+:visited[href^="/"] {
+  color: var(--color-primary); /* 1 */
+}
+
+:visited,
 :visited[href^="//"] {
   color: #AE38E8;
 }
 
 :link:hover,
-:link:active,
-button:hover,
-button:active {
+:link:active {
   text-decoration: underline;
 }
 

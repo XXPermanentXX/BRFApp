@@ -1,6 +1,7 @@
 /** @define PageHead */
 
 .PageHead {
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -50,9 +51,23 @@
 .PageHead-link,
 .PageHead-link:visited {
   display: inline-block;
-  border: 0;
   padding: 0.45em;
   margin: 0 0.3em;
+  border: 0;
+  background-color: transparent;
+}
+
+.PageHead-button:link,
+.PageHead-button:link:hover,
+.PageHead-button:link:focus {
+  display: inline-block;
+  padding: 0.5em 1em;
+  border: 1px solid var(--color-primary);
+  border-radius: 2em;
+  font-style: normal;
+  font-size: calc(14rem / var(--base-font-size));
+  font-weight: var(--font-weight-bold);
+  text-decoration: none;
 }
 
 .PageHead-menu {
@@ -102,7 +117,9 @@
   display: none;
 }
 
-.PageHead-untrigger {
+.PageHead-untrigger:link,
+.PageHead-untrigger:link:focus,
+.PageHead-untrigger:link:hover {
   display: none;
   margin-right: 0;
 }
