@@ -37,7 +37,7 @@ module.exports = function (state, emit) {
       </div>
 
       <div class="u-marginVm">
-        ${ chart(Date.parse(action.date), cooperative, [Object.assign({title: ''}, action)], state, emit) }
+        ${ chart(Date.parse(action.date), cooperative, [Object.assign({merge: true}, action)], state, emit) }
       </div>
 
       <div class="App-container">

@@ -17,8 +17,7 @@ module.exports = {
           height: '50%'
         },
         yAxis: {
-          maxPadding: 0.7,
-          minPadding: 0.3
+          maxPadding: 0.7
         }
       },
       condition: {
@@ -28,9 +27,6 @@ module.exports = {
       chartOptions: {
         chart:  {
           height: '40%'
-        },
-        yAxis: {
-          maxPadding: 0.3
         }
       },
       condition: {
@@ -85,6 +81,7 @@ module.exports = {
     type: 'datetime',
     lineWidth: 0,
     tickWidth: 0,
+    offset: 25,
     crosshair: {
       width: 1,
       color: 'rgba(255, 255, 255, 0.26)'
@@ -99,8 +96,7 @@ module.exports = {
     title: { text: null },
     labels: { enabled: false },
     gridLineWidth: 0,
-    maxPadding: 0.4,
-    minPadding: 0.2
+    maxPadding: 0.4
   },
   plotOptions: {
     spline: {

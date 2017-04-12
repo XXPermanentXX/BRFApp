@@ -203,7 +203,7 @@ function compose(actions, data) {
         // Lookup possible conflict in list of extremes
         const conflict = extremes.find(extreme => index === extreme.index);
 
-        return {
+        const point = {
           dataLabels: {
             enabled: isExtreme,
             // Adjust label position so as not to overlap with other labels
@@ -216,6 +216,16 @@ function compose(actions, data) {
           x: (new Date(data[0].values[index].date)).getTime(),
           y: props.value
         };
+
+        if (props.hasAction) {
+          point.marker = {
+            fillColor: '#FEC73D',
+            lineColor: '#FEC73D',
+            radius: 6
+          };
+        }
+
+        return point;
       })
     };
   });

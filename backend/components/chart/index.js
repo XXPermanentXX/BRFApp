@@ -114,6 +114,7 @@ module.exports = function render(center, cooperative, actions, state, emit) {
   const actionPoints = actions
     // Filter out only those who are within the given time span
     .filter(action => {
+      if (action.merge) { return false; }
       const min = data[0].values[0].date;
       const max = data[0].values[data[0].values.length - 1].date;
       return moment(action.date).isBetween(min, max);
@@ -130,6 +131,21 @@ module.exports = function render(center, cooperative, actions, state, emit) {
         date: data[0].values[match - 1].date,
         value: data[0].values[match - 1].value
       };
+    });
+
+  /**
+   * Actions may also merge with associated series point, let's do that
+   */
+
+  actions
+    .filter(action => action.merge)
+    .forEach(action => {
+      // Find closest data point to latch on to
+      const index = data[0].values.findIndex(point => {
+        return new Date(point.date) > new Date(action.date);
+      });
+
+      data[0].values[index - 1].hasAction = true;
     });
 
   return html`
