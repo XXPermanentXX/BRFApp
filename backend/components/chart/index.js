@@ -1,75 +1,50 @@
 const html = require('choo/html');
 const moment = require('moment');
 const hash = require('object-hash');
-const createContainer = require('./container');
+const createChart = require('./chart');
 const form = require('./form');
 const { loader, chevron } = require('../icons');
+const { className } = require('../utils');
 const { __ } = require('../../locale');
 
 const SELECTED_COOPERATIVE = /cooperative:(\w+)/;
 
-const container = createContainer();
+const chart = createChart();
 let isInitialized = false;
 
-module.exports = function createChart(onpaginate) {
-  const paginate = diff => () => onpaginate(diff);
+module.exports = function createChart() {
+  let current, element;
+  let page = 0;
 
-  return (center, cooperative, actions, state, emit) => {
+  return function render(center, cooperative, actions, state, emit) {
     if (typeof window === 'undefined') {
       return loading();
     }
 
-    const { type, granularity, compare, items } = state.consumptions;
+    if (cooperative._id !== current) {
+      page = 0;
+      current = cooperative._id;
+    }
+
+    const { granularity, items } = state.consumptions;
 
     /**
      * Figure out where (when) to center the graph
      */
 
     const offset = moment(center).diff(Date.now(), granularity);
-    const now = offset > -6 ? moment().add(offset, granularity) : moment(center).add(6 - Math.abs(offset), granularity);
-
-    let queries = [];
-    queries.push(Object.assign({
-      name: granularity === 'month' ? __('Current year') : cooperative.name,
-      type: type,
-      cooperative: cooperative._id
-    }, getPeriod(granularity, now)));
-
-    if (granularity === 'month' && compare === 'prev_year') {
-      const from = moment(queries[0].from).subtract(1, 'month');
-      const period = getPeriod(granularity, from);
-
-      queries.push(Object.assign({
-        name: __('Previous year'),
-        type: type,
-        cooperative: cooperative._id
-      }, period));
-    }
-
-    if (SELECTED_COOPERATIVE.test(compare)) {
-      const id = compare.match(SELECTED_COOPERATIVE)[1];
-      const other = state.cooperatives.find(item => item._id === id);
-
-      // Ensure tht primary serie is labeled by name and not 'Current year'
-      queries[0].name = cooperative.name;
-
-      // Have other cooperative inherit period from primary serie
-      queries.push(Object.assign({}, queries[0], {
-        cooperative: id,
-        name: other.name
-      }));
-    }
+    const now = offset < -6 ? moment().add(page + offset + 6, granularity) : moment().add(page + offset, granularity);
 
     /**
-     * Add cached data to dataset and remove it from query list
+     * Lookup cached data
      */
 
-    let data = [];
-    queries = queries.reduce((missing, query) => {
-      const cache = items[hash(query)];
+    const series = [];
+    const queries = getQueries(now, cooperative, state).reduce((missing, query) => {
+      const cached = items[hash(query)];
 
-      if (cache) {
-        data.push({ name: query.name, values: cache });
+      if (cached) {
+        series.push({ name: query.name, values: cached });
         return missing;
       }
 
@@ -77,12 +52,18 @@ module.exports = function createChart(onpaginate) {
     }, []);
 
     /**
-     * Fetch any data that might be missing
+     * Fetch any data that might be missing and render loading state
      */
 
+    let isLoading = false;
     if (queries.length) {
       emit('consumptions:fetch', queries);
-      return loading();
+
+      if (page !== 0) {
+        isLoading = true;
+      } else {
+        return loading();
+      }
     }
 
     /**
@@ -90,67 +71,40 @@ module.exports = function createChart(onpaginate) {
      */
 
     if (granularity === 'year') {
-      data = data.map(set => ({
-        name: set.name,
-        values: composeYears(set.values)
-      }));
+      series.forEach(set => { set.values = composeYears(set.values); });
     }
 
     /**
-     * Find the shortest data set
+     * Find the shortest series set
      */
 
-    const max = data.reduce((max, set) => {
+    const max = series.reduce((max, set) => {
       return !max || (set.values.length < max) ? set.values.length : max;
     }, 0);
 
     /**
-     * Ensure all data sets are the same length
+     * Ensure all series sets are the same length
      */
 
-    data.forEach(set => { set.values = set.values.slice(max * -1); });
-
-    /**
-     * Compile actions for data set period
-     */
-
-    const actionSerie = [];
-    actions
-      // Filter out only those who are within the given time span
-      .filter(action => {
-        if (!data[0].values.length) { return false; }
-        const values = data[0].values;
-        const min = moment(values[0].date).startOf(granularity);
-        const max = moment(values[values.length - 1].date).endOf(granularity);
-        return moment(action.date).isBetween(min, max);
-      })
-      .forEach((action, index) => {
-        // Find closest data point to latch on to
-        const date = moment(action.date);
-        const point = data[0].values.find(point => {
-          return date.isSame(point.date, granularity);
-        });
-
-        if (action.merge) {
-          // Actions may merge with an associated series point, let's do that
-          point.hasAction;
-        } else {
-          // Or they'll be added to a seperate serie
-          actionSerie.push({
-            name: index + 1,
-            date: action.date,
-            value: point.value
-          });
-        }
-      });
+    series.forEach(set => { set.values = set.values.slice(max * -1); });
 
     const hasLater = moment(now).isBefore(Date.now(), granularity);
-    const hasEarlier = !!data[0].values.length;
+    const hasEarlier = series.length && series[0].values.length;
+
+    /**
+     * Only update the chart if the application is not loading
+     */
+
+    if (!isLoading) {
+      element = chart(granularity, formatActions(actions, series, granularity), series);
+    }
 
     return html`
-      <div class="Chart" onload=${ onload }>
+      <div class=${ className('Chart', { 'is-loading': isLoading }) } onload=${ onload }>
         <div class="u-posRelative">
-          ${ container(granularity, actionSerie, data) }
+          <div class="Chart-graph">
+            ${ element }
+          </div>
           <button class="Chart-paginate Chart-paginate--left" onclick=${ paginate(-1) } disabled=${ !hasEarlier }>
             ${ chevron('left') } <span class="Chart-pageLabel">${ __('Show earlier') }</span>
           </button>
@@ -164,6 +118,21 @@ module.exports = function createChart(onpaginate) {
       </div>
     `;
 
+    /**
+     * Increment/decrement current page value and issue a re-render
+     */
+
+    function paginate (diff) {
+      return () => {
+        page += diff;
+        emit('render');
+      };
+    }
+
+    /**
+     * Simple no fuzz loading state
+     */
+
     function loading() {
       return html`
         <div class="Chart" onload=${ onload }>
@@ -173,6 +142,10 @@ module.exports = function createChart(onpaginate) {
       `;
     }
 
+    /**
+     * Fetch all cooperatives on first load as they are needed for comparing
+     */
+
     function onload() {
       if (!isInitialized) {
         emit('cooperatives:fetch');
@@ -181,6 +154,88 @@ module.exports = function createChart(onpaginate) {
     }
   };
 };
+
+/**
+ * Compile queries for fetching consumption data
+ */
+
+function getQueries(now, cooperative, state) {
+  const { granularity, type, compare } = state.consumptions;
+
+  const queries = [];
+  queries.push(Object.assign({
+    name: granularity === 'month' ? __('Current year') : cooperative.name,
+    type: type,
+    cooperative: cooperative._id
+  }, getPeriod(granularity, now)));
+
+  if (granularity === 'month' && compare === 'prev_year') {
+    const from = moment(queries[0].from).subtract(1, 'month');
+    const period = getPeriod(granularity, from);
+
+    queries.push(Object.assign({
+      name: __('Previous year'),
+      type: type,
+      cooperative: cooperative._id
+    }, period));
+  }
+
+  if (SELECTED_COOPERATIVE.test(compare)) {
+    const id = compare.match(SELECTED_COOPERATIVE)[1];
+    const other = state.cooperatives.find(item => item._id === id);
+
+    // Ensure tht primary serie is labeled by name and not 'Current year'
+    queries[0].name = cooperative.name;
+
+    // Have other cooperative inherit period from primary serie
+    queries.push(Object.assign({}, queries[0], {
+      cooperative: id,
+      name: other.name
+    }));
+  }
+
+  return queries;
+}
+
+/**
+ * Compile actions for data set period
+ */
+
+function formatActions(actions, series, granularity) {
+  if (!series.length || !series[0].values.length) { return []; }
+
+  const points = [];
+  const values = series[0].values;
+
+  actions
+    // Filter out only those who are within the given time span
+    .filter(action => {
+      const min = moment(values[0].date).startOf(granularity);
+      const max = moment(values[values.length - 1].date).endOf(granularity);
+      return moment(action.date).isBetween(min, max);
+    })
+    .forEach((action, index) => {
+      // Find closest data point to latch on to
+      const date = moment(action.date);
+      const point = values.find(point => {
+        return date.isSame(point.date, granularity);
+      });
+
+      if (action.merge) {
+        // Actions may merge with an associated series point, let's do that
+        point.hasAction = true;
+      } else {
+        // Or they'll be added to a seperate serie
+        points.push({
+          name: index + 1,
+          date: action.date,
+          value: point.value
+        });
+      }
+    });
+
+  return points;
+}
 
 /**
  * Calculate yearly consumption by summing up months

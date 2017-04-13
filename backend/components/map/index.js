@@ -1,11 +1,11 @@
 const html = require('choo/html');
-const createMap = require('./container');
+const createMap = require('./map');
 const { __ } = require('../../locale');
 const { loader } = require('../icons');
 
-const container = createMap();
+const map = createMap();
 
-module.exports = function map(state, emit) {
+module.exports = function (state, emit) {
   let center;
   const { cooperatives, user, geoip } = state;
 
@@ -25,7 +25,7 @@ module.exports = function map(state, emit) {
 
   return html`
     <div class="Map u-sizeFill u-flex u-flexCol u-flexJustifyCenter" onload=${ onload }>
-      ${ center ? container(state.cooperatives.slice(), center) : loader() }
+      ${ center ? map(state.cooperatives.slice(), center) : loader() }
       <div class="Map-locate">
         <button class="Button Button--round u-textS" onclick=${ onclick } disabled=${ !!geoip.isLoading }>
           ${ __('Find me') }

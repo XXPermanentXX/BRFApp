@@ -2,13 +2,15 @@ const html = require('choo/html');
 const moment = require('moment');
 const header = require('../components/page-head');
 const { definition } = require('../components/list');
-const chart = require('../components/chart');
+const createChart = require('../components/chart');
 const footer = require('../components/app/footer');
 const comment = require('../components/comment');
 const resolve = require('../resolve');
 const { chevron, loader } = require('../components/icons');
 const { format, capitalize } = require('../components/utils');
 const { __, __n } = require('../locale');
+
+const chart = createChart();
 
 module.exports = function (state, emit) {
   const { cooperatives, actions, params } = state;
