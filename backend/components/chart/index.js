@@ -219,9 +219,7 @@ function formatActions(actions, series, granularity) {
     .forEach((action, index) => {
       // Find closest data point to latch on to
       const date = moment(action.date);
-      const point = values.find(point => {
-        return date.isSame(point.date, granularity);
-      });
+      const point = values.find(point => date.isSame(point.date, granularity));
 
       if (action.merge) {
         // Actions may merge with an associated series point, let's do that
@@ -252,7 +250,7 @@ function composeYears(data) {
       year.value += point.value;
     } else {
       years.push({
-        date: moment(point.date).endOf('year').toDate(),
+        date: moment(point.date).startOf('year').toDate(),
         value: point.value
       });
     }
