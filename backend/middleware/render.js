@@ -48,7 +48,8 @@ module.exports = function render(req, res, next) {
     function send(state) {
       let geoip;
 
-      // Ensure actions in state
+      // Ensure state consistency
+      state.consumptions = {};
       state.actions = state.actions || [];
       state.cooperatives = state.cooperatives || [];
 

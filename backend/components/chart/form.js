@@ -13,7 +13,7 @@ module.exports = function form(cooperative, state, emit) {
   const disabled = consumptions.isLoading;
   const onchange = event => emit(event.target.name, event.target.value);
 
-  const o =  html`
+  return html`
     <form class="Form u-marginTm u-paddingHb u-flex u-flexCol u-flexAlignItemsStretch">
       <fieldset class="u-marginBb">
         <div class="u-flex">
@@ -61,6 +61,4 @@ module.exports = function form(cooperative, state, emit) {
       </div>
     </form>
   `;
-
-  return o;
 };

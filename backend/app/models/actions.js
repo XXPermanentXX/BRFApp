@@ -1,6 +1,8 @@
 module.exports = function actions(initialState) {
   return (state, emitter) => {
-    state.actions = initialState || [];
+    state.actions = (initialState || []).map(action => {
+      return Object.assign({}, action,{ date: new Date(action.date) });
+    });
 
     emitter.on('actions:add', data => {
       if (Array.isArray(data)) {

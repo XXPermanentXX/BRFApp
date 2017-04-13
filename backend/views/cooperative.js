@@ -1,7 +1,8 @@
 const html = require('choo/html');
+const moment = require('moment');
 const header = require('../components/page-head');
 const performance = require('../components/performance');
-const chart = require('../components/chart');
+const createChart = require('../components/chart');
 const { definition, numbered } = require('../components/list');
 const { format, getPerformance } = require('../components/utils');
 const { summary } = require('../components/action');
@@ -10,10 +11,24 @@ const error = require('../components/app/error');
 const footer = require('../components/app/footer');
 const { __, __n } = require('../locale');
 
+let cached, chart;
+let offset = 0;
+
 module.exports = function (state, emit) {
   const { cooperative: id } = state.params;
   const cooperative = state.cooperatives.find(props => props._id === id);
   const actions = state.actions.filter(props => props.cooperative === id);
+
+  // TODO: Move offset caching to chart component if possible
+  chart = chart || createChart(diff => {
+    offset += diff;
+    emit('render');
+  });
+
+  if (id !== cached) {
+    cached = id;
+    offset = 0;
+  }
 
   if (!cooperative) {
     return html`
@@ -76,7 +91,7 @@ module.exports = function (state, emit) {
       </div>
 
       <div class="u-marginVm">
-        ${ chart(Date.now(), cooperative, actions, state, emit) }
+        ${ chart(moment().add(offset, state.consumptions.granularity), cooperative, actions, state, emit) }
       </div>
 
       <div class="App-container u-marginBm">
