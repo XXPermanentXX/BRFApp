@@ -3,7 +3,7 @@ const merge = require('lodash.merge');
 const moment = require('moment');
 const Highcharts = require('highcharts');
 const defaults = require('./defaults');
-const { capitalize, format, cache, debounce } = require('../utils');
+const { capitalize, format, cache, debounce, className } = require('../utils');
 const { __ } = require('../../locale');
 
 module.exports = function createContainer() {
@@ -129,11 +129,11 @@ const labels = {
 const formatters = {
   month() {
     // Get point index and a list of all series
-    const { point: { index }, series: { chart: { series }} } = this;
+    const { point: { index, hasAction }, series: { chart: { series }} } = this;
     const sets = series.slice(0, 2).filter(serie => serie.visible && serie.data.length);
 
     return `
-      <span class="Chart-tooltip js-tooltip">
+      <span class="${ className('Chart-tooltip js-tooltip', { 'Chart-tooltip--hasAction': hasAction }) }">
         <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
         ${ sets.reduce((str, serie) => `
           ${ str }
@@ -145,11 +145,11 @@ const formatters = {
   },
   year() {
     // Get point index and a list of all series
-    const { point: { index }, series: { chart: { series }} } = this;
+    const { point: { index, hasAction }, series: { chart: { series }} } = this;
     const sets = series.slice(0, 2).filter(serie => serie.visible && serie.data.length);
 
     return `
-      <span class="Chart-tooltip js-tooltip">
+      <span class="${ className('Chart-tooltip js-tooltip', { 'Chart-tooltip--hasAction': hasAction }) }">
         <strong>${ capitalize(moment(this.x).format('YYYY')) }</strong>
         ${ sets.reduce((str, serie) => `
           ${ str }
@@ -229,10 +229,11 @@ function compose(actions, data) {
         };
 
         if (props.hasAction) {
+          point.hasAction = true;
           point.marker = {
             fillColor: '#FEC73D',
             lineColor: '#FEC73D',
-            radius: 6
+            radius: 5
           };
         }
 

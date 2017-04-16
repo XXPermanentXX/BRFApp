@@ -84,6 +84,11 @@
   right: 8px;
 }
 
+.Chart-tooltip--hasAction::after {
+  border-color: var(--color-secondary);
+  background-color: var(--color-secondary);
+}
+
 .Chart-action {
   box-sizing: border-box;
   display: inline-block;

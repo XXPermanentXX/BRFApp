@@ -32,10 +32,10 @@ module.exports = function createChart() {
      * Figure out where (when) to center the graph
      */
 
-    const offset = Math.abs(Math.round(moment(center).diff(Date.now(), granularity, true)));
+    const offset = Math.round(moment(center).diff(Date.now(), granularity, true));
     const now = offset < -6 ?
-      moment(center).add(page, granularity) :
-      moment(center).add(page + offset, granularity);
+      moment(center).add(page + 5, granularity) :
+      moment(center).add(page + Math.abs(offset), granularity);
 
     /**
      * Lookup cached data
