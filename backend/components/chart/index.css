@@ -3,8 +3,9 @@
 .Chart {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
 
-  padding: var(--space-m) 0;
+  padding: var(--viewport-padding) 0;
 
   position: relative;
 
@@ -21,19 +22,29 @@
 .Chart-filter {
   display: flex;
   justify-content: space-between;
+  margin-top: var(--viewport-padding);
 }
 
-.Chart-title {
+.Chart-header {
   display: none;
+  margin: 0 var(--viewport-padding);
 }
 
 @media (--md-viewport), (--lg-viewport) {
-  .Chart-title {
+  .Chart {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-height: 70vh;
+  }
+
+  .Chart-header {
     display: block;
   }
 
   .Chart-filter {
-    order: -1;
+    position: absolute;
+    top: 0;
+    right: 0;
   }
 }
 

@@ -16,7 +16,7 @@ module.exports = function createChart() {
   let current, element;
   let page = 0;
 
-  return function render(center, cooperative, actions, state, emit) {
+  return function render(header, center, cooperative, actions, state, emit) {
     if (typeof window === 'undefined') {
       return loading();
     }
@@ -103,7 +103,10 @@ module.exports = function createChart() {
 
     return html`
       <div class=${ className('Chart', { 'is-loading': isLoading }) } onload=${ onload }>
-        <div class="u-posRelative">
+        <div class="Chart-header">
+          ${ header }
+        </div>
+        <div class="u-posRelative u-sizeFull">
           <div class="Chart-graph">
             ${ element }
           </div>
@@ -117,9 +120,6 @@ module.exports = function createChart() {
           </button>
         </div>
         <div class="Chart-filter">
-          <div class="Chart-title">
-            <h1 class="Display Display--1 u-marginTn u-marginBb u-textNowrap u-marginRb">${ cooperative.name }</h1>
-          </div>
           ${ form(cooperative, state, emit) }
         </div>
       </div>
@@ -143,7 +143,9 @@ module.exports = function createChart() {
     function loading() {
       return html`
         <div class="Chart" onload=${ onload }>
-          ${ loader() }
+          <div class="u-flexGrow1 u-flex u-flexCol u-flexJustifyCenter">
+            ${ loader() }
+          </div>
           <div class="Chart-filter">
             ${ form(cooperative, state, emit) }
           </div>

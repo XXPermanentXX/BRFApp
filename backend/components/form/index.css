@@ -12,6 +12,24 @@
 }
 
 /**
+ * Hidden native elements that proxied using the :checked/:valid selector
+ */
+
+.Form-target {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.Form-target:disabled ~ .Form-proxy {
+  opacity: 0.6;
+}
+
+/**
  * Have labels (on left) aling in with column
  * <label     > <input>
  * <long label> <input>
@@ -20,8 +38,8 @@
 .Form-grid {
   display: grid;
   grid-template-columns: auto 1fr;
-  grid-row-gap: var(--space-s);
   align-items: baseline;
+  grid-row-gap: 1em;
 }
 
 /**
@@ -130,13 +148,13 @@
   font-weight: normal;
   font-style: italic;
   text-align: center;
-  border-radius: 1em 0 0 1em;
+  border-radius: 2em 0 0 2em;
   box-shadow: inset 0 0 0 1px #fff;
   font-size: calc(14rem / var(--base-font-size));
 }
 
 .Form-toggle + .Form-toggle .Form-label {
-  border-radius: 0 1em 1em 0;
+  border-radius: 0 2em 2em 0;
 }
 
 .Form-toggle input:checked + .Form-label {
@@ -177,11 +195,13 @@
   border-width: 1px 1px 1px 0;
   font-style: italic;
   border-radius: 0 2em 2em 0;
+  color: #fff;
+  background-color: var(--color-primary);
 }
 
 .Form-pill--select {
   padding: calc(0.5em - 1px) 2em calc(0.5em - 1px) 0.75em;
-  background-color: transparent;
+  background-color: var(--color-primary);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='8'><polygon stroke='none' fill='#ffffff' fill-rule='evenodd' points='0.641242789 -0.641242789 -0.419417382 0.419417382 5.77817459 6.61700936 11.9757666 0.419417382 10.9151064 -0.641242789 5.77817459 4.49568901' /></svg>");
   background-repeat: no-repeat;
   background-position: calc(100% - 0.5em) calc(50% + 1px);
@@ -192,6 +212,6 @@
   color: var(--color-pale);
 }
 
-:checked + .Form-pill--checkmark {
+.Form-target:checked + .Form-pill--checkmark {
   color: var(--color-primary);
 }

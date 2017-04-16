@@ -33,14 +33,22 @@ module.exports = function (state, emit) {
 
       <div class="App-container">
         <div class="App-part App-part--primary u-marginBm">
-          <header class="u-marginBm u-paddingHb">
+          <header class="u-marginBm u-paddingHb u-md-hidden u-lg-hidden">
             <h1 class="Display Display--5">${ action.name }</h1>
             <a href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
               ${ chevron('left') }${ __('Back to %s', cooperative.name) }
             </a>
           </header>
 
-          ${ chart(Date.parse(action.date), cooperative, [Object.assign({merge: true}, action)], state, emit) }
+          ${ chart(html`
+            <div class="u-marginBb">
+              <h1 class="Display Display--4 u-marginBb u-textNowrap">
+                ${ action.name }
+              </h1>
+              <a class="u-colorCurrent" href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
+                ${ chevron('left') }${ __('Back to %s', cooperative.name) }
+              </a>
+            </div>`, Date.parse(action.date), cooperative, [Object.assign({merge: true}, action)], state, emit) }
         </div>
 
         <div class="App-part App-part--secondary App-part--last u-marginBm">
@@ -56,7 +64,7 @@ module.exports = function (state, emit) {
         </div>
 
         <div class="App-part App-part--secondary u-marginBm" id="comments-${ action._id }">
-          <h2 class="Display Display--4 u-textItalic">
+          <h2 class="Display Display--4 u-marginBb u-textItalic">
             ${ action.comments.length ? __n('Comment', 'Comments', action.comments.length) : __('No comments yet') }
           </h2>
 

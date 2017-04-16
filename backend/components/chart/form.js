@@ -19,15 +19,20 @@ module.exports = function form(cooperative, state, emit) {
   };
 
   /**
-   * Using a lot of flex magic to make this happen. Container toggles
-   * between col/row flex layout. See comments for specifics.
+   * Using a lot of flex and margin utilities here to:
+   * - Switch between row/col flex layout depending on viewport width
+   * - Stretch/align elements based on viewport width
+   * - Align flexed items to right edge in large viewports
+   * - Have container apply margin left and each individual element margin right
+   * - Have each individual element apply margin bottom
+   * - Toggles have individual flex grow depending on context
    */
 
   return html`
-    <form class="Form u-flex u-flexCol u-flexWrap u-md-flexRow u-lg-flexRow u-flexJustifyEnd">
+    <form class="Form u-flex u-flexCol u-flexWrap u-md-flexRow u-lg-flexRow u-md-flexAlignItemsBaseline u-lg-flexAlignItemsBaseline u-marginLb">
 
       <!-- Medium & large viewports: move granularity toggle to end of form -->
-      <div class="u-md-flexOrderLast u-lg-flexOrderLast">
+      <div class="u-md-flexOrderLast u-lg-flexOrderLast u-marginRb">
         <div class="Form-toggleGroup u-marginBs">
           <label class="Form-toggle u-flexGrow1">
             <input class="u-hiddenVisually" type="radio" name="consumptions:granularity" value="month" onchange=${ onchange } checked=${ granularity === 'month' } disabled=${ disabled }/>
@@ -40,18 +45,18 @@ module.exports = function form(cooperative, state, emit) {
         </div>
 
         <label class="u-flex u-marginBs">
-          <input class="u-hiddenVisually" type="checkbox" name="consumptions:normalize" onchange=${ onchange } checked=${ normalize } />
+          <input class="Form-target Form-target--compex" type="checkbox" name="consumptions:normalize" onchange=${ onchange } checked=${ normalize } disabled=${ disabled } />
           <span class="Form-pill Form-pill--leading Form-pill--checkmark u-flex u-flexAlignItemsCenter">
             ${ checkmark(14) }
           </span>
-          <span class="Form-pill Form-pill--trailing u-flexGrow1">
+          <span class="Form-proxy Form-pill Form-pill--trailing u-flexGrow1">
             ${ __('Normalize') }
           </span>
         </label>
       </div>
 
-      <!-- Medium & Large viewports: break grid and flex elements horizontally -->
-      <div class="Form-grid u-md-flex u-lg-flex u-flexWrap">
+      <!-- Medium & large viewports: break grid and flex elements horizontally -->
+      <div class="Form-grid u-marginRb">
         <label for="form_type" class="Form-pill Form-pill--leading">${ __('Show') }</label>
         <select id="form_type" class="Form-pill Form-pill--trailing Form-pill--select" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
           ${ Object.keys(TYPES).map(key => html`

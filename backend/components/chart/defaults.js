@@ -4,7 +4,7 @@ module.exports = {
   chart: {
     height: '80%',
     backgroundColor: 'transparent',
-    spacing: [ 0, 12, 0, 12 ],
+    // spacing: [ 0, 12, 0, 12 ],
     style: {
       fontFamily: 'inherit',
       fontSize: '14px'
@@ -26,8 +26,7 @@ module.exports = {
     }, {
       chartOptions: {
         chart:  {
-          height: '40%',
-          spacing: [ 0, 24, 0, 24 ]
+          height: '40%'
         },
         yAxis: {
           maxPadding: 0.1

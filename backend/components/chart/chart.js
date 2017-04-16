@@ -3,7 +3,7 @@ const merge = require('lodash.merge');
 const moment = require('moment');
 const Highcharts = require('highcharts');
 const defaults = require('./defaults');
-const { capitalize, format, cache } = require('../utils');
+const { capitalize, format, cache, debounce } = require('../utils');
 const { __ } = require('../../locale');
 
 module.exports = function createContainer() {
@@ -45,7 +45,12 @@ module.exports = function createContainer() {
         // Exit early if Highcharts has been initialized already
         if (chart) { return; }
 
+        const spacing = el.offsetWidth * 0.02;
+
         chart = Highcharts.chart(el, merge({
+          chart: {
+            spacing: [ 0, spacing, 0, spacing ]
+          },
           tooltip: {
             // Position tooltip relative to chart width
             positioner(width, height, point) {
@@ -63,7 +68,13 @@ module.exports = function createContainer() {
               return { x: point.plotX - 2, y: point.plotY - 15 };
             }
           }
-        }, defaults, getConfig(granularity, actions, data)), chart => chart.reflow());
+        }, defaults, getConfig(granularity, actions, data)), chart => {
+          chart.reflow();
+          window.addEventListener('resize', debounce(() => {
+            const spacing = el.offsetWidth * 0.02;
+            chart.update({ chart: { spacing: [ 0, spacing, 0, spacing ] }});
+          }));
+        });
       }
     }
   });

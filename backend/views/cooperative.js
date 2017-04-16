@@ -92,12 +92,15 @@ module.exports = function (state, emit) {
 
         <!-- The chart -->
         <div class="App-part App-part--primary u-marginBm">
-          ${ chart(Date.now(), cooperative, actions, state, emit) }
+          ${ chart(html`
+            <h1 class="Display Display--1 u-marginBb u-textNowrap">
+              ${ cooperative.name }
+            </h1>`, Date.now(), cooperative, actions, state, emit) }
         </div>
 
         <!-- List of all energy actions -->
         <div class="App-part App-part--secondary u-marginBm" id="actions-${ id }">
-          <h2 class="Display Display--4 u-textItalic u-marginTn">
+          <h2 class="Display Display--4 u-marginBb u-textItalic">
             ${ __n('Energy action', actions.length) }
           </h2>
 

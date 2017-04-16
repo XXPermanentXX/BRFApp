@@ -2,20 +2,24 @@
 
 .Display {
   display: block;
-  margin: 1em 0;
+  margin: 0 0 0.5em;
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
 }
 
+.Display:first-letter {
+  margin-left: -0.1em;
+}
+
 .Display--1 {
-  margin: 0.75em 0;
+  margin-bottom: 0.75em;
   font-size: calc(48rem / var(--base-font-size));
   line-height: calc(33rem / var(--base-font-size));
   font-weight: var(--font-weight-light);
 }
 
 .Display--2 {
-  margin: 0.75em 0;
+  margin-bottom: 0.75em;
   font-size: calc(32rem / var(--base-font-size));
   font-weight: var(--font-weight-light);
 }

@@ -85,6 +85,21 @@ exports.capitalize = function capitalize(str) {
 };
 
 /**
+ * Prevent function beeing called more than every `delay`
+ * @param  {Function} fn          Function to call
+ * @param  {Number}   [delay=200] How long to wait
+ * @return {Function}             Debounced function
+ */
+
+exports.debounce = function debounce(fn, delay = 200) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => { fn.apply(this, args); }, delay);
+  };
+};
+
+/**
  * Compile class name based on booleans.
  * Takes either a default class and an object with switches or just the object
  *
