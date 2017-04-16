@@ -48,13 +48,11 @@ module.exports = function (state, emit) {
         <div class="App-part App-part--secondary App-part--last u-marginBm">
           <div class="Sheet Sheet--conditional Sheet--md Sheet--lg">
             <!-- Small viewport: page title -->
-            <header class="u-md-hidden u-lg-hidden">
+            <header class="u-md-hidden u-lg-hidden u-marginVm">
               <h1 class="Display Display--2 u-marginBb">${ cooperative.name }</h1>
-              <div class="u-marginBm">
-                <a href="/cooperatives">
-                  ${ chevron('left') }${ __('Show All Cooperatives') }
-                </a>
-              </div>
+              <a href="/cooperatives">
+                ${ chevron('left') }${ __('Show All Cooperatives') }
+              </a>
             </header>
 
             <!-- Performance graph -->
@@ -93,9 +91,14 @@ module.exports = function (state, emit) {
         <!-- The chart -->
         <div class="App-part App-part--primary u-marginBm">
           ${ chart(html`
-            <h1 class="Display Display--1 u-marginBb u-textNowrap">
-              ${ cooperative.name }
-            </h1>`, Date.now(), cooperative, actions, state, emit) }
+            <div class="u-marginBm">
+              <h1 class="Display Display--1 u-marginBs u-textNowrap">
+                ${ cooperative.name }
+              </h1>
+              <a href="/cooperatives" class="u-colorCurrent">
+                ${ chevron('left') }${ __('Show All Cooperatives') }
+              </a>
+            </div>`, Date.now(), cooperative, actions, state, emit) }
         </div>
 
         <!-- List of all energy actions -->

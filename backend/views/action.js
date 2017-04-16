@@ -33,13 +33,15 @@ module.exports = function (state, emit) {
 
       <div class="App-container">
         <div class="App-part App-part--primary u-marginBm">
-          <header class="u-marginBm u-paddingHb u-md-hidden u-lg-hidden">
+          <!-- Small viewport: page title -->
+          <header class="u-marginVm u-paddingHb u-md-hidden u-lg-hidden">
             <h1 class="Display Display--5">${ action.name }</h1>
             <a href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
               ${ chevron('left') }${ __('Back to %s', cooperative.name) }
             </a>
           </header>
 
+          <!-- The chart -->
           ${ chart(html`
             <div class="u-marginBb">
               <h1 class="Display Display--4 u-marginBb u-textNowrap">
@@ -52,6 +54,7 @@ module.exports = function (state, emit) {
         </div>
 
         <div class="App-part App-part--secondary App-part--last u-marginBm">
+          <!-- Action details -->
           <div class="Sheet Sheet--conditional Sheet--md Sheet--lg">
             ${ definition(properties(action)) }
 
@@ -63,6 +66,7 @@ module.exports = function (state, emit) {
           </div>
         </div>
 
+        <!-- Comments -->
         <div class="App-part App-part--secondary u-marginBm" id="comments-${ action._id }">
           <h2 class="Display Display--4 u-marginBb u-textItalic">
             ${ action.comments.length ? __n('Comment', 'Comments', action.comments.length) : __('No comments yet') }
@@ -72,6 +76,7 @@ module.exports = function (state, emit) {
             ${ action.comments.map(props => html`<li>${ comment(props, action, state) }</li>`) }
           </ol>
 
+          <!-- Comment form -->
           ${ state.user ? html`
             <form action="${ action._id }/comments" method="POST" class="Form">
               <div class="Form-collapse u-marginBb">
