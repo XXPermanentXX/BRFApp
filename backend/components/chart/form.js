@@ -13,9 +13,9 @@ module.exports = function form(cooperative, state, emit) {
   const { granularity, type, compare, normalize } = consumptions;
   const disabled = consumptions.isLoading;
   const onchange = event => {
-    const { target: el } = event;
-    const value = (/radio|checkbox/).test(el.type) ? el.checked : el.value;
-    emit(el.name, value);
+    const { target } = event;
+    const value = target.type === 'cheeckbox' ? target.checked : target.value;
+    emit(target.name, value);
   };
 
   /**
