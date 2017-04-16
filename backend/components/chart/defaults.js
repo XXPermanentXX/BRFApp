@@ -26,7 +26,14 @@ module.exports = {
     }, {
       chartOptions: {
         chart:  {
-          height: '40%'
+          height: '40%',
+          spacing: [ 0, 24, 0, 24 ]
+        },
+        yAxis: {
+          maxPadding: 0.1
+        },
+        legend: {
+          layout: 'horizontal'
         }
       },
       condition: {

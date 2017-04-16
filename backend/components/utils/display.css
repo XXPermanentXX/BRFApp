@@ -1,0 +1,19 @@
+/* @define utilities */
+
+@media (--sm-viewport) {
+  .u-sm-hidden {
+    display: none !important;
+  }
+}
+
+@media (--md-viewport) {
+  .u-md-hidden {
+    display: none !important;
+  }
+}
+
+@media (--lg-viewport) {
+  .u-lg-hidden {
+    display: none !important;
+  }
+}

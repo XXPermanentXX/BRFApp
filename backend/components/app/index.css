@@ -3,26 +3,44 @@
 .App {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100%;
   background-color: var(--color-background);
 }
 
 .App-container {
   flex-grow: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.App-part {
+  flex-basis: 100%;
+}
+
+.App-part--primary {
+  width: 100%;
+}
+
+.App-part--secondary {
   padding: 0 var(--viewport-padding);
 }
 
-@media (--lg-viewport) {
-  .App-container {
-    max-width: var(--lg-viewport);
+@media (--md-viewport), (--lg-viewport) {
+  .App-part--secondary {
+    flex: 1 1 auto;
+    max-width: calc(var(--md-viewport) / 2);
     padding: 0;
-    margin: 0 auto;
-    position: relative;
+    margin: 0 var(--viewport-padding);
+  }
+
+  .App-part--last {
+    order: 1;
   }
 }
 
 .App-footer {
-  padding: var(--space-b) 0;
+  padding: var(--viewport-padding) 0;
   font-size: calc(14rem / var(--base-font-size));
   background-color: #fff;
   color: var(--color-pale);

@@ -62,3 +62,11 @@ exports.electricCar = function electricCar(size = 18) {
     </icon>
   `;
 };
+
+exports.checkmark = function checkmark(size = 18) {
+  return html`
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
+      <use class="Icon-path" xlink:href="#icon-checkmark" />
+    </icon>
+  `;
+};

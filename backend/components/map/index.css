@@ -7,8 +7,8 @@
 
 .Map-locate {
   position: absolute;
-  top: var(--space-b);
-  right: var(--space-b);
+  top: var(--viewport-padding);
+  right: var(--viewport-padding);
 }
 
 .Map-position {
@@ -41,7 +41,7 @@
 }
 
 .Map-popup {
-  padding: var(--space-b);
+  padding: var(--viewport-padding);
   font-size: calc(14rem / var(--base-font-size));
   line-height: calc(22 / 14);
   font-family: var(--font-family);

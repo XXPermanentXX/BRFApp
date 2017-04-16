@@ -11,7 +11,8 @@ module.exports = function consumtions(initialState) {
       isLoading: false,
       type: 'heating',
       compare: 'prev_year',
-      granularity: 'month'
+      granularity: 'month',
+      normalize: true
     }, initialState);
 
     emitter.on('consumptions:type', type => {
@@ -21,6 +22,11 @@ module.exports = function consumtions(initialState) {
 
     emitter.on('consumptions:compare', compare => {
       state.consumptions.compare = compare;
+      emitter.emit('render');
+    });
+
+    emitter.on('consumptions:normalize', normalize => {
+      state.consumptions.normalize = normalize;
       emitter.emit('render');
     });
 
@@ -47,8 +53,10 @@ module.exports = function consumtions(initialState) {
     });
 
     emitter.on('consumptions:fetch', options => {
-      const done = () => { state.consumptions.isLoading = false; };
-      state.consumptions.isLoading = true;
+      const { consumptions } = state;
+      const done = () => { consumptions.isLoading = false; };
+
+      consumptions.isLoading = true;
 
       if (Array.isArray(options)) {
         Promise.all(options.map(options => {
@@ -67,8 +75,9 @@ module.exports = function consumtions(initialState) {
 
     function defaults(options) {
       return Object.assign({
-        type: state.type,
-        granularity: 'month'
+        type: state.consumptions.type,
+        granularity: 'month',
+        normalize: state.consumptions.normalize
       }, options);
     }
   };
@@ -82,13 +91,14 @@ module.exports = function consumtions(initialState) {
  */
 
 function fetchConsumtion(options) {
-  const { from, to, type, granularity, cooperative: id } = options;
+  const { from, to, type, granularity, normalize, cooperative: id } = options;
 
   return fetch(
     url.format({
       pathname: `/cooperatives/${ id }/consumption`,
       query: {
         type: type,
+        normalize: normalize,
         granularity: granularity,
         from: moment(from).format(FORMAT),
         to: moment(to).format(FORMAT)

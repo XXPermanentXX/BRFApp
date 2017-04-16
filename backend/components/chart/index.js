@@ -116,7 +116,12 @@ module.exports = function createChart() {
             </span>
           </button>
         </div>
-        ${ form(cooperative, state, emit) }
+        <div class="Chart-filter">
+          <div class="Chart-title">
+            <h1 class="Display Display--1 u-marginTn u-marginBb u-textNowrap u-marginRb">${ cooperative.name }</h1>
+          </div>
+          ${ form(cooperative, state, emit) }
+        </div>
       </div>
     `;
 
@@ -139,7 +144,9 @@ module.exports = function createChart() {
       return html`
         <div class="Chart" onload=${ onload }>
           ${ loader() }
-          ${ form(cooperative, state, emit) }
+          <div class="Chart-filter">
+            ${ form(cooperative, state, emit) }
+          </div>
         </div>
       `;
     }
@@ -162,12 +169,13 @@ module.exports = function createChart() {
  */
 
 function getQueries(now, cooperative, state) {
-  const { granularity, type, compare } = state.consumptions;
+  const { granularity, type, compare, normalize } = state.consumptions;
 
   const queries = [];
   queries.push(Object.assign({
     name: granularity === 'month' ? __('Current year') : cooperative.name,
     type: type,
+    normalize: normalize,
     cooperative: cooperative._id
   }, getPeriod(granularity, now)));
 
@@ -178,6 +186,7 @@ function getQueries(now, cooperative, state) {
     queries.push(Object.assign({
       name: __('Previous year'),
       type: type,
+      normalize: normalize,
       cooperative: cooperative._id
     }, period));
   }

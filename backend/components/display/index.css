@@ -3,33 +3,35 @@
 .Display {
   display: block;
   margin: 1em 0;
-  color: var(--color-text);
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
 }
 
 .Display--1 {
   margin: 0.75em 0;
-  font-size: calc(32rem / var(--base-font-size));
+  font-size: calc(48rem / var(--base-font-size));
+  line-height: calc(33rem / var(--base-font-size));
   font-weight: var(--font-weight-light);
 }
 
 .Display--2 {
-  font-size: calc(28rem / var(--base-font-size));
+  margin: 0.75em 0;
+  font-size: calc(32rem / var(--base-font-size));
+  font-weight: var(--font-weight-light);
 }
 
 .Display--3 {
-  font-size: calc(20rem / var(--base-font-size));
+  font-size: calc(28rem / var(--base-font-size));
 }
 
 .Display--4 {
-  font-size: calc(18rem / var(--base-font-size));
+  font-size: calc(20rem / var(--base-font-size));
 }
 
 .Display--5 {
-  font-size: calc(16rem / var(--base-font-size));
+  font-size: calc(18rem / var(--base-font-size));
 }
 
 .Display--6 {
-  font-size: calc(14rem / var(--base-font-size));
+  font-size: calc(16rem / var(--base-font-size));
 }

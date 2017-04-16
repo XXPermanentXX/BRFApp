@@ -11,6 +11,7 @@
 
 .Performance-link {
   margin-bottom: -0.85em;
+  font-size: calc(14rem / var(--base-font-size));
 }
 
 .Performance-title {

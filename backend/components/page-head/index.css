@@ -5,7 +5,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: var(--space-b);
+  padding: 0.5rem var(--viewport-padding);
   border-bottom: 1px solid var(--color-light);
 
   position: relative;

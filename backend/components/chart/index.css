@@ -1,6 +1,9 @@
 /** @define Graph */
 
 .Chart {
+  display: flex;
+  flex-direction: column;
+
   padding: var(--space-m) 0;
 
   position: relative;
@@ -13,6 +16,25 @@
 .Chart.is-loading .Chart-graph {
   opacity: 0.6;
   pointer-events: none;
+}
+
+.Chart-filter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Chart-title {
+  display: none;
+}
+
+@media (--md-viewport), (--lg-viewport) {
+  .Chart-title {
+    display: block;
+  }
+
+  .Chart-filter {
+    order: -1;
+  }
 }
 
 .Chart-tooltip {
@@ -97,12 +119,12 @@
 
 .Chart-paginate--left {
   padding: 0 14px 0 11px;
-  left: var(--space-b);
+  left: var(--viewport-padding);
 }
 
 .Chart-paginate--right {
   padding: 0 11px 3px 14px;
-  right: var(--space-b);
+  right: var(--viewport-padding);
 }
 
 .Chart-pageLabel {

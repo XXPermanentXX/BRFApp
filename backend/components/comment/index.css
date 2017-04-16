@@ -1,7 +1,7 @@
 /** @define Comment */
 
 .Comment {
-  margin: var(--space-b) 0;
+  margin: var(--viewport-padding) 0;
   font-weight: var(--font-weight-light);
   font-size: calc(14rem / var(--base-font-size));
   line-height: calc(20rem / var(--base-font-size));
@@ -16,7 +16,7 @@
 }
 
 .Comment--slim {
-  margin: calc(var(--space-b) / 2) 0;
+  margin: calc(var(--viewport-padding) / 2) 0;
 }
 
 .Comment-author {

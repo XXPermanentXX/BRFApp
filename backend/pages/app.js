@@ -12,10 +12,6 @@ module.exports = function app(view, state, prev, send) {
         <div class="js-static">
           ${ view(state, prev, send) }
         </div>
-        <details>
-          <summary>State</summary>
-          <pre style="width: 100%; overflow: auto;">${ JSON.stringify(state, null, 2) }</pre>
-        </details>
         ${ symbols() }
         ${ scripts(state).join('\n') }
       </body>

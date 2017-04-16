@@ -31,28 +31,32 @@ module.exports = function (state, emit) {
     <div class="App">
       ${ header(state, emit) }
 
-      <div class="App-container u-flexInitial">
-        <h1 class="Display Display--4">${ action.name }</h1>
-        <a href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
-          ${ chevron('left') }${ __('Back to %s', cooperative.name) }
-        </a>
-      </div>
-
-      <div class="u-marginVm">
-        ${ chart(Date.parse(action.date), cooperative, [Object.assign({merge: true}, action)], state, emit) }
-      </div>
-
       <div class="App-container">
-        ${ definition(properties(action)) }
+        <div class="App-part App-part--primary u-marginBm">
+          <header class="u-marginBm u-paddingHb">
+            <h1 class="Display Display--5">${ action.name }</h1>
+            <a href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
+              ${ chevron('left') }${ __('Back to %s', cooperative.name) }
+            </a>
+          </header>
 
-        ${ state.user ? html`
-          <a href="/actions/${ action._id }/edit" class="Button u-block u-marginVs">
-            ${ __('Edit energy action') }
-          </a>
-        ` : null }
+          ${ chart(Date.parse(action.date), cooperative, [Object.assign({merge: true}, action)], state, emit) }
+        </div>
 
-        <div id="comments-${ action._id }">
-          <h2 class="Display Display--3 u-textItalic">
+        <div class="App-part App-part--secondary App-part--last u-marginBm">
+          <div class="Sheet Sheet--conditional Sheet--md Sheet--lg">
+            ${ definition(properties(action)) }
+
+            ${ state.user ? html`
+              <a href="/actions/${ action._id }/edit" class="Button u-block u-marginVs">
+                ${ __('Edit energy action') }
+              </a>
+            ` : null }
+          </div>
+        </div>
+
+        <div class="App-part App-part--secondary u-marginBm" id="comments-${ action._id }">
+          <h2 class="Display Display--4 u-textItalic">
             ${ action.comments.length ? __n('Comment', 'Comments', action.comments.length) : __('No comments yet') }
           </h2>
 
@@ -72,7 +76,6 @@ module.exports = function (state, emit) {
             </form>
           ` : null }
         </div>
-
       </div>
 
       ${ footer(state, emit) }
@@ -84,8 +87,10 @@ function loading(state, emit) {
   return html`
     <div class="App">
       ${ header(state, emit) }
-      <div class="App-container">
-        ${ loader() }
+      <div class="App-container u-flex u-flexCol">
+        <div class="u-flexGrow1 u-flex u-flexCol u-flexJustifyCenter">
+          ${ loader() }
+        </div>
       </div>
     </div>
   `;

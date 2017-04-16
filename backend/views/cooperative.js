@@ -22,12 +22,13 @@ module.exports = function (state, emit) {
       <div class="App" onload=${ () => emit('cooperatives:fetch', id) }>
         ${ error(state, emit) }
         ${ header(state, emit) }
-        <div class="App-container">
+        <div class="App-container u-paddingVb u-flex u-flexCol">
           <a href="/cooperatives">
             ${ chevron('left') }${ __('Show All Cooperatives') }
           </a>
-          ${ performance() }
-          ${ loader() }
+          <div class="u-flexGrow1 u-flex u-flexCol u-flexJustifyCenter">
+            ${ loader() }
+          </div>
         </div>
       </div>
     `;
@@ -44,45 +45,62 @@ module.exports = function (state, emit) {
       ${ header(state, emit) }
 
       <div class="App-container">
-        <h1 class="Display Display--1 u-marginBb">${ cooperative.name }</h1>
-        <div class="u-marginBm">
-          <a href="/cooperatives">
-            ${ chevron('left') }${ __('Show All Cooperatives') }
-          </a>
-        </div>
+        <div class="App-part App-part--secondary App-part--last u-marginBm">
+          <div class="Sheet Sheet--conditional Sheet--md Sheet--lg">
+            <!-- Small viewport: page title -->
+            <header class="u-md-hidden u-lg-hidden">
+              <h1 class="Display Display--2 u-marginBb">${ cooperative.name }</h1>
+              <div class="u-marginBm">
+                <a href="/cooperatives">
+                  ${ chevron('left') }${ __('Show All Cooperatives') }
+                </a>
+              </div>
+            </header>
 
-        ${ performance(getPerformance(cooperative)) }
-
-        <hr class="u-marginVm" />
-
-        <div class="u-flex u-flexJustifyCenter u-marginVm u-textItalic">
-          ${ cooperative.actions.length ? html`
-            <div>
-              <span class="u-floatLeft u-textG u-marginRb">${ cooperative.actions.length }</span>
-              <span class="u-textL">${ __n('Energy action', 'Energy actions', cooperative.actions.length) }</span>
-              <br />
-              <a href="#actions-${ id }">${ __('Show') }</a>
+            <!-- Performance graph -->
+            <div class="u-marginBm">
+              ${ performance(getPerformance(cooperative)) }
             </div>
-          ` : html`<span class="u-textL">${ __('No energy actions') }</span>` }
+
+            <!-- Small viewport: energy action summary -->
+            <div class="u-md-hidden u-lg-hidden">
+              <hr class="u-marginBm" />
+
+              <div class="u-flex u-flexJustifyCenter u-marginVm u-textItalic">
+                ${ cooperative.actions.length ? html`
+                  <div>
+                    <span class="u-floatLeft u-textG u-marginRb">${ cooperative.actions.length }</span>
+                    <span class="u-textL">${ __n('Energy action', 'Energy actions', cooperative.actions.length) }</span>
+                    <br />
+                    <a href="#actions-${ id }">${ __('Show') }</a>
+                  </div>
+                ` : html`<span class="u-textL">${ __('No energy actions') }</span>` }
+              </div>
+
+              <hr class="u-marginBm" />
+            </div>
+
+            <!-- Cooperative details -->
+            ${ definition({
+              [__('Apartments')]: format(cooperative.numOfApartments),
+              [__('Heated area')]: html`<span>${ format(cooperative.area) } m<sup>2</sup></span>`,
+              [__('Constructed')]: cooperative.yearOfConst,
+              [__('Ventilation type')]: cooperative.ventilationType.join(', ')
+            }) }
+          </div>
         </div>
 
-        <hr class="u-marginVm" />
+        <!-- The chart -->
+        <div class="App-part App-part--primary u-marginBm">
+          ${ chart(Date.now(), cooperative, actions, state, emit) }
+        </div>
 
-        ${ definition({
-          [__('Apartments')]: format(cooperative.numOfApartments),
-          [__('Heated area')]: html`<span>${ format(cooperative.area) } m<sup>2</sup></span>`,
-          [__('Constructed')]: cooperative.yearOfConst,
-          [__('Ventilation type')]: cooperative.ventilationType.join(', ')
-        }) }
+        <!-- List of all energy actions -->
+        <div class="App-part App-part--secondary u-marginBm" id="actions-${ id }">
+          <h2 class="Display Display--4 u-textItalic u-marginTn">
+            ${ __n('Energy action', actions.length) }
+          </h2>
 
-      </div>
-
-      <div class="u-marginVm">
-        ${ chart(Date.now(), cooperative, actions, state, emit) }
-      </div>
-
-      <div class="App-container u-marginBm">
-        <div id="actions-${ id }">
           ${ hasAllActions ?
             numbered(actions.map(action => summary(action, state))) :
             html`

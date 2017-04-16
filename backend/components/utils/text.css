@@ -41,3 +41,7 @@
   font-weight: var(--font-weight-bold) !important;
   -webkit-font-smoothing: antialiased;
 }
+
+.u-textNowrap {
+  white-space: nowrap !important;
+}
