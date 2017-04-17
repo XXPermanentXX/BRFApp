@@ -170,7 +170,7 @@ const formatters = {
 
 function compose(actions, data) {
   const extremes = [];
-  const series = data.map(set => {
+  const series = data.filter(set => set.values.length).map(set => {
     let highIndex, lowIndex;
 
     /**
@@ -242,9 +242,17 @@ function compose(actions, data) {
     };
   });
 
+  /**
+   * Populate comparative series with empty data if no data was provided
+   */
+
   if (series.length === 1) {
     series.push({ showInLegend: false, data: [] });
   }
+
+  /**
+   * Add on actions to list of series
+   */
 
   series.push({
     data: actions.map(action => ({

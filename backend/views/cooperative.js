@@ -92,7 +92,7 @@ module.exports = function (state, emit) {
         <div class="App-part App-part--primary u-marginBm">
           ${ chart(html`
             <div class="u-marginBm">
-              <h1 class="Display Display--1 u-marginBs u-textNowrap">
+              <h1 class="Display Display--1 u-marginBs">
                 ${ cooperative.name }
               </h1>
               <a href="/cooperatives" class="u-colorCurrent">

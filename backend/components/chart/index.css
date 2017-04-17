@@ -3,8 +3,6 @@
 .Chart {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-
   padding: var(--viewport-padding) 0;
 
   position: relative;
@@ -19,32 +17,46 @@
   pointer-events: none;
 }
 
-.Chart-filter {
-  display: flex;
-  justify-content: space-between;
-  margin-top: var(--viewport-padding);
+.Chart-graph {
+  flex-grow: 1;
+  margin-bottom: var(--viewport-padding);
 }
 
 .Chart-header {
+  display: flex;
+  justify-content: space-between;
+  order: 1;
+}
+
+.Chart-title {
   display: none;
-  margin: 0 var(--viewport-padding);
+  flex-shrink: 1;
+  padding: 0 var(--viewport-padding);
+}
+
+.Chart-filter {
+  flex-basis: 100%;
 }
 
 @media (--md-viewport), (--lg-viewport) {
   .Chart {
-    flex-direction: row;
-    flex-wrap: wrap;
     min-height: 70vh;
   }
 
-  .Chart-header {
+  .Chart-graph {
+    margin-bottom: 0;
+  }
+
+  .Chart-title {
     display: block;
   }
 
+  .Chart-header {
+    order: 0;
+  }
+
   .Chart-filter {
-    position: absolute;
-    top: 0;
-    right: 0;
+    flex-basis: auto;
   }
 }
 

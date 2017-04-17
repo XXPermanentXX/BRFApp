@@ -29,7 +29,7 @@ module.exports = function form(cooperative, state, emit) {
    */
 
   return html`
-    <form class="Form u-flex u-flexCol u-flexWrap u-md-flexRow u-lg-flexRow u-md-flexAlignItemsBaseline u-lg-flexAlignItemsBaseline u-marginLb">
+    <form class="Form u-flex u-flexCol u-flexJustifyEnd u-md-flexRow u-lg-flexRow u-md-flexAlignItemsBaseline u-lg-flexAlignItemsBaseline u-paddingLb">
 
       <!-- Medium & large viewports: move granularity toggle to end of form -->
       <div class="u-md-flexOrderLast u-lg-flexOrderLast u-marginRb">
@@ -57,8 +57,8 @@ module.exports = function form(cooperative, state, emit) {
 
       <!-- Medium & large viewports: break grid and flex elements horizontally -->
       <div class="Form-grid u-marginRb">
-        <label for="form_type" class="Form-pill Form-pill--leading">${ __('Show') }</label>
-        <select id="form_type" class="Form-pill Form-pill--trailing Form-pill--select" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
+        <label for="form_type" class="Form-pill Form-pill--leading u-marginBs">${ __('Show') }</label>
+        <select id="form_type" class="Form-pill Form-pill--trailing Form-pill--select u-marginBs" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
           ${ Object.keys(TYPES).map(key => html`
               <option value=${ key } selected=${ type === key }>
                 ${ __(TYPES[key]) }

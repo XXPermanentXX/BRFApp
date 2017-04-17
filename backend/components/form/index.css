@@ -39,7 +39,6 @@
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: baseline;
-  grid-row-gap: 1em;
 }
 
 /**
@@ -170,8 +169,7 @@
 .Form-pill {
   float: left;
   padding: 0.5em 0.8em;
-  border: solid currentColor;
-  border-width: 1px 0 1px 0;
+  border: 1px solid #fff;
   white-space: nowrap;
   font-weight: normal;
   color: currentColor;
@@ -184,7 +182,6 @@
 }
 
 .Form-pill--leading {
-  border: 0;
   clear: left;
   color: var(--color-primary);
   background-color: #fff;
@@ -200,7 +197,7 @@
 }
 
 .Form-pill--select {
-  padding: calc(0.5em - 1px) 2em calc(0.5em - 1px) 0.75em;
+  padding-right: 2em;
   background-color: var(--color-primary);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='8'><polygon stroke='none' fill='#ffffff' fill-rule='evenodd' points='0.641242789 -0.641242789 -0.419417382 0.419417382 5.77817459 6.61700936 11.9757666 0.419417382 10.9151064 -0.641242789 5.77817459 4.49568901' /></svg>");
   background-repeat: no-repeat;

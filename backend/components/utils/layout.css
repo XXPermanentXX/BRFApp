@@ -12,3 +12,7 @@
 .u-fillViewportV {
   height: 100vh !important;
 }
+
+.u-sizeCover {
+  flex-basis: 100% !important;
+}

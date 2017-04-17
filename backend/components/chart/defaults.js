@@ -36,7 +36,7 @@ module.exports = {
         }
       },
       condition: {
-        minWidth: 900
+        minWidth: 800
       }
     }],
   },

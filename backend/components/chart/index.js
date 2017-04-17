@@ -18,7 +18,7 @@ module.exports = function createChart() {
 
   return function render(header, center, cooperative, actions, state, emit) {
     if (typeof window === 'undefined') {
-      return loading();
+      return empty(loader());
     }
 
     if (cooperative._id !== current) {
@@ -64,7 +64,7 @@ module.exports = function createChart() {
       if (page !== 0) {
         isLoading = true;
       } else {
-        return loading();
+        return empty(loader());
       }
     }
 
@@ -90,6 +90,10 @@ module.exports = function createChart() {
 
     series.forEach(set => { set.values = set.values.slice(max * -1); });
 
+    if (!series[0].values.length) {
+      return empty(html`<em>${ __('No data') }</em>`);
+    }
+
     const hasLater = moment(now).isBefore(Date.now(), granularity);
     const hasEarlier = series.length && series[0].values.length;
 
@@ -104,24 +108,24 @@ module.exports = function createChart() {
     return html`
       <div class=${ className('Chart', { 'is-loading': isLoading }) } onload=${ onload }>
         <div class="Chart-header">
-          ${ header }
-        </div>
-        <div class="u-posRelative u-sizeFull">
-          <div class="Chart-graph">
-            ${ element }
+          <div class="Chart-title">
+            ${ header }
           </div>
-          <button class="Chart-paginate Chart-paginate--left" onclick=${ paginate(-1) } disabled=${ !hasEarlier }>
-            ${ chevron('left') } <span class="Chart-pageLabel">${ __('Show earlier') }</span>
-          </button>
-          <button class="Chart-paginate Chart-paginate--right" onclick=${ paginate(1) } disabled=${ !hasLater }>
-            <span class="u-floatRight">
-              <span class="Chart-pageLabel">${ __('Show more recent') }</span> ${ chevron('right') }
-            </span>
-          </button>
-        </div>
-        <div class="Chart-filter">
+          <div class="Chart-filter">
           ${ form(cooperative, state, emit) }
+          </div>
         </div>
+        <div class="Chart-graph">
+          ${ element }
+        </div>
+        <button class="Chart-paginate Chart-paginate--left" onclick=${ paginate(-1) } disabled=${ !hasEarlier }>
+          ${ chevron('left') } <span class="Chart-pageLabel">${ __('Show earlier') }</span>
+        </button>
+        <button class="Chart-paginate Chart-paginate--right" onclick=${ paginate(1) } disabled=${ !hasLater }>
+          <span class="u-floatRight">
+            <span class="Chart-pageLabel">${ __('Show more recent') }</span> ${ chevron('right') }
+          </span>
+        </button>
       </div>
     `;
 
@@ -140,14 +144,19 @@ module.exports = function createChart() {
      * Simple no fuzz loading state
      */
 
-    function loading() {
+    function empty(content) {
       return html`
         <div class="Chart" onload=${ onload }>
-          <div class="u-flexGrow1 u-flex u-flexCol u-flexJustifyCenter">
-            ${ loader() }
+          <div class="Chart-header">
+            <div class="Chart-title">
+              ${ header }
+            </div>
+            <div class="Chart-filter">
+              ${ form(cooperative, state, emit) }
+            </div>
           </div>
-          <div class="Chart-filter">
-            ${ form(cooperative, state, emit) }
+          <div class="Chart-graph u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-paddingVl">
+            ${ content }
           </div>
         </div>
       `;
