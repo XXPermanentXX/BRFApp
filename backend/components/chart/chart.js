@@ -1,10 +1,16 @@
 const html = require('choo/html');
 const merge = require('lodash.merge');
 const moment = require('moment');
-const Highcharts = require('highcharts');
 const defaults = require('./defaults');
-const { capitalize, format, cache, debounce, className } = require('../utils');
 const { __ } = require('../../locale');
+const {
+  capitalize,
+  format,
+  cache,
+  debounce,
+  className,
+  load
+} = require('../utils');
 
 module.exports = function createContainer() {
   let chart;
@@ -45,35 +51,37 @@ module.exports = function createContainer() {
         // Exit early if Highcharts has been initialized already
         if (chart) { return; }
 
-        const spacing = el.offsetWidth * 0.02;
+        load('highcharts').then(Highcharts => {
+          const spacing = el.offsetWidth * 0.02;
 
-        chart = Highcharts.chart(el, merge({
-          chart: {
-            spacing: [ 0, spacing, 0, spacing ]
-          },
-          tooltip: {
-            // Position tooltip relative to chart width
-            positioner(width, height, point) {
-              // Align to right when there's no room
-              if ((width + point.plotX) > chart.plotWidth) {
-                // Apply right align modifier as soon as the element is in the DOM
-                requestAnimationFrame(() => {
-                  const tooltip = el.querySelector('.js-tooltip');
-                  tooltip.classList.add('Chart-tooltip--alignRight');
-                });
+          chart = Highcharts.chart(el, merge({
+            chart: {
+              spacing: [ 0, spacing, 0, spacing ]
+            },
+            tooltip: {
+              // Position tooltip relative to chart width
+              positioner(width, height, point) {
+                // Align to right when there's no room
+                if ((width + point.plotX) > chart.plotWidth) {
+                  // Apply right align modifier as soon as the element is in the DOM
+                  requestAnimationFrame(() => {
+                    const tooltip = el.querySelector('.js-tooltip');
+                    tooltip.classList.add('Chart-tooltip--alignRight');
+                  });
 
-                return { x: point.plotX - width + 25, y: point.plotY - 14 };
+                  return { x: point.plotX - width + 25, y: point.plotY - 14 };
+                }
+
+                return { x: point.plotX - 2, y: point.plotY - 15 };
               }
-
-              return { x: point.plotX - 2, y: point.plotY - 15 };
             }
-          }
-        }, defaults, getConfig(granularity, actions, data)), chart => {
-          chart.reflow();
-          window.addEventListener('resize', debounce(() => {
-            const spacing = el.offsetWidth * 0.02;
-            chart.update({ chart: { spacing: [ 0, spacing, 0, spacing ] }});
-          }));
+          }, defaults, getConfig(granularity, actions, data)), chart => {
+            chart.reflow();
+            window.addEventListener('resize', debounce(() => {
+              const spacing = el.offsetWidth * 0.02;
+              chart.update({ chart: { spacing: [ 0, spacing, 0, spacing ] }});
+            }));
+          });
         });
       }
     }

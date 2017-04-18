@@ -105,7 +105,7 @@ server.use(auth.initialize());
 server.use(auth.session());
 server.use(lang('sv'), routes);
 server.use('/en', lang('en'), routes);
-server.use(express.static('public'));
+server.use(express.static(__dirname + '/public'));
 
 // eslint-disable-next-line no-console
 db.on('error', err => console.error(err));

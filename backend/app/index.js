@@ -47,21 +47,20 @@ app.use(require('./models/consumptions')(INITIAL_STATE.consumptions));
  * Start application when running in browser
  */
 
-if (typeof window !== 'undefined' && !window.location.hash) {
+if (typeof window !== 'undefined') {
   /**
-   * Remove server rendered static content
+   * Remove url hash as choo includes them in routes
    */
 
-  // const static = document.querySelector('.js-static');
-  // if (static) {
-  //   static.parentElement.removeChild(static);
-  // }
+  if (window.location.hash) {
+    history.replaceState({}, document.title, window.location.pathname);
+  }
 
    /**
    * Initialize application
    */
 
-  app.mount('.js-static');
+  app.mount('.js-app > :first-child');
 }
 
 /**

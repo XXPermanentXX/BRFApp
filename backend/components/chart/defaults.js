@@ -25,9 +25,6 @@ module.exports = {
       }
     }, {
       chartOptions: {
-        chart:  {
-          height: '40%'
-        },
         yAxis: {
           maxPadding: 0.1
         },
@@ -37,6 +34,15 @@ module.exports = {
       },
       condition: {
         minWidth: 800
+      }
+    }, {
+      chartOptions: {
+        chart:  {
+          height: '40%'
+        }
+      },
+      condition: {
+        minWidth: 1000
       }
     }],
   },

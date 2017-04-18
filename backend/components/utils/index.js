@@ -1,3 +1,4 @@
+const html = require('choo/html');
 const moment = require('moment');
 
 const PERFORMANCE_FORMAT = 'YYYYMM';
@@ -197,4 +198,23 @@ exports.cache = function cache(props) {
 
     return element;
   };
+};
+
+exports.load = function load(source) {
+  return new Promise((resolve, reject) => {
+    if (/\.css$/.test(source)) {
+      document.head.insertBefore(
+        html`<link rel="stylesheet" href=${ source } />`,
+        document.head.querySelector('link')
+      );
+    } else {
+      const script = html`<script src="/${ source }.js" async></script>`;
+      script.onerror = reject;
+      script.onload = () => {
+        script.parentNode.removeChild(script);
+        resolve(require(source));
+      };
+      document.head.appendChild(script);
+    }
+  });
 };

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const postcss = require('postcss');
 const browserify = require('browserify');
+const StreamCache = require('stream-cache');
 const watchify = require('watchify-middleware');
 const chokidar = require('chokidar');
 
@@ -9,7 +10,6 @@ const ROOT = path.resolve(__dirname, '..');
 const bundler = browserify('app/index.js', {
   basedir: ROOT,
   debug: true,
-  noparse: [ '../node_modules/highcharts/highcharts.js' ],
   transform: [
     require('localenvify')
   ]
@@ -44,10 +44,24 @@ function cssmiddleware(req, res) {
   }, err => res.status(500).send(err));
 }
 
+const cache = {};
 module.exports = function (req, res, next) {
-  switch (path.extname(req.url)) {
-    case '.js': return jsmiddleware(req, res);
-    case '.css': return cssmiddleware(req, res);
-    default: next();
+  if (req.url === '/index.js') {
+    jsmiddleware(req, res);
+  } else if (req.url === '/index.css') {
+    cssmiddleware(req, res);
+  } else if (/\.js$/.test(req.url)) {
+    if (!cache[req.url]) {
+      cache[req.url] = new StreamCache();
+      browserify({ basedir: ROOT })
+        .require(req.url.replace(/^\//, '').replace(/\.js$/, ''))
+        .bundle()
+        .pipe(cache[req.url])
+        .pipe(res);
+    } else {
+      cache[req.url].pipe(res);
+    }
+  } else {
+    next();
   }
 };

@@ -2,7 +2,6 @@ const html = require('choo/html');
 
 module.exports = function scrips(state) {
   const tags = [
-    html`<script src=${ process.env.MAPBOX_CDN_JS }></script>`,
     html`<script type="application/json" class="js-initialState">${ JSON.stringify(state) }</script>`,
     html`<script src="/index.js" async></script>`
   ];

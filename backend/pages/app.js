@@ -9,7 +9,7 @@ module.exports = function app(view, state, prev, send) {
     <html lang="${ state.lang }">
       ${ head(state) }
       <body>
-        <div class="js-static">
+        <div class="js-app">
           ${ view(state, prev, send) }
         </div>
         ${ symbols() }
