@@ -4,7 +4,7 @@ const hash = require('object-hash');
 
 const FORMAT = 'YYYYMM';
 
-module.exports = function consumtions(initialState) {
+module.exports = function consumtions(initialState, auth) {
   return (state, emitter) => {
     state.consumptions = Object.assign({
       items: {},
@@ -81,41 +81,46 @@ module.exports = function consumtions(initialState) {
       }, options);
     }
   };
+
+  /**
+   * Fetch consumtion for given cooperative with query parameterss granularity,
+   * from and to
+   * @param  {Object} options Hash with cooperative and query parameters
+   * @return {Promise}        Resolves to parsed response
+   */
+
+  function fetchConsumtion(options) {
+    const { from, to, type, granularity, normalize, cooperative: id } = options;
+    const headers = { accept: 'application/json' };
+
+    if (auth) {
+      headers.Authorization = auth;
+    }
+
+    return fetch(
+      url.format({
+        pathname: `/cooperatives/${ id }/consumption`,
+        query: {
+          type: type,
+          normalize: normalize,
+          granularity: granularity,
+          from: moment(from).format(FORMAT),
+          to: moment(to).format(FORMAT)
+        }
+      }),
+      { headers }
+    )
+    .then(body => body.json().then(body => {
+      const values = body
+        // Index values by date
+        .map((value, index) => {
+          const date = moment(from, FORMAT).add(index, granularity + 's').toDate();
+          return { value, date };
+        })
+        // Remove any empty values (i.e. current month)
+        .filter(item => !!item.value);
+
+      return values;
+    }));
+  }
 };
-
-/**
- * Fetch consumtion for given cooperative with query parameterss granularity,
- * from and to
- * @param  {Object} options Hash with cooperative and query parameters
- * @return {Promise}        Resolves to parsed response
- */
-
-function fetchConsumtion(options) {
-  const { from, to, type, granularity, normalize, cooperative: id } = options;
-
-  return fetch(
-    url.format({
-      pathname: `/cooperatives/${ id }/consumption`,
-      query: {
-        type: type,
-        normalize: normalize,
-        granularity: granularity,
-        from: moment(from).format(FORMAT),
-        to: moment(to).format(FORMAT)
-      }
-    }),
-    { headers: { accept: 'application/json' }}
-  )
-  .then(body => body.json().then(body => {
-    const values = body
-      // Index values by date
-      .map((value, index) => {
-        const date = moment(from, FORMAT).add(index, granularity + 's').toDate();
-        return { value, date };
-      })
-      // Remove any empty values (i.e. current month)
-      .filter(item => !!item.value);
-
-    return values;
-  }));
-}

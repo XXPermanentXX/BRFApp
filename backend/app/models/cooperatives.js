@@ -1,4 +1,4 @@
-module.exports = function cooperatives(initialState) {
+module.exports = function cooperatives(initialState, auth) {
   return (state, emitter) => {
     state.cooperatives = initialState || [];
 
@@ -14,11 +14,15 @@ module.exports = function cooperatives(initialState) {
 
     emitter.on('cooperatives:fetch', id => {
       const url = id ? `/cooperatives/${ id }` : '/cooperatives';
+      const headers = { accept: 'application/json' };
 
-      fetch(url, { headers: { accept: 'application/json' }})
-        .then(body => body.json().then(data => {
-          emitter.emit('cooperatives:add', data);
-        }), err => emitter.emit('error', err));
+      if (auth) {
+        headers.Authorization = auth;
+      }
+
+      fetch(url, { headers }).then(body => body.json().then(data => {
+        emitter.emit('cooperatives:add', data);
+      }), err => emitter.emit('error', err));
     });
 
     function inject(props) {

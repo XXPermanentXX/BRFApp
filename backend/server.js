@@ -1,6 +1,3 @@
-// Load environement variables before anything else
-require('dotenv').config();
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
@@ -15,7 +12,7 @@ const auth = require('./middleware/auth');
 const method = require('./middleware/method');
 const app = require('./app');
 
-mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost/youpower');
+mongoose.connect(process.env.MONGO_URL);
 
 const db = mongoose.connection;
 const server = express();
@@ -87,6 +84,10 @@ server.use(function (req, res, next) {
 
 if (process.env.NODE_ENV === 'development') {
   server.use(require('./middleware/assets'));
+}
+
+if (process.env.NODE_ENV === 'test') {
+  server.use(auth.basic);
 }
 
 server.use(compression());

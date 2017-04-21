@@ -11,7 +11,8 @@ const bundler = browserify('app/index.js', {
   basedir: ROOT,
   debug: true,
   transform: [
-    require('localenvify')
+    require('localenvify'),
+    require('yo-yoify')
   ]
 });
 const jsmiddleware = watchify(bundler);

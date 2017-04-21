@@ -5,7 +5,7 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "restart": "nodemon -x 'node -r ./hotfix backend/server.js' -i frontend -i backend/locale -i backend/views -i backend/components -i backend/app",
+    "restart": "nodemon -x 'node -r ./hotfix -r dotenv/config backend/server.js' -i frontend -i backend/locale -i backend/views -i backend/components -i backend/app",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec",
     "build:js": "npm run build:js:app && npm run build:js:mapbox && npm run build:js:highcharts",
@@ -21,7 +21,7 @@
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=0.6.0"
+    "node": ">=7.9.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",
@@ -46,7 +46,6 @@
     "postcss-custom-media": "^5.0.1",
     "postcss-custom-properties": "^5.0.2",
     "postcss-import": "^9.1.0",
-    "public-ip": "^2.0.1",
     "stream-cache": "0.0.2",
     "suitcss-base": "^2.0.0",
     "suitcss-components-button": "^6.0.0",
@@ -63,7 +62,7 @@
     "uglifyify": "^3.0.4",
     "unassertify": "^2.0.4",
     "watchify-middleware": "^1.6.0",
-    "yo-yoify": "^3.5.0"
+    "yo-yoify": "git+https://github.com/arturi/yo-yoify.git#patch-1"
   },
   "dependencies": {
     "async": "^1.3.0",
@@ -79,6 +78,7 @@
     "email-templates": "^2.0.1",
     "escape-string-regexp": "^1.0.3",
     "express": "^4.12.3",
+    "express-basic-auth": "^1.0.1",
     "express-session": "^1.15.0",
     "express-validator": "^2.10.0",
     "highcharts": "^5.0.9",

@@ -1,4 +1,4 @@
-module.exports = function actions(initialState) {
+module.exports = function actions(initialState, auth) {
   return (state, emitter) => {
     state.actions = (initialState || []).map(action => {
       return Object.assign({}, action,{ date: new Date(action.date) });
@@ -26,18 +26,20 @@ module.exports = function actions(initialState) {
       }
     });
   };
+
+  /**
+   * Fetch action by id
+   * @param  {String} id Unique id for action to fetch
+   * @return {Promise}   Resolves to actions data
+   */
+
+  function fetchAction(id) {
+    const headers = { accept: 'application/json' };
+
+    if (auth) {
+      headers.Authorization = auth;
+    }
+
+    return fetch(`/actions/${ id }`, { headers }).then(body => body.json());
+  }
 };
-
-/**
- * Fetch action by id
- * @param  {String} id Unique id for action to fetch
- * @return {Promise}   Resolves to actions data
- */
-
-function fetchAction(id) {
-  return fetch(
-    `/actions/${ id }`,
-    { headers: { accept: 'application/json' }}
-  )
-  .then(body => body.json());
-}

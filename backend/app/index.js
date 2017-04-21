@@ -37,11 +37,11 @@ routes.map(localize('en')).forEach(([route, view]) => app.route(route, view));
 
 app.use(require('./models/menu')());
 app.use(require('./models/error')());
-app.use(require('./models/geoip')(INITIAL_STATE.ip));
-app.use(require('./models/user')(INITIAL_STATE.user));
-app.use(require('./models/actions')(INITIAL_STATE.actions));
-app.use(require('./models/cooperatives')(INITIAL_STATE.cooperatives));
-app.use(require('./models/consumptions')(INITIAL_STATE.consumptions));
+app.use(require('./models/geoip')());
+app.use(require('./models/user')(INITIAL_STATE.user, INITIAL_STATE.auth));
+app.use(require('./models/actions')(INITIAL_STATE.actions, INITIAL_STATE.auth));
+app.use(require('./models/cooperatives')(INITIAL_STATE.cooperatives, INITIAL_STATE.auth));
+app.use(require('./models/consumptions')(INITIAL_STATE.consumptions, INITIAL_STATE.auth));
 
 /**
  * Start application when running in browser

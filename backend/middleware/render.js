@@ -46,42 +46,30 @@ module.exports = function render(req, res, next) {
      */
 
     function send(state) {
-      let geoip;
-
       // Ensure state consistency
       state.consumptions = {};
       state.actions = state.actions || [];
       state.cooperatives = state.cooperatives || [];
+      state.auth = req.get('Authorization');
 
-      // Expose client ip for geolocation
-      if (process.env.NODE_ENV === 'development') {
-        geoip = require('public-ip').v4();
-      } else {
-        geoip = Promise.resolve(req.ip);
-      }
+      if (req.user) {
+        User.getProfile(req.user._id, (err, user) => {
+          if (err) {
+            res.status(500).render('/error', { err: err.message });
+          } else {
+            const cooperatives = state.cooperatives;
+            const id = user.cooperative.toString();
 
-      geoip.then(ip => {
-        state.ip = ip;
-
-        if (req.user) {
-          User.getProfile(req.user._id, (err, user) => {
-            if (err) {
-              res.status(500).render('/error', { err: err.message });
-            } else {
-              const cooperatives = state.cooperatives;
-              const id = user.cooperative.toString();
-
-              if (!cooperatives.find(props => props._id.toString() === id)) {
-                cooperatives.push(user.cooperative);
-              }
-
-              orig.call(res, route, Object.assign({ user }, state));
+            if (!cooperatives.find(props => props._id.toString() === id)) {
+              cooperatives.push(user.cooperative);
             }
-          });
-        } else {
-          orig.call(res, route, state);
-        }
-      });
+
+            orig.call(res, route, Object.assign({ user }, state));
+          }
+        });
+      } else {
+        orig.call(res, route, state);
+      }
     }
   };
 

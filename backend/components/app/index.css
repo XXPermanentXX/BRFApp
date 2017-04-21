@@ -14,6 +14,11 @@
   justify-content: center;
 }
 
+.App-container--contain {
+  max-width: var(--lg-viewport);
+  padding: 0 var(--viewport-padding);
+}
+
 .App-part {
   flex-basis: 100%;
 }

@@ -1,6 +1,7 @@
 const url = require('url');
 const request = require('request');
 const passport = require('passport');
+const basic = require('express-basic-auth');
 const OAuth2Strategy = require('passport-oauth2').Strategy;
 const User = require('../models/users');
 
@@ -112,3 +113,15 @@ exports.authenticate = function authenticate() {
     }
   };
 };
+
+/**
+ * Create basic authentification for test environments
+ */
+
+exports.basic = basic({
+  users: {
+    [process.env.BRFENERGI_USER]: process.env.BRFENERGI_PASS
+  },
+  challenge: true,
+  realm: process.env.BRFENERGI_REALM
+});
