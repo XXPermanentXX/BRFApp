@@ -12,7 +12,7 @@
     "build:js:app": "browserify backend/app/index.js -t localenvify -t yo-yoify -t [ babelify --presets [ babel-preset-es2015 ] ] -g unassertify -g uglifyify | uglifyjs -o backend/public/index.js",
     "build:js:mapbox": "browserify -r mapbox-gl | uglifyjs -o backend/public/mapbox-gl.js",
     "build:js:highcharts": "browserify -r highcharts | uglifyjs -o backend/public/highcharts.js",
-    "build:css": "postcss backend/app/index.css -u postcss-import -u postcss-custom-media -u postcss-custom-properties -u autoprefixer -u postcss-csso -o backend/public/index.css",
+    "build:css": "postcss backend/app/index.css --no-map -u postcss-import -u postcss-custom-media -u postcss-custom-properties -u autoprefixer -u postcss-csso -o backend/public/index.css",
     "build": "npm run build:css && npm run build:js"
   },
   "repository": {
