@@ -90,10 +90,6 @@ module.exports = function createChart() {
 
     series.forEach(set => { set.values = set.values.slice(max * -1); });
 
-    if (!series[0].values.length) {
-      return empty(html`<em>${ __('No data') }</em>`);
-    }
-
     const hasLater = moment(now).isBefore(Date.now(), granularity);
     const hasEarlier = series.length && series[0].values.length;
 
@@ -102,6 +98,10 @@ module.exports = function createChart() {
      */
 
     if (!isLoading) {
+      if (!series[0].values.length) {
+        return empty(html`<em>${ __('No data') }</em>`);
+      }
+
       element = chart(granularity, formatActions(actions, series, granularity), series);
     }
 
@@ -117,15 +117,15 @@ module.exports = function createChart() {
         </div>
         <div class="Chart-graph">
           ${ element }
+          <button class="Chart-paginate Chart-paginate--left" onclick=${ paginate(-1) } disabled=${ !hasEarlier }>
+            ${ chevron('left') } <span class="Chart-pageLabel">${ __('Show earlier') }</span>
+          </button>
+          <button class="Chart-paginate Chart-paginate--right" onclick=${ paginate(1) } disabled=${ !hasLater }>
+            <span class="u-floatRight">
+              <span class="Chart-pageLabel">${ __('Show more recent') }</span> ${ chevron('right') }
+            </span>
+          </button>
         </div>
-        <button class="Chart-paginate Chart-paginate--left" onclick=${ paginate(-1) } disabled=${ !hasEarlier }>
-          ${ chevron('left') } <span class="Chart-pageLabel">${ __('Show earlier') }</span>
-        </button>
-        <button class="Chart-paginate Chart-paginate--right" onclick=${ paginate(1) } disabled=${ !hasLater }>
-          <span class="u-floatRight">
-            <span class="Chart-pageLabel">${ __('Show more recent') }</span> ${ chevron('right') }
-          </span>
-        </button>
       </div>
     `;
 

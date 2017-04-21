@@ -20,6 +20,7 @@
 .Chart-graph {
   flex-grow: 1;
   margin-bottom: var(--viewport-padding);
+  position: relative;
 }
 
 .Chart-header {

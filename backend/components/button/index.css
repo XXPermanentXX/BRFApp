@@ -18,7 +18,7 @@
 
 .Button,
 .Button:link,
-.Button:visited {
+.Button:link:visited {
   cursor: default;
   padding: var(--Button-padding); /* 1 */
   color: var(--Button-color); /* 1 */

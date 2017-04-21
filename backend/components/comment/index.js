@@ -34,7 +34,7 @@ module.exports = function comment(comment, action, state) {
     return html`
       <form action="${ action._id }/comments/${ comment._id }" method="POST" class="Form" enctype="application/x-www-form-urlencoded">
         <input type="hidden" name="_method" value="DELETE">
-        <button type="submit" class="Comment-delete">${ __('Delete') }</button>
+        <button type="submit" class="Link Link--noSmoothing">${ __('Delete') }</button>
       </form>
     `;
   }

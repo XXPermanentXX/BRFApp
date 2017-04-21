@@ -39,7 +39,7 @@
 
 .u-textBold {
   font-weight: var(--font-weight-bold) !important;
-  -webkit-font-smoothing: antialiased;
+  -webkit-font-smoothing: antialiased !important;
 }
 
 .u-textNowrap {

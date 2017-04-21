@@ -30,3 +30,7 @@
 .Link:active {
   text-decoration: underline;
 }
+
+.Link--noSmoothing {
+  -webkit-font-smoothing: auto;
+}

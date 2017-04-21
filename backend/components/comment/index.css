@@ -23,7 +23,3 @@
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
 }
-
-.Comment-delete {
-  -webkit-font-smoothing: initial;
-}

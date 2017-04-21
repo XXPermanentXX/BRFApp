@@ -62,7 +62,7 @@ module.exports = function (state, emit) {
 
             <!-- Small viewport: energy action summary -->
             <div class="u-md-hidden u-lg-hidden">
-              <hr class="u-marginBm" />
+              <hr class="u-marginBm u-marginHl" />
 
               <div class="u-flex u-flexJustifyCenter u-marginVm u-textItalic">
                 ${ cooperative.actions.length ? html`
@@ -75,7 +75,7 @@ module.exports = function (state, emit) {
                 ` : html`<span class="u-textL">${ __('No energy actions') }</span>` }
               </div>
 
-              <hr class="u-marginBm" />
+              <hr class="u-marginBm u-marginHl" />
             </div>
 
             <!-- Cooperative details -->

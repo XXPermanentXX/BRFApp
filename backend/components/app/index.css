@@ -28,10 +28,9 @@
 
 @media (--md-viewport), (--lg-viewport) {
   .App-part--secondary {
-    flex: 1 1 auto;
+    flex: 1 1 50%;
     max-width: calc(var(--lg-viewport) / 2);
-    padding: 0;
-    margin: 0 var(--viewport-padding);
+    padding: 0 var(--viewport-padding);
   }
 
   .App-part--last {
@@ -40,7 +39,7 @@
 }
 
 .App-footer {
-  padding: var(--viewport-padding) 0;
+  padding: var(--space-s) var(--viewport-padding);
   font-size: calc(14rem / var(--base-font-size));
   background-color: #fff;
   color: var(--color-pale);
