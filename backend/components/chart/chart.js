@@ -15,6 +15,7 @@ const {
 
 module.exports = function createContainer() {
   let chart, init;
+  let isInitialized = false;
 
   return cache({
     shouldUpdate(args, prev) {
@@ -61,7 +62,11 @@ module.exports = function createContainer() {
 
       function onload(el) {
         // Exit early if Highcharts has been initialized already
-        if (chart) { return; }
+        if (isInitialized) {
+          return;
+        } else {
+          isInitialized = true;
+        }
 
         resource('highcharts').then(Highcharts => {
           // Remove loader from chart container
