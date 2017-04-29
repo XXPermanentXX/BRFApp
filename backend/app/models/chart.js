@@ -1,6 +1,7 @@
 const { debounce, vw } = require('../../components/utils');
 
 module.exports = function error() {
+  let hasChanged = false;
   const cache = {};
 
   return (state, emitter) => {
@@ -16,8 +17,11 @@ module.exports = function error() {
 
     if (typeof window !== 'undefined') {
       window.addEventListener('resize', debounce(() => {
-        if (vw() >= 800) {
-          state.chart.inEdit = true;
+        if (hasChanged) { return; }
+
+        const inEdit = vw() >= 800;
+        if (state.chart.inEdit !== inEdit) {
+          state.chart.inEdit = inEdit;
           emitter.emit('render');
         }
       }, 250));
@@ -31,7 +35,8 @@ module.exports = function error() {
     });
 
     emitter.on('pushState', path => {
-      cache[location.pathname] = { page: state.chart.page };
+      hasChanged = false;
+      cache[window.location] = { page: state.chart.page };
       Object.assign(state.chart, {
         page: 0,
         inEdit: vw() >= 800
@@ -39,6 +44,7 @@ module.exports = function error() {
     });
 
     emitter.on('chart:edit', () => {
+      hasChanged = true;
       state.chart.inEdit = true;
       emitter.emit('render');
     });

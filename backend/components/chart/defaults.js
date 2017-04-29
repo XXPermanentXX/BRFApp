@@ -2,9 +2,9 @@ const { format } = require('../utils');
 
 module.exports = {
   chart: {
-    height: '80%',
+    height: '60%',
     backgroundColor: 'transparent',
-    // spacing: [ 0, 12, 0, 12 ],
+    spacing: [ 0, 12, 0, 12 ],
     style: {
       fontFamily: 'inherit',
       fontSize: '14px'
@@ -17,7 +17,7 @@ module.exports = {
           height: '50%'
         },
         yAxis: {
-          maxPadding: 0.7
+          maxPadding: 0.3
         }
       },
       condition: {
@@ -25,6 +25,10 @@ module.exports = {
       }
     }, {
       chartOptions: {
+        chart:  {
+          height: '40%',
+          spacing: [ 0, 24, 0, 24 ]
+        },
         yAxis: {
           maxPadding: 0.1
         },
@@ -38,7 +42,7 @@ module.exports = {
     }, {
       chartOptions: {
         chart:  {
-          height: '40%'
+          height: '35%'
         }
       },
       condition: {

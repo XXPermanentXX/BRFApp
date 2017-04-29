@@ -8,9 +8,9 @@ const {
   capitalize,
   format,
   cache,
-  debounce,
   className,
-  resource
+  resource,
+  vw
 } = require('../utils');
 
 module.exports = function createContainer() {
@@ -64,18 +64,15 @@ module.exports = function createContainer() {
         if (chart) { return; }
 
         resource('highcharts').then(Highcharts => {
-          const spacing = el.offsetWidth * 0.02;
-
           // Remove loader from chart container
           el.innerHTML = '';
 
           const config = merge({
-            chart: {
-              spacing: [ 0, spacing, 0, spacing ]
-            },
             tooltip: {
               // Position tooltip relative to chart width
               positioner(width, height, point) {
+                const offset = vw() >= 800 ? 12 : 0;
+
                 // Align to right when there's no room
                 if ((width + point.plotX) > chart.plotWidth) {
                   // Apply right align modifier as soon as the element is in the DOM
@@ -84,23 +81,15 @@ module.exports = function createContainer() {
                     tooltip.classList.add('Chart-tooltip--alignRight');
                   });
 
-                  return { x: point.plotX - width + 25, y: point.plotY - 14 };
+                  return { x: point.plotX - width + 25 + offset, y: point.plotY - 14 };
                 }
 
-                return { x: point.plotX - 2, y: point.plotY - 15 };
+                return { x: point.plotX - 2 + offset, y: point.plotY - 15 };
               }
             }
           }, defaults, init || getConfig(granularity, actions, data));
 
-          chart = Highcharts.chart(el, config, chart => {
-            chart.reflow();
-
-            // Recalulate spacing equal to `2vw` on `resize`
-            window.addEventListener('resize', debounce(() => {
-              const spacing = el.offsetWidth * 0.02;
-              chart.update({ chart: { spacing: [ 0, spacing, 0, spacing ] }});
-            }));
-          });
+          chart = Highcharts.chart(el, config, chart => chart.reflow());
         });
       }
     }
