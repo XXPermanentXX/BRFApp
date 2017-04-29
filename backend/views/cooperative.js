@@ -103,7 +103,7 @@ module.exports = function (state, emit) {
 
         <!-- List of all energy actions -->
         <div class="App-part App-part--secondary u-marginBm" id="actions-${ id }">
-          <h2 class="Display Display--4 u-marginBb u-textItalic">
+          <h2 class="Display Display--4 u-marginBs u-textItalic">
             ${ __n('Energy action', actions.length) }
           </h2>
 
