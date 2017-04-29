@@ -122,7 +122,7 @@ module.exports = function createChart() {
                 <em>${ __(granularity) }</em>${ compare ? html`
                   <span>
                     ${ __('compared with') }
-                    <em>${ compare === 'prev_year' ? series[1].name.toLowerCase() : series[1].name }.
+                    <em>${ compare === 'prev_year' ? __('Previous year').toLowerCase() : state.cooperatives.find(item => item._id === compare).name }.
                   </span>
                 ` : '.' }
               </div>
