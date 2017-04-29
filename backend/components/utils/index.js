@@ -31,6 +31,12 @@ exports.getEnergyClass = function getEnergyClass(performance) {
   return null;
 };
 
+/**
+ * Find most recent performance entry for cooperative
+ * @param  {Object} cooperative Cooperative model
+ * @return {Number}             Value of most recent entry
+ */
+
 exports.getPerformance = function getPerformance(cooperative) {
   const byDate = cooperative.performances.slice().sort((a, b) => {
     const dateA = moment(`${ a.year }${ a.month }`, PERFORMANCE_FORMAT);
@@ -227,6 +233,7 @@ exports.resource = function resource(source) {
 
 /**
  * Get viewport width
+ * @return {Number}
  */
 
 exports.vw = function vw() {
@@ -235,6 +242,7 @@ exports.vw = function vw() {
 
 /**
  * Get viewport height
+ * @return {Number}
  */
 
 exports.vh = function vh() {
