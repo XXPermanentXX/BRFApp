@@ -1,4 +1,4 @@
-const html = require('choo/html');
+const html = require('dedent');
 
 module.exports = function (state) {
   return html`

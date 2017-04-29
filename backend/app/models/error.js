@@ -1,5 +1,7 @@
-module.exports = function error() {
+module.exports = function error(initialState) {
   return (state, emitter) => {
+    state.error = initialState || null;
+
     emitter.on('error', err => {
       if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console

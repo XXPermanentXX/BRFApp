@@ -36,7 +36,7 @@ module.exports = function error() {
 
     emitter.on('pushState', path => {
       hasChanged = false;
-      cache[window.location] = { page: state.chart.page };
+      cache[window.location.href] = { page: state.chart.page };
       Object.assign(state.chart, {
         page: 0,
         inEdit: vw() >= 800

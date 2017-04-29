@@ -1,0 +1,55 @@
+@import "suitcss-base";
+
+html, body {
+  height: 100%;
+  color: var(--color-text);
+  font-family: var(--font-family);
+  font-weight: var(--font-weight-normal);
+  font-size: calc(0.9px * var(--base-font-size));
+}
+
+@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
+  html, body {
+    font-size: calc(1px * var(--base-font-size));
+  }
+}
+
+/**
+ * 1. Lightly lighten default bolded text
+ */
+
+h1, h2, h3, h4, h5, h6, strong, b, dt {
+  -webkit-font-smoothing: antialiased; /* 1 */
+}
+
+:link,
+:visited {
+  text-decoration: none;
+  font-style: italic;
+  color: var(--color-primary);
+  -webkit-font-smoothing: antialiased;
+}
+
+:visited {
+  color: #AE38E8;
+}
+
+/**
+ * 1. Don't colorize visited internal links
+ */
+
+[href^="#"],
+[href^="/"] {
+  color: var(--color-primary); /* 1 */
+}
+
+:link:hover,
+:link:active {
+  text-decoration: underline;
+}
+
+hr {
+  height: 1px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.075);
+}

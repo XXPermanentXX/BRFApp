@@ -15,9 +15,7 @@ module.exports = function createChart() {
   let element;
 
   return function render(header, center, cooperative, actions, state, emit) {
-    if (typeof window === 'undefined') {
-      return empty(loader());
-    }
+    if (typeof window === 'undefined') { return empty(loader()); }
 
     const { page, inEdit } = state.chart;
     const { granularity, items, normalize, type, compare } = state.consumptions;

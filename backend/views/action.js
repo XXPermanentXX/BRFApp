@@ -12,7 +12,9 @@ const { __, __n } = require('../locale');
 
 const chart = createChart();
 
-module.exports = function (state, emit) {
+module.exports = view;
+
+function view(state, emit) {
   const { cooperatives, actions, params } = state;
   const action = actions.find(props => props._id === params.action);
 
@@ -59,7 +61,7 @@ module.exports = function (state, emit) {
             ${ definition(properties(action)) }
 
             ${ state.user ? html`
-              <a href="/actions/${ action._id }/edit" class="Button u-block u-marginVs">
+              <a href=${ resolve(`/actions/${ action._id }/edit`) } class="Button u-block u-marginVs">
                 ${ __('Edit energy action') }
               </a>
             ` : null }
@@ -94,6 +96,14 @@ module.exports = function (state, emit) {
       ${ footer(state, emit) }
     </div>
   `;
+}
+
+view.title = function (state) {
+  const action = state.actions.find(item => item._id === state.params.action);
+
+  if (action) {
+    return action.name;
+  }
 };
 
 function loading(state, emit) {

@@ -9,10 +9,13 @@ const { chevron, loader } = require('../components/icons');
 const error = require('../components/app/error');
 const footer = require('../components/app/footer');
 const { __, __n } = require('../locale');
+const resolve = require('../resolve');
 
 const chart = createChart();
 
-module.exports = function (state, emit) {
+module.exports = view;
+
+function view(state, emit) {
   const { cooperative: id } = state.params;
   const cooperative = state.cooperatives.find(props => props._id === id);
   const actions = state.actions.filter(props => props.cooperative === id);
@@ -23,7 +26,7 @@ module.exports = function (state, emit) {
         ${ error(state, emit) }
         ${ header(state, emit) }
         <div class="App-container u-paddingVb u-flex u-flexCol">
-          <a href="/cooperatives">
+          <a href=${ resolve('/') }>
             ${ chevron('left') }${ __('Show All Cooperatives') }
           </a>
           <div class="u-flexGrow1 u-flex u-flexCol u-flexJustifyCenter">
@@ -50,7 +53,7 @@ module.exports = function (state, emit) {
             <!-- Small viewport: page title -->
             <header class="u-md-hidden u-lg-hidden u-marginVm">
               <h1 class="Display Display--2 u-marginBb">${ cooperative.name }</h1>
-              <a href="/cooperatives">
+              <a href=${ resolve('/') }>
                 ${ chevron('left') }${ __('Show All Cooperatives') }
               </a>
             </header>
@@ -95,7 +98,7 @@ module.exports = function (state, emit) {
               <h1 class="Display Display--1 u-marginBs">
                 ${ cooperative.name }
               </h1>
-              <a href="/cooperatives" class="u-colorCurrent">
+              <a href=${ resolve('/') } class="u-colorCurrent">
                 ${ chevron('left') }${ __('Show All Cooperatives') }
               </a>
             </div>`, Date.now(), cooperative, actions, state, emit) }
@@ -121,4 +124,14 @@ module.exports = function (state, emit) {
       ${ footer(state, emit) }
     </div>
   `;
+}
+
+view.title = function (state) {
+  const cooperative = state.cooperatives.find(item => {
+    return item._id === state.params.cooperative;
+  });
+
+  if (cooperative) {
+    return cooperative.name;
+  }
 };

@@ -45,14 +45,11 @@ server.render = function (route, options, done) {
       // Join route with prefix to generate actual view path
       const pathname = `${ prefix }${ route }`.replace(/\/$/, '');
 
-      // Determine page wrapper for view
-      const page = route === '/' ? pages.landing : pages.app;
-
       // Wrap app `toString` method for injection into page
       const view = (...args) => app.toString(pathname, ...args);
 
       // Inject view in page and ensure that state is handled by `toJSON`
-      output = page(view, JSON.parse(JSON.stringify(state)));
+      output = pages.app(view, JSON.parse(JSON.stringify(state)));
     } catch (err) {
       return done(err);
     }

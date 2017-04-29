@@ -1,5 +1,6 @@
 const html = require('choo/html');
 const { __, __n } = require('../../locale');
+const resolve = require('../../resolve');
 const {
   energyRepresentative,
   energyMap,
@@ -14,7 +15,7 @@ module.exports = function popup(feature) {
   return html`
     <div class="Map-popup">
       <div class="u-nbfc">
-        <a class="u-textBold" href="/cooperatives/${ properties.id }">
+        <a class="u-textBold" href=${ resolve(`/cooperatives/${ properties.id }`) }>
           ${ properties.name }
         </a>
         ${ properties.performance ?

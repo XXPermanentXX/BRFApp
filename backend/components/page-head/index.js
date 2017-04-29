@@ -1,14 +1,15 @@
 const html = require('choo/html');
 const menu = require('../menu');
-const { __ } = require('../../locale');
 const { chevron } = require('../icons');
+const resolve = require('../../resolve');
+const { __ } = require('../../locale');
 
 const links = menu.extract([ 'about', 'faq' ]);
 
 module.exports = function header(state, emit) {
   return html`
     <div id="page-head" class="PageHead">
-      <div class="PageHead-title">BRF Energi</div>
+      <a href=${ resolve('/') } class="PageHead-title">BRF Energi</a>
       <nav class="PageHead-navigation">
 
         <!-- Small viewport: drop down menu list -->

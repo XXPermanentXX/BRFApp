@@ -18,7 +18,10 @@ router.post('/', auth.authenticate(), (req, res) => {
       res.render(
         `/cooperatives/${ cooperative._id }`,
         cooperative,
-        (data, done) => done(null, { cooperatives: [ data ], actions: [] })
+        (data, done) => {
+          res.locals.title = data.name;
+          done(null, { cooperatives: [ data ], actions: [] });
+        }
       );
     }
   });
@@ -34,24 +37,26 @@ router.post('/', auth.authenticate(), (req, res) => {
 router.get('/consumption/:type/:granularity', (req, res) => {
   const { params: { type, granularity }, query: { from, to }} = req;
 
-  Cooperatives.getAvgConsumption(type, granularity, from, to, (err, data) => {
-    if (err) {
-      res.status(400).render('/error', { err: err.message });
-    } else if (req.accepts('html')) {
-      res.redirect('/cooperatives');
-    } else {
-      res.json(data);
-    }
-  });
+  if (req.accepts('html')) {
+    res.redirect('/cooperatives');
+  } else {
+    Cooperatives.getAvgConsumption(type, granularity, from, to, (err, data) => {
+      if (err) {
+        res.status(400).render('/error', { err: err.message });
+      } else {
+        res.json(data);
+      }
+    });
 
-  Log.create({
-    userId: req.user && req.user._id,
-    category: 'Cooperative',
-    type: 'geAvgConsumption',
-    data: {
-      params: req.params
-    }
-  });
+    Log.create({
+      userId: req.user && req.user._id,
+      category: 'Cooperative',
+      type: 'geAvgConsumption',
+      data: {
+        params: req.params
+      }
+    });
+  }
 });
 
 router.get('/:id', isMongoId('id'), (req, res) => {
@@ -64,10 +69,10 @@ router.get('/:id', isMongoId('id'), (req, res) => {
       res.render(
         `/cooperatives${ req.url }`,
         cooperative,
-        (data, done) => done(null, {
-          cooperatives: [ data ],
-          actions: data.actions
-        })
+        (data, done) => {
+          res.locals.title = data.name;
+          done(null, { cooperatives: [ data ], actions: data.actions });
+        }
       );
     }
   });
@@ -115,10 +120,10 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
       req.render(
         `/cooperatives/${ id }`,
         result,
-        (data, done) => done(null, {
-          cooperatives: [ data ],
-          actions: data.actions
-        })
+        (data, done) => {
+          res.locals.title = data.name;
+          done(null, { cooperatives: [ data ], actions: data.actions });
+        }
       );
     }
   });
@@ -177,23 +182,27 @@ router.get('/:id/consumption', isMongoId('id'), (req, res) => {
   const { params: { id }, query } = req;
   const options = Object.assign({ type: 'electricity', normalized: true }, query);
 
-  Cooperatives.getConsumption(id, options, (err, consumption) => {
-    if (err) {
-      res.status(404).render('/404', { err: err.message });
-    } else {
-      res.render(`/cooperatives${ req.url }`, consumption);
+  if (req.accepts('html')) {
+    res.redirect(`/cooperatives/${ id }`);
+  } else {
+    Cooperatives.getConsumption(id, options, (err, consumption) => {
+      if (err) {
+        res.status(404).render('/404', { err: err.message });
+      } else {
+        res.render(consumption);
 
-      Log.create({
-        userId: req.user && req.user._id,
-        category: 'Cooperative',
-        type: 'getConsumption',
-        data: {
-          cooperativeId: id,
-          query: query
-        }
-      });
-    }
-  });
+        Log.create({
+          userId: req.user && req.user._id,
+          category: 'Cooperative',
+          type: 'getConsumption',
+          data: {
+            cooperativeId: id,
+            query: query
+          }
+        });
+      }
+    });
+  }
 });
 
 module.exports = router;

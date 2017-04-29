@@ -7,7 +7,9 @@ const { __, __n } = require('../locale');
 
 const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302 ];
 
-module.exports = function (state, emit) {
+module.exports = view;
+
+function view(state, emit) {
   const { actions, location: { params }} = state;
   const action = actions.find(props => props._id === params.action);
 
@@ -72,4 +74,12 @@ module.exports = function (state, emit) {
       </div>
     </div>
   `;
+}
+
+view.title = function (state) {
+  const action = state.actions.find(item => item._id === state.params.action);
+
+  if (action) {
+    return action.name;
+  }
 };

@@ -4,6 +4,7 @@ const router = express.Router();
 const Actions = require('../models/actions');
 const Cooperatives = require('../models/cooperatives');
 const Log = require('../models').logs;
+const { __ } = require('../locale');
 
 router.post('/:id/comments', isMongoId('id'), auth.authenticate(), (req, res) => {
   Actions.addComment(req.params.id, req.body, req.user, (err, comment) => {
@@ -107,17 +108,13 @@ router.post('/', auth.authenticate(), (req, res) => {
           Object.assign({ err: err.message}, req.body)
         );
       } else {
-        res.render(
-          `/actions/${ action._id }`,
-          action,
-          (data, done) => Cooperatives.get(action.cooperative, (err, cooperative) => {
+        res.render(`/actions/${ action._id }`, action, (data, done) => {
+          Cooperatives.get(action.cooperative, (err, cooperative) => {
             if (err) { return done(err); }
-            done(null, {
-              cooperatives: [ cooperative ],
-              actions: [ action ]
-            });
-          })
-        );
+            res.locals.title = data.name;
+            done(null, { cooperatives: [ cooperative ], actions: [ data ] });
+          });
+        });
       }
     });
   }
@@ -140,14 +137,10 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
         Object.assign({ err: err.message }, body)
       );
     } else {
-      res.render(
-        `/actions/${ id }`,
-        action,
-        (data, done) => done(null, {
-          cooperatives: [ data.cooperative ],
-          actions: [ data ]
-        })
-      );
+      res.render(`/actions/${ id }`, action, (data, done) => {
+        res.locals.title = data.name;
+        done(null, { cooperatives: [ data.cooperative ], actions: [ data ] });
+      });
     }
   });
 
@@ -167,14 +160,10 @@ router.get('/:id', isMongoId('id'), (req, res) => {
     if (err) {
       res.status(404).render('/error', { err: err.message });
     } else {
-      res.render(
-        `/actions${ req.url }`,
-        action,
-        (data, done) => done(null, {
-          cooperatives: [ data.cooperative ],
-          actions: [ data ]
-        })
-      );
+      res.render(`/actions${ req.url }`, action, (data, done) => {
+        res.locals.title = data.name;
+        done(null, { cooperatives: [ data.cooperative ], actions: [ data ] });
+      });
     }
   });
 
@@ -196,14 +185,10 @@ router.get('/:id/edit', isMongoId('id'), auth.authenticate(), (req, res) => {
       if (err) {
         res.status(404).render('/error', { err: err.message });
       } else {
-        res.render(
-          `/actions/${ req.params.id }/edit`,
-          action,
-          (data, done) => done(null, {
-            cooperatives: [ data.cooperative ],
-            actions: [ data ]
-          })
-        );
+        res.render(`/actions/${ req.params.id }/edit`, action, (data, done) => {
+          res.locals.title = data.name;
+          done(null, { cooperatives: [ data.cooperative ], actions: [ data ] });
+        });
       }
     });
 
@@ -248,11 +233,10 @@ router.get('/', function(req, res) {
     if (err) {
       res.status(500).render('/error', { err: err.message });
     } else {
-      res.render(
-        '/actions',
-        actions,
-        (data, done) => done(null, { actions: [ data ]})
-      );
+      res.render('/actions', actions, (data, done) => {
+        res.locals.title = __('Energy actions');
+        done(null, { actions: [ data ]});
+      });
     }
   });
 
@@ -269,7 +253,7 @@ router.get('/search', (req, res) => {
     if (err) {
       res.status(500).render('/error', { err: err.message });
     } else {
-      res.render('/search', actions, (data, done) => done(null, { actions }));
+      res.render(actions);
     }
   });
 

@@ -32,11 +32,17 @@
 }
 
 .PageHead-title {
+  display: block;
   margin-right: auto;
 
   font-style: italic;
   font-size: calc(27rem / var(--base-font-size));
   color: var(--color-pale);
+}
+
+.PageHead-title:hover,
+.PageHead-title:focus {
+  text-decoration: none;
 }
 
 .PageHead-navigation {

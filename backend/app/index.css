@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i');
 
-@import "suitcss-base";
-
-@import "suitcss-components-grid";
+@import "../components/app/base";
 @import "../components/action";
 @import "../components/app";
 @import "../components/button";
@@ -20,6 +18,7 @@
 @import "../components/sheet";
 @import "../components/type";
 
+@import "suitcss-components-grid";
 @import "suitcss-utils-display";
 @import "suitcss-utils-flex";
 @import "suitcss-utils-layout";
@@ -65,58 +64,3 @@
 @custom-media --sm-viewport (min-width:400px) and (max-width:799px);
 @custom-media --md-viewport (min-width:800px) and (max-width:1280px);
 @custom-media --lg-viewport (min-width:1280px);
-
-html, body {
-  height: 100%;
-  color: var(--color-text);
-  font-family: var(--font-family);
-  font-weight: var(--font-weight-normal);
-  font-size: calc(0.9px * var(--base-font-size));
-}
-
-@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
-  html, body {
-    font-size: calc(1px * var(--base-font-size));
-  }
-}
-
-/**
- * 1. Lightly lighten default bolded text
- */
-
-h1, h2, h3, h4, h5, h6, strong, b, dt {
-  -webkit-font-smoothing: antialiased; /* 1 */
-}
-
-:link,
-:visited {
-  text-decoration: none;
-  font-style: italic;
-  color: var(--color-primary);
-  -webkit-font-smoothing: antialiased;
-}
-
-/**
- * 1. Don't colorize visited internal links
- */
-
-:visited[href^="#"],
-:visited[href^="/"] {
-  color: var(--color-primary); /* 1 */
-}
-
-:visited,
-:visited[href^="//"] {
-  color: #AE38E8;
-}
-
-:link:hover,
-:link:active {
-  text-decoration: underline;
-}
-
-hr {
-  height: 1px;
-  border: 0;
-  background: rgba(0, 0, 0, 0.075);
-}

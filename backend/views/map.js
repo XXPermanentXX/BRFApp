@@ -4,7 +4,7 @@ const header = require('../components/page-head');
 const footer = require('../components/app/footer');
 const error = require('../components/app/error');
 
-module.exports = function (state, emit) {
+module.exports = function view(state, emit) {
   return html`
     <div class="App">
       <div class="u-flex u-flexCol u-fillViewportV">
