@@ -1,5 +1,5 @@
 const choo = require('choo');
-const { setLocale, __ } = require('../locale');
+const { setLocale } = require('../locale');
 
 const DEFAULT_LANGUAGE = 'sv';
 const INITIAL_STATE = {};
