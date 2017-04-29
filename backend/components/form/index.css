@@ -36,9 +36,19 @@
  */
 
 .Form-grid {
+  display: flex;
+  flex-wrap: wrap;
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: baseline;
+}
+
+.Form-grid :nth-child(2n+1) {
+  flex-basis: 10%;
+}
+
+.Form-grid :nth-child(2n) {
+  flex-basis: 90%;
 }
 
 /**
@@ -130,6 +140,7 @@
  */
 
 .Form-toggleGroup {
+  display: flex;
   display: grid;
   grid-template-columns: 1fr 1fr;
 }

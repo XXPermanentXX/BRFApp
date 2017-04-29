@@ -32,8 +32,8 @@ module.exports = function form(cooperative, state, emit) {
     <form class="Form u-flex u-flexCol u-flexJustifyEnd u-md-flexRow u-lg-flexRow u-md-flexAlignItemsBaseline u-lg-flexAlignItemsBaseline u-paddingLb">
 
       <!-- Medium & large viewports: move granularity toggle to end of form -->
-      <div class="u-md-flexOrderLast u-lg-flexOrderLast u-marginRb">
-        <div class="Form-toggleGroup u-marginBs">
+      <div class="u-flex u-flexWrap u-md-flexOrderLast u-lg-flexOrderLast u-marginRb">
+        <div class="Form-toggleGroup u-marginBs u-sizeFull">
           <label class="Form-toggle u-flexGrow1">
             <input class="u-hiddenVisually" type="radio" name="consumptions:granularity" value="month" onchange=${ onchange } checked=${ granularity === 'month' } disabled=${ disabled }/>
             <span class="Form-label">${ __('Monthly') }</span>
@@ -44,7 +44,7 @@ module.exports = function form(cooperative, state, emit) {
           </label>
         </div>
 
-        <label class="u-flex u-marginBs">
+        <label class="u-flex u-marginBs u-sizeFull">
           <input class="Form-target Form-target--compex" type="checkbox" name="consumptions:normalize" onchange=${ onchange } checked=${ normalize } disabled=${ disabled } />
           <span class="Form-pill Form-pill--leading Form-pill--checkmark u-flex u-flexAlignItemsCenter">
             ${ checkmark(14) }
