@@ -37,6 +37,17 @@
 
 .Chart-filter {
   flex-basis: 100%;
+  padding: var(--space-b) 0;
+}
+
+.Chart-summary {
+  padding: var(--viewport-padding);
+  font-size: calc(14rem / var(--base-font-size));
+  line-height: 1.25;
+}
+
+.Chart-summary.is-collapsed {
+  display: none;
 }
 
 @media (--md-viewport), (--lg-viewport) {
@@ -58,6 +69,7 @@
 
   .Chart-filter {
     flex-basis: auto;
+    padding: 0;
   }
 }
 

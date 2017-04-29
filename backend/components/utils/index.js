@@ -163,7 +163,7 @@ exports.cache = function cache(props) {
 
   if (typeof props === 'function') {
     _render = props;
-  } else if (typeof props === 'object') {
+  } else if (typeof props.render === 'function') {
     _render = props.render;
   } else {
     throw (new Error('Cache must be provided with a render function'));
@@ -200,11 +200,17 @@ exports.cache = function cache(props) {
   };
 };
 
-exports.load = function load(source) {
+/**
+ * Load external resource
+ * @param  {String}  source URI of resource
+ * @return {Promise}        Resolves to resource module
+ */
+
+exports.resource = function resource(source) {
   return new Promise((resolve, reject) => {
     if (/\.css$/.test(source)) {
       document.head.insertBefore(
-        html`<link rel="stylesheet" href=${ source } />`,
+        html`<link rel="stylesheet" href=${ source } onload=${ resolve } />`,
         document.head.querySelector('link')
       );
     } else {
@@ -217,4 +223,20 @@ exports.load = function load(source) {
       document.head.appendChild(script);
     }
   });
+};
+
+/**
+ * Get viewport width
+ */
+
+exports.vw = function vw() {
+  return Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+};
+
+/**
+ * Get viewport height
+ */
+
+exports.vh = function vh() {
+  return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 };

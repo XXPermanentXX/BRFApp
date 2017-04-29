@@ -10,23 +10,17 @@ const { __ } = require('../../locale');
 const SELECTED_COOPERATIVE = /cooperative:(\w+)/;
 
 const chart = createChart();
-let isInitialized = false;
 
 module.exports = function createChart() {
-  let current, element;
-  let page = 0;
+  let element;
 
   return function render(header, center, cooperative, actions, state, emit) {
     if (typeof window === 'undefined') {
       return empty(loader());
     }
 
-    if (cooperative._id !== current) {
-      page = 0;
-      current = cooperative._id;
-    }
-
-    const { granularity, items } = state.consumptions;
+    const { page, inEdit } = state.chart;
+    const { granularity, items, normalize, type, compare } = state.consumptions;
 
     /**
      * Figure out where (when) to center the graph
@@ -69,7 +63,7 @@ module.exports = function createChart() {
     }
 
     /**
-     * Compose montly values into years
+     * Compose Monthly values into years
      */
 
     if (granularity === 'year') {
@@ -106,21 +100,44 @@ module.exports = function createChart() {
     }
 
     return html`
-      <div class=${ className('Chart', { 'is-loading': isLoading }) } onload=${ onload }>
+      <div class=${ className('Chart', { 'is-loading': isLoading }) }>
         <div class="Chart-header">
           <div class="Chart-title">
             ${ header }
           </div>
           <div class="Chart-filter">
-          ${ form(cooperative, state, emit) }
+            <!-- Toggle form/summary view -->
+            ${ inEdit ? form(cooperative, state, emit) : html`
+              <div class="Chart-summary">
+                <button class="Button Button--round Button--inverse u-marginLs u-floatRight" onclick=${ () => emit('chart:edit') }>
+                  ${ __('Edit') }
+                </button>
+
+                <!-- Compiled summary of current filter settings -->
+                <strong>${ __('Showing') }:</strong>
+                <em>${ normalize ? __('normalized') : '' }</em>
+                ${ __('energy use for') }
+                <em>${ __(type).toLowerCase() }</em>
+                ${ __('per') }
+                <em>${ __(granularity) }</em>${ compare ? html`
+                  <span>
+                    ${ __('compared with') }
+                    <em>${ compare === 'prev_year' ? series[1].name.toLowerCase() : series[1].name }.
+                  </span>
+                ` : '.' }
+              </div>
+            ` }
           </div>
         </div>
         <div class="Chart-graph">
+          <!-- Cached Highcharts container element -->
           ${ element }
-          <button class="Chart-paginate Chart-paginate--left" onclick=${ paginate(-1) } disabled=${ !hasEarlier }>
+
+          <!-- Paginate buttons -->
+          <button class="Chart-paginate Chart-paginate--left" onclick=${ () => emit('chart:paginate', -1) } disabled=${ !hasEarlier }>
             ${ chevron('left') } <span class="Chart-pageLabel">${ __('Show earlier') }</span>
           </button>
-          <button class="Chart-paginate Chart-paginate--right" onclick=${ paginate(1) } disabled=${ !hasLater }>
+          <button class="Chart-paginate Chart-paginate--right" onclick=${ () => emit('chart:paginate', 1) } disabled=${ !hasLater }>
             <span class="u-floatRight">
               <span class="Chart-pageLabel">${ __('Show more recent') }</span> ${ chevron('right') }
             </span>
@@ -130,47 +147,22 @@ module.exports = function createChart() {
     `;
 
     /**
-     * Increment/decrement current page value and issue a re-render
-     */
-
-    function paginate (diff) {
-      return () => {
-        page += diff;
-        emit('render');
-      };
-    }
-
-    /**
      * Simple no fuzz loading state
      */
 
     function empty(content) {
       return html`
-        <div class="Chart" onload=${ onload }>
+        <div class="Chart">
           <div class="Chart-header">
             <div class="Chart-title">
               ${ header }
             </div>
-            <div class="Chart-filter">
-              ${ form(cooperative, state, emit) }
-            </div>
           </div>
-          <div class="Chart-graph u-flex u-flexAlignItemsCenter u-flexJustifyCenter u-paddingVl">
+          <div class="Chart-graph u-textCenter u-paddingVl">
             ${ content }
           </div>
         </div>
       `;
-    }
-
-    /**
-     * Fetch all cooperatives on first load as they are needed for comparing
-     */
-
-    function onload() {
-      if (!isInitialized) {
-        emit('cooperatives:fetch');
-        isInitialized = true;
-      }
     }
   };
 };

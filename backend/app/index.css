@@ -71,7 +71,7 @@ html, body {
   color: var(--color-text);
   font-family: var(--font-family);
   font-weight: var(--font-weight-normal);
-  font-size: calc(0.85px * var(--base-font-size));
+  font-size: calc(0.9px * var(--base-font-size));
 }
 
 @media (--sm-viewport), (--md-viewport), (--lg-viewport) {

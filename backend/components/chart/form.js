@@ -14,7 +14,7 @@ module.exports = function form(cooperative, state, emit) {
   const disabled = consumptions.isLoading;
   const onchange = event => {
     const { target } = event;
-    const value = target.type === 'cheeckbox' ? target.checked : target.value;
+    const value = target.type === 'checkbox' ? target.checked : target.value;
     emit(target.name, value);
   };
 
@@ -36,7 +36,7 @@ module.exports = function form(cooperative, state, emit) {
         <div class="Form-toggleGroup u-marginBs">
           <label class="Form-toggle u-flexGrow1">
             <input class="u-hiddenVisually" type="radio" name="consumptions:granularity" value="month" onchange=${ onchange } checked=${ granularity === 'month' } disabled=${ disabled }/>
-            <span class="Form-label">${ __('Montly') }</span>
+            <span class="Form-label">${ __('Monthly') }</span>
           </label>
           <label class="Form-toggle u-flexGrow1">
             <input class="u-hiddenVisually" type="radio" name="consumptions:granularity" value="year" onchange=${ onchange } checked=${ granularity === 'year' } disabled=${ disabled } />

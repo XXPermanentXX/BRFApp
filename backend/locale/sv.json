@@ -64,9 +64,13 @@
   "Compare with": "Jämför med",
   "Neighborhood average": "Snitt för kvarteret",
   "Heating & Hot water": "Värme och varmvatten",
+  "heating": "Värme och varmvatten",
   "Electricity": "Elektricitet",
-  "Montly": "Månad",
+  "electricity": "Elektricitet",
+  "Monthly": "Månad",
+  "month": "månad",
   "Yearly": "År",
+  "year": "år",
   "Show All Cooperatives": "Visa alla föreningar",
   "Designated Energyrepresentative": "Energiansvarig utsedd",
   "Energy mapping": "Genomförd energikartläggning",
@@ -80,5 +84,11 @@
   "Show earlier": "Visa tidigare",
   "Show more recent": "Visa senare",
   "Energy actions": "Energy actions",
-  "Normalize": "Normalisera"
+  "Normalize": "Normalisera",
+  "Showing": "Visar",
+  "normalized": "normaliserad",
+  "energy use for": "energianvändning för",
+  "per": "per",
+  "compared with": "jämfört med",
+  "Edit": "Ändra"
 }

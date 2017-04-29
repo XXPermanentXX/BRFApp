@@ -115,8 +115,6 @@ db.once('open', function() {
     const { address: host, port } = listener.address();
 
     // eslint-disable-next-line no-console
-    console.info(`
-      Server listening at ${ host.replace('::', 'localhost') }:${ port }
-    `);
+    console.info(`> Server listening at ${ host.replace('::', 'localhost') }:${ port }`);
   });
 });

@@ -38,6 +38,7 @@ routes.map(localize('en')).forEach(([route, view]) => app.route(route, view));
 app.use(require('./models/menu')());
 app.use(require('./models/error')());
 app.use(require('./models/geoip')());
+app.use(require('./models/chart')());
 app.use(require('./models/user')(INITIAL_STATE.user, INITIAL_STATE.auth));
 app.use(require('./models/actions')(INITIAL_STATE.actions, INITIAL_STATE.auth));
 app.use(require('./models/cooperatives')(INITIAL_STATE.cooperatives, INITIAL_STATE.auth));
@@ -57,7 +58,7 @@ if (typeof window !== 'undefined') {
   }
 
    /**
-   * Initialize application
+   * Mount the application
    */
 
   app.mount('.js-app > :first-child');

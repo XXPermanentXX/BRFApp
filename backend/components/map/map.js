@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const createPopup = require('./popup');
 const { __ } = require('../../locale');
-const { getEnergyClass, cache, getPerformance, load } = require('../utils');
+const { getEnergyClass, cache, getPerformance, resource } = require('../utils');
 
 const CLUSTER_THRESHOLD = 12;
 const POPUP_OFFSET = {
@@ -82,8 +82,8 @@ module.exports = function createMap() {
       function onload(el) {
         if (map) { return; }
 
-        load('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
-        load('mapbox-gl').then(mapboxgl => {
+        resource('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
+        resource('mapbox-gl').then(mapboxgl => {
           // Stash mapbox api in scoped variable
           mapbox = mapboxgl;
 

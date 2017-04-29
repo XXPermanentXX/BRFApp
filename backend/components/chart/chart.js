@@ -1,6 +1,7 @@
 const html = require('choo/html');
 const merge = require('lodash.merge');
 const moment = require('moment');
+const { loader } = require('../icons');
 const defaults = require('./defaults');
 const { __ } = require('../../locale');
 const {
@@ -9,11 +10,11 @@ const {
   cache,
   debounce,
   className,
-  load
+  resource
 } = require('../utils');
 
 module.exports = function createContainer() {
-  let chart;
+  let chart, init;
 
   return cache({
     shouldUpdate(args, prev) {
@@ -41,20 +42,34 @@ module.exports = function createContainer() {
     },
 
     update(element, granularity, actions, data) {
-      chart.update(getConfig(granularity, actions, data));
+      if (chart) {
+        chart.update(getConfig(granularity, actions, data));
+      } else {
+        init = getConfig(granularity, actions, data);
+      }
     },
 
     render(granularity, actions, data) {
-      return html`<div onload=${ onload } />`;
+      return html`
+        <div onload=${ onload }>
+          <!-- Insert intermediary loader while waiting for Highcharts -->
+          <div class="u-textCenter u-paddingVl">
+            ${ loader() }
+          </div>
+        </div>
+      `;
 
       function onload(el) {
         // Exit early if Highcharts has been initialized already
         if (chart) { return; }
 
-        load('highcharts').then(Highcharts => {
+        resource('highcharts').then(Highcharts => {
           const spacing = el.offsetWidth * 0.02;
 
-          chart = Highcharts.chart(el, merge({
+          // Remove loader from chart container
+          el.innerHTML = '';
+
+          const config = merge({
             chart: {
               spacing: [ 0, spacing, 0, spacing ]
             },
@@ -75,8 +90,12 @@ module.exports = function createContainer() {
                 return { x: point.plotX - 2, y: point.plotY - 15 };
               }
             }
-          }, defaults, getConfig(granularity, actions, data)), chart => {
+          }, defaults, init || getConfig(granularity, actions, data));
+
+          chart = Highcharts.chart(el, config, chart => {
             chart.reflow();
+
+            // Recalulate spacing equal to `2vw` on `resize`
             window.addEventListener('resize', debounce(() => {
               const spacing = el.offsetWidth * 0.02;
               chart.update({ chart: { spacing: [ 0, spacing, 0, spacing ] }});

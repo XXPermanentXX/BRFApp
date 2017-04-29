@@ -2,6 +2,10 @@ module.exports = function cooperatives(initialState, auth) {
   return (state, emitter) => {
     state.cooperatives = initialState || [];
 
+    emitter.on('DOMContentLoaded', () => {
+      emitter.emit('cooperatives:fetch');
+    });
+
     emitter.on('cooperatives:add', data => {
       if (Array.isArray(data)) {
         data.forEach(inject);
