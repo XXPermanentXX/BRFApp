@@ -62,7 +62,7 @@
     "uglifyify": "^3.0.4",
     "unassertify": "^2.0.4",
     "watchify-middleware": "^1.6.0",
-    "yo-yoify": "git+https://github.com/arturi/yo-yoify.git#patch-1"
+    "yo-yoify": "^3.7.2"
   },
   "dependencies": {
     "async": "^1.3.0",
