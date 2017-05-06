@@ -14,7 +14,17 @@
   justify-content: center;
 }
 
-.App-container--contain {
+.App-container--sm {
+  max-width: var(--sm-viewport);
+  padding: 0 var(--viewport-padding);
+}
+
+.App-container--md {
+  max-width: var(--md-viewport);
+  padding: 0 var(--viewport-padding);
+}
+
+.App-container--lg {
   max-width: var(--lg-viewport);
   padding: 0 var(--viewport-padding);
 }

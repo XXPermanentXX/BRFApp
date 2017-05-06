@@ -5,6 +5,11 @@
   width: 100%;
 }
 
+.Map.is-loading {
+  display: flex;
+  align-items: center;
+}
+
 .Map-locate {
   position: absolute;
   top: var(--viewport-padding);

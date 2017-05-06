@@ -1,7 +1,7 @@
 /** @define Type */
 
 .Type {
-
+  line-height: 1.35;
 }
 
 .Type p:not(:first-child):not(:last-child) {

@@ -5,7 +5,7 @@ module.exports = function error(state, emit) {
   return html`
     <div role=${ state.error ? 'alert' : 'none' } class="App-error">
       ${ state.error ? html`
-        <div class="App-container App-container--contain u-flexJustifyBetween">
+        <div class="App-container App-container--lg u-flexJustifyBetween">
           ${ state.error }
           <button class="Button Button--link u-paddingLs u-colorCurrent" onclick=${ onclick }>
             ${ __('Close') }

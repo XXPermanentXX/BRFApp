@@ -55,7 +55,7 @@ routes.map(localize('en')).forEach(([route, view]) => app.route(route, view));
 app.use(require('./models/menu')());
 app.use(require('./models/geoip')());
 app.use(require('./models/chart')());
-app.use(require('./models/cms')({ faq: INITIAL_STATE.faq }));
+app.use(require('./models/cms')({ faq: INITIAL_STATE.faq, about: INITIAL_STATE.about }));
 app.use(require('./models/error')(INITIAL_STATE.error));
 app.use(require('./models/user')(INITIAL_STATE.user, INITIAL_STATE.auth));
 app.use(require('./models/actions')(INITIAL_STATE.actions, INITIAL_STATE.auth));
@@ -79,7 +79,7 @@ if (typeof window !== 'undefined') {
    * Mount the application
    */
 
-  app.mount('.js-app > :first-child');
+  app.mount('.App');
 }
 
 /**

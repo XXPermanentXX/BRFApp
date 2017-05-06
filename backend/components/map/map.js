@@ -1,5 +1,6 @@
 const html = require('choo/html');
 const createPopup = require('./popup');
+const { loader } = require('../icons');
 const { __ } = require('../../locale');
 const { getEnergyClass, cache, getPerformance, resource } = require('../utils');
 
@@ -71,7 +72,11 @@ module.exports = function createMap() {
     render(...args) {
       let popup;
 
-      return html`<div class="Map u-sizeFill" onload=${ onload } onunload=${ onunload }></div>`;
+      return html`
+        <div class="Map u-sizeFill is-loading" onload=${ onload } onunload=${ onunload }>
+          ${ loader() }
+        </div>
+      `;
 
       function onunload() {
         if (popup && popup.isOpen()) {
@@ -84,6 +89,13 @@ module.exports = function createMap() {
 
         resource('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
         resource('mapbox-gl').then(mapboxgl => {
+
+          /**
+           * Unset loading state and empty out container
+           */
+
+          el.classList.remove('is-loading');
+          el.innerHTML = '';
 
           // Pluck data from init if update has been called, fallback to args
           const [ cooperatives, center ] = init || args;

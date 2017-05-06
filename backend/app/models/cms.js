@@ -1,5 +1,7 @@
 const Prismic = require('prismic.io');
-const { Document } = require('prismic.io/lib/documents');
+const prismicElement = require('prismic-element');
+
+prismicElement(Prismic);
 
 const ARGS = [
   'id', 'uid', 'type', 'href', 'tags', 'slugs','firstPublicationDate',
@@ -20,8 +22,8 @@ module.exports = function cms(initialState) {
 
       if (!doc) { return; }
 
-      if (!(doc instanceof Document)) {
-        doc = new Document(...ARGS.map(arg => doc[arg]));
+      if (!(doc instanceof Prismic.Document)) {
+        doc = new Prismic.Document(...ARGS.map(arg => doc[arg]));
       }
 
       state[key] = doc;
