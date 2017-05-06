@@ -16,7 +16,7 @@ const POPUP_OFFSET = {
 };
 
 module.exports = function createMap() {
-  let map, mapbox, position;
+  let init, map, mapbox, position;
 
   return cache({
     shouldUpdate(args, prev) {
@@ -37,7 +37,7 @@ module.exports = function createMap() {
       if (map) {
         setData();
       } else {
-        map.on('load', setData);
+        init = [ cooperatives, center ];
       }
 
       function setData() {
@@ -68,7 +68,7 @@ module.exports = function createMap() {
       }
     },
 
-    render(cooperatives, center) {
+    render(...args) {
       let popup;
 
       return html`<div class="Map u-sizeFill" onload=${ onload } onunload=${ onunload }></div>`;
@@ -84,6 +84,10 @@ module.exports = function createMap() {
 
         resource('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
         resource('mapbox-gl').then(mapboxgl => {
+
+          // Pluck data from init if update has been called, fallback to args
+          const [ cooperatives, center ] = init || args;
+
           // Stash mapbox api in scoped variable
           mapbox = mapboxgl;
 

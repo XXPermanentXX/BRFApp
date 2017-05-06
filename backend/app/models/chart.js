@@ -1,6 +1,6 @@
 const { debounce, vw } = require('../../components/utils');
 
-module.exports = function error() {
+module.exports = function chart() {
   let hasChanged = false;
   const cache = {};
 

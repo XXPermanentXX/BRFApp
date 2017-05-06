@@ -10,6 +10,7 @@ const routes = require('./routes');
 const lang = require('./middleware/lang');
 const auth = require('./middleware/auth');
 const method = require('./middleware/method');
+const prismic = require('./middleware/prismic');
 const app = require('./app');
 
 mongoose.connect(process.env.MONGO_URL);
@@ -49,7 +50,7 @@ server.render = function (route, options, done) {
       const view = (...args) => app.toString(pathname, ...args);
 
       // Inject view in page and ensure that state is handled by `toJSON`
-      output = pages.app(view, JSON.parse(JSON.stringify(state)));
+      output = pages.app(view, state);
     } catch (err) {
       return done(err);
     }
@@ -101,6 +102,7 @@ server.use(session({
 server.use(expressValidator());
 server.use(auth.initialize());
 server.use(auth.session());
+server.use(prismic());
 server.use(lang('sv'), routes);
 server.use('/en', lang('en'), routes);
 server.use(express.static(__dirname + '/public'));
