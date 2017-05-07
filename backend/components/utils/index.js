@@ -220,13 +220,14 @@ exports.resource = function resource(source) {
         document.head.querySelector('link')
       );
     } else {
-      const script = html`<script src="/${ source }.js" async></script>`;
+      const script = html`<script async></script>`;
       script.onerror = reject;
       script.onload = () => {
         script.parentNode.removeChild(script);
         resolve(require(source));
       };
       document.head.appendChild(script);
+      script.src = `/${ source }.js`;
     }
   });
 };

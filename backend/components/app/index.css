@@ -17,16 +17,22 @@
 .App-container--sm {
   max-width: var(--sm-viewport);
   padding: 0 var(--viewport-padding);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .App-container--md {
   max-width: var(--md-viewport);
   padding: 0 var(--viewport-padding);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .App-container--lg {
   max-width: var(--lg-viewport);
   padding: 0 var(--viewport-padding);
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .App-part {

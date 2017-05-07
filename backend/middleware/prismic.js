@@ -6,7 +6,7 @@ module.exports = function () {
     Prismic.api(process.env.PRISMIC_API).then(api => {
       req.prismic = { api, linkResolver };
       next();
-    });
+    }, next);
   };
 };
 

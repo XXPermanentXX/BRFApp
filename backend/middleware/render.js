@@ -8,35 +8,33 @@ const User = require('../models/users');
 module.exports = function render(req, res, next) {
   const orig = res.render;
 
-  res.render = function (route, state, format) {
+  res.render = function (route, state, formatter) {
     if (typeof route === 'object' && !state) {
       state = route;
     }
 
+    /**
+     * Determine format of return value -> HTML/JSON
+     */
+
     if (typeof route === 'string' && req.accepts('html')) {
-      state = state || {};
 
       /**
-       * Pipe given state through (optional) format function before sending
+       * Pipe state through (optional) formatter for decorating HTML state
        */
 
-      if (typeof format === 'function') {
-        format(state, (err, formated) => {
+      if (typeof formatter === 'function') {
+        formatter((err, formatted) => {
           if (err) {
             res.status(500).render('/error', { err: err.message });
           } else {
-            send(formated);
+            send(formatted);
           }
         });
       } else {
-        send(state);
+        send(state || {});
       }
     } else {
-
-      /**
-       * If it's not specifically HTML that is beeing request, just send json
-       */
-
       res.json(state);
     }
 

@@ -112,17 +112,21 @@ module.exports = function createChart() {
                 </button>
 
                 <!-- Compiled summary of current filter settings -->
-                <strong>${ __('Showing') }:</strong>
-                <em>${ normalize ? __('normalized') : '' }</em>
-                ${ __('energy use for') }
-                <em>${ __(type).toLowerCase() }</em>
-                ${ __('per') }
-                <em>${ __(granularity) }</em>${ compare ? html`
+                <strong>${ __('Showing') }: </strong>
+                <em>${ normalize ? (__('normalized') + ' ') : '' }</em>
+                ${ __('energy use for') + ' ' }
+                <em>${ __(type).toLowerCase() + ' ' }</em>
+                ${ __('per') + ' ' }
+                <em>${ __(granularity) + ' ' }</em>
+                ${ compare ? html`
                   <span>
-                    ${ __('compared with') }
-                    <em>${ compare === 'prev_year' ? __('Previous year').toLowerCase() : state.cooperatives.find(item => item._id === compare).name }.
+                    ${ __('compared with') + ' ' }
+                    <em>${ compare === 'prev_year' ?
+                      __('Previous year').toLowerCase() :
+                      state.cooperatives.find(item => item._id === compare).name
+                    }</em>
                   </span>
-                ` : '.' }
+                ` : null }
               </div>
             ` }
           </div>

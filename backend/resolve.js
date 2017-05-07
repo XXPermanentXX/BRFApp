@@ -5,7 +5,7 @@ module.exports = function (route) {
 };
 
 function localize(route) {
-  route = route.slug ? route.slug : route;
+  route = route.slug ? `/${ route.slug }` : route;
 
   const locale = getLocale();
 

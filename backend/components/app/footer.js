@@ -1,14 +1,13 @@
 const html = require('choo/html');
-const moment = require('moment');
-const { __ } = require('../../locale');
+const resolve = require('../../resolve');
 
 module.exports = function footer(state, emit) {
   return html`
     <footer class="App-footer">
-      <div class="Type">
-        ${ html([ `<p>${ __('PROJECT_IN_SHORT', 'info@brfenergi.com') }</p>` ]) }
-        ${ html([ `<p>${ __('LICENSE_NOTICE', 'https://github.com/CIVIS-project/BRFApp') }</p>` ]) }
-        <p class="u-textCenter">${ __('COPYRIGHT', moment(Date.now()).format('YYYY')) }</p>
+      <div class="App-container App-container--md">
+        <div class="Type u-textCenter">
+          ${ state.footer.getStructuredText('footer.body').asElement(resolve) }
+        </div>
       </div>
     </footer>
   `;

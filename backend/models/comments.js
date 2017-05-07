@@ -28,7 +28,8 @@ const CommentSchema = new mongoose.Schema({
 CommentSchema.methods.toJSON = function toJSON() {
   const props = this.toObject();
 
-  props.user = props.user._id || props.user;
+  props._id = this._id.toString();
+  props.user = (props.user._id || props.user).toString();
 
   return props;
 };

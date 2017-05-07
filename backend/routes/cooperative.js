@@ -15,14 +15,10 @@ router.post('/', auth.authenticate(), (req, res) => {
         Object.assign({ err: err.message }, body)
       );
     } else {
-      res.render(
-        `/cooperatives/${ cooperative._id }`,
-        cooperative,
-        (data, done) => {
-          res.locals.title = data.name;
-          done(null, { cooperatives: [ data ], actions: [] });
-        }
-      );
+      res.locals.title = cooperative.name;
+      res.render(`/cooperatives/${ cooperative._id }`, cooperative, done => {
+        done(null, { cooperatives: [ cooperative.toJSON() ]});
+      });
     }
   });
 
@@ -66,14 +62,13 @@ router.get('/:id', isMongoId('id'), (req, res) => {
     if (err) {
       res.status(404).render('/404', { err: err.message });
     } else {
-      res.render(
-        `/cooperatives${ req.url }`,
-        cooperative,
-        (data, done) => {
-          res.locals.title = data.name;
-          done(null, { cooperatives: [ data ], actions: data.actions });
-        }
-      );
+      res.locals.title = cooperative.name;
+      res.render(`/cooperatives${ req.url }`, cooperative, done => {
+        done(null, {
+          cooperatives: [ cooperative.toJSON() ],
+          actions: cooperative.actions.map(action => action.toJSON())
+        });
+      });
     }
   });
 
@@ -92,11 +87,11 @@ router.get('/', (req, res) => {
     if (err) {
       res.status(500).render('/error', { err: err.message });
     } else {
-      res.render(
-        '/cooperatives',
-        cooperatives,
-        (data, done) => done(null, { cooperatives: data })
-      );
+      res.render('/cooperatives', cooperatives, done => {
+        done(null, {
+          cooperatives: cooperatives.map(cooperative => cooperative.toJSON())
+        });
+      });
     }
   });
 
@@ -110,21 +105,17 @@ router.get('/', (req, res) => {
 router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
   const { body, params: { id }} = req;
 
-  Cooperatives.update(id, body, (err, result) => {
+  Cooperatives.update(id, body, (err, cooperative) => {
     if (err) {
-      res.status(500).render(
-        `/cooperatives/${ id }`,
-        Object.assign({ err: err.message }, body)
-      );
+      res.status(500).render(`/cooperatives/${ id }`, Object.assign({
+        err: err.message
+      }, body));
     } else {
-      req.render(
-        `/cooperatives/${ id }`,
-        result,
-        (data, done) => {
-          res.locals.title = data.name;
-          done(null, { cooperatives: [ data ], actions: data.actions });
-        }
-      );
+      res.locals.title = cooperative.name;
+      req.render(`/cooperatives/${ id }`, {
+        cooperatives: [ cooperative.toJSON() ],
+        actions: cooperative.actions.map(action => action.toJSON())
+      });
     }
   });
 

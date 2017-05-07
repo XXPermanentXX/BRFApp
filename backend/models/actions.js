@@ -63,8 +63,9 @@ ActionSchema.pre('remove', next => {
 ActionSchema.methods.toJSON = function toJSON() {
   const props = this.toObject();
 
-  props.cooperative = props.cooperative._id || props.cooperative;
-  props.user = props.user._id || props.user;
+  props._id = this._id.toString();
+  props.cooperative = (props.cooperative._id || props.cooperative).toString();
+  props.user = (props.user._id || props.user).toString();
   props.comments = this.comments.map(comment => comment.toJSON());
 
   return props;

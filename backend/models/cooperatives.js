@@ -5,7 +5,6 @@ const Schema = mongoose.Schema;
 const async = require('async');
 const { getEnergimolnetConsumption } = require('./consumption');
 
-
 const DYNAMIC_KEYS = [
   'name',
   'email',
@@ -72,8 +71,9 @@ CooperativeSchema.pre('remove', next => {
 CooperativeSchema.methods.toJSON = function toJSON() {
   const props = this.toObject();
 
-  props.actions = props.actions.map(action => action._id || action);
-  props.editors = props.editors.map(editor => editor._id || editor);
+  props._id = this._id.toString();
+  props.actions = props.actions.map(action => (action._id || action).toString());
+  props.editors = props.editors.map(editor => (editor._id || editor).toString());
 
   return props;
 };

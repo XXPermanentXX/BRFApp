@@ -17,7 +17,8 @@ const POPUP_OFFSET = {
 };
 
 module.exports = function createMap() {
-  let init, map, mapbox, position;
+  let latest, map, mapbox, position;
+  let isInitialized = false;
 
   return cache({
     shouldUpdate(args, prev) {
@@ -38,7 +39,7 @@ module.exports = function createMap() {
       if (map) {
         setData();
       } else {
-        init = [ cooperatives, center ];
+        latest = [ cooperatives, center ];
       }
 
       function setData() {
@@ -85,7 +86,8 @@ module.exports = function createMap() {
       }
 
       function onload(el) {
-        if (map) { return; }
+        if (isInitialized) { return; }
+        isInitialized = true;
 
         resource('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
         resource('mapbox-gl').then(mapboxgl => {
@@ -97,8 +99,8 @@ module.exports = function createMap() {
           el.classList.remove('is-loading');
           el.innerHTML = '';
 
-          // Pluck data from init if update has been called, fallback to args
-          const [ cooperatives, center ] = init || args;
+          // Pluck data from latest if update has been called, fallback to args
+          const [ cooperatives, center ] = latest || args;
 
           // Stash mapbox api in scoped variable
           mapbox = mapboxgl;
