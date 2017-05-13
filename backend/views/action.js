@@ -15,7 +15,7 @@ const chart = createChart();
 module.exports = view;
 
 function view(state, emit) {
-  const { cooperatives, actions, params } = state;
+  const { cooperatives, actions, params, user } = state;
   const action = actions.find(props => props._id === params.action);
 
   if (!action) {
@@ -60,7 +60,7 @@ function view(state, emit) {
           <div class="Sheet Sheet--conditional Sheet--md Sheet--lg">
             ${ definition(properties(action)) }
 
-            ${ state.user ? html`
+            ${ user.isAuthenticated ? html`
               <a href=${ resolve(`/actions/${ action._id }/edit`) } class="Button u-block u-marginVs">
                 ${ __('Edit energy action') }
               </a>
@@ -79,7 +79,7 @@ function view(state, emit) {
           </ol>
 
           <!-- Comment form -->
-          ${ state.user ? html`
+          ${ user.isAuthenticated ? html`
             <form action="${ action._id }/comments" method="POST" class="Form">
               <div class="Form-collapse u-marginBb">
                 <label class="Form-item">

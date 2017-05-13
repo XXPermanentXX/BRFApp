@@ -43,31 +43,39 @@ module.exports = function render(req, res, next) {
      * @param  {Object} state State object to be decorated
      */
 
-    function send(state) {
+    function send(_state) {
+      const output = {};
+
       // Ensure state consistency
-      state.geoip = {};
-      state.consumptions = {};
-      state.actions = state.actions || [];
-      state.cooperatives = state.cooperatives || [];
-      state.auth = req.get('Authorization');
+      output.geoip = {};
+      output.consumptions = {};
+      output.actions = _state.actions || [];
+      output.cooperatives = _state.cooperatives || [];
+      output.user = Object.assign({
+        hasBoarded: req.cookies.hasBoarded,
+        isAuthenticated: false
+      }, _state.user);
+      output.auth = req.get('Authorization');
 
       if (req.user) {
         User.getProfile(req.user._id, (err, user) => {
           if (err) {
             res.status(500).render('/error', { err: err.message });
           } else {
-            const cooperatives = state.cooperatives;
+            const cooperatives = _state.cooperatives;
             const id = user.cooperative.toString();
 
             if (!cooperatives.find(props => props._id.toString() === id)) {
               cooperatives.push(user.cooperative);
             }
 
-            orig.call(res, route, Object.assign({ user }, state));
+            Object.assign(output.user, { isAuthenticated: true }, user);
+
+            orig.call(res, route, output);
           }
         });
       } else {
-        orig.call(res, route, state);
+        orig.call(res, route, output);
       }
     }
   };

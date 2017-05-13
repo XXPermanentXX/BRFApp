@@ -13,6 +13,8 @@
 @import "../components/list";
 @import "../components/map";
 @import "../components/menu";
+@import "../components/modal";
+@import "../components/onboarding";
 @import "../components/page-head";
 @import "../components/performance";
 @import "../components/sheet";
@@ -46,7 +48,7 @@
   --color-dark: #777777;
   --color-text: #222222;
 
-  --sm-viewport: 640px;
+  --sm-viewport: 480px;
   --md-viewport: 800px;
   --lg-viewport: 1280px;
 
@@ -61,6 +63,6 @@
   --space-g: calc(50rem / var(--base-font-size));
 }
 
-@custom-media --sm-viewport (min-width:400px) and (max-width:799px);
+@custom-media --sm-viewport (min-width:480px) and (max-width:799px);
 @custom-media --md-viewport (min-width:800px) and (max-width:1280px);
 @custom-media --lg-viewport (min-width:1280px);

@@ -4,9 +4,15 @@ const { __ } = require('../../locale');
 
 const pages = {
   home: {
-    href: state => state.user && resolve(`/cooperatives/${ state.user.cooperative }`),
+    href: state => {
+      if (state.user.isAuthenticated) {
+        return  resolve(`/cooperatives/${ state.user.cooperative }`);
+      }
+
+      return false;
+    },
     title: state => {
-      if (!state.user) { return; }
+      if (!state.user.isAuthenticated) { return; }
 
       const cooperative = state.cooperatives.find(props => {
         return props._id === state.user.cooperative;
@@ -24,11 +30,11 @@ const pages = {
     title: () => __('How it works')
   },
   signout: {
-    href: state => state.user && resolve('/auth/signout'),
+    href: state => state.user.isAuthenticated && resolve('/auth/signout'),
     title: () => __('Sign out')
   },
   signin: {
-    href: state => !state.user && resolve('/auth'),
+    href: state => !state.user.isAuthenticated && resolve('/auth'),
     title: () => __('Sign in')
   }
 };

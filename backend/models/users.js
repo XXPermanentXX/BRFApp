@@ -23,6 +23,10 @@ const UserSchema = new Schema({
     type: String,
     // requried: true
   },
+  hasBoarded: {
+    type: Boolean,
+    defaul: false
+  },
   accessToken: String,
   profile: {
     name: {

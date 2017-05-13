@@ -1,8 +1,10 @@
 const html = require('choo/html');
 const map = require('../components/map');
+const modal = require('../components/modal');
 const header = require('../components/page-head');
 const footer = require('../components/app/footer');
 const error = require('../components/app/error');
+const onboarding = require('../components/app/onboarding');
 
 module.exports = function view(state, emit) {
   return html`
@@ -16,6 +18,11 @@ module.exports = function view(state, emit) {
 
         ${ footer(state, emit) }
       </div>
+
+      ${ state.user.hasBoarded ? null : modal(
+        onboarding(state.onboarding, modal.close),
+        () => emit('user:boarded')
+      ) }
     </div>
   `;
 };

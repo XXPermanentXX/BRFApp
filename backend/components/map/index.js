@@ -9,7 +9,7 @@ module.exports = function (state, emit) {
   let center;
   const { cooperatives, user, geoip } = state;
 
-  if (user) {
+  if (user.isAuthenticated) {
     const home = cooperatives.find(item => item._id === user.cooperative);
     center = home && { longitude: home.lng, latitude: home.lat };
   }

@@ -58,7 +58,8 @@ app.use(require('./models/chart')());
 app.use(require('./models/cms')({
   faq: INITIAL_STATE.faq,
   about: INITIAL_STATE.about,
-  footer: INITIAL_STATE.footer
+  footer: INITIAL_STATE.footer,
+  onboarding: INITIAL_STATE.onboarding
 }));
 app.use(require('./models/error')(INITIAL_STATE.error));
 app.use(require('./models/user')(INITIAL_STATE.user, INITIAL_STATE.auth));

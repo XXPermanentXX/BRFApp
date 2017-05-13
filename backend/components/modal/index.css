@@ -1,0 +1,72 @@
+/** @define Modal */
+
+.Modal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: var(--viewport-padding);
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  overflow: auto;
+  z-index: 2;
+}
+
+/**
+ * 1. Fill small viewports
+ * 2. Don't fill beyond small viewports
+ * 3. Allow for overflow scroll
+ */
+
+.Modal-window {
+  width: 100%; /* 1 */
+  max-width: var(--sm-viewport); /* 2 */
+  margin: auto; /* 3 */
+
+  background-color: #fff;
+  overflow: hidden;
+
+  animation-name: Modal-window--appear;
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.39, 0.575, 0.565, 1);
+  animation-fill-mode: forwards;
+}
+
+@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
+  .Modal-window {
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+  }
+}
+
+@keyframes Modal-window--appear {
+  0% {
+    transform: translate(0, -100vh);
+  }
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes Modal-window--disappear {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(0, -100vh);
+  }
+}
+
+.Modal.is-disappearing {
+  animation-name: Modal-window--disappear;
+  animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+
+.Modal-dismiss {
+  position: absolute;
+  top: var(--space-b);
+  right: var(--space-b);
+}

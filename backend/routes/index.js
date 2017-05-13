@@ -4,6 +4,23 @@ const Cooperatives = require('../models/cooperatives');
 const router = module.exports = express.Router();
 
 /**
+ * Firstly insert onboarding content for first time visitors
+ */
+
+router.use((req, res, next) => {
+  const hasBoarded = req.user.hasBoarded || req.cookies.hasBoarded;
+
+  if (!req.accepts('html') || hasBoarded) {
+    return next();
+  }
+
+  req.prismic.api.getSingle('onboarding').then(doc => {
+    res.locals.onboarding = doc;
+    next();
+  }, next);
+});
+
+/**
  * Relay to seperate rout modules
  */
 
@@ -14,10 +31,10 @@ router.use('/auth', footer, require('./auth'));
 
 /**
  * Duplicate of the `/cooperatives` route
- * FIXME: Figure out a DRYer appraoch to this when refactoring urls
+ * FIXME: Figure out a DRYer approach to this when refactoring urls
  */
 
-router.get('/', footer, (req, res) => {
+router.get('/', footer, (req, res, next) => {
   Cooperatives.all((err, cooperatives) => {
     if (err) {
       res.status(500).render('/error', { err: err.message });

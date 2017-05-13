@@ -7,6 +7,8 @@ const { __ } = require('../../locale');
 const links = menu.extract([ 'about', 'faq' ]);
 
 module.exports = function header(state, emit) {
+  const { user } = state;
+
   return html`
     <div id="page-head" class="PageHead">
       <a href=${ resolve('/') } class="PageHead-title">BRF Energi</a>
@@ -18,7 +20,7 @@ module.exports = function header(state, emit) {
         </div>
 
         <!-- Medium & large viewport: drop down menu list -->
-        ${ state.user ? html`
+        ${ user.isAuthenticated ? html`
           <div id="page-menu-lg" class="PageHead-menu u-hidden u-md-block u-lg-block ${ state.isMenuOpen ? 'is-open' : '' }">
             ${ menu.list([ 'home', 'signout' ])(state, emit) }
           </div>
@@ -39,15 +41,15 @@ module.exports = function header(state, emit) {
         </a>
 
         <!-- Medium & large viewport: open drop down menu -->
-        ${ state.user ?
+        ${ user.isAuthenticated ?
           // Render user menu anchor link
-          html`<a href="#page-menu-lg" data-no-routing="true" onclick=${ toggle(true) } class="PageHead-trigger PageHead-trigger--large PageHead-link">${ state.user.profile.name }</a>` :
+          html`<a href="#page-menu-lg" data-no-routing="true" onclick=${ toggle(true) } class="PageHead-trigger PageHead-trigger--large PageHead-link">${ user.profile.name }</a>` :
           // Render sign in link
           menu.extract([ 'signin' ])(state).map(props => html`<a class="PageHead-link PageHead-trigger PageHead-trigger--large" href=${ props.href}>${ props.title }</a>`)
         }
 
         <!-- All viewports: close drop down menu -->
-        <a href="#page-head" data-no-routing="true" onclick=${ toggle(false) } class="PageHead-untrigger PageHead-link" hidden data-title-small=${ __('Close') } data-title-large=${ state.user ? state.user.profile.name : __('Close') }>
+        <a href="#page-head" data-no-routing="true" onclick=${ toggle(false) } class="PageHead-untrigger PageHead-link" hidden data-title-small=${ __('Close') } data-title-large=${ user.isAuthenticated ? user.profile.name : __('Close') }>
           ${ chevron('up') }
         </a>
       </nav>

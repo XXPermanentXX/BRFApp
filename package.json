@@ -91,6 +91,7 @@
     "method-override": "^2.3.7",
     "moment": "^2.11.2",
     "mongoose": "^4.0.5",
+    "nanomorph": "^4.0.5",
     "nodemailer": "^1.4.0",
     "nodemon": "^1.4.0",
     "object-hash": "^1.1.7",

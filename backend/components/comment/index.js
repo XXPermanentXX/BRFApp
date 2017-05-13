@@ -5,9 +5,10 @@ const { __ } = require('../../locale');
 const SHORT_LENGTH = 50;
 
 module.exports = function comment(comment, action, state) {
+  const { user } = state;
   const classList = [ 'Comment' ];
   let content = comment.comment;
-  const isAuthor = state.user && state.user._id === comment.user;
+  const isAuthor = user.isAuthenticated && user._id === comment.user;
 
   if (comment.short) {
     classList.push('Comment--slim');
