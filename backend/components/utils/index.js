@@ -249,3 +249,26 @@ exports.vw = function vw() {
 exports.vh = function vh() {
   return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
 };
+
+
+/**
+ * Create a frame requester that only executes on next availible frame
+ * @return {Function} Debounce fuction to call repetetiely
+ */
+
+exports.makeframe = function makeframe() {
+  let inFlight = false;
+  let callback = null;
+
+  return function onframe(cb) {
+    callback = cb;
+    if (!inFlight) {
+      inFlight = true;
+      window.requestAnimationFrame(() => {
+        inFlight = false;
+        callback();
+        callback = null;
+      });
+    }
+  };
+};
