@@ -8,6 +8,12 @@
 .Onboarding-reel {
   display: flex;
   overflow: auto;
+  overflow: -moz-scrollbars-none;
+  -ms-overflow-style: none;
+}
+
+.Onboarding-reel::-webkit-scrollbar {
+  display: none;
 }
 
 .Onboarding-card {
@@ -20,6 +26,13 @@
   background: #fff;
 }
 
+.Onboarding-image {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: var(--space-s) 0 var(--space-m);
+}
+
 .Onboarding-pagination {
   list-style: none;
   display: flex;
@@ -29,8 +42,8 @@
 }
 
 .Onboarding-page {
-  width: 0.65em;
-  height: 0.65em;
+  width: 8px;
+  height: 8px;
   margin: 0 0.25em;
   position: relative;
   overflow: hidden;
@@ -42,7 +55,7 @@
   display: block;
   width: 100%;
   height: 100%;
-  border: 3px solid var(--color-pale);
+  border: 2px solid var(--color-pale);
 
   position: absolute;
   left: 0;
@@ -60,5 +73,6 @@
 }
 
 .Onboarding-page.is-active::after {
-  border-width: 5px;
+  border-width: 4px;
+  border-color: var(--color-primary);
 }

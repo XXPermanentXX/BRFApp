@@ -8,7 +8,7 @@ const router = module.exports = express.Router();
  */
 
 router.use((req, res, next) => {
-  const hasBoarded = req.user.hasBoarded || req.cookies.hasBoarded;
+  const hasBoarded = (req.user && req.user.hasBoarded) || req.cookies.hasBoarded;
 
   if (!req.accepts('html') || hasBoarded) {
     return next();

@@ -4,7 +4,7 @@ const modal = require('../components/modal');
 const header = require('../components/page-head');
 const footer = require('../components/app/footer');
 const error = require('../components/app/error');
-const onboarding = require('../components/app/onboarding');
+const onboarding = require('../components/onboarding');
 
 module.exports = function view(state, emit) {
   return html`
