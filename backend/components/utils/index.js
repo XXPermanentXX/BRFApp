@@ -1,4 +1,7 @@
 const html = require('choo/html');
+const onload = require('on-load');
+const nanologger = require('nanologger');
+const morph = require('nanomorph');
 const moment = require('moment');
 
 const PERFORMANCE_FORMAT = 'YYYYMM';
@@ -148,13 +151,17 @@ exports.className = function className(...args) {
  *   update(coordinates, emit) {
  *     map.setCenter([coordinates.lng, coordinates.lat]);
  *   },
+ *   load(element, coordinates, emit) {
+ *     this.map = new mapboxgl.Map({
+ *       container: element,
+ *       center: [coordinates.lng, coordinates.lat],
+ *     });
+ *   },
+ *   unload() {
+ *     this.map.destroy();
+ *   },
  *   render(coordinates, emit) {
- *     return html`<div onload=${ el => {
- *       map = new mapboxgl.Map({
- *         container: el,
- *         center: [coordinates.lng, coordinates.lat],
- *       });
- *     } />`;
+ *     return html`<div class="Map"></div>`;
  *   }
  * })
  *
@@ -163,47 +170,94 @@ exports.className = function className(...args) {
  */
 
 exports.cache = function cache(props) {
-  let _args, _render, element;
-  const uid = `cache_${ id() }`;
-  const isSameNode = target => target.id === uid;
+  let _args, _element, _render, ctx, element;
+  const uid = `cache-${ id() }`;
+  const log = nanologger(props.name || uid);
+
+  log.debug('create');
 
   if (typeof props === 'function') {
     _render = props;
   } else if (typeof props.render === 'function') {
+    ctx = props;
     _render = props.render;
   } else {
     throw (new Error('Cache must be provided with a render function'));
   }
 
-  const shouldUpdate = props.shouldUpdate || ((args, prev) => {
-    if (args.length !== prev.length) {
-      return true;
+  let shouldUpdate = props.shouldUpdate;
+  if (typeof shouldUpdate !== 'function') {
+    if (typeof shouldUpdate !== 'undefined') {
+      shouldUpdate = () => props.shouldUpdate;
+    } else {
+      shouldUpdate = (args, prev) => {
+        if (args.length !== prev.length) {
+          return true;
+        }
+
+        return args.reduce((diff, arg, index) => {
+          return diff || arg !== prev[index];
+        }, false);
+      };
+    }
+  }
+
+  const _update = props.update;
+  props.update = update;
+
+  function update(...args) {
+    log.debug('update');
+
+    if (typeof _update === 'function') {
+      _update.call(ctx, _element, ...args);
+    } else {
+      let tree = _render.call(ctx, ...args);
+      tree.id = uid;
+      morph(_element, tree);
+      tree = null;
     }
 
-    return args.reduce((diff, arg, index) => {
-      return diff || arg !== prev[index];
-    }, false);
-  });
+    _args = args;
+  }
 
   return function render(...args) {
-    if (!element) {
-      element = _render(...args);
-      element.id = uid;
-      element.isSameNode = isSameNode;
-    } else if (shouldUpdate(args, _args || [])) {
-      if (props.update) {
-        props.update(element, ...args);
-      } else {
-        element = _render(...args);
-        element.id = uid;
-        element.isSameNode = isSameNode;
-      }
+    if (!element || typeof window === 'undefined') {
+      log.debug('render');
+      element = decorate(_render.call(ctx, ...args));
+
+      onload(element, node => {
+        // Save an internal reference to the node actually mounted in the DOM
+        _element = decorate(node);
+
+        if (typeof props.onload === 'function') {
+          requestAnimationFrame(() => {
+            log.debug('load');
+            props.onload(_element, ..._args);
+          });
+        }
+      }, () => {
+        element = _element = null;
+        if (typeof props.unload === 'function') {
+          requestAnimationFrame(() => {
+            log.debug('unload');
+            props.unload(..._args);
+          });
+        }
+      }, uid);
+    } else if (shouldUpdate.call(ctx, args, _args || [])) {
+      update(...args);
     }
 
     _args = args;
 
     return element;
   };
+
+  function decorate(node) {
+    node.id = uid;
+    node.isSameNode = target => target.id === uid;
+    return node;
+  }
 };
 
 /**

@@ -1,12 +1,16 @@
 /** @define Modal */
 
+:root {
+  --Modal-transition-duration: 500ms;
+}
+
 .Modal {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 100vw;
-  height: 100vh;
-  padding: var(--viewport-padding);
+  width: 100%;
+  height: 100%;
 
   position: fixed;
   top: 0;
@@ -15,6 +19,13 @@
   z-index: 2;
 
   background-color: rgba(0, 0, 0, 0.6);
+  transition: background-color var(--Modal-transition-duration) linear;
+}
+
+@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
+  .Modal {
+    padding: var(--viewport-padding);
+  }
 }
 
 /**
@@ -24,6 +35,7 @@
  */
 
 .Modal-window {
+  height: 100%;
   width: 100%; /* 1 */
   max-width: var(--sm-viewport); /* 2 */
   margin: auto; /* 3 */
@@ -39,6 +51,7 @@
 
 @media (--sm-viewport), (--md-viewport), (--lg-viewport) {
   .Modal-window {
+    height: auto;
     border-radius: 3px;
   }
 }
@@ -62,6 +75,10 @@
 }
 
 .Modal.is-disappearing {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.Modal.is-disappearing .Modal-window {
   animation-name: Modal-window--disappear;
   animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
 }

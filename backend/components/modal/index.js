@@ -1,11 +1,14 @@
 const assert = require('assert');
 const html = require('choo/html');
 const morph = require('nanomorph');
+const onload = require('on-load');
+const nanologger = require('nanologger');
 const { id } = require('../utils');
 const { __ } = require('../../locale');
 
-let _onclose, modal;
+let _modal, _onclose, modal;
 const uid = `uid_${ id() }`;
+const log = nanologger('modal');
 
 module.exports = render;
 module.exports.close = close;
@@ -13,11 +16,7 @@ module.exports.close = close;
 if (typeof window !== 'undefined') {
   window.addEventListener('keydown', event => {
     if (event.code === 'Escape') {
-      close().then(() => {
-        if (_onclose) {
-          _onclose();
-        }
-      });
+      close();
     }
   });
 }
@@ -25,14 +24,11 @@ if (typeof window !== 'undefined') {
 function _render(content, onclose) {
   assert(onclose, 'onclose callback must be provided');
 
-  if (_onclose) {
-    _onclose();
-  }
   _onclose = onclose;
 
   return html`
-    <div role="dialog" class="Modal">
-      <div class="Modal-window">
+    <div role="dialog" class="Modal" id=${ uid }>
+      <div class="Modal-window js-modalWindow">
         ${ content }
         <button class="Modal-dismiss" onclick=${ close }>
           <span class="Link">${ __('Close') }</span>
@@ -44,10 +40,17 @@ function _render(content, onclose) {
 
 function render(content, onclose) {
   if (!modal || typeof window === 'undefined') {
+    log.debug('render');
     modal = _render(content, onclose);
     modal.isSameNode = target => target.id === uid;
+    onload(
+      modal,
+      ref => { _modal = ref; },
+      () => { modal = _modal = null; }
+    );
   } else {
-    morph(modal, _render(content, onclose));
+    log.debug('update');
+    morph(_modal, _render(content, onclose));
   }
 
   return modal;
@@ -55,17 +58,26 @@ function render(content, onclose) {
 
 function close() {
   return new Promise((resolve, reject) => {
-    if (!modal) {
+    if (!_modal) {
       reject(new Error('Modal must be rendered before it can be closed'));
       return;
     }
 
-    modal.addEventListener('transitionend', function ontransitionend() {
-      modal.removeEventListener('transitionend', ontransitionend);
-      modal.classList.remove('is-disappearing');
+    log.debug('closing');
+
+    _modal.addEventListener('transitionend', function ontransitionend() {
+      _modal.removeEventListener('transitionend', ontransitionend);
+      _modal.classList.remove('is-disappearing');
+
+      log.debug('closed');
+
+      if (_onclose) {
+        _onclose();
+      }
+
       resolve();
     });
 
-    modal.classList.add('is-disappearing');
+    _modal.classList.add('is-disappearing');
   });
 }

@@ -1,15 +1,13 @@
 const html = require('choo/html');
 const moment = require('moment');
 const hash = require('object-hash');
-const createChart = require('./chart');
+const chart = require('./chart');
 const form = require('./form');
 const { loader, chevron } = require('../icons');
 const { className } = require('../utils');
 const { __ } = require('../../locale');
 
 const SELECTED_COOPERATIVE = /cooperative:(\w+)/;
-
-const chart = createChart();
 
 module.exports = function createChart() {
   let element;

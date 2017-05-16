@@ -1,5 +1,6 @@
 const express = require('express');
 const Cooperatives = require('../models/cooperatives');
+const Users = require('../models/users');
 
 const router = module.exports = express.Router();
 
@@ -8,7 +9,17 @@ const router = module.exports = express.Router();
  */
 
 router.use((req, res, next) => {
-  const hasBoarded = (req.user && req.user.hasBoarded) || req.cookies.hasBoarded;
+  let hasBoarded = (req.user && req.user.hasBoarded) || req.cookies.hasBoarded;
+
+  if (req.query.hasBoarded) {
+    if (req.user) {
+      req.user.hasBoarded = true;
+      req.user.save();
+    }
+
+    res.cookie('hasBoarded', true);
+    hasBoarded = true;
+  }
 
   if (!req.accepts('html') || hasBoarded) {
     return next();

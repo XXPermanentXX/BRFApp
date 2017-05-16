@@ -3,9 +3,11 @@
 .Onboarding {
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .Onboarding-reel {
+  flex-grow: 1;
   display: flex;
   overflow: auto;
   overflow: -moz-scrollbars-none;
@@ -19,6 +21,7 @@
 .Onboarding-card {
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
   flex: 1 0 100%;
   padding: var(--space-m) var(--space-m) 0;
@@ -42,6 +45,7 @@
 }
 
 .Onboarding-page {
+  display: block;
   width: 8px;
   height: 8px;
   margin: 0 0.25em;

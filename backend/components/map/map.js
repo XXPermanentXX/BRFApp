@@ -16,228 +16,219 @@ const POPUP_OFFSET = {
   'right': [-6, -26]
 };
 
-module.exports = function createMap() {
-  let latest, map, mapbox, position;
-  let isInitialized = false;
+module.exports = cache({
+  name: 'map',
+  isInitialized: false,
 
-  return cache({
-    shouldUpdate(args, prev) {
-      // Check if number of cooperatives has changed
-      if (args[0].length !== prev[0].length) {
-        return true;
+  shouldUpdate(args, prev) {
+    // Check if number of cooperatives has changed
+    if (args[0].length !== prev[0].length) {
+      return true;
+    }
+
+    // Check if center has changed
+    if (args[1].latitude !== prev[1].latitude || args[1].longitude !== prev[1].longitude) {
+      return true;
+    }
+
+    return false;
+  },
+
+  update(element, cooperatives, center) {
+    const setData = () => {
+      // Recalculate bounds
+      const bounds = this.getBounds(cooperatives, getLngLat(center));
+
+      if (center.precission === 'exact') {
+        if (!this.position) {
+          // Create position marker for exact position
+          this.position = new this.mapbox.Marker(myLocation());
+        }
+
+        // Update position coordinates
+        this.position.setLngLat(getLngLat(center)).addTo(this.map);
+
+        // Ensure that exact position is included in bounds
+        bounds.extend(getLngLat(center));
       }
 
-      // Check if center has changed
-      if (args[1].latitude !== prev[1].latitude || args[1].longitude !== prev[1].longitude) {
-        return true;
+      // Fit new bounds in map
+      this.map.fitBounds(bounds, { padding: element.offsetWidth * 0.1 });
+
+      // Update map source
+      this.map.getSource('cooperatives').setData({
+        type: 'FeatureCollection',
+        features: asFeatures(cooperatives)
+      });
+    };
+
+    if (this.map) {
+      setData();
+    }
+  },
+
+  onload(element, cooperatives, center) {
+    if (this.isInitialized) { return; }
+    this.isInitialized = true;
+
+    resource('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
+    resource('mapbox-gl').then(mapboxgl => {
+
+      /**
+       * Unset loading state and empty out container
+       */
+
+      element.classList.remove('is-loading');
+      element.innerHTML = '';
+
+      // Stash mapbox api in scoped variable
+      const mapbox = this.mapbox = mapboxgl;
+
+      mapbox.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
+      const map = this.map = new mapbox.Map({
+        container: element,
+        style: process.env.MAPBOX_STYLE,
+        maxZoom: 17
+      });
+
+      /**
+       * Try and fit center and a couple cooperatives in map
+       */
+
+      map.fitBounds(this.getBounds(cooperatives, getLngLat(center)), {
+        padding: element.offsetWidth * 0.1,
+        animate: false
+      });
+
+      if (center.precission === 'exact') {
+        // Create a marker for exact position
+        this.position = new mapbox.Marker(myLocation())
+          .setLngLat(getLngLat(center))
+          .addTo(map);
       }
 
-      return false;
-    },
+      map.on('load', () => {
 
-    update(element, cooperatives, center) {
-      if (map) {
-        setData();
-      } else {
-        latest = [ cooperatives, center ];
-      }
+        /**
+         * Add cooperatives as source
+         */
 
-      function setData() {
-        // Recalculate bounds
-        const bounds = getBounds(cooperatives, getLngLat(center));
+        map.addSource('cooperatives', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: asFeatures(cooperatives)
+          },
+          cluster: true,
+          clusterMaxZoom: CLUSTER_THRESHOLD
+        });
 
-        if (center.precission === 'exact') {
-          if (!position) {
-            // Create position marker for exact position
-            position = new mapbox.Marker(myLocation());
+        /**
+         * Add all individual (unclustered cooperatives)
+         */
+
+        map.addLayer({
+          id: 'cooperative-markers',
+          type: 'symbol',
+          source: 'cooperatives',
+          filter: ['!has', 'point_count'],
+          layout: {
+            'icon-allow-overlap': true,
+            'icon-image': 'marker-{energyClass}',
+            'icon-offset': [0, -21]
+          }
+        });
+
+        /**
+         * Add clusters
+         */
+
+        map.addLayer({
+          id: 'cooperative-clusters',
+          type: 'symbol',
+          source: 'cooperatives',
+          filter: ['has', 'point_count'],
+          layout: {
+            'icon-allow-overlap': true,
+            'icon-image': 'marker-cluster',
+            'text-field': '{point_count}',
+            'text-font': [ 'Lato Bold' ],
+            'text-size': 14,
+            'text-offset': [ 0, 0.85 ]
+          },
+          paint: {
+            'text-color': '#fff'
+          }
+        });
+
+        /**
+         * Zoom out if center posiiton is unprecise
+         */
+
+        if (center.precission !== 'exact') {
+          map.setZoom(11);
+        }
+
+        /**
+         * Handle pointer
+         */
+
+        map.on('mousemove', event => {
+          const features = map.queryRenderedFeatures(event.point, {
+            layers: ['cooperative-markers', 'cooperative-clusters']
+          });
+
+          map.getCanvas().style.cursor = features.length ? 'pointer' : '';
+        });
+
+        /**
+         * Handle clikcing on the map
+         */
+
+        map.on('click', event => {
+          // Figure out which (if any) layers has been clicked
+          const features = map.queryRenderedFeatures(event.point, {
+            layers: ['cooperative-markers', 'cooperative-clusters']
+          });
+
+          if (!features.length) {
+            return;
           }
 
-          // Update position coordinates
-          position.setLngLat(getLngLat(center)).addTo(map);
+          const feature = features[0];
 
-          // Ensure that exact position is included in bounds
-          bounds.extend(getLngLat(center));
-        }
-
-        // Fit new bounds in map
-        map.fitBounds(bounds, { padding: element.offsetWidth * 0.1 });
-
-        // Update map source
-        map.getSource('cooperatives').setData({
-          type: 'FeatureCollection',
-          features: asFeatures(cooperatives)
-        });
-      }
-    },
-
-    render(...args) {
-      let popup;
-
-      return html`
-        <div class="Map u-sizeFill is-loading" onload=${ onload } onunload=${ onunload }>
-          ${ loader() }
-        </div>
-      `;
-
-      function onunload() {
-        if (popup && popup.isOpen()) {
-          popup.remove();
-        }
-      }
-
-      function onload(el) {
-        if (isInitialized) { return; }
-        isInitialized = true;
-
-        resource('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
-        resource('mapbox-gl').then(mapboxgl => {
-
-          /**
-           * Unset loading state and empty out container
-           */
-
-          el.classList.remove('is-loading');
-          el.innerHTML = '';
-
-          // Pluck data from latest if update has been called, fallback to args
-          const [ cooperatives, center ] = latest || args;
-
-          // Stash mapbox api in scoped variable
-          mapbox = mapboxgl;
-
-          mapbox.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
-          map = new mapbox.Map({
-            container: el,
-            style: process.env.MAPBOX_STYLE,
-            maxZoom: 17
-          });
-
-          /**
-           * Try and fit center and a couple cooperatives in map
-           */
-
-          map.fitBounds(getBounds(cooperatives, getLngLat(center)), {
-            padding: el.offsetWidth * 0.1,
-            animate: false
-          });
-
-          if (center.precission === 'exact') {
-            // Create a marker for exact position
-            position = new mapbox.Marker(myLocation())
-              .setLngLat(getLngLat(center))
+          if (feature.properties.cluster) {
+            // Reveal all cooperatives in cluster
+            map.flyTo({
+              center: feature.geometry.coordinates,
+              zoom: CLUSTER_THRESHOLD + 1
+            });
+          } else {
+            // Show cooperative popup
+            this.popup = new mapbox.Popup({ closeButton: false, offset: POPUP_OFFSET });
+            this.popup
+              .setLngLat(feature.geometry.coordinates)
+              .setDOMContent(createPopup(feature))
               .addTo(map);
           }
-
-          map.on('load', () => {
-
-            /**
-             * Add cooperatives as source
-             */
-
-            map.addSource('cooperatives', {
-              type: 'geojson',
-              data: {
-                type: 'FeatureCollection',
-                features: asFeatures(cooperatives)
-              },
-              cluster: true,
-              clusterMaxZoom: CLUSTER_THRESHOLD
-            });
-
-            /**
-             * Add all individual (unclustered cooperatives)
-             */
-
-            map.addLayer({
-              id: 'cooperative-markers',
-              type: 'symbol',
-              source: 'cooperatives',
-              filter: ['!has', 'point_count'],
-              layout: {
-                'icon-allow-overlap': true,
-                'icon-image': 'marker-{energyClass}',
-                'icon-offset': [0, -21]
-              }
-            });
-
-            /**
-             * Add clusters
-             */
-
-            map.addLayer({
-              id: 'cooperative-clusters',
-              type: 'symbol',
-              source: 'cooperatives',
-              filter: ['has', 'point_count'],
-              layout: {
-                'icon-allow-overlap': true,
-                'icon-image': 'marker-cluster',
-                'text-field': '{point_count}',
-                'text-font': [ 'Lato Bold' ],
-                'text-size': 14,
-                'text-offset': [ 0, 0.85 ]
-              },
-              paint: {
-                'text-color': '#fff'
-              }
-            });
-
-            /**
-             * Zoom out if center posiiton is unprecise
-             */
-
-            if (center.precission !== 'exact') {
-              map.setZoom(11);
-            }
-
-            /**
-             * Handle pointer
-             */
-
-            map.on('mousemove', event => {
-              const features = map.queryRenderedFeatures(event.point, {
-                layers: ['cooperative-markers', 'cooperative-clusters']
-              });
-
-              map.getCanvas().style.cursor = features.length ? 'pointer' : '';
-            });
-
-            /**
-             * Handle clikcing on the map
-             */
-
-            map.on('click', event => {
-              // Figure out which (if any) layers has been clicked
-              const features = map.queryRenderedFeatures(event.point, {
-                layers: ['cooperative-markers', 'cooperative-clusters']
-              });
-
-              if (!features.length) {
-                return;
-              }
-
-              const feature = features[0];
-
-              if (feature.properties.cluster) {
-                // Reveal all cooperatives in cluster
-                map.flyTo({
-                  center: feature.geometry.coordinates,
-                  zoom: CLUSTER_THRESHOLD + 1
-                });
-              } else {
-                // Show cooperative popup
-                popup = new mapbox.Popup({ closeButton: false, offset: POPUP_OFFSET });
-                popup
-                  .setLngLat(feature.geometry.coordinates)
-                  .setDOMContent(createPopup(feature))
-                  .addTo(map);
-              }
-            });
-          });
         });
-      }
+      });
+    });
+  },
+
+  unload() {
+    if (this.popup && this.popup.isOpen()) {
+      this.popup.remove();
     }
-  });
+  },
+
+  render() {
+    return html`
+      <div class="Map u-sizeFill is-loading">
+        ${ loader() }
+      </div>
+    `;
+  },
 
   /**
    * Calculate bounds for given coopeartives and center coordinates
@@ -246,9 +237,9 @@ module.exports = function createMap() {
    * @return {mapbox.LngLatBounds}
    */
 
-  function getBounds(cooperatives, center) {
+  getBounds(cooperatives, center) {
     let include;
-    const bounds = new mapbox.LngLatBounds();
+    const bounds = new this.mapbox.LngLatBounds();
     const closest = cooperatives.map(cooperative => {
       return getPositionDistance(center, getLngLat(cooperative));
     }).sort()[0];
@@ -274,7 +265,7 @@ module.exports = function createMap() {
 
     return bounds;
   }
-};
+});
 
 /**
  * Generic "You are here"-location marker

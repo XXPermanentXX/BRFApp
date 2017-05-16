@@ -13,93 +13,89 @@ const {
   vw
 } = require('../utils');
 
-module.exports = function createContainer() {
-  let chart, init;
-  let isInitialized = false;
+module.exports = cache({
+  name: 'chart',
+  isInitialized: false,
 
-  return cache({
-    shouldUpdate(args, prev) {
-      // Compare granularity
-      if (args[0] !== prev[0]) {
-        return true;
-      }
-
-      // Compare number of actions
-      if (args[1].length !== prev[1].length) {
-        return true;
-      }
-
-      // Compare number of data series
-      if (args[2].length !== prev[2].length) {
-        return true;
-      }
-
-      // Compare data series
-      return args[2].reduce((result, serie, serieIndex) => {
-        return result || serie.values.reduce((diff, value, index) => {
-          return diff || value !== prev[2][serieIndex].values[index];
-        }, false);
-      }, false);
-    },
-
-    update(element, granularity, actions, data) {
-      if (chart) {
-        chart.update(getConfig(granularity, actions, data));
-      } else {
-        init = getConfig(granularity, actions, data);
-      }
-    },
-
-    render(granularity, actions, data) {
-      return html`
-        <div onload=${ onload }>
-          <!-- Insert intermediary loader while waiting for Highcharts -->
-          <div class="u-textCenter u-paddingVl">
-            ${ loader() }
-          </div>
-        </div>
-      `;
-
-      function onload(el) {
-        // Exit early if Highcharts has been initialized already
-        if (isInitialized) {
-          return;
-        } else {
-          isInitialized = true;
-        }
-
-        resource('highcharts').then(Highcharts => {
-          // Remove loader from chart container
-          el.innerHTML = '';
-
-          const config = merge({
-            tooltip: {
-              // Position tooltip relative to chart width
-              positioner(width, height, point) {
-                const offset = vw() >= 800 ? 12 : 0;
-
-                // Align to right when there's no room
-                if ((width + point.plotX) > chart.plotWidth) {
-                  // Apply right align modifier as soon as the element is in the DOM
-                  requestAnimationFrame(() => {
-                    const tooltip = el.querySelector('.js-tooltip');
-                    tooltip.classList.add('Chart-tooltip--alignRight');
-                  });
-
-                  return { x: point.plotX - width + 25 + offset, y: point.plotY - 14 };
-                }
-
-                return { x: point.plotX - 2 + offset, y: point.plotY - 15 };
-              }
-            }
-          }, defaults, init || getConfig(granularity, actions, data));
-
-          chart = Highcharts.chart(el, config, chart => chart.reflow());
-        });
-      }
+  shouldUpdate(args, prev) {
+    // Compare granularity
+    if (args[0] !== prev[0]) {
+      return true;
     }
-  });
-};
+
+    // Compare number of actions
+    if (args[1].length !== prev[1].length) {
+      return true;
+    }
+
+    // Compare number of data series
+    if (args[2].length !== prev[2].length) {
+      return true;
+    }
+
+    // Compare data series
+    return args[2].reduce((result, serie, serieIndex) => {
+      return result || serie.values.reduce((diff, value, index) => {
+        return diff || value !== prev[2][serieIndex].values[index];
+      }, false);
+    }, false);
+  },
+
+  update(element, granularity, actions, data) {
+    if (this.chart) {
+      this.chart.update(getConfig(granularity, actions, data));
+    }
+  },
+
+  onload(element, granularity, actions, data) {
+    // Exit early if Highcharts has been initialized already
+    if (this.isInitialized) {
+      return;
+    } else {
+      this.isInitialized = true;
+    }
+
+    resource('highcharts').then(Highcharts => {
+      // Remove loader from chart container
+      element.innerHTML = '';
+
+      const config = merge({
+        tooltip: {
+          // Position tooltip relative to chart width
+          positioner(width, height, point) {
+            const offset = vw() >= 800 ? 12 : 0;
+
+            // Align to right when there's no room
+            if ((width + point.plotX) > this.chart.plotWidth) {
+              // Apply right align modifier as soon as the element is in the DOM
+              requestAnimationFrame(() => {
+                const tooltip = element.querySelector('.js-tooltip');
+                tooltip.classList.add('Chart-tooltip--alignRight');
+              });
+
+              return { x: point.plotX - width + 25 + offset, y: point.plotY - 14 };
+            }
+
+            return { x: point.plotX - 2 + offset, y: point.plotY - 15 };
+          }
+        }
+      }, defaults, getConfig(granularity, actions, data));
+
+      this.chart = Highcharts.chart(element, config, chart => chart.reflow());
+    });
+  },
+
+  render() {
+    return html`
+      <div>
+        <!-- Insert intermediary loader while waiting for Highcharts -->
+        <div class="u-textCenter u-paddingVl">
+          ${ loader() }
+        </div>
+      </div>
+    `;
+  }
+});
 
 /**
  * Create Highcharts options based on data

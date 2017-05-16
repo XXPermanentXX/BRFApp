@@ -2,12 +2,14 @@ const html = require('choo/html');
 const header = require('../components/page-head');
 const performance = require('../components/performance');
 const createChart = require('../components/chart');
+const modal = require('../components/modal');
 const { definition, numbered } = require('../components/list');
 const { format, getPerformance } = require('../components/utils');
 const { summary } = require('../components/action');
 const { chevron, loader } = require('../components/icons');
 const error = require('../components/app/error');
 const footer = require('../components/app/footer');
+const onboarding = require('../components/onboarding');
 const { __, __n } = require('../locale');
 const resolve = require('../resolve');
 
@@ -122,6 +124,11 @@ function view(state, emit) {
       </div>
 
       ${ footer(state, emit) }
+
+      ${ state.user.hasBoarded ? null : modal(
+        onboarding(state.onboarding, modal.close),
+        () => emit('user:boarded')
+      ) }
     </div>
   `;
 }

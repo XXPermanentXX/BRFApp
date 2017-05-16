@@ -1,9 +1,7 @@
 const html = require('choo/html');
-const createMap = require('./map');
+const map = require('./map');
 const { __ } = require('../../locale');
 const { loader } = require('../icons');
-
-const map = createMap();
 
 module.exports = function (state, emit) {
   let center;
