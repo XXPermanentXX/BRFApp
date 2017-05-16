@@ -31,7 +31,7 @@ function _render(content, onclose) {
   _onclose = onclose;
 
   return html`
-    <div role="dialog" class="Modal" id=${ uid }>
+    <div role="dialog" class="Modal">
       <div class="Modal-window">
         ${ content }
         <button class="Modal-dismiss" onclick=${ close }>
