@@ -1,6 +1,7 @@
 const html = require('choo/html');
 const resolve = require('../../resolve');
-const { getEnergyClass, cache } = require('../utils');
+const { getEnergyClass } = require('../utils');
+const component = require('../utils/component');
 const { __ } = require('../../locale');
 
 const UNKNOWN_ENERGY_CLASS = '#bbbbbb';
@@ -14,7 +15,7 @@ const ENERGY_CLASSES = {
   G: '#E2001A'
 };
 
-module.exports = cache(performance => {
+module.exports = component(performance => {
   const energyClass = performance && getEnergyClass(performance);
   const classPosition = energyClass ? Object.keys(ENERGY_CLASSES).indexOf(energyClass) : 3;
   const linkPosition = classPosition > Object.keys(ENERGY_CLASSES).length / 2 ? 'left' : 'right';

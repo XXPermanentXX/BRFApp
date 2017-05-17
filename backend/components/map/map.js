@@ -2,7 +2,8 @@ const html = require('choo/html');
 const createPopup = require('./popup');
 const { loader } = require('../icons');
 const { __ } = require('../../locale');
-const { getEnergyClass, cache, getPerformance, resource } = require('../utils');
+const { getEnergyClass, getPerformance, resource } = require('../utils');
+const component = require('../utils/component');
 
 const CLUSTER_THRESHOLD = 12;
 const POPUP_OFFSET = {
@@ -16,7 +17,7 @@ const POPUP_OFFSET = {
   'right': [-6, -26]
 };
 
-module.exports = cache({
+module.exports = component({
   name: 'map',
   isInitialized: false,
 

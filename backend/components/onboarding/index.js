@@ -1,10 +1,11 @@
 const html = require('choo/html');
-const { debounce, cache } = require('../utils');
+const { debounce } = require('../utils');
+const component = require('../utils/component');
 const { __ } = require('../../locale');
 
 const SPEED_FACTOR = 1000;
 
-module.exports = cache({
+module.exports = component({
   name: 'onboarding',
   page: 0,
 
@@ -151,7 +152,7 @@ module.exports = cache({
         </ol>
 
         <button class="Button u-block u-sizeFull js-next">
-          ${ __('Next') }
+          ${ this.page === cards.length - 1 ? __('Close') : __('Next') }
         </button>
       </div>
     `;

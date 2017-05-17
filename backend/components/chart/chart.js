@@ -7,13 +7,13 @@ const { __ } = require('../../locale');
 const {
   capitalize,
   format,
-  cache,
   className,
   resource,
   vw
 } = require('../utils');
+const component = require('../utils/component');
 
-module.exports = cache({
+module.exports = component({
   name: 'chart',
   isInitialized: false,
 
