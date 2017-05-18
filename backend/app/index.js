@@ -114,9 +114,9 @@ function titleize([route, _view]) {
 
 function localize(lang) {
   return function ([route, view]) {
-    const localized = lang === DEFAULT_LANGUAGE ? route : (lang + '/' + route);
+    const localized = lang === DEFAULT_LANGUAGE ? route : ('/' + lang + route);
 
-    return [localized, (state, emit) => {
+    return [localized.replace(/\/$/, ''), (state, emit) => {
       try {
         setLocale(state.user.profile.language);
       } catch (err) {
