@@ -12,7 +12,7 @@ module.exports = function (state, emit) {
     center = home && { longitude: home.lng, latitude: home.lat };
   }
 
-  if (!center && geoip.longitude && geoip.latitude) {
+  if ((!center || geoip.precission === 'exact') && geoip.longitude) {
     center = {
       longitude: geoip.longitude,
       latitude: geoip.latitude,
