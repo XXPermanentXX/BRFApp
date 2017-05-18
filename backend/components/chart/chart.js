@@ -1,16 +1,11 @@
 const html = require('choo/html');
 const merge = require('lodash.merge');
+const capitalize = require('lodash.capitalize');
 const moment = require('moment');
 const { loader } = require('../icons');
 const defaults = require('./defaults');
 const { __ } = require('../../locale');
-const {
-  capitalize,
-  format,
-  className,
-  resource,
-  vw
-} = require('../utils');
+const { format, className, resource, vw } = require('../utils');
 const component = require('../utils/component');
 
 module.exports = component({

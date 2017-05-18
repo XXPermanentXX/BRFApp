@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const { debounce } = require('../utils');
+const debounce = require('lodash.debounce');
 const component = require('../utils/component');
 const { __ } = require('../../locale');
 

@@ -1,5 +1,6 @@
 const html = require('choo/html');
 const moment = require('moment');
+const capitalize = require('lodash.capitalize');
 const header = require('../components/page-head');
 const { definition } = require('../components/list');
 const createChart = require('../components/chart');
@@ -7,7 +8,7 @@ const footer = require('../components/app/footer');
 const comment = require('../components/comment');
 const resolve = require('../resolve');
 const { chevron, loader } = require('../components/icons');
-const { format, capitalize } = require('../components/utils');
+const { format } = require('../components/utils');
 const { __, __n } = require('../locale');
 
 const chart = createChart();

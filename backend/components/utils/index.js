@@ -82,31 +82,6 @@ exports.id = function id() {
 };
 
 /**
- * Capitalize first letter of string
- * @param  {String} str String that is to be captialized
- * @return {String}
- */
-
-exports.capitalize = function capitalize(str) {
-  return str[0].toUpperCase() + str.substr(1);
-};
-
-/**
- * Prevent function beeing called more than every `delay`
- * @param  {Function} fn          Function to call
- * @param  {Number}   [delay=200] How long to wait
- * @return {Function}             Debounced function
- */
-
-exports.debounce = function debounce(fn, delay = 200) {
-  let timeout;
-  return function (...args) {
-    clearTimeout(timeout);
-    timeout = setTimeout(() => { fn.apply(this, args); }, delay);
-  };
-};
-
-/**
  * Compile class name based on booleans.
  * Takes either a default class and an object with switches or just the object
  *
@@ -173,26 +148,4 @@ exports.vw = function vw() {
 
 exports.vh = function vh() {
   return Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
-};
-
-/**
- * Create a frame requester that only executes on next availible frame
- * @return {Function} Debounce fuction to call repetetiely
- */
-
-exports.makeframe = function makeframe() {
-  let inFlight = false;
-  let callback = null;
-
-  return function onframe(cb) {
-    callback = cb;
-    if (!inFlight) {
-      inFlight = true;
-      window.requestAnimationFrame(() => {
-        inFlight = false;
-        callback();
-        callback = null;
-      });
-    }
-  };
 };

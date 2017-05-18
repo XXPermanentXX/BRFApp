@@ -1,4 +1,5 @@
-const { debounce, vw } = require('../../components/utils');
+const debounce = require('lodash.debounce');
+const { vw } = require('../../components/utils');
 
 module.exports = function chart() {
   let hasChanged = false;

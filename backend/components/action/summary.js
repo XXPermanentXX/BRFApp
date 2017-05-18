@@ -1,9 +1,9 @@
 const html = require('choo/html');
 const moment = require('moment');
+const capitalize = require('lodash.capitalize');
 const comment = require('../comment');
 const resolve = require('../../resolve');
 const { __ } = require('../../locale');
-const { capitalize } = require('../utils');
 
 module.exports = function summary(action, state) {
   const numComments = action.comments.length;
