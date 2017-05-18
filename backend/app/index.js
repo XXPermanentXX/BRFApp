@@ -36,7 +36,7 @@ const routes = [
   ['/cooperatives/:cooperative', require('../views/cooperative')],
   ['/actions', require('../views/actions')],
   ['/actions/:action', require('../views/action')],
-  ['/actions/edit', require('../views/edit-action')],
+  ['/actions/:action/edit', require('../views/edit-action')],
   ['/404', require('../views/error')],
   ['/error', require('../views/error')],
 ].map(titleize);

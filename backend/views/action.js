@@ -82,7 +82,7 @@ function view(state, emit) {
           <!-- Comment form -->
           ${ user.isAuthenticated ? html`
             <form action="${ action._id }/comments" method="POST" class="Form">
-              <div class="Form-collapse u-marginBb">
+              <div class="u-marginBb">
                 <label class="Form-item">
                   <span class="Form-label">${ __('Leave a comment') }</span>
                   <textarea name="comment" rows="3" class="Form-input"></textarea>

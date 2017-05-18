@@ -10,13 +10,13 @@ const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206,
 module.exports = view;
 
 function view(state, emit) {
-  const { actions, location: { params }} = state;
+  const { actions, params } = state;
   const action = actions.find(props => props._id === params.action);
 
   return html`
     <div class="App">
       ${ header(state, emit) }
-      <div class="App-container">
+      <div class="App-container App-container--sm u-block">
 
         <a class="u-inlineBlock u-marginVs" href=${ resolve(`/actions/${ action._id }`) }>
           ${ chevron('left') }${ __('Back to %s', action.name) }
