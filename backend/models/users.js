@@ -58,7 +58,8 @@ UserSchema.methods.toJSON = function toJSON() {
 
   delete props.metryId;
   delete props.accessToken;
-  props.cooperative = props.cooperative._id || props.cooperative;
+  props._id = this._id.toString();
+  props.cooperative = (props.cooperative._id || props.cooperative).toString();
 
   return props;
 };

@@ -28,10 +28,12 @@ server.set('civis_opt', {
  */
 
 server.render = function (route, options, done) {
+  let output;
   const state = Object.assign({}, this.locals, options._locals, options);
   const cache = this.enabled('view cache');
 
-  let output;
+  // Remove any nested duplicates
+  delete state._locals;
 
   if (cache) {
     this.cache[state.lang] = this.cache[state.lang] || {};

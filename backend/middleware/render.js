@@ -44,7 +44,7 @@ module.exports = function render(req, res, next) {
      */
 
     function send(_state) {
-      const output = {};
+      const output = Object.assign({}, _state);
 
       // Ensure state consistency
       output.geoip = {};
@@ -52,7 +52,7 @@ module.exports = function render(req, res, next) {
       output.actions = _state.actions || [];
       output.cooperatives = _state.cooperatives || [];
       output.user = Object.assign({
-        hasBoarded: req.cookies.hasBoarded,
+        hasBoarded: JSON.parse(req.cookies.hasBoarded || false),
         isAuthenticated: false
       }, _state.user);
       output.auth = req.get('Authorization');
@@ -63,13 +63,13 @@ module.exports = function render(req, res, next) {
             res.status(500).render('/error', { err: err.message });
           } else {
             const cooperatives = _state.cooperatives;
-            const id = user.cooperative.toString();
+            const id = user.cooperative._id.toString();
 
-            if (!cooperatives.find(props => props._id.toString() === id)) {
-              cooperatives.push(user.cooperative);
+            if (!cooperatives.find(item => item._id.toString() === id)) {
+              cooperatives.push(user.cooperative.toJSON());
             }
 
-            Object.assign(output.user, { isAuthenticated: true }, user);
+            Object.assign(output.user, { isAuthenticated: true }, user.toJSON());
 
             orig.call(res, route, output);
           }

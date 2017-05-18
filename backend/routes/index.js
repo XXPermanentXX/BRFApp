@@ -9,7 +9,8 @@ const router = module.exports = express.Router();
  */
 
 router.use((req, res, next) => {
-  let hasBoarded = (req.user && req.user.hasBoarded) || req.cookies.hasBoarded;
+  const userBoarded = (req.user && req.user.hasBoarded);
+  let hasBoarded = userBoarded || JSON.parse(req.cookies.hasBoarded || false);
 
   if (req.query.hasBoarded) {
     if (req.user) {

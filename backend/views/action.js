@@ -61,8 +61,8 @@ function view(state, emit) {
           <div class="Sheet Sheet--conditional Sheet--md Sheet--lg">
             ${ definition(properties(action)) }
 
-            ${ user.isAuthenticated ? html`
-              <a href=${ resolve(`/actions/${ action._id }/edit`) } class="Button u-block u-marginVs">
+            ${ cooperative.editors.includes(user._id) ? html`
+              <a href=${ resolve(`/actions/${ action._id }/edit`) } class="Button u-block u-marginTs">
                 ${ __('Edit energy action') }
               </a>
             ` : null }
