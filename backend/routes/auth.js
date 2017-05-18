@@ -5,9 +5,16 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-router.get('/', function (req, res) {
+router.get('/', (req, res) => {
   if (!req.user) {
-    res.render('/auth');
+    if (req.accepts('html')) {
+      req.prismic.api.getSingle('sign-in').then(doc => {
+        res.locals.title = doc.getStructuredText('sign-in.title').asText();
+        res.render('/auth', { 'sign-in': doc });
+      }, err => res.status(500).render('/error', { err: err.message }));
+    } else {
+      res.status(406).end();
+    }
   } else {
     res.redirect(`/cooperatives/${ req.user.cooperative }`);
   }

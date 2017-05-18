@@ -5,7 +5,7 @@ module.exports = function scrips(state) {
   ];
 
   if (process.env.NODE_ENV !== 'development') {
-    tags.unshift('<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,fetch,Array.prototype.includes"></script>');
+    tags.unshift('<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,fetch,Array.prototype.includes,Object.values"></script>');
   }
 
   return tags;

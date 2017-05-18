@@ -4,6 +4,15 @@
   line-height: 1.35;
 }
 
+.Type img {
+  max-width: 100%;
+  height: auto;
+}
+
+.Type :link {
+  -webkit-font-smoothing: inherit;
+}
+
 .Type p:not(:first-child):not(:last-child) {
   margin: 0.7em 0;
 }

@@ -19,7 +19,7 @@ module.exports.close = close;
 
 if (typeof window !== 'undefined') {
   window.addEventListener('keydown', event => {
-    if (event.code === 'Escape') {
+    if (_modal && event.code === 'Escape') {
       close();
     }
   });

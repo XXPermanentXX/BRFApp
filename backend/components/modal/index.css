@@ -35,6 +35,8 @@
  */
 
 .Modal-window {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   width: 100%; /* 1 */
   max-width: var(--sm-viewport); /* 2 */

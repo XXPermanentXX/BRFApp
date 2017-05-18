@@ -29,7 +29,7 @@ const app = module.exports = choo();
 const routes = [
   ['/', require('../views/map')],
   ['/cooperatives', require('../views/map')],
-  ['/auth', require('../views/auth')],
+  ['/auth', require('../views/sign-in')],
   ['/user', require('../views/user')],
   ['/how-it-works', require('../views/faq')],
   ['/about-the-project', require('../views/about')],
@@ -52,14 +52,14 @@ routes.map(localize('en')).forEach(([route, view]) => app.route(route, view));
  * Set upp app models
  */
 
-app.use(require('./models/menu')());
 app.use(require('./models/geoip')());
 app.use(require('./models/chart')());
 app.use(require('./models/cms')({
   faq: INITIAL_STATE.faq,
   about: INITIAL_STATE.about,
   footer: INITIAL_STATE.footer,
-  onboarding: INITIAL_STATE.onboarding
+  onboarding: INITIAL_STATE.onboarding,
+  'sign-in': INITIAL_STATE['sign-in']
 }));
 app.use(require('./models/error')(INITIAL_STATE.error));
 app.use(require('./models/user')(INITIAL_STATE.user, INITIAL_STATE.auth));

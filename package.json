@@ -87,6 +87,8 @@
     "highcharts": "^5.0.9",
     "i18n": "^0.5.0",
     "lodash.merge": "^4.6.0",
+    "lodash.omit": "^4.5.0",
+    "lodash.pick": "^4.4.0",
     "mapbox-gl": "^0.35.1",
     "method-override": "^2.3.7",
     "moment": "^2.11.2",
