@@ -16,3 +16,7 @@
 .u-sizeCover {
   flex-basis: 100% !important;
 }
+
+.u-sizeFullV {
+  height: 100% !important;
+}

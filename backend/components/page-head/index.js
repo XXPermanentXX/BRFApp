@@ -116,11 +116,19 @@ module.exports = component({
             // Render sign in link
             (function () {
               const props = pages.auth(state);
-              return html`
-                <a ${ omit(props, 'title') } class="PageHead-link PageHead-trigger PageHead-trigger--large">
+              const link =  html`
+                <a class="PageHead-link PageHead-trigger PageHead-trigger--large" onclick=${ props.onclick || null }>
                   ${ props.title }
                 </a>
               `;
+
+              Object.keys(omit(props, 'title')).forEach(key => {
+                if (!(/^on/.test(key))) {
+                  link.setAttribute(key, props[key]);
+                }
+              });
+
+              return link;
             }())
           }
 
@@ -142,8 +150,8 @@ module.exports = component({
 function signin(doc, onclick) {
   if (doc) {
     return html`
-      <div class="u-flex u-flexCol u-flexGrow1">
-        <div class="u-flexGrow1 u-marginVl u-marginHm">
+      <div class="u-flex u-flexCol u-flexJustifyBetween u-sizeFullV">
+        <div class="u-flexShrink0 u-marginVl u-marginHm">
           <h1 class="Display Display--2 u-textCenter">
             ${ doc.getStructuredText('sign-in.title').asText() }
           </h1>
