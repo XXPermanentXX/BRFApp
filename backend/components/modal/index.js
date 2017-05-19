@@ -67,7 +67,8 @@ function render(content, onclose) {
       // Store an internal reference to the element in the actual DOM
       ref => { _modal = decorate(ref); },
       // Unset all references once the modal is removed from the DOM
-      () => { modal = _modal = null; }
+      () => { modal = _modal = null; },
+      uid
     );
   } else {
     log.debug('update');
