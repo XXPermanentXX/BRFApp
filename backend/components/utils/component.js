@@ -1,38 +1,31 @@
-const onload = require('on-load');
 const nanologger = require('nanologger');
-const morph = require('nanomorph');
-const { id } = require('./index');
+const Nanocomponent = require('nanocomponent');
+const nanomorph = require('nanomorph');
 
 /**
- * @name component
- * Lifecycle hooks for a cached element.
- * Takes either a function or an object with a render method and optional hooks.
+ * Lifecycle hooks for a statefull component.
  *
- * @name render
- * @description Should return the component element
- *
- * @name shouldUpdate
- * @description Determine wether the component will update
- *
- * @name update
- * @description Modify component on consecutive render calls
- *
- * @name onload
- * @description Called when component is mounted in the DOM
- *
- * @name unload
- * @description Called when component is removed from the DOM
+ * @param {any} props Function or Object
+ * @param {string} props.name Component name, used for debugging
+ * @param {boolean} props.cache Cache the component between mounts
+ * @param {function} props.render Should return the component element
+ * @param {function} props.shouldUpdate Determine wether the component will update
+ * @param {function} props.update Modify component on consecutive render calls
+ * @param {function} props.onload Called when component is mounted in the DOM
+ * @param {function} props.unload Called when component is removed from the DOM
+ * @returns {function} Renders component
  *
  * @example
- * cache(user => html`<a href="/users/${ user._id }`>${ user.name }</a>`)
+ * component(user => html`<a href="/users/${ user._id }`>${ user.name }</a>`)
  *
  * @example
  * component({
- *   shouldUpdate(args, prev) {
- *     return args[0].lng !== prev[0].lng || args[0].lat !== prev[0].lat;
+ *   name: 'map',
+ *   shouldUpdate([coordinates], [prevCoordinates]) {
+ *     return coordinates.lng !== prevCoordinates.lng || coordinates.lat !== prevCoordinates.lat;
  *   },
- *   update(coordinates, emit) {
- *     map.setCenter([coordinates.lng, coordinates.lat]);
+ *   update(element, coordinates, emit) {
+ *     this.map.setCenter([coordinates.lng, coordinates.lat]);
  *   },
  *   onload(element, coordinates, emit) {
  *     this.map = new mapboxgl.Map({
@@ -47,121 +40,92 @@ const { id } = require('./index');
  *     return html`<div class="Map"></div>`;
  *   }
  * })
- *
- * @param  {(Function|Object)}    props Function or Object
- * @return {Function}                   Renders component
  */
 
 module.exports = function component(props) {
-  let _args, _element, _render, ctx, element;
-  const uid = `cache-${ id() }`;
-  const log = nanologger(props.name || uid);
-
-  log.debug('create');
+  let _args, _element, _render, _update, ctx;
 
   if (typeof props === 'function') {
     _render = props;
-  } else if (typeof props.render === 'function') {
+  } else if (typeof props === 'object' && props.render) {
     ctx = props;
     _render = props.render;
+    _update = props.update;
   } else {
-    throw (new Error('Cache must be provided with a render function'));
+    throw (new Error('Component must be provided with a render function'));
   }
 
   let shouldUpdate = props.shouldUpdate;
-  if (typeof shouldUpdate !== 'function') {
-    if (typeof shouldUpdate !== 'undefined') {
-      // Support for shouldUpdate being a truthy/falsy value
-      shouldUpdate = () => props.shouldUpdate;
-    } else {
-      shouldUpdate = (args, prev) => {
-        // A different set of arguments issues a rerender
-        if (args.length !== prev.length) { return true; }
+  if (!shouldUpdate) {
+    shouldUpdate = (args, prev) => {
+      // A different set of arguments issues a rerender
+      if (args.length !== prev.length) { return true; }
 
-        // Check for challow diff in list of arguments
-        return args.reduce((diff, arg, index) => {
+      // Check for challow diff in list of arguments
+      return args.reduce((diff, arg, index) => {
+        if (prev[index] && prev[index].isSameNode && arg instanceof Element) {
+          return diff || !arg.isSameNode(prev[index]);
+        } else if (typeof arg === 'function') {
+          return diff || arg.toString() !== prev[index].toString();
+        } else {
           return diff || arg !== prev[index];
-        }, false);
-      };
-    }
+        }
+      }, false);
+    };
   }
 
-  const _update = props.update;
-  props.update = update;
+  function Component() {
+    Nanocomponent.call(this);
+    this.log = nanologger(props.name || this._ID);
+    props.debug = (...args) => this.log.debug(args[0], args.slice(1));
+    props.update = (...args) => this.update(...args);
+    this.log.debug('create');
+  }
 
-  /**
-   * Update existing element given new arguments
-   * @param  {Array} args Arguments supplied by caller
-   * @return {void}
-   */
+  Component.prototype = Object.create(Nanocomponent.prototype);
 
-  function update(...args) {
-    log.debug('update');
-
-    if (typeof _update === 'function') {
-      // Relay to custom user defined update method
-      _update.call(ctx, _element, ...args);
+  Component.prototype.update = function (...args) {
+    this.log.debug('update', args);
+    if (_update) {
+      _update.call(ctx, this._element, ...args);
     } else {
-      // Produce a rendition given the new arguments
-      let tree = _render.call(ctx, ...args);
-      tree.id = uid;
-
-      // Morph the new rendition onto the existing element
-      morph(_element, tree);
-
-      // Spare the garbage collector
-      tree = null;
+      nanomorph(this._element, _render.apply(ctx, args));
     }
-
-    // Cache arguments for diffing
-    _args = args;
-  }
-
-  return function render(...args) {
-    if (!element || typeof window === 'undefined') {
-      log.debug('render');
-
-      // Produce a first rendition of the element
-      element = decorate(_render.call(ctx, ...args));
-
-      onload(element, node => {
-        // Store an internal reference to the node actually mounted in the DOM
-        _element = decorate(node);
-
-        if (typeof props.onload === 'function') {
-          requestAnimationFrame(() => {
-            log.debug('load');
-            props.onload(_element, ..._args);
-          });
-        }
-      }, () => {
-        if (typeof props.unload === 'function') {
-          requestAnimationFrame(() => {
-            log.debug('unload');
-            props.unload(_element, ..._args);
-          });
-        }
-      }, uid);
-    } else if (shouldUpdate.call(ctx, args, _args || [])) {
-      update(...args);
-    }
-
-    // Cache arguments for diffing
-    _args = args;
-
-    // Return the most accurate rendition that we have
-    return _element || element;
   };
 
-  /**
-   * Decorate a node with the necessities for speedy DOM diffing
-   * @param  {Element} node The root node of a tree that is to forego diffing
-   * @return {Element}      Decorated node
-   */
+  Component.prototype._render = function(...args) {
+    _args = args;
 
-  function decorate(node) {
-    node.id = uid;
-    node.isSameNode = target => target.id === uid;
-    return node;
-  }
+    if (((props.cache && _element) || this._element) && this._hasWindow) {
+      this.update(...args);
+    } else {
+      this.log.debug('render', args);
+      _element = _render.apply(ctx, args);
+    }
+
+    return _element;
+  };
+
+  Component.prototype._update = (...args) => {
+    return shouldUpdate.call(ctx, args, _args);
+  };
+
+  Component.prototype._load = function() {
+    if (props.onload) {
+      props.onload(this._element, ..._args);
+    }
+  };
+
+  Component.prototype._unload = function() {
+    if (!props.cache) {
+      _element = null;
+    }
+
+    if (props.unload) {
+      props.unload(..._args);
+    }
+  };
+
+  const instance = new Component();
+  return (...args) => instance.render(...args);
 };

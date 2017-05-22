@@ -1,15 +1,19 @@
 /** @define utilities */
 
-.u-colorPrimary {
-  color: var(--color-primary) !important;
+.u-colorSky {
+  color: var(--color-sky) !important;
 }
 
-.u-colorAccent {
-  color: var(--color-accent) !important;
+.u-colorCyan {
+  color: var(--color-cyan) !important;
 }
 
-.u-colorSecondary {
-  color: var(--color-secondary) !important;
+.u-colorGold {
+  color: var(--color-gold) !important;
+}
+
+.u-colorTomato {
+  color: var(--color-tomato) !important;
 }
 
 .u-colorBackground {

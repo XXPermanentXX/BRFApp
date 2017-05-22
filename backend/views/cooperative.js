@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const header = require('../components/page-head');
+const header = require('../components/page-head')('cooperative');
 const performance = require('../components/performance');
 const createChart = require('../components/chart');
 const modal = require('../components/modal');

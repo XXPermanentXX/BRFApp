@@ -26,7 +26,7 @@ h1, h2, h3, h4, h5, h6, strong, b, dt {
 :visited {
   text-decoration: none;
   font-style: italic;
-  color: var(--color-primary);
+  color: var(--color-sky);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -40,7 +40,7 @@ h1, h2, h3, h4, h5, h6, strong, b, dt {
 
 [href^="#"],
 [href^="/"] {
-  color: var(--color-primary); /* 1 */
+  color: var(--color-sky); /* 1 */
 }
 
 :link:hover,

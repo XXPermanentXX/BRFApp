@@ -19,16 +19,17 @@ const POPUP_OFFSET = {
 
 module.exports = component({
   name: 'map',
+  cache: true,
   isInitialized: false,
 
-  shouldUpdate(args, prev) {
+  shouldUpdate([cooperatives, center], [prevCooperatives, prevCenter]) {
     // Check if number of cooperatives has changed
-    if (args[0].length !== prev[0].length) {
+    if (cooperatives.length !== prevCooperatives.length) {
       return true;
     }
 
     // Check if center has changed
-    if (args[1].latitude !== prev[1].latitude || args[1].longitude !== prev[1].longitude) {
+    if (coordinatesDiff(center, prevCenter)) {
       return true;
     }
 
@@ -36,41 +37,40 @@ module.exports = component({
   },
 
   update(element, cooperatives, center) {
-    const setData = () => {
-      // Recalculate bounds
-      const bounds = this.getBounds(cooperatives, getLngLat(center));
-
-      if (center.precission === 'exact') {
-        if (!this.position) {
-          // Create position marker for exact position
-          this.position = new this.mapbox.Marker(myLocation());
-        }
-
-        // Update position coordinates
-        this.position.setLngLat(getLngLat(center)).addTo(this.map);
-
-        // Ensure that exact position is included in bounds
-        bounds.extend(getLngLat(center));
-      }
-
-      // Fit new bounds in map
-      this.map.fitBounds(bounds, { padding: element.offsetWidth * 0.1 });
-
+    if (this.map) {
       // Update map source
       this.map.getSource('cooperatives').setData({
         type: 'FeatureCollection',
         features: asFeatures(cooperatives)
       });
-    };
 
-    if (this.map) {
-      setData();
+      if (coordinatesDiff(this.center, center)) {
+        // Recalculate bounds
+        const bounds = this.getBounds(cooperatives, getLngLat(center));
+
+        if (center.precission === 'exact') {
+          if (!this.position) {
+            // Create position marker for exact position
+            this.position = new this.mapbox.Marker(myLocation());
+          }
+
+          // Update position coordinates
+          this.position.setLngLat(getLngLat(center)).addTo(this.map);
+
+          // Ensure that exact position is included in bounds
+          bounds.extend(getLngLat(center));
+        }
+
+        // Fit new bounds in map
+        this.map.fitBounds(bounds, { padding: element.offsetWidth * 0.1 });
+      }
     }
   },
 
   onload(element, cooperatives, center) {
     if (this.isInitialized) { return; }
     this.isInitialized = true;
+    this.center = center;
 
     resource('https://api.mapbox.com/mapbox-gl-js/v0.34.0/mapbox-gl.css');
     resource('mapbox-gl').then(mapboxgl => {
@@ -341,4 +341,10 @@ function asFeatures(cooperatives) {
       }
     };
   });
+}
+
+function coordinatesDiff(coordsA, coordsB) {
+  return ['latitude', 'longitude'].reduce((changed, key) => {
+    return changed || coordsA[key] !== coordsB[key];
+  }, false);
 }

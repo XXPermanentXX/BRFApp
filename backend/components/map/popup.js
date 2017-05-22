@@ -34,7 +34,7 @@ module.exports = function popup(feature) {
           html`
             <span>
               <span class="u-textBold">${ properties.actions }</span>
-              ${ __n('Energy action', 'Energy actions', properties.actions) }
+              ${ ' ' + __n('Energy action', 'Energy actions', properties.actions) }
             </span>
           ` :
           html`<em class="u-colorDim">${ __('No energy actions') }</span>`

@@ -8,7 +8,7 @@
   position: relative;
 
   color: #fff;
-  background-color: var(--color-primary);
+  background-color: var(--color-sky);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -100,7 +100,7 @@
   left: 8px;
   top: 9px;
 
-  background-color: var(--color-primary);
+  background-color: var(--color-sky);
   border-radius: 7px;
 }
 
@@ -110,8 +110,8 @@
 }
 
 .Chart-tooltip--hasAction::after {
-  border-color: var(--color-secondary);
-  background-color: var(--color-secondary);
+  border-color: var(--color-gold);
+  background-color: var(--color-gold);
 }
 
 .Chart-action {
@@ -124,7 +124,7 @@
   text-align: center;
   line-height: 1.4em;
   font-size: calc(15rem / var(--base-font-size));
-  background-color: var(--color-secondary);
+  background-color: var(--color-gold);
   border-radius: 1em;
 }
 
@@ -138,7 +138,7 @@
   white-space: nowrap;
 
   opacity: 0.2;
-  color: var(--color-primary);
+  color: var(--color-sky);
   background-color: #fff;
   border-radius: 20px;
   transform: translateY(-50%);

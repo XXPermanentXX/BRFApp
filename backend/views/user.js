@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const header = require('../components/page-head');
+const header = require('../components/page-head')('user');
 
 module.exports = view;
 

@@ -8,7 +8,7 @@
   text-decoration: none;
   font-style: italic;
   cursor: pointer;
-  color: var(--color-primary);
+  color: var(--color-sky);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -18,7 +18,7 @@
 
 .Link:visited[href^="#"],
 .Link:visited[href^="/"] {
-  color: var(--color-primary); /* 1 */
+  color: var(--color-sky); /* 1 */
 }
 
 .Link:visited,

@@ -1,122 +1,64 @@
-const assert = require('assert');
 const html = require('choo/html');
-const morph = require('nanomorph');
-const onload = require('on-load');
-const nanologger = require('nanologger');
-const { id } = require('../utils');
+const component = require('../utils/component');
 const { __ } = require('../../locale');
 
-let _modal, _onclose, modal;
-const uid = `uid_${ id() }`;
-const log = nanologger('modal');
-
-module.exports = render;
-module.exports.close = close;
-
-/**
- * Attach global listener for escape that closes the modal
- */
-
-if (typeof window !== 'undefined') {
-  window.addEventListener('keydown', event => {
-    if (_modal && event.code === 'Escape') {
-      close();
-    }
-  });
+function Modal(...args) {
+  if (!(this instanceof Modal)) { return new Modal(...args); }
 }
 
-/**
- * The internal render method for generating modal element
- * @param  {Element|Array} content A single or list of elements to show in modal
- * @param  {function}      onclose Function to call when the modal is closed
- * @return {Element}               Modal element
- */
+Modal.prototype = Object.create({
+  name: 'modal',
 
-function _render(content, onclose) {
-  assert(onclose, 'onclose callback must be provided');
+  onclose() {
+    throw (new Error('No `onclose` method has been assigned'));
+  },
 
-  _onclose = onclose;
+  onload(element, content, onclose) {
+    const onescape = event => ((event.code === 'Escape') && this.close());
 
-  return html`
-    <div role="dialog" class="Modal" id=${ uid }>
-      <div class="Modal-window">
-        ${ content }
-        <button class="Modal-dismiss" onclick=${ close }>
-          <span class="Link">${ __('Close') }</span>
-        </button>
-      </div>
-    </div>
-  `;
-}
+    window.addEventListener('keydown', onescape);
+    this.unload = () => window.removeEventListener('keydown', onescape);
 
-/**
- * Public render method that morphs existing modal if there is one
- * @param  {Element|Array} content A single or list of elements to show in modal
- * @param  {function}      onclose Function to call when the modal is closed
- * @return {Element}               Modal element
- */
+    this.onclose = onclose;
+    this.element = element;
+  },
 
-function render(content, onclose) {
-  if (!modal || typeof window === 'undefined') {
-    log.debug('render');
+  close() {
+    return new Promise(resolve => {
+      this.debug('closing');
 
-    // Produce a first rendition of the element
-    modal = decorate(_render(content, onclose));
+      const ontransitionend = () => {
+        this.element.removeEventListener('transitionend', ontransitionend);
+        this.element.classList.remove('is-disappearing');
 
-    onload(modal,
-      // Store an internal reference to the element in the actual DOM
-      ref => { _modal = decorate(ref); },
-      // Unset all references once the modal is removed from the DOM
-      () => { modal = _modal = null; },
-      uid
-    );
-  } else {
-    log.debug('update');
-    // Morph a new rendition onto the existing element
-    morph(_modal, _render(content, onclose));
-  }
+        this.debug('closed');
+        this.onclose();
+        resolve();
+      };
 
-  return modal;
-}
-
-/**
- * Decorate node with `isSameNode` method for more performant DOM diffing
- * @param  {Element} node An element node that is to skip DOM diffing
- * @return {Element}      Decorated node
- */
-
-function decorate(node) {
-  node.isSameNode = target => target.id === uid;
-  return node;
-}
-
-/**
- * Public close method for dismissing the modal window
- * @return {Promise} Resolves once animation has finished
- */
-
-function close() {
-  return new Promise((resolve, reject) => {
-    if (!_modal) {
-      reject(new Error('Modal must be rendered before it can be closed'));
-      return;
-    }
-
-    log.debug('closing');
-
-    _modal.addEventListener('transitionend', function ontransitionend() {
-      _modal.removeEventListener('transitionend', ontransitionend);
-      _modal.classList.remove('is-disappearing');
-
-      log.debug('closed');
-
-      if (_onclose) {
-        _onclose();
-      }
-
-      resolve();
+      this.element.addEventListener('transitionend', ontransitionend);
+      this.element.classList.add('is-disappearing');
     });
+  },
 
-    _modal.classList.add('is-disappearing');
-  });
-}
+  render(content, onclose) {
+    this.onclose = onclose;
+
+    return html`
+      <div role="dialog" class="Modal">
+        <div class="Modal-window">
+          ${ content }
+          <button class="Modal-dismiss" onclick=${ () => this.close() }>
+            <span class="Link">${ __('Close') }</span>
+          </button>
+        </div>
+      </div>
+    `;
+  }
+});
+
+const modal = new Modal();
+module.exports = component(modal);
+module.exports.close = () => {
+  return modal.close();
+};

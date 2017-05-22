@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const header = require('../components/page-head');
+const header = require('../components/page-head')('about');
 const footer = require('../components/app/footer');
 const { loader } = require('../components/icons');
 const { __ } = require('../locale');
@@ -9,6 +9,10 @@ module.exports = view;
 
 function view(state, emit) {
   let doc = state.about;
+
+  if (!doc) {
+    emit('cms:about');
+  }
 
   return html`
     <div class="App">
@@ -25,7 +29,7 @@ function view(state, emit) {
               </div>
             </div>` :
           html`
-            <div class="u-marginVl u-textCenter" onload=${ () => emit('cms:about') }>
+            <div class="u-marginVl u-textCenter">
               ${ loader() }
             </div>
         ` }

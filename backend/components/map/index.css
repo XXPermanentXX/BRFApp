@@ -27,7 +27,7 @@
   font-weight: var(--font-weight-bold);
   font-size: calc(14rem / var(--base-font-size));
   border-radius: 2em;
-  background-color: var(--color-primary);
+  background-color: var(--color-sky);
   transform: translate(-50%, calc(-100% - 7px));
   -webkit-font-smoothing: antialiased;
 }
@@ -37,7 +37,7 @@
   width: 0;
   height: 0;
   border: 7px solid;
-  border-color: var(--color-primary) transparent transparent;
+  border-color: var(--color-sky) transparent transparent;
 
   position: absolute;
   left: 50%;

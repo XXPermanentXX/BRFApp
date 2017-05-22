@@ -74,7 +74,7 @@
   position: relative;
   z-index: 2;
   color: #fff;
-  background-color: var(--color-secondary);
+  background-color: var(--color-gold);
   transition: max-height 250ms linear;
 }
 

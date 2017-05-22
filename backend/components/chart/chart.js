@@ -10,28 +10,32 @@ const component = require('../utils/component');
 
 module.exports = component({
   name: 'chart',
+  cache: true,
   isInitialized: false,
 
   shouldUpdate(args, prev) {
+    const [granularity, actions, data] = args;
+    const [prevGranularity, prevActions, prevData] = prev;
+
     // Compare granularity
-    if (args[0] !== prev[0]) {
+    if (granularity !== prevGranularity) {
       return true;
     }
 
     // Compare number of actions
-    if (args[1].length !== prev[1].length) {
+    if (actions.length !== prevActions.length) {
       return true;
     }
 
     // Compare number of data series
-    if (args[2].length !== prev[2].length) {
+    if (data.length !== prevData.length) {
       return true;
     }
 
     // Compare data series
-    return args[2].reduce((result, serie, serieIndex) => {
+    return data.reduce((result, serie, serieIndex) => {
       return result || serie.values.reduce((diff, value, index) => {
-        return diff || value !== prev[2][serieIndex].values[index];
+        return diff || value !== prevData[serieIndex].values[index];
       }, false);
     }, false);
   },

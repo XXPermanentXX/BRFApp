@@ -34,6 +34,7 @@ const routes = [
   ['/how-it-works', require('../views/faq')],
   ['/about-the-project', require('../views/about')],
   ['/cooperatives/:cooperative', require('../views/cooperative')],
+  ['/cooperatives/:cooperative/add-action', require('../views/add-action')],
   ['/actions', require('../views/actions')],
   ['/actions/:action', require('../views/action')],
   ['/actions/:action/edit', require('../views/edit-action')],
@@ -84,7 +85,9 @@ if (typeof window !== 'undefined') {
    * Mount the application
    */
 
-  app.mount('.App');
+  // app.mount('.js-static');
+  const static = document.querySelector('.js-static');
+  static.parentElement.replaceChild(app.start(), static);
 }
 
 /**

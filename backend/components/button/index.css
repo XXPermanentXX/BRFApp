@@ -4,8 +4,8 @@
 
 :root {
   --Button-border-width: 0;
-  --Button-border-color: var(--color-primary);
-  --Button-background-color: var(--color-primary);
+  --Button-border-color: var(--color-sky);
+  --Button-background-color: var(--color-sky);
   --Button-color: #fff;
   --Button-font: inherit;
   --Button-padding: 1em;
@@ -63,7 +63,13 @@
 
 .Button--inverse {
   background-color: var(--Button-color);
+  border-color: var(--Button-color);
   color: var(--Button-background-color);
+}
+
+.Button--warning {
+  background-color: var(--color-tomato);
+  border-color: var(--color-tomato);
 }
 
 .Button--round {

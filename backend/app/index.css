@@ -38,9 +38,10 @@
   --font-weight-light: 300;
   --base-font-size: 16;
 
-  --color-primary: #388EE8;
-  --color-accent: #19DDC0;
-  --color-secondary: #FEC73D;
+  --color-sky: #388EE8;
+  --color-cyan: #19DDC0;
+  --color-gold: #FEC73D;
+  --color-tomato: #e83848;
   --color-background: #F4F7FA;
   --color-light: #EFEFEF;
   --color-pale: #C5CCD3;

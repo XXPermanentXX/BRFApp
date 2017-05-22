@@ -68,7 +68,7 @@
 .PageHead-button:link:focus {
   display: inline-block;
   padding: 0.5em 1em;
-  border: 1px solid var(--color-primary);
+  border: 1px solid var(--color-sky);
   border-radius: 2em;
   font-style: normal;
   font-size: calc(14rem / var(--base-font-size));

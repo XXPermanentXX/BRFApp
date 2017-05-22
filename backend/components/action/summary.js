@@ -15,7 +15,7 @@ module.exports = function summary(action, state) {
         <time class="Action-date" datetime=${ JSON.stringify(action.date) }>
           ${ capitalize(moment(action.date).format('MMM YYYY')) }
         </time>
-        <h3 class="u-linkComplexTarget Action-title">${ action.name }</h3>
+        <h3 class="u-linkComplexTarget Action-title">${ action.type || action.name }</h3>
       </a>
       ${ numComments ? comment(Object.assign({ short: true }, action.comments[numComments - 1]), action, state) : null }
       ${ numComments || state.user.isAuthenticated ? html`

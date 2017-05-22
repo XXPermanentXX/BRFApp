@@ -1,6 +1,6 @@
 const html = require('choo/html');
 const friendlyUrl = require('friendly-url');
-const header = require('../components/page-head');
+const header = require('../components/page-head')('faq');
 const footer = require('../components/app/footer');
 const { loader } = require('../components/icons');
 const { __ } = require('../locale');
@@ -10,6 +10,10 @@ module.exports = view;
 
 function view(state, emit) {
   let doc = state.faq;
+
+  if (!doc) {
+    emit('cms:faq');
+  }
 
   return html`
     <div class="App">
@@ -32,7 +36,7 @@ function view(state, emit) {
               `) }
             </div>` :
           html`
-            <div class="u-marginVl u-textCenter" onload=${ () => emit('cms:faq') }>
+            <div class="u-marginVl u-textCenter">
               ${ loader() }
             </div>
         ` }

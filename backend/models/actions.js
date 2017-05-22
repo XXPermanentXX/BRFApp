@@ -8,10 +8,12 @@ const escapeStringRegexp = require('escape-string-regexp');
 const ActionSchema = new Schema({
   name: {
     type: String,
-    required: true
   },
   types: {
     type: [String],
+  },
+  type: {
+    type: String,
     required: true
   },
   cost: Number,
@@ -46,7 +48,7 @@ ActionSchema.pre('remove', next => {
       .exec((err, cooperative) => {
         if (err) { return done(err); }
         const index = cooperative.actions.findIndex(id => id === this.id);
-        cooperative.comments.splice(index, 1);
+        cooperative.actions.splice(index, 1);
         cooperative.markModified('actions');
         cooperative.save(err => {
           if (err) { return done(err); }
@@ -75,23 +77,20 @@ const Actions = mongoose.model('Action', ActionSchema);
 
 exports.create = function(props, user, cooperative, done) {
   Actions.create({
-    name: props.name,
-    description: props.description,
+    type: props.type,
+    date: props.date,
     cost: props.cost,
-    types: props.types,
+    description: props.description,
     user: user._id,
     cooperative: cooperative._id,
     comments: []
   }, (err, action) => {
     if (err) { return done(err); }
-    Cooperatives.model.findOne({ _id: action.cooperative }, (err, cooperative) => {
+    cooperative.actions.push(action._id);
+    cooperative.markModified('actions');
+    cooperative.save(err => {
       if (err) { return done(err); }
-      cooperative.actions.push(action._id);
-      cooperative.markModified('actions');
-      cooperative.save(err => {
-        if (err) { return done(err); }
-        done(null, action);
-      });
+      done(null, action);
     });
   });
 };

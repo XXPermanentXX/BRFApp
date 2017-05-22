@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const header = require('../components/page-head');
+const header = require('../components/page-head')('sign-in');
 const { loader } = require('../components/icons');
 const resolve = require('../resolve');
 const { __ } = require('../locale');
@@ -8,6 +8,10 @@ module.exports = view;
 
 function view(state, emit) {
   const doc = state['sign-in'];
+
+  if (!doc) {
+    emit('cms:sign-in');
+  }
 
   return html`
     <div class="App">
@@ -23,7 +27,7 @@ function view(state, emit) {
             </div>
           </div>
         ` : html`
-          <div class="u-marginVl u-textCenter" onload=${ () => emit('cms:sign-in') }>
+          <div class="u-marginVl u-textCenter">
             ${ loader() }
           </div>
         ` }

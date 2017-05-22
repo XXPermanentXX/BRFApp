@@ -4,6 +4,7 @@ const router = express.Router();
 const Users = require('../models/users');
 const Cooperatives = require('../models/cooperatives');
 const Log = require('../models').logs;
+const { __ } = require('../locale');
 
 router.post('/', auth.authenticate(), (req, res) => {
   const { body } = req;
@@ -78,6 +79,32 @@ router.get('/:id', isMongoId('id'), (req, res) => {
     type: 'get',
     data: {
       cooperativeId: id
+    }
+  });
+});
+
+router.get('/:id/add-action', isMongoId('id'), auth.authenticate(), (req, res) => {
+  if (!req.accepts('html')) {
+    res.status(406).end();
+  } else {
+    Cooperatives.get(req.params.id, (err, cooperative) => {
+      if (err) {
+        res.status(500).render('/error', { err: err.message });
+      } else {
+        res.locals.title = __('Add action');
+        res.render(`/cooperatives/${ cooperative._id }/add-action`, {
+          cooperatives: [ cooperative.toJSON() ]
+        });
+      }
+    });
+  }
+
+  Log.create({
+    userId: req.user._id,
+    category: 'Action',
+    type: 'add',
+    data: {
+      cooperativeId: req.params.id
     }
   });
 });

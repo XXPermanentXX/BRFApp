@@ -118,13 +118,28 @@
 
 .Form-select {
   flex-grow: 1;
-  padding: 0;
+  padding: var(--Form-padding-y) var(--Form-padding-x);
   border: 0;
   outline: 0;
   font-size: 16px;
   background: none;
   border-radius: 0;
+
+  background-image: url("data:image/svg+xml;utf8,<svg width='15px' height='10px' viewBox='0 0 15 10' xmlns='http://www.w3.org/2000/svg'><g stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g transform='translate(1.000000, 1.000000)' stroke-width='2' stroke='#222222'><polyline transform='translate(6.502866, 0.204765) rotate(-45.000000) translate(-6.502866, -0.204765) ' points='11.2458765 4.94777541 1.75985483 4.94777541 1.75985483 -4.53824625 1.75985483 -4.53824625'></polyline></g></g></svg>");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 0.8em) calc(50% - 0.25em);
+
   -webkit-appearance: none;
+}
+
+::-webkit-calendar-picker-indicator {
+  color: transparent;
+  background: transparent;
+  position: relative;
+
+  background-image: url("data:image/svg+xml;utf8,<svg width='15px' height='10px' viewBox='0 0 15 10' xmlns='http://www.w3.org/2000/svg'><g stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g transform='translate(1.000000, 1.000000)' stroke-width='2' stroke='#222222'><polyline transform='translate(6.502866, 0.204765) rotate(-45.000000) translate(-6.502866, -0.204765) ' points='11.2458765 4.94777541 1.75985483 4.94777541 1.75985483 -4.53824625 1.75985483 -4.53824625'></polyline></g></g></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .Form-select:disabled {
@@ -169,7 +184,7 @@
 
 .Form-toggle input:checked + .Form-label {
   font-style: normal;
-  color: var(--color-primary);
+  color: var(--color-sky);
   background-color: #fff;
 }
 
@@ -194,7 +209,7 @@
 
 .Form-pill--leading {
   clear: left;
-  color: var(--color-primary);
+  color: var(--color-sky);
   background-color: #fff;
   border-radius: 2em 0 0 2em;
 }
@@ -204,12 +219,12 @@
   font-style: italic;
   border-radius: 0 2em 2em 0;
   color: #fff;
-  background-color: var(--color-primary);
+  background-color: var(--color-sky);
 }
 
 .Form-pill--select {
   padding-right: 2em;
-  background-color: var(--color-primary);
+  background-color: var(--color-sky);
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='8'><polygon stroke='none' fill='#ffffff' fill-rule='evenodd' points='0.641242789 -0.641242789 -0.419417382 0.419417382 5.77817459 6.61700936 11.9757666 0.419417382 10.9151064 -0.641242789 5.77817459 4.49568901' /></svg>");
   background-repeat: no-repeat;
   background-position: calc(100% - 0.5em) calc(50% + 1px);
@@ -221,5 +236,5 @@
 }
 
 .Form-target:checked + .Form-pill--checkmark {
-  color: var(--color-primary);
+  color: var(--color-sky);
 }

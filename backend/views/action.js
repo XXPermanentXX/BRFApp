@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const moment = require('moment');
 const capitalize = require('lodash.capitalize');
-const header = require('../components/page-head');
+const header = require('../components/page-head')('action');
 const { definition } = require('../components/list');
 const createChart = require('../components/chart');
 const footer = require('../components/app/footer');
@@ -61,11 +61,21 @@ function view(state, emit) {
           <div class="Sheet Sheet--conditional Sheet--md Sheet--lg">
             ${ definition(properties(action)) }
 
-            ${ cooperative.editors.includes(user._id) ? html`
-              <a href=${ resolve(`/actions/${ action._id }/edit`) } class="Button u-block u-marginTs">
-                ${ __('Edit energy action') }
-              </a>
-            ` : null }
+            ${ cooperative.editors.includes(user._id) ? [
+              html`
+                <a href=${ resolve(`/actions/${ action._id }/edit`) } class="Button u-block u-marginTs u-marginBb">
+                  ${ __('Edit energy action') }
+                </a>
+              `,
+              html`
+                <form action="/actions/${ action._id  }" method="POST" enctype="application/x-www-form-urlencoded">
+                  <input type="hidden" name="_method" value="DELETE" />
+                  <button type="submit" class="Button Button--warning u-sizeFull">
+                    ${ __('Remove enery action') }
+                  </button>
+                </form>
+              `
+            ] : null }
           </div>
         </div>
 

@@ -95,27 +95,27 @@ router.delete('/:id/comments/:commentId', isMongoId('id', 'commentId'), auth.aut
 
 router.post('/', auth.authenticate(), (req, res) => {
   req.checkBody('cooperative').isMongoId();
+  req.checkBody('date').isDate();
 
   const err = req.validationErrors();
 
   if (err) {
-    res.status(400).render('/error', err);
+    res.status(400).render('/error', { err });
   } else {
-    Actions.create(req.body, req.user, req.body.cooperative, (err, action) => {
+    Cooperatives.get(req.body.cooperative, (err, cooperative) => {
       if (err) {
-        res.status(500).render(`/actions${ req.url }`, Object.assign({
+        res.status(500).render('/error', Object.assign({
           err: err.message
         }, req.body));
       } else {
-        res.locals.title = action.name;
-        res.render(`/actions/${ action._id }`, action, done => {
-          Cooperatives.get(action.cooperative, (err, cooperative) => {
-            if (err) { return done(err); }
-            done(null, {
-              cooperatives: [ cooperative.toJSON() ],
-              actions: [ action.toJSON() ]
-            });
-          });
+        Actions.create(req.body, req.user, cooperative, (err, action) => {
+          if (err) {
+            res.status(500).render('/error', Object.assign({
+              err: err.message
+            }, req.body));
+          } else {
+            res.redirect(`/actions/${ action._id }`);
+          }
         });
       }
     });
@@ -222,7 +222,7 @@ router.delete('/:id', isMongoId('id'), auth.authenticate(), (req, res) => {
         if (err) {
           res.status(500).render('/error', { err: err.message });
         } else {
-          res.redirect(`/cooperatives/${ action.cooperative }`);
+          res.redirect(`/cooperatives/${ action.cooperative._id }`);
         }
       });
     }
@@ -280,13 +280,13 @@ module.exports = router;
 function isMongoId(...params) {
   return (req, res, next) => {
     for (let param of params) {
-      req.checkParams(param, `Invalid cooperative ${ param }`).isMongoId();
+      req.checkParams(param, `Invalid ${ param }`).isMongoId();
     }
 
     const err = req.validationErrors();
 
     if (err) {
-      res.status(404).render('/404', err);
+      res.status(400).render('/error', { err });
     } else {
       next();
     }
