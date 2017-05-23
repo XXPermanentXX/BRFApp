@@ -18,6 +18,7 @@ Modal.prototype = Object.create({
 
     window.addEventListener('keydown', onescape);
     this.unload = () => window.removeEventListener('keydown', onescape);
+    element.classList.add('is-open');
 
     this.onclose = onclose;
     this.element = element;
