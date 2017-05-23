@@ -11,7 +11,7 @@
 .Menu-link:link,
 .Menu-link:visited {
   display: block;
-  padding: var(--viewport-padding) var(--space-s);
+  padding: var(--space-s);
 }
 
 .Menu-item:last-child .Menu-link:link {
