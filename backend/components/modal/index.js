@@ -8,6 +8,7 @@ function Modal(...args) {
 
 Modal.prototype = Object.create({
   name: 'modal',
+  isOpen: false,
 
   onclose() {
     throw (new Error('No `onclose` method has been assigned'));
@@ -22,11 +23,13 @@ Modal.prototype = Object.create({
 
     this.onclose = onclose;
     this.element = element;
+    this.isOpen = true;
   },
 
   close() {
     return new Promise(resolve => {
       this.debug('closing');
+      this.isOpen = false;
 
       const ontransitionend = () => {
         this.element.removeEventListener('transitionend', ontransitionend);
@@ -46,7 +49,7 @@ Modal.prototype = Object.create({
     this.onclose = onclose;
 
     return html`
-      <div role="dialog" class="Modal">
+      <div role="dialog" class="Modal ${ this.isOpen ? 'is-open' : '' }">
         <div class="Modal-window">
           ${ content }
           <button class="Modal-dismiss" onclick=${ () => this.close() }>
