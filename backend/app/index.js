@@ -85,9 +85,8 @@ if (typeof window !== 'undefined') {
    * Mount the application
    */
 
-  // app.mount('.js-static');
-  const static = document.querySelector('.js-static');
-  static.parentElement.replaceChild(app.start(), static);
+  const staticEl = document.querySelector('.js-static');
+  staticEl.parentElement.replaceChild(app.start(), staticEl);
 }
 
 /**
