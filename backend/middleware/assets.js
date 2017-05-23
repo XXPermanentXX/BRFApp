@@ -53,7 +53,13 @@ module.exports = function (req, res, next) {
   } else if (/\.js$/.test(req.url)) {
     if (!cache[req.url]) {
       cache[req.url] = new StreamCache();
-      browserify({ basedir: ROOT })
+      browserify({
+        basedir: ROOT,
+        noParse: [
+          require.resolve('highcharts'),
+          require.resolve('mapbox-gl')
+        ]
+      })
         .require(req.url.replace(/^\//, '').replace(/\.js$/, ''))
         .bundle()
         .pipe(cache[req.url])
