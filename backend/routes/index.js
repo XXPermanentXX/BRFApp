@@ -33,7 +33,7 @@ router.use((req, res, next) => {
 });
 
 /**
- * Relay to seperate rout modules
+ * Relay to seperate route modules
  */
 
 router.use('/user', footer, require('./user'));

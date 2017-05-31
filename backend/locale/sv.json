@@ -37,6 +37,13 @@
   "ACTION_TYPE_300": "Ventilation",
   "ACTION_TYPE_301": "Kontroll & optimering",
   "ACTION_TYPE_302": "Investeringar",
+  "VENTILATION_TYPE_FTX": "FTX (mekanisk från- och tilluft med återvinning)",
+  "VENTILATION_TYPE_FVP": "FVP (frånluftsvärmepump)",
+  "VENTILATION_TYPE_F": "F (mekanisk frånluftsventilation)",
+  "VENTILATION_TYPE_FT": "FT (mekanisk från- och tilluftsventilation)",
+  "VENTILATION_TYPE_S": "S (självdragsventilation)",
+  "VENTILATION_TYPE_UNKNOWN": "Vet ej",
+  "VENTILATION_TYPE_OTHER": "Annat",
   "Back to %s": "Tillbaka till %s",
   "Category": {
     "one": "Kategori",

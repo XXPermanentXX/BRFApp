@@ -34,6 +34,7 @@ const routes = [
   ['/how-it-works', require('../views/faq')],
   ['/about-the-project', require('../views/about')],
   ['/cooperatives/:cooperative', require('../views/cooperative')],
+  ['/cooperatives/:cooperative/edit', require('../views/edit-cooperative')],
   ['/cooperatives/:cooperative/add-action', require('../views/add-action')],
   ['/actions', require('../views/actions')],
   ['/actions/:action', require('../views/action')],
@@ -60,6 +61,7 @@ app.use(require('./models/cms')({
   about: INITIAL_STATE.about,
   footer: INITIAL_STATE.footer,
   onboarding: INITIAL_STATE.onboarding,
+  registration: INITIAL_STATE.registration,
   'sign-in': INITIAL_STATE['sign-in']
 }));
 app.use(require('./models/error')(INITIAL_STATE.error));

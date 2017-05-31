@@ -156,6 +156,26 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
   });
 });
 
+router.get('/:id/edit', isMongoId('id'), (req, res, next) => {
+  if (!req.accepts('html')) {
+    res.status(406).end();
+  } else {
+    Cooperatives.get(req.params.id, (err, cooperative) => {
+      if (err) {
+        res.status(500).render('/error', { err: err.message });
+      } else {
+        req.prismic.api.getSingle('registration').then(doc => {
+          res.locals.title = `${ __('Edit') } ${ cooperative.name }`;
+          res.render(`/cooperatives/${ req.params.id }/edit`, {
+            cooperatives: [ cooperative.toJSON() ],
+            registration: doc
+          });
+        }, next);
+      }
+    });
+  }
+});
+
 router.post('/:id/editor', auth.authenticate(), isMongoId('id'), (req, res) => {
   Cooperatives.addEditor(req.params.id, req.user, err => {
     if (err) {

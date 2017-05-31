@@ -52,11 +52,17 @@
 }
 
 /**
- * Collapse margins and borders on form elements
+ * Collapse margins and borders on form elements on the smallest viewport
  */
 
 .Form-collapse {
   margin: 0 calc(var(--viewport-padding) * -1);
+}
+
+@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
+  .Form-collapse {
+    margin: 0;
+  }
 }
 
 .Form-item {
@@ -66,7 +72,19 @@
   padding-top: calc(var(--Form-padding-x) + 1em);
   border: 1px solid var(--Form-border-color);
 
+  overflow: hidden;
+
   background-color: #fff;
+}
+
+.Form-item--checkbox {
+  align-items: center;
+  min-height: calc(16px + (var(--Form-padding-y) * 2) + var(--Form-padding-x) + 1rem);
+  padding: var(--Form-padding-y) var(--Form-padding-x);
+}
+
+.Form-item--select {
+  padding-top: 0;
 }
 
 .Form-collapse .Form-item {
@@ -78,6 +96,8 @@
 }
 
 .Form-label {
+  display: block;
+
   position: absolute;
   top: var(--Form-padding-y);
   left: var(--Form-padding-x);
@@ -86,6 +106,15 @@
   font-size: calc(14rem / var(--base-font-size));
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+}
+
+.Form-label--lg {
+  font-size: calc(16rem / var(--base-font-size));
+}
+
+.Form-item--checkbox .Form-label {
+  position: static;
+  line-height: 1.4rem;
 }
 
 .Form-suffix {
@@ -118,7 +147,7 @@
 
 .Form-select {
   flex-grow: 1;
-  padding: var(--Form-padding-y) var(--Form-padding-x);
+  padding: calc(var(--Form-padding-y) + var(--Form-padding-x) + 1em) var(--Form-padding-x) var(--Form-padding-y);
   border: 0;
   outline: 0;
   font-size: 16px;
@@ -127,7 +156,7 @@
 
   background-image: url("data:image/svg+xml;utf8,<svg width='15px' height='10px' viewBox='0 0 15 10' xmlns='http://www.w3.org/2000/svg'><g stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g transform='translate(1.000000, 1.000000)' stroke-width='2' stroke='#222222'><polyline transform='translate(6.502866, 0.204765) rotate(-45.000000) translate(-6.502866, -0.204765) ' points='11.2458765 4.94777541 1.75985483 4.94777541 1.75985483 -4.53824625 1.75985483 -4.53824625'></polyline></g></g></svg>");
   background-repeat: no-repeat;
-  background-position: calc(100% - 0.8em) calc(50% - 0.25em);
+  background-position: calc(100% - 0.8em) calc((var(--Form-padding-x) + 1em) + 0.65em);
 
   -webkit-appearance: none;
 }
@@ -148,6 +177,34 @@
 
 .Form-select--multiple {
   padding: var(--Form-padding-y) var(--Form-padding-x);
+}
+
+.Form-checkbox {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.Form-proxy {
+  width: 1.5em;
+  height: 1.5em;
+  border: 2px solid var(--color-dim);
+
+  pointer-events: none;
+
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.Form-checkbox:checked + .Form-proxy {
+  border-color: currentColor;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 23' width='15' height='12.5'><path d='M27.0320729,3.93301911 C27.0320729,4.10797669 26.9671622,4.25991355 26.8378393,4.38882966 L9.36089195,21.7925055 C9.24992721,21.9214216 9.10197421,21.9858797 8.91703297,21.9858797 L8.88929178,21.9858797 L8.8615506,21.9858797 C8.69510348,21.9858797 8.54715049,21.9214216 8.41769162,21.7925055 L0.317265227,13.7536647 C0.187806358,13.5879155 0.123076923,13.4314196 0.123076923,13.2840417 C0.123076923,13.136709 0.187806358,12.9803035 0.317265227,12.8144639 L3.78491351,9.36135361 C4.09931362,9.08510478 4.41371373,9.08510478 4.72811384,9.36135361 L8.88929178,13.5327108 L22.427036,0.0241434065 C22.5935738,-0.104772711 22.7507285,-0.169230769 22.8985455,-0.169230769 C23.0466798,-0.169230769 23.2036986,-0.104772711 23.3701457,0.0241434065 L26.837794,3.47725369 C26.9672528,3.60612467 27.0320729,3.75806152 27.0320729,3.93301911 Z' fill='currentColor' /></svg>");
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 /**

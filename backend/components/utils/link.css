@@ -1,5 +1,9 @@
 /** @define utilities */
 
+.u-clickthrough {
+  pointer-events: none !important;
+}
+
 .u-linkComplex,
 .u-linkComplex:hover,
 .u-linkComplex:focus,
