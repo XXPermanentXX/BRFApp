@@ -15,7 +15,15 @@ const DYNAMIC_KEYS = [
   'area',
   'numOfApartments',
   'meters',
-  'ventilationType'
+  'ventilationType',
+  'hasLaundryRoom',
+  'hasGarage',
+  'hasCharger',
+  'hasEnergyProduction',
+  'hasRepresentative',
+  'hasConsumptionMapping',
+  'hasGoalManagement',
+  'hasBelysningsutmaningen',
 ];
 
 const CooperativeSchema = new Schema({
@@ -32,6 +40,14 @@ const CooperativeSchema = new Schema({
   numOfApartments: Number,
   ventilationType: [String],
   incHouseholdElectricity: Boolean,
+  hasLaundryRoom: Boolean,
+  hasGarage: Boolean,
+  hasCharger: Boolean,
+  hasEnergyProduction: Boolean,
+  hasRepresentative: Boolean,
+  hasConsumptionMapping: Boolean,
+  hasGoalManagement: Boolean,
+  hasBelysningsutmaningen: Boolean,
   meters: [{
     mType: String,
     useInCalc: Boolean,

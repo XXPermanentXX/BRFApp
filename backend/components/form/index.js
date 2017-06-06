@@ -19,6 +19,7 @@ exports.input = function input(props) {
           <span class="u-colorTransparent">${ props.value }</span>${ props.unit }
         </span>
       ` : null }
+      ${ props.suffix ? html`<span class="Form-suffix">${ props.suffix }</span>` : null }
     </label>
   `;
 };
@@ -27,8 +28,6 @@ exports.select = function select(props) {
   const tabs = [];
   const classNames = [ 'Form-select' ].concat([ props.class, props.className ]);
   const _onchange = props.onchange || function() {};
-  const hasWindow = typeof window !== 'undefined';
-  const hasTouch = hasWindow && 'ontouchstart' in window;
 
   const ondeselect = event => {
     const { currentTarget: button} = event;
@@ -38,32 +37,19 @@ exports.select = function select(props) {
       copy.splice(copy.indexOf(button.value), 1);
       return copy;
     });
+
+    event.preventDefault();
   };
 
   const attributes = Object.assign({}, props, {
     onchange(event) {
       if (props.multiple) {
-        if (event.target.multiple) {
-          _onchange(event, () => {
-            const selected = [];
-            let option = event.target.firstElementChild;
-
-            while (option) {
-              if (option.selected) {
-                selected.push(option.value);
-              }
-              option = option.nextElementSibling;
-            }
-
-            return selected;
-          });
-        } else {
-          _onchange(event, selected => {
-            const copy = selected.slice();
-            copy.push(event.target.value);
-            return copy;
-          });
-        }
+        _onchange(event, selected => {
+          const copy = selected.slice();
+          copy.push(event.target.value);
+          return copy;
+        });
+        event.target.value = 'none';
       } else {
         _onchange(event);
       }
@@ -71,7 +57,7 @@ exports.select = function select(props) {
   });
 
   let children = props.children;
-  if (props.multiple && !hasTouch) {
+  if (props.multiple) {
     children = children.map(function unselect(child) {
       if (child.chilren) {
         return Object.assign({}, child, { children: child.children.map(unselect) });
@@ -82,6 +68,7 @@ exports.select = function select(props) {
 
     children.unshift({
       label: __('Pick one or more'),
+      value: 'none',
       selected: true,
       disabled: true
     });
@@ -102,19 +89,14 @@ exports.select = function select(props) {
     </select>
   `, attributes);
 
-  if (props.multiple && hasWindow) {
-    if (hasTouch) {
-      select.setAttribute('multiple', '');
-      select.classList.add('Form-select--multiple');
-    } else {
-      props.children.forEach(function optionAsTab(child) {
-        if (child.children) {
-          child.children.forEach(optionAsTab);
-        } else if (child.selected) {
-          tabs.push(child);
-        }
-      });
-    }
+  if (props.multiple) {
+    props.children.forEach(function optionAsTab(child) {
+      if (child.children) {
+        child.children.forEach(optionAsTab);
+      } else if (child.selected) {
+        tabs.push(child);
+      }
+    });
   }
 
   return html`
@@ -170,7 +152,7 @@ function spread(element, props) {
       }
     });
 
-  Object.keys(props).filter(key => /^on/.test(key)).forEach(eventName => {
+  Object.keys(props).filter(key => (/^on/).test(key)).forEach(eventName => {
     element.addEventListener(eventName.split(/^on/)[1], props[eventName]);
   });
 

@@ -6,14 +6,47 @@ module.exports = function cooperatives(initialState, auth) {
       emitter.emit('cooperatives:fetch');
     });
 
-    emitter.on('cooperatives:add', data => {
-      if (Array.isArray(data)) {
-        data.forEach(inject);
-      } else {
-        inject(data);
-      }
+    emitter.on('cooperatives:add', ({ data }) => {
+      const options = {
+        body: JSON.stringify(data),
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      };
 
-      emitter.emit('render');
+      fetch('/cooperatives', options)
+        .then(body => body.json())
+        .then(body => {
+          state.cooperatives.push(body);
+          emitter.emit('pushState', `/cooperatives/${ body._id }`);
+        });
+    });
+
+    emitter.on('cooperatives:update', ({ cooperative, data }) => {
+      const options = {
+        body: JSON.stringify(data),
+        method: 'PUT',
+        credentials: 'include',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        }
+      };
+
+      fetch(`/cooperatives/${ cooperative._id }`, options)
+        .then(body => body.json())
+        .then(body => {
+          const index = state.cooperatives.findIndex(item => {
+            return item._id === cooperative._id;
+          });
+
+          state.cooperatives.splice(index, 1, body);
+
+          emitter.emit('pushState', `/cooperatives/${ body._id }`);
+        });
     });
 
     emitter.on('cooperatives:fetch', id => {
@@ -25,7 +58,13 @@ module.exports = function cooperatives(initialState, auth) {
       }
 
       fetch(url, { headers }).then(body => body.json().then(data => {
-        emitter.emit('cooperatives:add', data);
+        if (Array.isArray(data)) {
+          data.forEach(inject);
+        } else {
+          inject(data);
+        }
+
+        emitter.emit('render');
       }), err => emitter.emit('error', err));
     });
 

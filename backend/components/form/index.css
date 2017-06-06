@@ -120,6 +120,7 @@
 
 .Form-suffix {
   padding: var(--Form-padding-y) var(--Form-padding-x);
+  color: var(--color-dim);
   font-size: calc(14rem / var(--base-font-size));
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
@@ -167,6 +168,7 @@
 
 .Form-select {
   flex-grow: 1;
+  width: 100%;
   padding: calc(var(--Form-padding-y) + var(--Form-padding-x) + 1em) var(--Form-padding-x) var(--Form-padding-y);
   border: 0;
   outline: 0;
@@ -228,6 +230,9 @@
 }
 
 .Form-tab {
+  display: flex;
+  align-items: stretch;
+  max-width: 100%;
   margin: var(--Form-padding-y) var(--Form-padding-x);
 }
 
@@ -275,9 +280,10 @@
 
 .Form-pill {
   float: left;
+  display: flex;
+  align-items: center;
   padding: 0.5em 0.8em;
   border: 1px solid #fff;
-  white-space: nowrap;
   font-weight: normal;
   line-height: 1;
   color: currentColor;

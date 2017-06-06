@@ -88,7 +88,7 @@ function view(state, emit) {
               [__('Apartments')]: format(cooperative.numOfApartments),
               [__('Heated area')]: html`<span>${ format(cooperative.area) } m<sup>2</sup></span>`,
               [__('Constructed')]: cooperative.yearOfConst,
-              [__('Ventilation type')]: cooperative.ventilationType.join(', ')
+              [__('Ventilation type')]: cooperative.ventilationType.map(type => __(`VENTILATION_TYPE_${ type }`)).join(', ')
             }) }
           </div>
         </div>

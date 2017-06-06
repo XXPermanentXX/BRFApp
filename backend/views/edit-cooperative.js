@@ -3,7 +3,6 @@ const header = require('../components/page-head')('edit-cooperative');
 const footer = require('../components/app/footer');
 const { input, select, checkbox } = require('../components/form');
 const component = require('../components/utils/component');
-const { format } = require('../components/utils');
 const { __ } = require('../locale');
 
 const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'UNKNOWN', 'OTHER' ];
@@ -13,12 +12,14 @@ module.exports = view;
 const form = component({
   name: 'registration-form',
   props: {
-    reuse: false
+    reuse: false,
+    showMustAgree: false,
+    isLoading: false
   },
 
   render(cooperative, state, emit) {
     const { registration: doc } = state;
-    const url = cooperative ? `/cooperatives/${ cooperative._id }` : '/cooperatives';
+    const url = cooperative._id ? `/cooperatives/${ cooperative._id }` : '/cooperatives';
 
     const onreuse = event => {
       this.props.reuse = event.target.checked;
@@ -46,54 +47,64 @@ const form = component({
     };
 
     const onVentilationChange = (event, getSelected) => {
-      this.props.ventilationType = getSelected(this.props.ventilationType || []);
+      const ventilationType = this.props.ventilationType || cooperative.ventilationType;
+      this.props.ventilationType = getSelected(ventilationType || []);
       this.update(cooperative, state, emit);
     };
 
-    const {
-      name,
-      numOfApartments,
-      yearOfConst,
-      area,
-      ventilationType,
-      email,
-      hasLaundryRoom,
-      hasGarage,
-      hasCharger,
-      hasEnergyProduction,
-      hasRepresentative,
-      hasConsumptionMapping,
-      hasGoalManagement,
-      hasBelysningsutmaningen,
-      hasAgreed
-    } = Object.assign({}, cooperative, this.props);
+    const onsubmit = event => {
+      const data = Object.assign({}, cooperative, this.props);
+
+      if (!cooperative._id && !this.props.hasAgreed) {
+        this.props.showMustAgree = true;
+      } else if (cooperative) {
+        this.props.isLoading = true;
+        emit('cooperatives:update', { cooperative, data });
+      } else {
+        this.props.isLoading = true;
+        emit('cooperatives:add', { data });
+      }
+
+      this.update(cooperative, state, emit);
+
+      event.preventDefault();
+    };
+
+    const props = Object.assign({
+      hasLaundryRoom: false,
+      hasGarage: false,
+      hasCharger: false,
+      hasEnergyProduction: false,
+      hasRepresentative: false,
+      hasConsumptionMapping: false,
+      hasGoalManagement: false,
+      hasBelysningsutmaningen: false,
+      hasAgreed: false
+    }, cooperative, this.props);
 
     const ventilationOptions = VENTILATION_TYPES.map(type => ({
       label: __(`VENTILATION_TYPE_${ type }`),
       value: type,
-      selected: ventilationType.includes(type)
+      selected: props.ventilationType.includes(type)
     }));
 
     return html`
       <form action="${ url }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
-          ${ cooperative ? html`
-            <input type="hidden" name="_method" value="PUT" />
-          ` : html`
-            <input type="hidden" name="cooperative" value=${ cooperative._id } />
-          ` }
+        <fieldset disabled=${ props.isLoading || false }>
+          ${ cooperative._id ? html`<input type="hidden" name="_method" value="PUT" />` : null }
 
           <div class="Type">
              ${ doc.getStructuredText('registration.cooperative-properties').asElement() }
           </div>
 
           <div class="Form-collapse u-marginVm">
-            ${ input({ label: __('Name'), name: 'name', oninput: stash, required: true, value: name }) }
-            ${ input({ label: __('Number of apartments'), type: 'number', name: 'numOfApartments', oninput: stash, value: numOfApartments && format(numOfApartments) }) }
-            ${ input({ label: __('Year of construction'), type: 'number', name: 'yearOfConst', oninput: stash, max: (new Date()).getFullYear(), pattern: '[0-9]{4}', value: yearOfConst }) }
-            ${ input({ label: __('Heated area'), type: 'text', name: 'area', oninput: stash, 'data-cast': 'number', unit: area && html`<span>${ ' ' }m<sup>2</sup></span>`, value: area && format(area) }) }
+            ${ input({ label: __('Name'), name: 'name', oninput: stash, required: true, value: props.name }) }
+            ${ input({ label: __('Number of apartments'), type: 'number', name: 'numOfApartments', oninput: stash, value: props.numOfApartments }) }
+            ${ input({ label: __('Year of construction'), type: 'number', name: 'yearOfConst', oninput: stash, max: (new Date()).getFullYear(), pattern: '\\d{4}', value: props.yearOfConst }) }
+            ${ input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, 'data-cast': 'number', suffix: props.area && html`<span>m<sup>2</sup></span>`, value: props.area }) }
             ${ select({ label: __('Ventilation type'), onchange: onVentilationChange, name: 'ventilationType', multiple: true, children: ventilationOptions }) }
-            ${ email ? checkbox({ label: __('Reuse e-mail address from registration'), description: `${ __('Register using') } ${ cooperative.email }`, onchange: onreuse, checked: this.props.reuse }) : null }
-            ${ input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, readonly: this.props.reuse, value: this.props.email || (this.props.reuse && cooperative.email) }) }
+            ${ props.email && !cooperative._id ? checkbox({ label: __('Reuse e-mail address from registration'), description: `${ __('Register using') } ${ cooperative.email }`, onchange: onreuse, checked: props.reuse }) : null }
+            ${ input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, readonly: props.reuse, value: this.props.email || ((props.reuse || cooperative._id) && cooperative.email) }) }
           </div>
 
           <div class="Type">
@@ -101,10 +112,10 @@ const form = component({
           </div>
 
           <div class="Form-collapse u-marginVm">
-            ${ checkbox({ label: __('Shared laundry room'), onchange: stash, name: 'hasLaundryRoom', checked: hasLaundryRoom }) }
-            ${ checkbox({ label: __('Garage'), onchange: stash, name: 'hasGarage', checked: hasGarage }) }
-            ${ checkbox({ label: __('Charger for electric cars'), onchange: stash, name: 'hasCharger', checked: hasCharger }) }
-            ${ checkbox({ label: __('Renewable energy production'), onchange: stash, name: 'hasEnergyProduction', checked: hasEnergyProduction }) }
+            ${ checkbox({ label: __('Shared laundry room'), onchange: stash, name: 'hasLaundryRoom', checked: props.hasLaundryRoom }) }
+            ${ checkbox({ label: __('Garage'), onchange: stash, name: 'hasGarage', checked: props.hasGarage }) }
+            ${ checkbox({ label: __('Charger for electric cars'), onchange: stash, name: 'hasCharger', checked: props.hasCharger }) }
+            ${ checkbox({ label: __('Renewable energy production'), onchange: stash, name: 'hasEnergyProduction', checked: props.hasEnergyProduction }) }
           </div>
 
           <div class="Type">
@@ -112,10 +123,10 @@ const form = component({
           </div>
 
           <div class="Form-collapse u-marginVm">
-            ${ checkbox({ label: __('Assigned energy representative'), onchange: stash, name: 'hasRepresentative', checked: hasRepresentative }) }
-            ${ checkbox({ label: __('Energy consumption maping'), onchange: stash, name: 'hasConsumptionMapping', checked: hasConsumptionMapping }) }
-            ${ checkbox({ label: __('Goal oriented energy management'), onchange: stash, name: 'hasGoalManagement', checked: hasGoalManagement }) }
-            ${ checkbox({ label: __('Part of belysningsutmaningen'), onchange: stash, name: 'hasBelysningsutmaningen', checked: hasBelysningsutmaningen, description: html`
+            ${ checkbox({ label: __('Assigned energy representative'), onchange: stash, name: 'hasRepresentative', checked: props.hasRepresentative }) }
+            ${ checkbox({ label: __('Energy consumption maping'), onchange: stash, name: 'hasConsumptionMapping', checked: props.hasConsumptionMapping }) }
+            ${ checkbox({ label: __('Goal oriented energy management'), onchange: stash, name: 'hasGoalManagement', checked: props.hasGoalManagement }) }
+            ${ checkbox({ label: __('Part of belysningsutmaningen'), onchange: stash, name: 'hasBelysningsutmaningen', checked: props.hasBelysningsutmaningen, description: html`
               <span>${ __('Read more about the intiative') + ' ' }
                 <a href="http://www.energimyndigheten.se/belysningsutmaningen/" target="_blank">
                   ${ __('Here').toLowerCase() }
@@ -124,21 +135,24 @@ const form = component({
             ` }) }
           </div>
 
-          <div class="Type">
-             ${ doc.getStructuredText('registration.service-disclaimer').asElement() }
-          </div>
+          ${ !cooperative._id ? html`
+            <div>
+              <div class="Type">
+                ${ doc.getStructuredText('registration.service-disclaimer').asElement() }
+              </div>
 
-          <div class="Form-collapse u-marginVm">
-            ${ checkbox({ label: __('I agree'), onchange: stash, name: 'hasAgreed', checked: hasAgreed }) }
-          </div>
+              <div class="Form-collapse u-marginVm">
+                ${ checkbox({ label: __('I agree'), description: props.showMustAgree && html`<span class="u-colorTomato">${ __('You must agree to the terms to continue') }</span>`, onchange: stash, name: 'hasAgreed', checked: props.hasAgreed }) }
+              </div>
+            </div>
+          ` : null }
 
-          <button type="submit" class="Button u-block u-sizeFull">${ __('Save') }</button>
-        </form>
+          <button type="submit" class="Button u-block u-sizeFull">
+            ${ __('Save') }
+          </button>
+        </fieldset>
+      </form>
     `;
-
-    function onsubmit(event) {
-      event.preventDefault();
-    }
   }
 });
 
@@ -157,7 +171,7 @@ function view(state, emit) {
       ${ footer(state, emit) }
     </div>
   `;
-};
+}
 
 view.title = state => {
   const { params: { cooperative: id }} = state;

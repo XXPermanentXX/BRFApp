@@ -141,9 +141,11 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
       }, body));
     } else {
       res.locals.title = cooperative.name;
-      req.render(`/cooperatives/${ id }`, {
-        cooperatives: [ cooperative.toJSON() ],
-        actions: cooperative.actions.map(action => action.toJSON())
+      res.render(`/cooperatives/${ id }`,  cooperative, done => {
+        done(null, {
+          cooperatives: [ cooperative.toJSON() ],
+          actions: cooperative.actions.map(action => action.toJSON())
+        });
       });
     }
   });
