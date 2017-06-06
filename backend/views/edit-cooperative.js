@@ -13,8 +13,7 @@ const form = component({
   name: 'registration-form',
   props: {
     reuse: false,
-    showMustAgree: false,
-    isLoading: false
+    showMustAgree: false
   },
 
   render(cooperative, state, emit) {
@@ -58,10 +57,8 @@ const form = component({
       if (!cooperative._id && !this.props.hasAgreed) {
         this.props.showMustAgree = true;
       } else if (cooperative) {
-        this.props.isLoading = true;
         emit('cooperatives:update', { cooperative, data });
       } else {
-        this.props.isLoading = true;
         emit('cooperatives:add', { data });
       }
 
@@ -90,7 +87,7 @@ const form = component({
 
     return html`
       <form action="${ url }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
-        <fieldset disabled=${ props.isLoading || false }>
+        <fieldset disabled=${ state.isLoading || false }>
           ${ cooperative._id ? html`<input type="hidden" name="_method" value="PUT" />` : null }
 
           <div class="Type">

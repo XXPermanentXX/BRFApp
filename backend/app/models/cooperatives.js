@@ -21,8 +21,12 @@ module.exports = function cooperatives(initialState, auth) {
         .then(body => body.json())
         .then(body => {
           state.cooperatives.push(body);
+          state.isLoading = false;
           emitter.emit('pushState', `/cooperatives/${ body._id }`);
         });
+
+      state.isLoading = true;
+      emitter.emit('render');
     });
 
     emitter.on('cooperatives:update', ({ cooperative, data }) => {
@@ -44,9 +48,13 @@ module.exports = function cooperatives(initialState, auth) {
           });
 
           state.cooperatives.splice(index, 1, body);
+          state.isLoading = false;
 
           emitter.emit('pushState', `/cooperatives/${ body._id }`);
         });
+
+      state.isLoading = true;
+      emitter.emit('render');
     });
 
     emitter.on('cooperatives:fetch', id => {
