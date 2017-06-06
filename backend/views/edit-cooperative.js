@@ -3,6 +3,7 @@ const header = require('../components/page-head')('edit-cooperative');
 const footer = require('../components/app/footer');
 const { input, select, checkbox } = require('../components/form');
 const component = require('../components/utils/component');
+const { format } = require('../components/utils');
 const { __ } = require('../locale');
 
 const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'UNKNOWN', 'OTHER' ];
@@ -18,14 +19,34 @@ const form = component({
   render(cooperative, state, emit) {
     const { registration: doc } = state;
     const url = cooperative ? `/cooperatives/${ cooperative._id }` : '/cooperatives';
+
     const onreuse = event => {
       this.props.reuse = event.target.checked;
       this.update(cooperative, state, emit);
     };
+
     const stash = event => {
       const { target } = event;
       const isBoolean = (/checkbox|radio/).test(target.type);
-      this.props[event.target.name] = isBoolean ? target.checked : target.value;
+      const cast = target.dataset.cast;
+      let value = isBoolean ? target.checked : target.value;
+
+      if (cast && value) {
+        if (cast === 'number' || target.type === 'number') {
+          value = parseInt(value.replace(/\s/g, ''));
+
+          if (isNaN(value)) {
+            value = '';
+          }
+        }
+      }
+
+      this.props[event.target.name] = value;
+      this.update(cooperative, state, emit);
+    };
+
+    const onVentilationChange = (event, getSelected) => {
+      this.props.ventilationType = getSelected(this.props.ventilationType || []);
       this.update(cooperative, state, emit);
     };
 
@@ -47,13 +68,11 @@ const form = component({
       hasAgreed
     } = Object.assign({}, cooperative, this.props);
 
-    const belysningsutamningen = html`
-      <span>${ __('Read more about the intiative') + ' ' }
-        <a href="http://www.energimyndigheten.se/belysningsutmaningen/" target="_blank">
-          ${ __('Here').toLowerCase() }
-        </a>
-      </span>
-    `;
+    const ventilationOptions = VENTILATION_TYPES.map(type => ({
+      label: __(`VENTILATION_TYPE_${ type }`),
+      value: type,
+      selected: ventilationType.includes(type)
+    }));
 
     return html`
       <form action="${ url }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
@@ -69,16 +88,12 @@ const form = component({
 
           <div class="Form-collapse u-marginVm">
             ${ input({ label: __('Name'), name: 'name', oninput: stash, required: true, value: name }) }
-            ${ input({ label: __('Number of apartments'), type: 'number', name: 'numOfApartments', oninput: stash, value: numOfApartments }) }
+            ${ input({ label: __('Number of apartments'), type: 'number', name: 'numOfApartments', oninput: stash, value: numOfApartments && format(numOfApartments) }) }
             ${ input({ label: __('Year of construction'), type: 'number', name: 'yearOfConst', oninput: stash, max: (new Date()).getFullYear(), pattern: '[0-9]{4}', value: yearOfConst }) }
-            ${ input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, value: area }) }
-            ${ select({ label: __('Ventilation type'), onchange: stash, name: 'ventilationType', children: VENTILATION_TYPES.map(type => ({
-              label: __(`VENTILATION_TYPE_${ type }`),
-              value: type,
-              selected: ventilationType === type
-            })) }) }
-            ${ checkbox({ label: __('Reuse e-mail address from registration'), description: `${ __('Register using') } ${ 'trolol@foo.bar' }`, onchange: onreuse, checked: this.props.reuse }) }
-            ${ input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, value: email || this.reuse && state.user.email }) }
+            ${ input({ label: __('Heated area'), type: 'text', name: 'area', oninput: stash, 'data-cast': 'number', unit: area && html`<span>${ ' ' }m<sup>2</sup></span>`, value: area && format(area) }) }
+            ${ select({ label: __('Ventilation type'), onchange: onVentilationChange, name: 'ventilationType', multiple: true, children: ventilationOptions }) }
+            ${ email ? checkbox({ label: __('Reuse e-mail address from registration'), description: `${ __('Register using') } ${ cooperative.email }`, onchange: onreuse, checked: this.props.reuse }) : null }
+            ${ input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, readonly: this.props.reuse, value: this.props.email || (this.props.reuse && cooperative.email) }) }
           </div>
 
           <div class="Type">
@@ -100,7 +115,13 @@ const form = component({
             ${ checkbox({ label: __('Assigned energy representative'), onchange: stash, name: 'hasRepresentative', checked: hasRepresentative }) }
             ${ checkbox({ label: __('Energy consumption maping'), onchange: stash, name: 'hasConsumptionMapping', checked: hasConsumptionMapping }) }
             ${ checkbox({ label: __('Goal oriented energy management'), onchange: stash, name: 'hasGoalManagement', checked: hasGoalManagement }) }
-            ${ checkbox({ label: __('Part of belysningsutmaningen'), description: belysningsutamningen, onchange: stash, name: 'hasBelysningsutmaningen', checked: hasBelysningsutmaningen }) }
+            ${ checkbox({ label: __('Part of belysningsutmaningen'), onchange: stash, name: 'hasBelysningsutmaningen', checked: hasBelysningsutmaningen, description: html`
+              <span>${ __('Read more about the intiative') + ' ' }
+                <a href="http://www.energimyndigheten.se/belysningsutmaningen/" target="_blank">
+                  ${ __('Here').toLowerCase() }
+                </a>
+              </span>
+            ` }) }
           </div>
 
           <div class="Type">

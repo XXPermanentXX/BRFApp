@@ -49,7 +49,7 @@ module.exports = function form(cooperative, state, emit) {
           <span class="Form-pill Form-pill--leading Form-pill--checkmark u-flex u-flexAlignItemsCenter">
             ${ checkmark(14) }
           </span>
-          <span class="Form-proxy Form-pill Form-pill--trailing u-flexGrow1">
+          <span class="Form-pill Form-pill--trailing u-flexGrow1">
             ${ __('Normalize') }
           </span>
         </label>

@@ -43,3 +43,7 @@
 .u-colorCurrent {
   color: currentColor !important
 }
+
+.u-colorTransparent {
+  color: transparent !important
+}

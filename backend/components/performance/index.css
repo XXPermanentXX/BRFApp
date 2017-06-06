@@ -5,9 +5,20 @@
 }
 
 .Performance-graph {
-  max-width: 100%;
-  margin: 0 -2.34375% 0.5em;
+  width: calc(100% + (2.34375% * 2));
+  margin: 0 0 0.5em;
+  position: relative;
+  left: -2.34375%;
   pointer-events: none;
+}
+
+.Performance--alignLeft .Performance-graph {
+  width: 102.34375%;
+}
+
+.Performance--alignRight .Performance-graph {
+  width: 102.34375%;
+  left: 0;
 }
 
 .Performance-link {

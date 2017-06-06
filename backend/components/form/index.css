@@ -67,6 +67,7 @@
 
 .Form-item {
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   position: relative;
   padding-top: calc(var(--Form-padding-x) + 1em);
@@ -124,6 +125,19 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.Form-unit {
+  display: none;
+}
+
+.has-js .Form-unit {
+  display: inline;
+  position: absolute;
+  left: var(--Form-padding-x);
+  bottom: var(--Form-padding-y);
+  color: var(--color-dim);
+  pointer-events: none;
+}
+
 .Form-input {
   box-sizing: border-box;
   display: block;
@@ -134,6 +148,12 @@
   outline: 0;
   font-size: 16px;
   -webkit-appearance: none;
+}
+
+.Form-input:disabled,
+.Form-input[readonly] {
+  color: var(--color-dark);
+  cursor: not-allowed;
 }
 
 .Form-input::-webkit-calendar-picker-indicator {
@@ -153,12 +173,11 @@
   font-size: 16px;
   background: none;
   border-radius: 0;
+  -webkit-appearance: none;
 
   background-image: url("data:image/svg+xml;utf8,<svg width='15px' height='10px' viewBox='0 0 15 10' xmlns='http://www.w3.org/2000/svg'><g stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'><g transform='translate(1.000000, 1.000000)' stroke-width='2' stroke='#222222'><polyline transform='translate(6.502866, 0.204765) rotate(-45.000000) translate(-6.502866, -0.204765) ' points='11.2458765 4.94777541 1.75985483 4.94777541 1.75985483 -4.53824625 1.75985483 -4.53824625'></polyline></g></g></svg>");
   background-repeat: no-repeat;
   background-position: calc(100% - 0.8em) calc((var(--Form-padding-x) + 1em) + 0.65em);
-
-  -webkit-appearance: none;
 }
 
 ::-webkit-calendar-picker-indicator {
@@ -177,6 +196,7 @@
 
 .Form-select--multiple {
   padding: var(--Form-padding-y) var(--Form-padding-x);
+  margin-top: calc(var(--Form-padding-x) + 1em);
 }
 
 .Form-checkbox {
@@ -205,6 +225,10 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 23' width='15' height='12.5'><path d='M27.0320729,3.93301911 C27.0320729,4.10797669 26.9671622,4.25991355 26.8378393,4.38882966 L9.36089195,21.7925055 C9.24992721,21.9214216 9.10197421,21.9858797 8.91703297,21.9858797 L8.88929178,21.9858797 L8.8615506,21.9858797 C8.69510348,21.9858797 8.54715049,21.9214216 8.41769162,21.7925055 L0.317265227,13.7536647 C0.187806358,13.5879155 0.123076923,13.4314196 0.123076923,13.2840417 C0.123076923,13.136709 0.187806358,12.9803035 0.317265227,12.8144639 L3.78491351,9.36135361 C4.09931362,9.08510478 4.41371373,9.08510478 4.72811384,9.36135361 L8.88929178,13.5327108 L22.427036,0.0241434065 C22.5935738,-0.104772711 22.7507285,-0.169230769 22.8985455,-0.169230769 C23.0466798,-0.169230769 23.2036986,-0.104772711 23.3701457,0.0241434065 L26.837794,3.47725369 C26.9672528,3.60612467 27.0320729,3.75806152 27.0320729,3.93301911 Z' fill='currentColor' /></svg>");
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.Form-tab {
+  margin: var(--Form-padding-y) var(--Form-padding-x);
 }
 
 /**
@@ -255,6 +279,7 @@
   border: 1px solid #fff;
   white-space: nowrap;
   font-weight: normal;
+  line-height: 1;
   color: currentColor;
   outline: none;
   font-size: calc(14rem / var(--base-font-size));
@@ -266,6 +291,7 @@
 
 .Form-pill--leading {
   clear: left;
+  border-width: 1px 0 1px 1px;
   color: var(--color-sky);
   background-color: #fff;
   border-radius: 2em 0 0 2em;
@@ -277,6 +303,14 @@
   border-radius: 0 2em 2em 0;
   color: #fff;
   background-color: var(--color-sky);
+}
+
+.Form-pill--leading.Form-pill--outline {
+  border-color: var(--color-pale);
+}
+
+.Form-pill--trailing.Form-pill--outline {
+  border-color: var(--color-sky);
 }
 
 .Form-pill--select {

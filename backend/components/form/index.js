@@ -1,6 +1,7 @@
 const html = require('choo/html');
+const { __ } = require('../../locale');
 
-const RESERVED = [ 'label', 'class', 'className', 'children', 'description' ];
+const RESERVED = [ 'label', 'class', 'className', 'children', 'description', 'suffix', 'unit', 'multiple' ];
 
 exports.input = function input(props) {
   const classNames = [ 'Form-input' ].concat([ props.class, props.className ]);
@@ -13,35 +14,122 @@ exports.input = function input(props) {
     <label class="Form-item">
       <span class="Form-label">${ props.label }</span>
       ${ spread(html`<input class=${ classNames.filter(Boolean).join(' ') } />`, props) }
+      ${ props.unit ? html`
+        <span class="Form-unit">
+          <span class="u-colorTransparent">${ props.value }</span>${ props.unit }
+        </span>
+      ` : null }
     </label>
   `;
 };
 
 exports.select = function select(props) {
+  const tabs = [];
   const classNames = [ 'Form-select' ].concat([ props.class, props.className ]);
+  const _onchange = props.onchange || function() {};
+  const hasWindow = typeof window !== 'undefined';
+  const hasTouch = hasWindow && 'ontouchstart' in window;
 
-  if (props.multiple) {
-    classNames.push('Form-select--multiple');
+  const ondeselect = event => {
+    const { currentTarget: button} = event;
+
+    _onchange(null, selected => {
+      const copy = selected.slice();
+      copy.splice(copy.indexOf(button.value), 1);
+      return copy;
+    });
+  };
+
+  const attributes = Object.assign({}, props, {
+    onchange(event) {
+      if (props.multiple) {
+        if (event.target.multiple) {
+          _onchange(event, () => {
+            const selected = [];
+            let option = event.target.firstElementChild;
+
+            while (option) {
+              if (option.selected) {
+                selected.push(option.value);
+              }
+              option = option.nextElementSibling;
+            }
+
+            return selected;
+          });
+        } else {
+          _onchange(event, selected => {
+            const copy = selected.slice();
+            copy.push(event.target.value);
+            return copy;
+          });
+        }
+      } else {
+        _onchange(event);
+      }
+    }
+  });
+
+  let children = props.children;
+  if (props.multiple && !hasTouch) {
+    children = children.map(function unselect(child) {
+      if (child.chilren) {
+        return Object.assign({}, child, { children: child.children.map(unselect) });
+      } else {
+        return Object.assign({}, child, { selected: false });
+      }
+    });
+
+    children.unshift({
+      label: __('Pick one or more'),
+      selected: true,
+      disabled: true
+    });
+  }
+
+  const select = spread(html`
+    <select class=${ classNames.filter(Boolean).join(' ') }>
+      ${ children.map(child => {
+        if (child.children) {
+          return html`
+            <optgroup label=${ child.label }>
+              ${ child.children.map(option) }
+            </optgroup>
+          `;
+        }
+        return option(child);
+      }) }
+    </select>
+  `, attributes);
+
+  if (props.multiple && hasWindow) {
+    if (hasTouch) {
+      select.setAttribute('multiple', '');
+      select.classList.add('Form-select--multiple');
+    } else {
+      props.children.forEach(function optionAsTab(child) {
+        if (child.children) {
+          child.children.forEach(optionAsTab);
+        } else if (child.selected) {
+          tabs.push(child);
+        }
+      });
+    }
   }
 
   return html`
-    <label class="Form-item Form-item--select">
-      <span class="Form-label u-clickthrough">${ props.label }</span>
-      ${ spread(html`
-        <select class=${ classNames.filter(Boolean).join(' ') }>
-          ${ props.children.map(child => {
-            if (child.children) {
-              return html`
-                <optgroup label=${ child.label }>
-                  ${ child.children.map(option) }
-                </optgroup>
-              `;
-            }
-            return option(child);
-          })}
-        </select>
-      `, props) }
-    </label>
+    <div class="Form-item Form-item--select">
+      <label class="u-block u-sizeFull u-flex">
+        <span class="Form-label u-clickthrough">${ props.label }</span>
+        ${ select }
+      </label>
+      ${ tabs.map(tab => html`
+        <button class="Form-tab" onclick=${ ondeselect } value=${ tab.value }>
+          <span class="Form-pill Form-pill--leading Form-pill--checkmark Form-pill--outline">✖︎</span>
+          <span class="Form-pill Form-pill--trailing Form-pill--outline">${ tab.label }</span>
+        </button>
+      `) }
+    </div>
   `;
 };
 
@@ -66,7 +154,7 @@ exports.checkbox = function checkbox(props) {
 
 function option(props) {
   return html`
-    <option selected=${ props.selected } value=${ props.value }>
+    <option selected=${ props.selected } value=${ props.value } disabled=${ props.disabled || false }>
       ${ props.label }
     </option>
   `;

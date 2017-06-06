@@ -16,10 +16,15 @@ const ENERGY_CLASSES = {
 };
 
 module.exports = component((cooperative, user) => {
+  const classNames = [ 'Performance' ];
   const performance = getPerformance(cooperative);
   const energyClass = performance && getEnergyClass(performance.value);
   const classPosition = energyClass ? Object.keys(ENERGY_CLASSES).indexOf(energyClass) : 3;
-  const linkPosition = classPosition > Object.keys(ENERGY_CLASSES).length / 2 ? 'left' : 'right';
+  const linkPosition = classPosition > Object.keys(ENERGY_CLASSES).length / 2 ? 'Left' : 'Right';
+
+  if (energyClass === 'A' || energyClass === 'G') {
+    classNames.push(`Performance--align${ linkPosition }`);
+  }
 
   let disclaimer = null;
   if (performance && performance.isGuesstimate) {
@@ -34,10 +39,10 @@ module.exports = component((cooperative, user) => {
   }
 
   return html`
-    <div class="Performance">
+    <div class=${ classNames.join(' ') }>
       <figure>
         <figcaption>
-          <a href=${resolve('/how-it-works#energy-performance')} class="Performance-link u-float${ linkPosition[0].toUpperCase() + linkPosition.substr(1) }" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
+          <a href=${resolve('/how-it-works#energy-performance')} class="Performance-link u-float${ linkPosition }" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
         </figcaption>
         <svg class="Performance-graph" viewBox="0 0 512 93">
           <defs>

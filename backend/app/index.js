@@ -89,6 +89,12 @@ if (typeof window !== 'undefined') {
 
   const staticEl = document.querySelector('.js-static');
   staticEl.parentElement.replaceChild(app.start(), staticEl);
+
+  /**
+   * Tag document as JavaScript-capable as soon as the pplication has mounted all right
+   */
+
+  document.documentElement.classList.add('has-js');
 }
 
 /**
