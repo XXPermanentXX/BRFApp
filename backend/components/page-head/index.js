@@ -97,7 +97,7 @@ module.exports = function createHeader(view) {
             // Render user menu anchor link
             html`
               <a href="#page-menu-lg" data-no-routing="true" onclick=${ toggle(true) } class="PageHead-trigger PageHead-trigger--large PageHead-link">
-                ${ user.profile.name } ${ chevron('down') }
+                ${ __('Menu') } ${ chevron('down') }
               </a>
             ` :
             // Render sign in link
@@ -120,7 +120,7 @@ module.exports = function createHeader(view) {
           }
 
           <!-- All viewports: close drop down menu -->
-          <a href="#page-head" data-no-routing="true" onclick=${ toggle(false) } class="PageHead-untrigger PageHead-link" hidden data-title-small=${ __('Close') } data-title-large=${ user.isAuthenticated ? user.profile.name : __('Close') }>
+          <a href="#page-head" data-no-routing="true" onclick=${ toggle(false) } class="PageHead-untrigger PageHead-link" hidden data-title-small=${ __('Close') } data-title-large=${ user.isAuthenticated ? __('Menu') : __('Close') }>
             ${ chevron('up') }
           </a>
         </nav>

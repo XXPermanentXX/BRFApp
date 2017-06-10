@@ -45,7 +45,7 @@ module.exports = function form(cooperative, state, emit) {
         </div>
 
         <label class="u-flex u-marginBs u-sizeFull">
-          <input class="Form-target Form-target--compex" type="checkbox" name="consumptions:normalize" onchange=${ onchange } checked=${ normalize } disabled=${ disabled } />
+          <input class="Form-target Form-target--compex" type="checkbox" name="consumptions:normalize" onchange=${ onchange } checked=${ normalize } disabled=${ type !== 'electricity' || disabled } />
           <span class="Form-pill Form-pill--leading Form-pill--checkmark u-flex u-flexAlignItemsCenter">
             ${ checkmark(14) }
           </span>
@@ -59,11 +59,17 @@ module.exports = function form(cooperative, state, emit) {
       <div class="Form-grid u-marginRb">
         <label for="form_type" class="Form-pill Form-pill--leading u-marginBs">${ __('Show') }</label>
         <select id="form_type" class="Form-pill Form-pill--trailing Form-pill--select u-marginBs" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
-          ${ Object.keys(TYPES).map(key => html`
+          ${ Object.keys(TYPES).map(key => {
+            const type = __(TYPES[key]);
+            const { incHouseholdElectricity } = cooperative;
+            const addSuffix = key === 'electricity' && incHouseholdElectricity;
+
+            return html`
               <option value=${ key } selected=${ type === key }>
-                ${ __(TYPES[key]) }
+                ${ addSuffix ? __('%s incl. households', type) : type }
               </option>
-          `) }
+            `;
+          }) }
         </select>
 
         <label for="form_compare" class="Form-pill Form-pill--leading">${ __('Compare with') }</label>

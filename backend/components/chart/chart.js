@@ -107,11 +107,6 @@ module.exports = component({
 function getConfig(granularity, actions, data) {
   return {
     series: compose(actions, data),
-    legend: {
-      title: {
-        text: `${ __('Energy use') } (kWh/m<sup>2</sup>)`
-      }
-    },
     tooltip: {
       formatter: formatters[granularity]
     },

@@ -49,7 +49,9 @@ module.exports = function createChart() {
 
     let isLoading = false;
     if (queries.length) {
-      emit('consumptions:fetch', queries);
+      if (!state.error) {
+        emit('consumptions:fetch', queries);
+      }
 
       if (page !== 0) {
         isLoading = true;
@@ -113,7 +115,7 @@ module.exports = function createChart() {
                 <strong>${ __('Showing') }: </strong>
                 <em>${ normalize ? (__('normalized') + ' ') : '' }</em>
                 ${ __('energy use for') + ' ' }
-                <em>${ __(type).toLowerCase() + ' ' }</em>
+                <em>${ getType(cooperative, type).toLowerCase() + ' ' }</em>
                 ${ __('per') + ' ' }
                 <em>${ __(granularity) + ' ' }</em>
                 ${ compare ? html`
@@ -130,6 +132,10 @@ module.exports = function createChart() {
           </div>
         </div>
         <div class="Chart-graph">
+          <span class="Chart-legend">
+            ${ getType(cooperative, type) } (kWh/m<sup>2</sup>)
+          </span>
+
           <!-- Cached Highcharts container element -->
           ${ element }
 
@@ -167,6 +173,17 @@ module.exports = function createChart() {
   };
 };
 
+
+/**
+ * Format type depending on whether consumption includes households' electricity
+ */
+
+function getType(cooperative, type) {
+  const { incHouseholdElectricity } = cooperative;
+  const addSuffix = type === 'electricity' && incHouseholdElectricity;
+  return addSuffix ? __('%s incl. households', __(type)) : __(type);
+}
+
 /**
  * Compile queries for fetching consumption data
  */
@@ -177,7 +194,7 @@ function getQueries(now, cooperative, state) {
   const queries = [];
   queries.push(Object.assign({
     name: granularity === 'month' ? __('Current year') : cooperative.name,
-    type: type,
+    types: [ type ],
     normalize: normalize,
     cooperative: cooperative._id
   }, getPeriod(granularity, now)));
@@ -188,7 +205,7 @@ function getQueries(now, cooperative, state) {
 
     queries.push(Object.assign({
       name: __('Previous year'),
-      type: type,
+      types: [ type ],
       normalize: normalize,
       cooperative: cooperative._id
     }, period));

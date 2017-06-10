@@ -56,7 +56,7 @@ module.exports = {
   title: { text: null },
   legend: {
     title: {
-      style: { color: 'currentColor' }
+      text: null
     },
     useHTML: true,
     floating: true,

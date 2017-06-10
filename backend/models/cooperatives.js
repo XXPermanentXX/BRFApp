@@ -30,6 +30,7 @@ const CooperativeSchema = new Schema({
   area: Number,
   numOfApartments: Number,
   ventilationType: [String],
+  incHouseholdElectricity: Boolean,
   meters: [{
     mType: String,
     useInCalc: Boolean,
@@ -81,11 +82,11 @@ CooperativeSchema.methods.toJSON = function toJSON() {
 const Cooperatives = mongoose.model('Cooperative', CooperativeSchema);
 
 function getConsumption(cooperative, options, done) {
-  const { type, granularity, from, to, normalized } = options;
+  const { types, granularity, from, to, normalized } = options;
   const { meters, area } = cooperative;
 
   getEnergimolnetConsumption(
-    { meters, type, granularity, from, to, normalized },
+    { meters, types, granularity, from, to, normalized },
     (err, results) => {
       if (err) { return done(err); }
       done(null, results.map(value => value / (area ? area : 1)));
@@ -111,8 +112,7 @@ function calculatePerformance(cooperative, done) {
     // since the current month may not have any value yet
     const from = moment(now).subtract(12, 'months').format('YYYYMM');
     const to = moment(now).format('YYYYMM');
-    // TODO: Include type: 'electricity'
-    const options = { type: 'heating', granularity: 'month', from, to, normalized: false };
+    const options = { types: [ 'heating', 'electricity' ], granularity: 'month', from, to, normalized: false };
 
     getConsumption(props, options, (err, result) => {
       if (err) { return done(err); }
@@ -268,14 +268,14 @@ exports.deleteEditor = function(id, user, done) {
   });
 };
 
-exports.getAvgConsumption = function (type, granularity, from, to, cb) {
+exports.getAvgConsumption = function (types, granularity, from, to, cb) {
   Cooperatives.find({}, function (err, cooperatives){
     if (err) { return cb(err); }
 
     async.map(cooperatives, function (cooperative, cb2) {
       getConsumption(
         cooperative,
-        { type, granularity, from, to, normalized: false },
+        { types, granularity, from, to, normalized: false },
         cb2
       );
     }, function (err, coopsData) {

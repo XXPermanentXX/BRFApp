@@ -198,7 +198,9 @@ router.delete('/:id/editor/:editorId', auth.authenticate(), isMongoId('id', 'edi
 
 router.get('/:id/consumption', isMongoId('id'), (req, res) => {
   const { params: { id }, query } = req;
-  const options = Object.assign({ type: 'electricity', normalized: true }, query);
+  const options = Object.assign({ normalized: true }, query);
+
+  options.types = options.types.split(',');
 
   if (req.accepts('html')) {
     res.redirect(`/cooperatives/${ id }`);

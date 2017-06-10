@@ -26,46 +26,31 @@ const getRawEnergimolnetConsumption = async.memoize(
 );
 
 exports.getEnergimolnetConsumption = function (options, done) {
-  const { meters, type, granularity, from, to, normalized } = options;
-  let url = [
+  const { meters, types, granularity, from, to, normalized } = options;
+  let endpoint = [
     url.resolve(process.env.METRY_ENDPOINT_URL, 'consumptions'),
     'sum',
     granularity,
     from + (to ? `-${ to }` : '')
   ].join('/');
 
-  url += `?metric=${ normalized ? 'energy_norm' : 'energy' }`;
-  url += `&meters=${ meters
-    .filter(meter => meter.mType === type)
-    .map(id => meterIDs[id]).join(',')
+  endpoint += `?metric=${ normalized ? 'energy_norm' : 'energy' }`;
+  endpoint += `&meters=${ meters
+    .filter(meter => types.includes(meter.mType))
+    .map(meter => meterIDs[meter.meterId])
+    .filter(Boolean).join(',')
   }`;
 
-  request({ url, json: true }, (error, response, body) => {
+  request({ url: endpoint, json: true }, (error, response, body) => {
     if (!error) {
       done(null, body.data[0].periods[0].energy);
     } else {
       done(error);
     }
   });
-  // getRawEnergimolnetConsumption(meters, type, granularity, from, to, function (err, results) {
-  //   if (normalized == 'true') {
-  //     normalisation.normalizeHeating(meters, from, to, results, getRawEnergimolnetConsumption, cb);
-  //   } else {
-  //     cb(err, results);
-  //   }
-  // });
 };
 
-/**
- * TODO: Include heating and electricity in consumtption calculation
- */
 function getConsumptionFromAPI(meterId, granularity, from, to, done) {
-  console.log( [
-    url.resolve(process.env.METRY_ENDPOINT_URL, 'consumptions'),
-    meterIDs[meterId],
-    granularity,
-    from + (to ? `-${ to }` : '')
-  ].join('/'));
   request({
     url: [
       url.resolve(process.env.METRY_ENDPOINT_URL, 'consumptions'),

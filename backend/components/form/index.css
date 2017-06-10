@@ -238,3 +238,7 @@
 .Form-target:checked + .Form-pill--checkmark {
   color: var(--color-sky);
 }
+
+.Form-target:disabled + .Form-pill--checkmark {
+  color: var(--color-pale);
+}

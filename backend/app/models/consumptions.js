@@ -75,7 +75,7 @@ module.exports = function consumtions(initialState, auth) {
 
     function defaults(options) {
       return Object.assign({
-        type: state.consumptions.type,
+        types: [ state.consumptions.type ],
         granularity: 'month',
         normalize: state.consumptions.normalize
       }, options);
@@ -90,7 +90,7 @@ module.exports = function consumtions(initialState, auth) {
    */
 
   function fetchConsumtion(options) {
-    const { from, to, type, granularity, normalize, cooperative: id } = options;
+    const { from, to, types, granularity, normalize, cooperative: id } = options;
     const headers = { accept: 'application/json' };
 
     if (auth) {
@@ -101,7 +101,7 @@ module.exports = function consumtions(initialState, auth) {
       url.format({
         pathname: `/cooperatives/${ id }/consumption`,
         query: {
-          type: type,
+          types: types.join(','),
           normalize: normalize,
           granularity: granularity,
           from: moment(from).format(FORMAT),
