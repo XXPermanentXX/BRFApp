@@ -143,13 +143,18 @@ const formatters = {
     const { point: { index, hasAction }, series: { chart: { series }} } = this;
     const sets = series.slice(0, 2).filter(serie => serie.visible && serie.data.length);
 
+    // Figure out if the two series are aligned to pick a proper title
+    const leadYear = series[0].data[0].name.getFullYear();
+    const trailYear = series.length > 1 && series[1].data[0].name.getFullYear();
+    const isAligned = leadYear === trailYear;
+
     return `
       <span class="${ className('Chart-tooltip js-tooltip', { 'Chart-tooltip--hasAction': hasAction }) }">
         <strong>${ capitalize(moment(this.x).format('MMMM')) }</strong>
         ${ sets.reduce((str, serie) => `
           ${ str }
           <br />
-          <strong>${ moment(serie.data[index].name).format('YYYY') }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
+          <strong>${ isAligned ? serie.name : moment(serie.data[index].name).format('YYYY') }</strong> ${ format(serie.data[index].y) } kWh/m<sup>2</sup>
         `, '') }
       </span>
     `;

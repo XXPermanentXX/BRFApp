@@ -214,14 +214,25 @@ function getQueries(now, cooperative, state) {
   if (SELECTED_COOPERATIVE.test(compare)) {
     const id = compare.match(SELECTED_COOPERATIVE)[1];
     const other = state.cooperatives.find(item => item._id === id);
+    const { incHouseholdElectricity } = cooperative;
+    const diff = incHouseholdElectricity !== other.incHouseholdElectricity;
+    let name = other.name;
 
-    // Ensure tht primary serie is labeled by name and not 'Current year'
+    if (diff && other.incHouseholdElectricity) {
+      name = __('%s incl. households', name);
+    }
+
+    // Ensure that primary serie is labeled by name and not 'Current year'
     queries[0].name = cooperative.name;
+
+    if (diff && incHouseholdElectricity) {
+      queries[0].name = __('%s incl. households', queries[0].name);
+    }
 
     // Have other cooperative inherit period from primary serie
     queries.push(Object.assign({}, queries[0], {
       cooperative: id,
-      name: other.name
+      name: name
     }));
   }
 
