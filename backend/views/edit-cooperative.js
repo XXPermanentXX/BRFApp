@@ -51,6 +51,23 @@ const form = component({
       this.update(cooperative, state, emit);
     };
 
+    const onHousholdUsageChange = event => {
+      const index = event.target.selectedIndex;
+      let value;
+
+      if (index === 0) {
+        value = false;
+      } else if (index === 1) {
+        value = true;
+      }
+
+      if (typeof value !== 'undefined') {
+        this.props.incHouseholdElectricity = value;
+      }
+
+      this.update(cooperative, state, emit);
+    };
+
     const onsubmit = event => {
       const data = Object.assign({}, cooperative, this.props);
 
@@ -85,6 +102,29 @@ const form = component({
       selected: props.ventilationType.includes(type)
     }));
 
+    const householdUsageOptions = [
+      'All household have individual contracts and can choose energy provider',
+      'The cooperative has a contract covering all energy use, households are charged by usage or fixed ammount',
+      'Don\'t know'
+    ].map((label, index) => {
+      let isSelected = false;
+      let { incHouseholdElectricity } = props;
+
+      if (typeof incHouseholdElectricity === 'undefined') {
+        isSelected = index === 2;
+      } else if (index === 1) {
+        isSelected = incHouseholdElectricity;
+      } else if (index === 0) {
+        isSelected = incHouseholdElectricity === false;
+      }
+
+      return {
+        label: __(label),
+        value: index,
+        selected: isSelected
+      };
+    });
+
     return html`
       <form action="${ url }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
         <fieldset disabled=${ state.isLoading || false }>
@@ -98,7 +138,8 @@ const form = component({
             ${ input({ label: __('Name'), name: 'name', oninput: stash, required: true, value: props.name }) }
             ${ input({ label: __('Number of apartments'), type: 'number', name: 'numOfApartments', oninput: stash, value: props.numOfApartments }) }
             ${ input({ label: __('Year of construction'), type: 'number', name: 'yearOfConst', oninput: stash, max: (new Date()).getFullYear(), pattern: '\\d{4}', value: props.yearOfConst }) }
-            ${ input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, 'data-cast': 'number', suffix: props.area && html`<span>m<sup>2</sup></span>`, value: props.area }) }
+            ${ input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, required: true, 'data-cast': 'number', suffix: props.area && html`<span>m<sup>2</sup></span>`, value: props.area }) }
+            ${ select({ label: __('How do household pay for their electricity?'), onchange: onHousholdUsageChange, name: 'incHouseholdElectricity', children: householdUsageOptions }) }
             ${ select({ label: __('Ventilation type'), onchange: onVentilationChange, name: 'ventilationType', multiple: true, children: ventilationOptions }) }
             ${ props.email && !cooperative._id ? checkbox({ label: __('Reuse e-mail address from registration'), description: `${ __('Register using') } ${ cooperative.email }`, onchange: onreuse, checked: props.reuse }) : null }
             ${ input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, readonly: props.reuse, value: this.props.email || ((props.reuse || cooperative._id) && cooperative.email) }) }

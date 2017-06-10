@@ -166,10 +166,18 @@
   display: none;
 }
 
+/**
+ * 1. Cover title so that select element is triggered, not just focused on click
+ * 2. Include space for chevron icon
+ */
+
 .Form-select {
   flex-grow: 1;
   width: 100%;
-  padding: calc(var(--Form-padding-y) + var(--Form-padding-x) + 1em) var(--Form-padding-x) var(--Form-padding-y);
+  padding-top: calc(var(--Form-padding-y) + var(--Form-padding-x) + 1em); /* 1 */
+  padding-right: calc(15px + 0.8em + var(--Form-padding-x)); /* 2 */
+  padding-bottom: var(--Form-padding-y);
+  padding-left: var(--Form-padding-x);
   border: 0;
   outline: 0;
   font-size: 16px;

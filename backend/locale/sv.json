@@ -122,5 +122,9 @@
   "I agree": "I agree",
   "Pick one or more": "Pick one or more",
   "This figure may be misleading due to the coopeartive not having supplied sufficient information.": "Siffran kan vara missvisande då föreningen inte angivit om hushållsel ingår i energianvändningen.",
-  "Update information": "Uppdatera informationen"
+  "Update information": "Uppdatera informationen",
+  "How do household pay for their electricity?": "Hur hanteras avtal för hushållsel i föreningen?",
+  "All household have individual contracts and can choose energy provider": "Alla hushåll har egna avtal och kan själva välja elbolag",
+  "The cooperative has a contract covering all energy use, households are charged by usage or fixed ammount": "Föreningen har avtal med ett elbolag för all elanvändning (och hushållen debiteras antingen baserat på undermätning eller schablon)",
+  "Don't know": "Vet ej"
 }
