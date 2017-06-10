@@ -16,6 +16,7 @@ const DYNAMIC_KEYS = [
   'numOfApartments',
   'meters',
   'ventilationType',
+  'incHouseholdElectricity',
   'hasLaundryRoom',
   'hasGarage',
   'hasCharger',

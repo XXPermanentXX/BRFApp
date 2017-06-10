@@ -1,7 +1,17 @@
 /* global db, ObjectId */
 
-db.users.find({}).forEach(function (user) {
-  var profile = assign({}, user.profile, {
+const VENTILATION_TYPE_MAP = {
+  'FTX (mekanisk från- och tilluft med återvinning)': 'FTX',
+  'FVP (frånluftsvärmepump)': 'FVP',
+  'F (mekanisk frånluftsventilation)': 'F',
+  'FT (mekanisk från- och tilluftsventilation)': 'FT',
+  'S (självdragsventilation)': 'S',
+  'Vet ej': 'UNKNOWN',
+  'Annat': 'OTHER'
+};
+
+db.users.find({}).forEach(user => {
+  var profile = Object.assign({}, user.profile, {
     language: lang(user.profile.language)
   });
   var props = { profile: profile };
@@ -65,7 +75,7 @@ db.cooperatives.find({}).forEach(function (cooperative) {
     });
   }
 
-  db.cooperatives.update({ _id: cooperative._id }, {
+  const props = {
     name: cooperative.name,
     email: cooperative.email,
     lat: cooperative.lat,
@@ -73,12 +83,33 @@ db.cooperatives.find({}).forEach(function (cooperative) {
     yearOfConst: cooperative.yearOfConst,
     area: cooperative.area,
     numOfApartments: cooperative.numOfApartments,
-    ventilationType: cooperative.ventilationType,
+    ventilationType: cooperative.ventilationType.map(type => {
+      return VENTILATION_TYPE_MAP[type] || 'OTHER';
+    }),
+    hasLaundryRoom: cooperative.hasLaundryRoom || false,
+    hasGarage: cooperative.hasGarage || false,
+    hasCharger: cooperative.hasCharger || false,
+    hasEnergyProduction: cooperative.hasEnergyProduction || false,
+    hasRepresentative: cooperative.hasRepresentative || false,
+    hasConsumptionMapping: cooperative.hasConsumptionMapping || false,
+    hasGoalManagement: cooperative.hasGoalManagement || false,
+    hasBelysningsutmaningen: cooperative.hasBelysningsutmaningen || false,
     meters: cooperative.meters,
     performances: [],
     actions: actions,
+<<<<<<< 56e3f3fa2a94d8d0b2db78db2dae4533d25e00b5
     editors: editors
   });
+=======
+    editors: cooperative.editors.map(props => props.editorId)
+  };
+
+  if (typeof cooperative.incHouseholdElectricity !== 'undefined') {
+    props.incHouseholdElectricity = cooperative.incHouseholdElectricity;
+  }
+
+  db.cooperatives.update({ _id: cooperative._id }, props);
+>>>>>>> Update migrate script to account for new properties
 });
 
 function lang(language) {
