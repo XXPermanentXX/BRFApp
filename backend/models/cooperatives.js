@@ -84,10 +84,12 @@ function getConsumption(cooperative, options, done) {
   const { type, granularity, from, to, normalized } = options;
   const { meters, area } = cooperative;
 
-  getEnergimolnetConsumption(meters, type, granularity, from, to, normalized, (err, results) => {
-    if (err) { return done(err); }
-    done(null, results.map(value => value / (area ? area : 1)));
-  });
+  getEnergimolnetConsumption(
+    { meters, type, granularity, from, to, normalized },
+    (err, results) => {
+      if (err) { return done(err); }
+      done(null, results.map(value => value / (area ? area : 1)));
+    });
 }
 
 function calculatePerformance(cooperative, done) {
@@ -109,6 +111,7 @@ function calculatePerformance(cooperative, done) {
     // since the current month may not have any value yet
     const from = moment(now).subtract(12, 'months').format('YYYYMM');
     const to = moment(now).format('YYYYMM');
+    // TODO: Include type: 'electricity'
     const options = { type: 'heating', granularity: 'month', from, to, normalized: false };
 
     getConsumption(props, options, (err, result) => {

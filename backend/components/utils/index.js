@@ -2,7 +2,7 @@ const html = require('choo/html');
 const moment = require('moment');
 
 const PERFORMANCE_FORMAT = 'YYYYMM';
-const REQ_VALUE = 70;
+const REQ_VALUE = 70; // TODO: Account or climate zone
 const DECIMAL_SIGN = (0.5 + '').match(/0(.{1})5/)[1];
 
 /**

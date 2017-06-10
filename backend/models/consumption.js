@@ -25,17 +25,47 @@ const getRawEnergimolnetConsumption = async.memoize(
   uniqueApiCallHash
 );
 
-exports.getEnergimolnetConsumption = function (meters, type, granularity, from, to, normalized, cb) {
-  getRawEnergimolnetConsumption(meters, type, granularity, from, to, function (err, results) {
-    if (normalized == 'true') {
-      normalisation.normalizeHeating(meters, from, to, results, getRawEnergimolnetConsumption, cb);
+exports.getEnergimolnetConsumption = function (options, done) {
+  const { meters, type, granularity, from, to, normalized } = options;
+  let url = [
+    url.resolve(process.env.METRY_ENDPOINT_URL, 'consumptions'),
+    'sum',
+    granularity,
+    from + (to ? `-${ to }` : '')
+  ].join('/');
+
+  url += `?metric=${ normalized ? 'energy_norm' : 'energy' }`;
+  url += `&meters=${ meters
+    .filter(meter => meter.mType === type)
+    .map(id => meterIDs[id]).join(',')
+  }`;
+
+  request({ url, json: true }, (error, response, body) => {
+    if (!error) {
+      done(null, body.data[0].periods[0].energy);
     } else {
-      cb(err, results);
+      done(error);
     }
   });
+  // getRawEnergimolnetConsumption(meters, type, granularity, from, to, function (err, results) {
+  //   if (normalized == 'true') {
+  //     normalisation.normalizeHeating(meters, from, to, results, getRawEnergimolnetConsumption, cb);
+  //   } else {
+  //     cb(err, results);
+  //   }
+  // });
 };
 
-function getConsumptionFromAPI(meterId, granularity, from, to, cb) {
+/**
+ * TODO: Include heating and electricity in consumtption calculation
+ */
+function getConsumptionFromAPI(meterId, granularity, from, to, done) {
+  console.log( [
+    url.resolve(process.env.METRY_ENDPOINT_URL, 'consumptions'),
+    meterIDs[meterId],
+    granularity,
+    from + (to ? `-${ to }` : '')
+  ].join('/'));
   request({
     url: [
       url.resolve(process.env.METRY_ENDPOINT_URL, 'consumptions'),
@@ -44,11 +74,11 @@ function getConsumptionFromAPI(meterId, granularity, from, to, cb) {
       from + (to ? `-${ to }` : '')
     ].join('/')
   }, function (error, response, body) {
-    if (!error && response.statusCode == 200) {
+    if (!error && response.statusCode === 200) {
       var result = JSON.parse(body).data[0].periods[0].energy;
-      cb(null, result);
+      done(null, result);
     } else {
-      cb(error);
+      done(error);
     }
   });
 }
