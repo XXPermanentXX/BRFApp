@@ -1,7 +1,7 @@
 /* global db, ObjectId */
 
 db.users.find({}).forEach(function (user) {
-  var profile = Object.assign({}, user.profile, {
+  var profile = assign({}, user.profile, {
     language: lang(user.profile.language)
   });
   var props = { profile: profile };
@@ -81,5 +81,20 @@ function lang(language) {
     case 'Swedish':
     default:
       return 'sv';
+  }
+}
+
+function assign() {
+  var args = Array.prototype.slice.call(arguments);
+  var target = args[0];
+
+  for (var i = 1; i < args.length; i += 1) {
+    if (args[i] && typeof args[i] === 'object') {
+      for (var key in args[i]) {
+        if (args[i].hasOwnProperty(key)) {
+          target[key] = args[i][key];
+        }
+      }
+    }
   }
 }
