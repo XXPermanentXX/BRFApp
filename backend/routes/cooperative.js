@@ -61,7 +61,9 @@ router.get('/:id', isMongoId('id'), (req, res) => {
 
   Cooperatives.get(id, (err, cooperative) => {
     if (err) {
-      res.status(404).render('/404', { err: err.message });
+      res.status(500).render('/error', { err: err.message });
+    } else if (!cooperative) {
+      res.status(404).render('/404');
     } else {
       res.locals.title = cooperative.name;
       res.render(`/cooperatives${ req.url }`, cooperative, done => {
@@ -207,7 +209,7 @@ router.get('/:id/consumption', isMongoId('id'), (req, res) => {
   } else {
     Cooperatives.getConsumption(id, options, (err, consumption) => {
       if (err) {
-        res.status(404).render('/404', { err: err.message });
+        res.status(500).render('/error', { err: err.message });
       } else {
         res.render(consumption);
 

@@ -21,3 +21,11 @@
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
 }
+
+.Performance-disclaimer {
+  display: block;
+  margin: var(--space-s) 0;
+  font-size: var(14rem / var(--base-font-size));
+  color: var(--color-dark);
+  -webkit-font-smoothing: antialiased;
+}

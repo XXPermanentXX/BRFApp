@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const async = require('async');
 const { getEnergimolnetConsumption } = require('./consumption');
 
+const HOUSEHOLD_DEFAULT_DEDUCTION = 30;
 const DYNAMIC_KEYS = [
   'name',
   'email',
@@ -41,7 +42,8 @@ const CooperativeSchema = new Schema({
       year: Number,
       month: Number,
       value: Number,
-      area: Number
+      area: Number,
+      isGuesstimate: Boolean
     })
   ],
   actions: {
@@ -112,37 +114,104 @@ function calculatePerformance(cooperative, done) {
     // since the current month may not have any value yet
     const from = moment(now).subtract(12, 'months').format('YYYYMM');
     const to = moment(now).format('YYYYMM');
-    const options = { types: [ 'heating', 'electricity' ], granularity: 'month', from, to, normalized: false };
+    const options = { granularity: 'month', from, to, normalized: false };
 
-    getConsumption(props, options, (err, result) => {
-      if (err) { return done(err); }
+    if (cooperative.incHouseholdElectricity === false) {
 
-      const value = result
-        // Remove any empty values (i.e. current month)
-        .filter(Boolean)
-        // Take the last 12 (last year)
-        .slice(-12)
-        // Summarize consumtion
-        .reduce((memo,num) => memo + num, 0);
+      /**
+       * If the coopereative has expressively specified that households are not
+       * included, fetch heating and electricity combined
+       */
 
-      if (!value) {
-        return done(null);
-      }
-
-      // Figure out whether the last month is missing
-      const missing = result[result.length - 1] ? 0 : 1;
-
-      cooperative.performances.push({
-        year: now.getFullYear(),
-        month: moment(now).subtract(missing, 'months').month(),
-        area: cooperative.area,
-        value: value
-      });
-
-      cooperative.save(err => {
+      getConsumption(props, Object.assign({ types: [ 'heating', 'electricity' ]}, options), (err, result) => {
         if (err) { return done(err); }
-        done(null);
+        setPerfomance(result);
       });
+    } else {
+
+      /**
+       * Fetch heating and electricity seperately so that we can deduct houshold
+       * consumption from electricity usage before calculating the sum
+       */
+
+      Promise.all(
+        [ 'heating', 'electricity' ].map(type => {
+          if (!cooperative.meters.find(meter => meter.mType === type)) {
+            // Resolve to an empty array for missing meters
+            return [];
+          }
+
+          return new Promise((resolve, reject) => {
+            getConsumption(props, Object.assign({ types: [ type ]}, options), (err, result) => {
+              if (err) {
+                reject(err);
+              } else {
+                resolve(result);
+              }
+            });
+          });
+        }).filter(Boolean)
+      ).then(([ heating, electricity ]) => {
+        let isGuesstimate = false;
+        let deductHouseholdConsumption = cooperative.incHouseholdElectricity;
+        const total = electricity.reduce((mem, value) => mem + value, 0);
+
+        if (typeof cooperative.incHouseholdElectricity === 'undefined') {
+          if ((total / cooperative.area) > 50) {
+            deductHouseholdConsumption = true;
+          } else if ((total / cooperative.area) > 20) {
+            isGuesstimate = true;
+          }
+        }
+
+        let values = electricity.map((value, index) => {
+          return (value || 0) + (heating[index] || 0);
+        });
+
+        setPerfomance(values, isGuesstimate, deductHouseholdConsumption);
+      }, done);
+    }
+  }
+
+
+  /**
+   * Set cooperative performance with given values
+   * @param {array} values List of values from which to calculate performance
+   * @param {boolean} isGuesstimate Whether the values were guestimated
+   */
+
+  function setPerfomance(values, isGuesstimate = false, deduct = false) {
+    let value = values
+      // Remove any empty values (i.e. current month)
+      .filter(Boolean)
+      // Take the last 12 (last year)
+      .slice(-12)
+      // Summarize consumtion
+      .reduce((memo, num) => memo + num, 0);
+
+    if (!value) {
+      return done(null);
+    }
+
+    if (deduct) {
+      // Deduct houshold consumption
+      value -= HOUSEHOLD_DEFAULT_DEDUCTION * cooperative.area;
+    }
+
+    // Figure out whether the last month is missing
+    const missing = values[values.length - 1] ? 0 : 1;
+
+    cooperative.performances.push({
+      year: now.getFullYear(),
+      month: moment(now).subtract(missing, 'months').month(),
+      area: cooperative.area,
+      value: value,
+      isGuesstimate: isGuesstimate
+    });
+
+    cooperative.save(err => {
+      if (err) { return done(err); }
+      done(null);
     });
   }
 
@@ -180,14 +249,19 @@ exports.all = function(done) {
   Cooperatives.find({}, (err, cooperatives) => {
     if (err) { return done(err); }
 
-    const queue = cooperatives.map(cooperative => new Promise((resolve, reject) => {
-      calculatePerformance(cooperative, err => {
-        if (err) { return reject(err); }
-        resolve();
+    Promise.all(cooperatives.map(cooperative => {
+      return new Promise((resolve, reject) => {
+        calculatePerformance(cooperative, err => {
+          if (err) { return reject(err); }
+          resolve();
+        });
       });
-    }));
-
-    Promise.all(queue).then(() => done(null, cooperatives), done);
+    })).then(
+      () => done(null, cooperatives),
+      // Silently fail as we still have some outdated meter IDs
+      // FIXME: callback with error properly
+      () => done(null, cooperatives)
+    );
   });
 };
 
@@ -201,7 +275,9 @@ exports.get = function (id, done) {
       if (!cooperative) { return done(new Error('Cooperative not found')); }
 
       calculatePerformance(cooperative, err => {
-        if (err) { return done(err); }
+        // Silently fail as we still have some outdated meter IDs
+        // FIXME: callback with error properly
+        // if (err) { return done(err); }
         done(null, cooperative);
       });
     });
@@ -230,13 +306,15 @@ exports.update = function(id, data, done) {
     // Assign all data to cooperative
     Object.assign(cooperative, selection);
 
-    if (areaChanged) {
+    if (areaChanged || data.incHouseholdElectricity !== cooperative.incHouseholdElectricity) {
       // Remove last perfomance calculation if area has changed
       cooperative.performances.$pop();
 
       // Recalculate latest performance
       calculatePerformance(cooperative, err => {
-        if (err) { return done(err); }
+        // Silently fail as we still have some outdated meter IDs
+        // FIXME: callback with error properly
+        // if (err) { return done(err); }
         done(null, cooperative);
       });
     } else {
@@ -319,16 +397,20 @@ exports.addMeter = function(id, meterId, type, useInCalc, cb) {
   });
 };
 
-exports.getConsumption = function(id, options, cb) {
+exports.getConsumption = function(id, options, done) {
   Cooperatives.findOne({
     _id: id
   },function(err,cooperative){
     if (err) {
-      cb(err);
+      done(err);
     } else if (!cooperative) {
-      cb(new Error('Cooperative not found'));
+      done(new Error('Cooperative not found'));
     } else {
-      getConsumption(cooperative, options, cb);
+      getConsumption(cooperative, options, (err, consumption) => {
+        // Silently fail as we still have some outdated meter IDs
+        // FIXME: callback with error properly
+        done(null, consumption || []);
+      });
     }
   });
 };

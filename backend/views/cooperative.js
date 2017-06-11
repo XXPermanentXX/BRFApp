@@ -4,7 +4,7 @@ const performance = require('../components/performance');
 const createChart = require('../components/chart');
 const modal = require('../components/modal');
 const { definition, numbered } = require('../components/list');
-const { format, getPerformance } = require('../components/utils');
+const { format } = require('../components/utils');
 const { summary } = require('../components/action');
 const { chevron, loader } = require('../components/icons');
 const error = require('../components/app/error');
@@ -62,7 +62,7 @@ function view(state, emit) {
 
             <!-- Performance graph -->
             <div class="u-marginBm">
-              ${ performance(getPerformance(cooperative)) }
+              ${ performance(cooperative, state.user) }
             </div>
 
             <!-- Small viewport: energy action summary -->

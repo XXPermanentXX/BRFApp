@@ -66,7 +66,7 @@ db.cooperatives.find({}).forEach(cooperative => {
     numOfApartments: cooperative.numOfApartments,
     ventilationType: cooperative.ventilationType,
     meters: cooperative.meters,
-    performances: cooperative.performances,
+    performances: [],
     actions: actions,
     editors: cooperative.editors.map(props => props.editorId)
   });

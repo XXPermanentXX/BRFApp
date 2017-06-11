@@ -44,7 +44,7 @@ exports.getPerformance = function getPerformance(cooperative) {
     return dateA.isAfter(dateB) ? -1 : 1;
   });
 
-  return byDate.length ? byDate[0].value : undefined;
+  return byDate.length ? byDate[0] : undefined;
 };
 
 /**

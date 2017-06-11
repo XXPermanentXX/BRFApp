@@ -324,7 +324,7 @@ function getPositionDistance(posA, posB) {
 
 function asFeatures(cooperatives) {
   return cooperatives.map(cooperative => {
-    const performance = getPerformance(cooperative);
+    const { value: performance } = getPerformance(cooperative) || {};
 
     return {
       type: 'Feature',

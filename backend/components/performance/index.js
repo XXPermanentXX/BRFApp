@@ -1,6 +1,6 @@
 const html = require('choo/html');
 const resolve = require('../../resolve');
-const { getEnergyClass } = require('../utils');
+const { getEnergyClass, getPerformance } = require('../utils');
 const component = require('../utils/component');
 const { __ } = require('../../locale');
 
@@ -15,10 +15,23 @@ const ENERGY_CLASSES = {
   G: '#E2001A'
 };
 
-module.exports = component(performance => {
-  const energyClass = performance && getEnergyClass(performance);
+module.exports = component((cooperative, user) => {
+  const performance = getPerformance(cooperative);
+  const energyClass = performance && getEnergyClass(performance.value);
   const classPosition = energyClass ? Object.keys(ENERGY_CLASSES).indexOf(energyClass) : 3;
   const linkPosition = classPosition > Object.keys(ENERGY_CLASSES).length / 2 ? 'left' : 'right';
+
+  let disclaimer = null;
+  if (performance && performance.isGuesstimate) {
+    disclaimer = html`
+      <span class="Performance-disclaimer">
+        ${ __('This figure may be misleading due to the coopeartive not having supplied sufficient information.') }
+        ${ user.cooperative === cooperative._id ? html`
+          <a href=${ resolve(`/cooperatives/${ cooperative._id }/edit`) }>${ __('Update information') }</a>.
+        ` : null }
+      </span>
+    `;
+  }
 
   return html`
     <div class="Performance">
@@ -56,9 +69,10 @@ module.exports = component(performance => {
       </figure>
       ${ energyClass ? html`
         <h2 class="Performance-title">
-          ${ Math.round(performance) } kWh/m<sup>2</sup>
+          ${ Math.round(performance.value) } kWh/m<sup>2</sup>
         </h2>
       ` : null }
+      ${ disclaimer }
     </div>
   `;
 });

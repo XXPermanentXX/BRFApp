@@ -5,7 +5,6 @@ const readline = require('readline');
 const request = require('request');
 const async = require('async');
 const _ = require('underscore');
-const normalisation = require('../common/normalisation');
 
 const meterIDs = {};
 
@@ -43,7 +42,11 @@ exports.getEnergimolnetConsumption = function (options, done) {
 
   request({ url: endpoint, json: true }, (error, response, body) => {
     if (!error) {
-      done(null, body.data[0].periods[0].energy);
+      if (body.code === 200) {
+        done(null, body.data[0].periods[0].energy);
+      } else {
+        done(new Error(body.message));
+      }
     } else {
       done(error);
     }
