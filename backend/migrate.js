@@ -1,10 +1,10 @@
 /* global db, ObjectId */
 
-db.users.find({}).forEach(user => {
-  const profile = Object.assign({}, user.profile, {
+db.users.find({}).forEach(function (user) {
+  var profile = Object.assign({}, user.profile, {
     language: lang(user.profile.language)
   });
-  const props = { profile: profile };
+  var props = { profile: profile };
 
   if (user.cooperativeId) {
     props.cooperative = user.cooperativeId;
@@ -26,16 +26,16 @@ db.users.find({}).forEach(user => {
 });
 
 db.actions.drop();
-db.cooperatives.find({}).forEach(cooperative => {
-  const actions = [];
+db.cooperatives.find({}).forEach(function (cooperative) {
+  var actions = [];
 
-  cooperative.actions.forEach(action => {
+  cooperative.actions.forEach(function (action) {
     if (action instanceof ObjectId) {
       actions.push(action);
       return;
     }
 
-    const doc = db.actions.insertOne({
+    var doc = db.actions.insertOne({
       name: action.name,
       date: action.date,
       cost: action.cost,
@@ -43,7 +43,7 @@ db.cooperatives.find({}).forEach(cooperative => {
       types: action.types,
       cooperative: cooperative._id,
       user: cooperative.editors[0].editorId,
-      comments: action.comments.map(comment => {
+      comments: action.comments.map(function (comment) {
         return {
           user: comment.user,
           author: db.users.find({ _id: ObjectId(comment.user) }).profile.name,
@@ -68,7 +68,7 @@ db.cooperatives.find({}).forEach(cooperative => {
     meters: cooperative.meters,
     performances: [],
     actions: actions,
-    editors: cooperative.editors.map(props => props.editorId)
+    editors: cooperative.editors.map(function (props) { return props.editorId; })
   });
 });
 
