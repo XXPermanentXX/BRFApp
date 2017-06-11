@@ -24,12 +24,12 @@ module.exports = component((cooperative, user) => {
   let disclaimer = null;
   if (performance && performance.isGuesstimate) {
     disclaimer = html`
-      <span class="Performance-disclaimer">
+      <div class="Performance-disclaimer">
         ${ __('This figure may be misleading due to the coopeartive not having supplied sufficient information.') }
         ${ user.cooperative === cooperative._id ? html`
-          <a href=${ resolve(`/cooperatives/${ cooperative._id }/edit`) }>${ __('Update information') }</a>.
+          <a href=${ resolve(`/cooperatives/${ cooperative._id }/edit`) }>${ __('Update information') }</a>
         ` : null }
-      </span>
+      </div>
     `;
   }
 
