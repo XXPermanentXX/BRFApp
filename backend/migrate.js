@@ -35,7 +35,7 @@ db.cooperatives.find({}).forEach(function (cooperative) {
       return;
     }
 
-    var doc = db.actions.insert({
+    db.actions.insert({
       name: action.name,
       date: action.date,
       cost: action.cost,
@@ -51,9 +51,9 @@ db.cooperatives.find({}).forEach(function (cooperative) {
           date: comment.date
         };
       })
+    }, function (err, docs) {
+      actions.push(docs[0]._id);
     });
-
-    actions.push(doc.insertedId);
   });
 
   db.cooperatives.update({ _id: cooperative._id }, {
