@@ -35,7 +35,7 @@ db.cooperatives.find({}).forEach(function (cooperative) {
       return;
     }
 
-    var doc = db.actions.insertOne({
+    var doc = db.actions.insert({
       name: action.name,
       date: action.date,
       cost: action.cost,
