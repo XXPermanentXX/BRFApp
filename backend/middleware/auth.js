@@ -4,6 +4,7 @@ const passport = require('passport');
 const basic = require('express-basic-auth');
 const OAuth2Strategy = require('passport-oauth2').Strategy;
 const Users = require('../models/users');
+const Cooperatives = require('../models/cooperatives');
 
 const ENDPOINT = url.parse(process.env.METRY_ENDPOINT_URL);
 const {
@@ -13,6 +14,7 @@ const {
   METRY_CLIENT_ID,
   METRY_CLIENT_SECRET,
   METRY_PROFILE_PATH,
+  METRY_PATH_METERS,
   BRFENERGI_SERVICE_URL
 } = process.env;
 
@@ -60,14 +62,42 @@ exports.initialize = function initialize() {
         return done(null, false, { message: 'User not recognized' });
       }
 
-      /**
-       * Store access token to user
-       */
-
-      user.accessToken = accessToken;
-      user.save((err, saved) => {
+      request({
+        json: true,
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${ accessToken }`
+        },
+        uri: url.format(Object.assign({}, ENDPOINT, {
+          pathname: url.resolve(ENDPOINT.pathname, METRY_PATH_METERS),
+          query: {
+            box: 'active'
+          }
+        }))
+      }, (err, response, body) => {
         if (err) { return done(err); }
-        done(null, saved);
+        if (response.body.code !== 200) {
+          return done(new Error(response.body.message));
+        }
+
+        Cooperatives.model.update({ _id: user.cooperative }, { $set: {
+          meters: body.data.map(meter => ({
+            type: meter.type,
+            meterId: meter._id
+          }))
+        }}, err => {
+          if (err) { return done(err); }
+
+          /**
+           * Store access token to user
+           */
+
+          user.accessToken = accessToken;
+          user.save((err, saved) => {
+            if (err) { return done(err); }
+            done(null, saved);
+          });
+        });
       });
     });
   }));
