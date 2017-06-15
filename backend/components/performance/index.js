@@ -42,7 +42,7 @@ module.exports = component((cooperative, user) => {
     <div class=${ classNames.join(' ') }>
       <figure>
         <figcaption>
-          <a href=${resolve('/how-it-works#energy-performance')} class="Performance-link u-float${ linkPosition }" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
+          <a href=${resolve('/how-it-works')} class="Performance-link u-float${ linkPosition }" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
         </figcaption>
         <svg class="Performance-graph" viewBox="0 0 512 93">
           <defs>
