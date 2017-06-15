@@ -10,7 +10,7 @@ const VENTILATION_TYPE_MAP = {
   'Annat': 'OTHER'
 };
 
-db.cooperatives.find({}).forEach(cooperative => {
+db.cooperatives.find({}).forEach(function (cooperative) {
   var editors = [];
   var meters = [];
   var ventilationType = [];
