@@ -40,7 +40,11 @@ db.cooperatives.find({}).forEach(function (cooperative) {
 });
 
 db.actions.find({}).forEach(function (action) {
-  var isNew = addedActions.find(function (id) { return id === action._id; });
+  var isNew = false;
+
+  addedActions.forEach(function (id) {
+    isNew = (isNew || id === action._id);
+  });
 
   if (!isNew) {
     db.actions.remove({ _id: action._id });
