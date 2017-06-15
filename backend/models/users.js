@@ -81,7 +81,7 @@ exports.create = function(props, done) {
   }, done);
 };
 
-exports.getProfile = exports.get = function (id, done) {
+exports.get = exports.get = function (id, done) {
   User
     .findOne({ _id: id })
     .populate('cooperative')

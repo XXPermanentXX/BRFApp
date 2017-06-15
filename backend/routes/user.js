@@ -29,11 +29,11 @@ router.post('/', (req, res) => {
 });
 
 router.get('/', auth.authenticate(), function (req, res) {
-  Users.getProfile(req.user._id, (err, profile) => {
+  Users.get(req.user._id, (err, user) => {
     if (err) {
       res.status(404).render('/404', { err: err.message });
     } else {
-      res.render('/user', profile);
+      res.render('/user', user);
     }
   });
 

@@ -49,6 +49,7 @@ const CooperativeSchema = new Schema({
   hasConsumptionMapping: Boolean,
   hasGoalManagement: Boolean,
   hasBelysningsutmaningen: Boolean,
+  needUpdate: Boolean,
   meters: [{
     mType: String,
     useInCalc: Boolean,
@@ -321,7 +322,7 @@ exports.update = function(id, data, done) {
     });
 
     // Assign all data to cooperative
-    Object.assign(cooperative, selection);
+    Object.assign(cooperative, selection, { needUpdate: false });
 
     if (areaChanged || data.incHouseholdElectricity !== cooperative.incHouseholdElectricity) {
       // Remove last perfomance calculation if area has changed

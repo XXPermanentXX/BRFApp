@@ -58,7 +58,7 @@ module.exports = function render(req, res, next) {
       output.auth = req.get('Authorization');
 
       if (req.user) {
-        User.getProfile(req.user._id, (err, user) => {
+        User.get(req.user._id, (err, user) => {
           if (err) {
             res.status(500).render('/error', { err: err.message });
           } else {

@@ -5,6 +5,31 @@ const Users = require('../models/users');
 const router = module.exports = express.Router();
 
 /**
+ * Redirect legacy cooperatives to cooperative edit page
+ */
+
+router.use((req, res, next) => {
+  if (req.accepts('html') && req.user) {
+    const id = req.user.cooperative;
+    const url = `/cooperatives/${ id }/edit`;
+
+    if (req.url !== url) {
+      Cooperatives.get(id, (err, cooperative) => {
+        if (err || !cooperative.needUpdate) {
+          next();
+        } else {
+          res.redirect(url);
+        }
+      });
+    } else {
+      next();
+    }
+  } else {
+    next();
+  }
+});
+
+/**
  * Firstly insert onboarding content for first time visitors
  */
 
