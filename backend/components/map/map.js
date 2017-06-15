@@ -332,13 +332,11 @@ function asFeatures(cooperatives) {
         type: 'Point',
         coordinates: [ cooperative.lng, cooperative.lat ]
       },
-      properties: {
+      properties: Object.assign({
         id: cooperative._id,
-        name: cooperative.name,
         performance: performance,
-        actions: cooperative.actions.length,
         energyClass: (getEnergyClass(performance) || 'unknown').toLowerCase()
-      }
+      }, cooperative)
     };
   });
 }

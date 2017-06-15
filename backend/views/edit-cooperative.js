@@ -2,6 +2,7 @@ const html = require('choo/html');
 const header = require('../components/page-head')('edit-cooperative');
 const footer = require('../components/app/footer');
 const { input, select, checkbox } = require('../components/form');
+const { loader } = require('../components/icons');
 const component = require('../components/utils/component');
 const { __ } = require('../locale');
 
@@ -162,7 +163,7 @@ const form = component({
 
           <div class="Form-collapse u-marginVm">
             ${ checkbox({ label: __('Assigned energy representative'), onchange: stash, name: 'hasRepresentative', checked: props.hasRepresentative }) }
-            ${ checkbox({ label: __('Energy consumption maping'), onchange: stash, name: 'hasConsumptionMapping', checked: props.hasConsumptionMapping }) }
+            ${ checkbox({ label: __('Energy consumption mapping'), onchange: stash, name: 'hasConsumptionMapping', checked: props.hasConsumptionMapping }) }
             ${ checkbox({ label: __('Goal oriented energy management'), onchange: stash, name: 'hasGoalManagement', checked: props.hasGoalManagement }) }
             ${ checkbox({ label: __('Participating in belysningsutmaningen'), onchange: stash, name: 'hasBelysningsutmaningen', checked: props.hasBelysningsutmaningen, description: html`
               <span>${ __('Read more about the intiative') + ' ' }
@@ -198,13 +199,23 @@ function view(state, emit) {
   const { params: { cooperative: id }} = state;
   const cooperative = state.cooperatives.find(item => item._id === id);
 
+  if (!state.registration) {
+    emit('cms:registration');
+  }
+
   return html`
     <div class="App">
       ${ header(state, emit) }
-      <div class="App-container App-container--sm">
-        <div class="u-marginVm">
-          ${ form(cooperative, state, emit) }
-        </div>
+      <div class="App-container App-container--sm u-flexExpand">
+        ${ state.registration ? html`
+          <div class="u-marginVm">
+            ${ form(cooperative, state, emit) }
+          </div>
+        ` : html`
+          <div class="u-marginVl u-textCenter">
+            ${ loader() }
+          </div>
+        ` }
       </div>
       ${ footer(state, emit) }
     </div>

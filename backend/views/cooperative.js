@@ -90,6 +90,12 @@ function view(state, emit) {
               [__('Year of construction')]: cooperative.yearOfConst,
               [__('Ventilation type')]: cooperative.ventilationType.map(type => __(`VENTILATION_TYPE_${ type }`)).join(', ')
             }) }
+
+            ${ state.user.cooperative === cooperative._id ? html`
+            <a class="Button u-block u-marginTm" href=${ resolve(`/cooperatives/${ cooperative._id }/edit`) }>
+              ${ __('Edit details') }
+            </a>
+          ` : null }
           </div>
         </div>
 
@@ -122,7 +128,7 @@ function view(state, emit) {
           }
 
           ${ state.user.cooperative === cooperative._id ? html`
-            <a class="Button u-block" href=${ resolve(`/cooperatives/${ cooperative._id }/add-action`) }>
+            <a class="Button u-block u-marginTm" href=${ resolve(`/cooperatives/${ cooperative._id }/add-action`) }>
               ${ __('Add energy action') }
             </a>
           ` : null }

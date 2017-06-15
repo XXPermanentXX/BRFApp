@@ -113,7 +113,7 @@
   "Read more about the intiative": "Läs mer om intiativet",
   "Here": "Här",
   "Assigned energy representative": "Energiansvarig utsedd",
-  "Energy consumption maping": "Genomförd energikartläggning",
+  "Energy consumption mapping": "Genomförd energikartläggning",
   "Goal oriented energy management": "Kontrakt för målstyrd energiförvaltning",
   "Part of belysningsutmaningen": "Deltar i belysningsutmaningen",
   "I agree": "Jag godkänner",
@@ -123,5 +123,6 @@
   "How do household pay for their electricity?": "Hur hanteras avtal för hushållsel i föreningen?",
   "All household have individual contracts and can choose energy provider": "Alla hushåll har egna avtal och kan själva välja elbolag",
   "The cooperative has a contract covering all energy use, households are charged by usage or fixed ammount": "Föreningen har avtal med ett elbolag för all elanvändning (och hushållen debiteras antingen baserat på undermätning eller schablon)",
-  "Don't know": "Vet ej"
+  "Don't know": "Vet ej",
+  "Edit details": "Ändra uppgifter"
 }
