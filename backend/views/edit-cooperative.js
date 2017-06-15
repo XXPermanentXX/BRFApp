@@ -141,7 +141,7 @@ const form = component({
             ${ input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, required: true, 'data-cast': 'number', suffix: props.area && html`<span>m<sup>2</sup></span>`, value: props.area }) }
             ${ select({ label: __('How do household pay for their electricity?'), onchange: onHousholdUsageChange, name: 'incHouseholdElectricity', children: householdUsageOptions }) }
             ${ select({ label: __('Ventilation type'), onchange: onVentilationChange, name: 'ventilationType', multiple: true, children: ventilationOptions }) }
-            ${ props.email && !cooperative._id ? checkbox({ label: __('Reuse e-mail address from registration'), description: `${ __('Register using') } ${ cooperative.email }`, onchange: onreuse, checked: props.reuse }) : null }
+            ${ props.email && !cooperative._id ? checkbox({ label: __('Reuse e-mail address from registration'), description: __('Register using %s', cooperative.email), onchange: onreuse, checked: props.reuse }) : null }
             ${ input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, readonly: props.reuse, value: this.props.email || ((props.reuse || cooperative._id) && cooperative.email) }) }
           </div>
 
@@ -164,7 +164,7 @@ const form = component({
             ${ checkbox({ label: __('Assigned energy representative'), onchange: stash, name: 'hasRepresentative', checked: props.hasRepresentative }) }
             ${ checkbox({ label: __('Energy consumption maping'), onchange: stash, name: 'hasConsumptionMapping', checked: props.hasConsumptionMapping }) }
             ${ checkbox({ label: __('Goal oriented energy management'), onchange: stash, name: 'hasGoalManagement', checked: props.hasGoalManagement }) }
-            ${ checkbox({ label: __('Part of belysningsutmaningen'), onchange: stash, name: 'hasBelysningsutmaningen', checked: props.hasBelysningsutmaningen, description: html`
+            ${ checkbox({ label: __('Participating in belysningsutmaningen'), onchange: stash, name: 'hasBelysningsutmaningen', checked: props.hasBelysningsutmaningen, description: html`
               <span>${ __('Read more about the intiative') + ' ' }
                 <a href="http://www.energimyndigheten.se/belysningsutmaningen/" target="_blank">
                   ${ __('Here').toLowerCase() }

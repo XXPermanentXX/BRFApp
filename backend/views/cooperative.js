@@ -85,9 +85,9 @@ function view(state, emit) {
 
             <!-- Cooperative details -->
             ${ definition({
-              [__('Apartments')]: format(cooperative.numOfApartments),
+              [__('Number of apartments')]: format(cooperative.numOfApartments),
               [__('Heated area')]: html`<span>${ format(cooperative.area) } m<sup>2</sup></span>`,
-              [__('Constructed')]: cooperative.yearOfConst,
+              [__('Year of construction')]: cooperative.yearOfConst,
               [__('Ventilation type')]: cooperative.ventilationType.map(type => __(`VENTILATION_TYPE_${ type }`)).join(', ')
             }) }
           </div>
@@ -120,6 +120,12 @@ function view(state, emit) {
               </div>
             `
           }
+
+          ${ state.user.cooperative === cooperative._id ? html`
+            <a class="Button u-block" href=${ resolve(`/cooperatives/${ cooperative._id }/add-action`) }>
+              ${ __('Add energy action') }
+            </a>
+          ` : null }
         </div>
       </div>
 

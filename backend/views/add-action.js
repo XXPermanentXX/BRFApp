@@ -39,4 +39,4 @@ function view(state, emit) {
   `;
 }
 
-view.title = () => __('Add action');
+view.title = () => __('Add energy action');

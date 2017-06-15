@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const moment = require('moment');
 const hash = require('object-hash');
-const chart = require('./chart');
+const createComponent = require('./chart');
 const form = require('./form');
 const { loader, chevron } = require('../icons');
 const { className } = require('../utils');
@@ -11,6 +11,7 @@ const SELECTED_COOPERATIVE = /cooperative:(\w+)/;
 
 module.exports = function createChart() {
   let element;
+  const chart = createComponent();
 
   return function render(header, center, cooperative, actions, state, emit) {
     if (typeof window === 'undefined') { return empty(loader()); }

@@ -38,7 +38,7 @@ function view(state, emit) {
         <div class="App-part App-part--primary u-marginBm">
           <!-- Small viewport: page title -->
           <header class="u-marginVm u-paddingHb u-md-hidden u-lg-hidden">
-            <h1 class="Display Display--5">${ action.name }</h1>
+            <h1 class="Display Display--5">${ __(`ACTION_TYPE_${ action.type }`) }</h1>
             <a href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
               ${ chevron('left') }${ __('Back to %s', cooperative.name) }
             </a>
@@ -48,7 +48,7 @@ function view(state, emit) {
           ${ chart(html`
             <div class="u-marginBb">
               <h1 class="Display Display--4 u-marginBb u-textNowrap">
-                ${ action.name }
+                ${ __(`ACTION_TYPE_${ action.type }`) }
               </h1>
               <a class="u-colorCurrent" href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
                 ${ chevron('left') }${ __('Back to %s', cooperative.name) }
@@ -113,7 +113,7 @@ view.title = function (state) {
   const action = state.actions.find(item => item._id === state.params.action);
 
   if (action) {
-    return action.name;
+    return __(`ACTION_TYPE_${ action.type }`);
   }
 };
 
@@ -131,11 +131,13 @@ function loading(state, emit) {
 }
 
 function properties(action) {
-  const types = action.types.map(type => __(`ACTION_TYPE_${ type }`)).join(', ');
   const props = {
-    [__n('Category', 'Categories', action.types.length)]: types,
     [__('Date')]: capitalize(moment(action.date).format('MMMM YYYY'))
   };
+
+  if (action.type) {
+    props[__('Action')] = __(`ACTION_TYPE_${ action.type }`);
+  }
 
   if (action.cost) {
     props[__('Cost')] = `${ format(action.cost) }kr`;

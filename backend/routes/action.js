@@ -138,7 +138,7 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
         err: err.message
       }, body));
     } else {
-      res.locals.title = action.name;
+      res.locals.title = __(`ACTION_TYPE_${ action.type }`);
       res.render(`/actions/${ id }`, action, done => {
         done(null, {
           cooperatives: [ action.cooperative.toJSON() ],
@@ -164,7 +164,7 @@ router.get('/:id', isMongoId('id'), (req, res) => {
     if (err) {
       res.status(404).render('/error', { err: err.message });
     } else {
-      res.locals.title = action.name;
+      res.locals.title = __(`ACTION_TYPE_${ action.type }`);
       res.render(`/actions${ req.url }`, action, done => {
         done(null, {
           cooperatives: [ action.cooperative.toJSON() ],

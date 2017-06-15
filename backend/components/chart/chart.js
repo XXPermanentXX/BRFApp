@@ -8,93 +8,95 @@ const { __ } = require('../../locale');
 const { format, className, resource, vw } = require('../utils');
 const component = require('../utils/component');
 
-module.exports = component({
-  name: 'chart',
-  cache: true,
-  isInitialized: false,
+module.exports = function createComponent() {
+  return component({
+    name: 'chart',
+    cache: true,
+    isInitialized: false,
 
-  shouldUpdate(args, prev) {
-    const [granularity, actions, data] = args;
-    const [prevGranularity, prevActions, prevData] = prev;
+    shouldUpdate(args, prev) {
+      const [granularity, actions, data] = args;
+      const [prevGranularity, prevActions, prevData] = prev;
 
-    // Compare granularity
-    if (granularity !== prevGranularity) {
-      return true;
-    }
+      // Compare granularity
+      if (granularity !== prevGranularity) {
+        return true;
+      }
 
-    // Compare number of actions
-    if (actions.length !== prevActions.length) {
-      return true;
-    }
+      // Compare number of actions
+      if (actions.length !== prevActions.length) {
+        return true;
+      }
 
-    // Compare number of data series
-    if (data.length !== prevData.length) {
-      return true;
-    }
+      // Compare number of data series
+      if (data.length !== prevData.length) {
+        return true;
+      }
 
-    // Compare data series
-    return data.reduce((result, serie, serieIndex) => {
-      return result || serie.values.reduce((diff, value, index) => {
-        return diff || value !== prevData[serieIndex].values[index];
+      // Compare data series
+      return data.reduce((result, serie, serieIndex) => {
+        return result || serie.values.reduce((diff, value, index) => {
+          return diff || value !== prevData[serieIndex].values[index];
+        }, false);
       }, false);
-    }, false);
-  },
+    },
 
-  update(element, granularity, actions, data) {
-    if (this.chart) {
-      this.chart.update(getConfig(granularity, actions, data));
-    }
-  },
+    update(element, granularity, actions, data) {
+      if (this.chart) {
+        this.chart.update(getConfig(granularity, actions, data));
+      }
+    },
 
-  onload(element, granularity, actions, data) {
-    // Exit early if Highcharts has been initialized already
-    if (this.isInitialized) {
-      return;
-    } else {
-      this.isInitialized = true;
-    }
+    onload(element, granularity, actions, data) {
+      // Exit early if Highcharts has been initialized already
+      if (this.isInitialized) {
+        return;
+      } else {
+        this.isInitialized = true;
+      }
 
-    resource('highcharts').then(Highcharts => {
-      // Remove loader from chart container
-      element.innerHTML = '';
+      resource('highcharts').then(Highcharts => {
+        // Remove loader from chart container
+        element.innerHTML = '';
 
-      const config = merge({
-        tooltip: {
-          // Position tooltip relative to chart width
-          positioner(width, height, point) {
-            const offset = vw() >= 800 ? 12 : 0;
+        const config = merge({
+          tooltip: {
+            // Position tooltip relative to chart width
+            positioner(width, height, point) {
+              const offset = vw() >= 800 ? 12 : 0;
 
-            // Align to right when there's no room
-            if ((width + point.plotX) > this.chart.plotWidth) {
-              // Apply right align modifier as soon as the element is in the DOM
-              requestAnimationFrame(() => {
-                const tooltip = element.querySelector('.js-tooltip');
-                tooltip.classList.add('Chart-tooltip--alignRight');
-              });
+              // Align to right when there's no room
+              if ((width + point.plotX) > this.chart.plotWidth) {
+                // Apply right align modifier as soon as the element is in the DOM
+                requestAnimationFrame(() => {
+                  const tooltip = element.querySelector('.js-tooltip');
+                  tooltip.classList.add('Chart-tooltip--alignRight');
+                });
 
-              return { x: point.plotX - width + 25 + offset, y: point.plotY - 14 };
+                return { x: point.plotX - width + 25 + offset, y: point.plotY - 14 };
+              }
+
+              return { x: point.plotX - 2 + offset, y: point.plotY - 15 };
             }
-
-            return { x: point.plotX - 2 + offset, y: point.plotY - 15 };
           }
-        }
-      }, defaults, getConfig(granularity, actions, data));
+        }, defaults, getConfig(granularity, actions, data));
 
-      this.chart = Highcharts.chart(element, config, chart => chart.reflow());
-    });
-  },
+        this.chart = Highcharts.chart(element, config, chart => chart.reflow());
+      });
+    },
 
-  render() {
-    return html`
-      <div>
-        <!-- Insert intermediary loader while waiting for Highcharts -->
-        <div class="u-textCenter u-paddingVl">
-          ${ loader() }
+    render() {
+      return html`
+        <div>
+          <!-- Insert intermediary loader while waiting for Highcharts -->
+          <div class="u-textCenter u-paddingVl">
+            ${ loader() }
+          </div>
         </div>
-      </div>
-    `;
-  }
-});
+      `;
+    }
+  });
+};
 
 /**
  * Create Highcharts options based on data

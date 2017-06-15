@@ -24,6 +24,21 @@ exports.input = function input(props) {
   `;
 };
 
+exports.textarea = function textarea(props) {
+  const classNames = [ 'Form-input', 'Form-input--textarea' ].concat([ props.class, props.className ]);
+  const value = props.value;
+  const attributes = Object.assign({}, props);
+
+  delete attributes.value;
+
+  return html`
+    <label class="Form-item">
+      <span class="Form-label">${ props.label }</span>
+      ${ spread(html`<textarea class=${ classNames.filter(Boolean).join(' ') }>${ value }</textarea>`, attributes) }
+    </label>
+  `;
+};
+
 exports.select = function select(props) {
   const tabs = [];
   const classNames = [ 'Form-select' ].concat([ props.class, props.className ]);

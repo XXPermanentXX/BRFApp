@@ -93,7 +93,7 @@ router.get('/:id/add-action', isMongoId('id'), auth.authenticate(), (req, res) =
       if (err) {
         res.status(500).render('/error', { err: err.message });
       } else {
-        res.locals.title = __('Add action');
+        res.locals.title = __('Add energy action');
         res.render(`/cooperatives/${ cooperative._id }/add-action`, {
           cooperatives: [ cooperative.toJSON() ]
         });
