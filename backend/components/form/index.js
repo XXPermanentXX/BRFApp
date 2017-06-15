@@ -39,7 +39,7 @@ exports.textarea = function textarea(props) {
   `;
 };
 
-exports.select = function select(props) {
+exports.select = function (props) {
   const tabs = [];
   const classNames = [ 'Form-select' ].concat([ props.class, props.className ]);
   const _onchange = props.onchange || function() {};
