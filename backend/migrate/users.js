@@ -25,20 +25,12 @@ USERS.forEach(function (set) {
   var emails = set[1];
 
   emails.forEach(function (email) {
-    var cooperative, cooperatives, user;
+    var user;
     var users = db.users.find({ email: email });
 
     while (users.hasNext()) {
       user = users.next();
-
       db.users.update({ _id: user._id }, { $set: { metryId: metryId }});
-
-      cooperatives = db.cooperatives.find({ editors: { $in: [ user._id ]}});
-
-      while (cooperatives.hasNext()) {
-        cooperative = cooperatives.next();
-        db.cooperatives.update({ _id: cooperative._id }, { $set: { needUpdate: true }});
-      }
     }
   });
 });

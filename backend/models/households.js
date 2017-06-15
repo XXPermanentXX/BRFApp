@@ -88,7 +88,7 @@ var HouseSchema = new Schema({
     default: []
   },
   meters: [{
-    mType: String,
+    type: String,
     meterId: String,
     source: String, // energimolnet, stored
   }],
@@ -186,7 +186,7 @@ exports.create = function(household, cb) {
         // FOR BRF Seglatsen
         newHousehold.meters = _.map(['electricity','hot_water'],function(type){
           return {
-            mType: type,
+            type: type,
             meterId:lookupResult.apartmentId,
             source: 'stored'
           }
@@ -208,7 +208,7 @@ exports.get = function(id, cb) {
       cb('Household not found');
     } else {
       household = household.toObject();
-      household.meters = _.map(household.meters,function(meter){return meter.mType});
+      household.meters = _.map(household.meters,function(meter){return meter.type});
       cb(null, household);
     }
   });
@@ -524,7 +524,7 @@ exports.getConsumption = function(id, type, granularity, from, to, cb) {
       cb('Household not found');
     } else {
       household = household.toObject();
-      var meter = _.findWhere(household.meters,{mType: type})
+      var meter = _.findWhere(household.meters,{type: type})
       if(meter) {
         switch(meter.source) {
           case 'stored':
@@ -595,7 +595,7 @@ exports.addMeter = function(id, meterId, type, source, cb) {
       cb('Cooperative not found');
     } else {
       household.meters.push({
-        mType:type,
+        type:type,
         meterId: meterId,
         source: source
       });

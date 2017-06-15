@@ -9,7 +9,7 @@ module.exports = function consumtions(initialState, auth) {
     state.consumptions = Object.assign({
       items: {},
       isLoading: false,
-      type: 'heating',
+      type: 'electricity',
       compare: 'prev_year',
       granularity: 'month',
       normalize: true

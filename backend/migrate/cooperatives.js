@@ -12,10 +12,27 @@ const VENTILATION_TYPE_MAP = {
 
 db.cooperatives.find({}).forEach(cooperative => {
   var editors = [];
+  var meters = [];
+  var ventilationType = [];
+
+  if (cooperative.ventilationType) {
+    cooperative.ventilationType.forEach(type => {
+      ventilationType.push(VENTILATION_TYPE_MAP[type] || 'OTHER');
+    });
+  }
 
   if (cooperative.editors) {
     cooperative.editors.filter(Boolean).forEach(function (editor) {
-      editors.push(editor.editorId);
+      editors.push(editor.editorId || editor);
+    });
+  }
+
+  if (cooperative.meters) {
+    cooperative.meters.forEach(function (meter) {
+      meters.push({
+        meterId: meter.meterId,
+        type: getMeterType(meter.mType)
+      });
     });
   }
 
@@ -27,9 +44,7 @@ db.cooperatives.find({}).forEach(cooperative => {
     yearOfConst: cooperative.yearOfConst,
     area: cooperative.area,
     numOfApartments: cooperative.numOfApartments,
-    ventilationType: cooperative.ventilationType.map(type => {
-      return VENTILATION_TYPE_MAP[type] || 'OTHER';
-    }),
+    ventilationType: ventilationType,
     hasLaundryRoom: cooperative.hasLaundryRoom || false,
     hasGarage: cooperative.hasGarage || false,
     hasCharger: cooperative.hasCharger || false,
@@ -38,11 +53,16 @@ db.cooperatives.find({}).forEach(cooperative => {
     hasConsumptionMapping: cooperative.hasConsumptionMapping || false,
     hasGoalManagement: cooperative.hasGoalManagement || false,
     hasBelysningsutmaningen: cooperative.hasBelysningsutmaningen || false,
-    meters: cooperative.meters,
+    meters: meters,
     performances: [],
     actions: cooperative.actions || [],
-    editors: editors
+    editors: editors,
+    needUpdate: true
   };
+
+  if (typeof cooperative.needUpdate !== 'undefined') {
+    props.needUpdate = cooperative.needUpdate;
+  }
 
   if (typeof cooperative.incHouseholdElectricity !== 'undefined') {
     props.incHouseholdElectricity = cooperative.incHouseholdElectricity;
@@ -50,3 +70,11 @@ db.cooperatives.find({}).forEach(cooperative => {
 
   db.cooperatives.update({ _id: cooperative._id }, props);
 });
+
+function getMeterType(type) {
+  switch (type) {
+    case 'heating': return 'heat';
+    case 'electricity': return 'electricity';
+    default: return type;
+  }
+}

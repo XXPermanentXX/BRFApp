@@ -108,15 +108,15 @@ exports.cooperatives = [
     lat: 59.303065,
     lng: 18.101027,
     meters: [{
-      mType: 'heating',
+      type: 'heat',
       meterId: '56091c23b684f25e008b4769',
       useInCalc: true,
     },{
-      mType: 'electricity',
+      type: 'electricity',
       meterId: '56091d17aee3a861008b477f',
       useInCalc: true,
     },{
-      mType: 'electricity',
+      type: 'electricity',
       meterId: '56091d17aee3a861008b4780',
       useInCalc: false,
     },]
@@ -141,11 +141,11 @@ exports.cooperatives = [
     lat: 59.304689,
     lng: 18.090044,
     meters: [{
-      mType: 'heating',
+      type: 'heat',
       meterId: '56091c5faee3a861008b4775',
       useInCalc: true,
     },{
-      mType: 'electricity',
+      type: 'electricity',
       meterId: '56091d47b684f25f008b47b1',
       useInCalc: true,
     },
@@ -160,15 +160,15 @@ exports.cooperatives = [
     lat: 59.303615,
     lng: 18.104175,
     meters: [{
-      mType: 'heating',
+      type: 'heat',
       meterId: '56091c58aee3a861008b4774',
       useInCalc: true,
     },{
-      mType: 'electricity',
+      type: 'electricity',
       meterId: '56091d3aaee3a861008b4788',
       useInCalc: true,
     },{
-      mType: 'electricity',
+      type: 'electricity',
       meterId: '56091d3aaee3a861008b478a',
       useInCalc: true,
     },
@@ -183,7 +183,7 @@ exports.cooperatives = [
     lat: 59.303623,
     lng: 18.109971,
     meters: [{
-      mType: 'heating',
+      type: 'heat',
       meterId: '56091c27aee3a860008b482b',
       useInCalc: true,
     },

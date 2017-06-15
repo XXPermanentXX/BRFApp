@@ -5,6 +5,12 @@ const Users = require('../models/users');
 const router = module.exports = express.Router();
 
 /**
+ * Any type of authentificatino takes precedence
+ */
+
+router.use('/auth', footer, require('./auth'));
+
+/**
  * Redirect legacy cooperatives to cooperative edit page
  */
 
@@ -64,7 +70,6 @@ router.use((req, res, next) => {
 router.use('/user', footer, require('./user'));
 router.use('/cooperatives', footer, require('./cooperative'));
 router.use('/actions', footer, require('./action'));
-router.use('/auth', footer, require('./auth'));
 
 /**
  * Duplicate of the `/cooperatives` route

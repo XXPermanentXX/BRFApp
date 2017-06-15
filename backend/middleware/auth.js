@@ -65,7 +65,6 @@ exports.initialize = function initialize() {
        */
 
       user.accessToken = accessToken;
-      user.markModified('accessToken');
       user.save((err, saved) => {
         if (err) { return done(err); }
         done(null, saved);
@@ -93,19 +92,7 @@ exports.session = function session() {
 
 exports.authenticate = function authenticate() {
   return function (req, res, next) {
-    if (process.env.NODE_ENV === 'development') {
-      req.user = {
-        _id: '560bef1de0d64de648ae2538',
-        profile: {
-          name: 'Hanna Hasselqvist',
-          language: 'sv'
-        },
-        cooperative: '5638c9656579012957b5e273',
-        metryId: '57dbc0e5637e2562008b463a'
-      };
-
-      next();
-    } else if (req.isAuthenticated()) {
+    if (req.isAuthenticated()) {
       next();
     } else {
       res.status(401).redirect('/auth');

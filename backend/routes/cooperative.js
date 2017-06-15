@@ -158,7 +158,7 @@ router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
   });
 });
 
-router.get('/:id/edit', isMongoId('id'), (req, res, next) => {
+router.get('/:id/edit', auth.authenticate(), isMongoId('id'), (req, res, next) => {
   if (!req.accepts('html')) {
     res.status(406).end();
   } else {

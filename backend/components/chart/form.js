@@ -3,7 +3,7 @@ const { __ } = require('../../locale');
 const { checkmark } = require('../icons');
 
 const TYPES = {
-  heating: 'Heating & Hot water',
+  heat: 'Heating & Hot water',
   electricity: 'Electricity'
 };
 
@@ -60,19 +60,18 @@ module.exports = function form(cooperative, state, emit) {
         <label for="form_type" class="Form-pill Form-pill--leading u-marginBs">${ __('Show') }</label>
         <select id="form_type" class="Form-pill Form-pill--trailing Form-pill--select u-marginBs" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
           ${ Object.keys(TYPES).map(key => {
-            const type = __(TYPES[key]);
             const { incHouseholdElectricity } = cooperative;
             const addSuffix = key === 'electricity' && incHouseholdElectricity;
 
             return html`
               <option value=${ key } selected=${ type === key }>
-                ${ addSuffix ? __('%s incl. households', type) : type }
+                ${ addSuffix ? __('%s incl. households', __(TYPES[key])) : __(TYPES[key]) }
               </option>
             `;
           }) }
         </select>
 
-        <label for="form_compare" class="Form-pill Form-pill--leading">${ __('Compare with') }</label>
+        <label for="form_compare" class="Form-pill Form-pill--leading u-textNowrap">${ __('Compare with') }</label>
         <select id="form_compare" class="Form-pill Form-pill--trailing Form-pill--select" name="consumptions:compare" disabled=${ disabled } onchange=${ onchange }>
           ${ !compare ? html`<option selected disabled>${ __('Pick one') }</option>` : null }
           <option value="prev_year" selected=${ compare === 'prev_year' } disabled=${ granularity === 'year' }>

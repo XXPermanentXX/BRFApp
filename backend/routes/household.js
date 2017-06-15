@@ -480,7 +480,7 @@ router.post('/connectUsagePoint', auth.authenticate(), function(req, res) {
  * @apiGroup Cooperative
  *
  * @apiParam {String} id MongoId of household
- * @apiParam {String} type Consumption type (e.g. electricity, heating)
+ * @apiParam {String} type Consumption type (e.g. electricity, heat)
  * @apiParam {String} granularity Granularity (e.g. year, month)
  * @apiParam {String} from Range date of consumption in YYYYMM-YYYYMM format (MM is optional)
  *

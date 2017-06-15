@@ -89,7 +89,7 @@ var getSummerMonthValues = function(meters, date, from, values, getValuesFn, cb)
   var diff = date.diff(from,'M');
   if (diff <0 || diff+2>=values.length){
     var when = moment(date);
-    getValuesFn(meters,'heating','month',when.format("YYYYMM") + '-' + when.add(2,'M').format('YYYYMM'),null,function(err,vals){
+    getValuesFn(meters,'heat','month',when.format("YYYYMM") + '-' + when.add(2,'M').format('YYYYMM'),null,function(err,vals){
       cb(err,_.reduce(vals,function(a,b){return a+b},0) / 3);
     })
   } else {

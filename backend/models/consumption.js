@@ -12,7 +12,7 @@ readMeterIDs();
 
 const getRawEnergimolnetConsumption = async.memoize(
   (meters, type, granularity, from, to, done) => {
-    const ids = meters.filter(meter => meter.mType === type && meter.useInCalc);
+    const ids = meters.filter(meter => meter.type === type && meter.useInCalc);
 
     async.map(ids, (meter, callback) => {
       return getConsumptionFromAPI(meter.meterId, granularity, from, to, callback);
@@ -35,8 +35,8 @@ exports.getEnergimolnetConsumption = function (options, done) {
 
   endpoint += `?metric=${ normalized ? 'energy_norm' : 'energy' }`;
   endpoint += `&meters=${ meters
-    .filter(meter => types.includes(meter.mType))
-    .map(meter => meterIDs[meter.meterId])
+    .filter(meter => types.includes(meter.type))
+    .map(meter => meterIDs[meter.meterId] || meter.meterId)
     .filter(Boolean).join(',')
   }`;
 
@@ -73,7 +73,7 @@ function getConsumptionFromAPI(meterId, granularity, from, to, done) {
 
 function uniqueApiCallHash(meters, type, granularity, from, to) {
   const result = meters
-    .filter(meter => meter.mType === type && meter.useInCalc)
+    .filter(meter => meter.type === type && meter.useInCalc)
     .map(meter => meter.meterId )
     .reduce((memo, value) => memo + '-' + value, '');
 

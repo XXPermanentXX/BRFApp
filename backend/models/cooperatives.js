@@ -50,11 +50,12 @@ const CooperativeSchema = new Schema({
   hasGoalManagement: Boolean,
   hasBelysningsutmaningen: Boolean,
   needUpdate: Boolean,
-  meters: [{
-    mType: String,
-    useInCalc: Boolean,
-    meterId: String,
-  }],
+  meters: [
+    new Schema({
+      type: String,
+      meterId: String,
+    })
+  ],
   performances: [
     new Schema({
       year: Number,
@@ -138,23 +139,23 @@ function calculatePerformance(cooperative, done) {
 
       /**
        * If the coopereative has expressively specified that households are not
-       * included, fetch heating and electricity combined
+       * included, fetch heat and electricity combined
        */
 
-      getConsumption(props, Object.assign({ types: [ 'heating', 'electricity' ]}, options), (err, result) => {
+      getConsumption(props, Object.assign({ types: [ 'heat', 'electricity' ]}, options), (err, result) => {
         if (err) { return done(err); }
         setPerfomance(result);
       });
     } else {
 
       /**
-       * Fetch heating and electricity seperately so that we can deduct houshold
+       * Fetch heat and electricity seperately so that we can deduct houshold
        * consumption from electricity usage before calculating the sum
        */
 
       Promise.all(
-        [ 'heating', 'electricity' ].map(type => {
-          if (!cooperative.meters.find(meter => meter.mType === type)) {
+        [ 'heat', 'electricity' ].map(type => {
+          if (!cooperative.meters.find(meter => meter.type === type)) {
             // Resolve to an empty array for missing meters
             return [];
           }
@@ -169,7 +170,7 @@ function calculatePerformance(cooperative, done) {
             });
           });
         }).filter(Boolean)
-      ).then(([ heating, electricity ]) => {
+      ).then(([ heat, electricity ]) => {
         let isGuesstimate = false;
         let deductHouseholdConsumption = cooperative.incHouseholdElectricity;
         const total = electricity.reduce((mem, value) => mem + value, 0);
@@ -183,14 +184,13 @@ function calculatePerformance(cooperative, done) {
         }
 
         let values = electricity.map((value, index) => {
-          return (value || 0) + (heating[index] || 0);
+          return (value || 0) + (heat[index] || 0);
         });
 
         setPerfomance(values, isGuesstimate, deductHouseholdConsumption);
       }, done);
     }
   }
-
 
   /**
    * Set cooperative performance with given values
@@ -264,7 +264,11 @@ exports.create = function(props, user, done) {
 };
 
 exports.all = function(done) {
-  Cooperatives.find({}, (err, cooperatives) => {
+  Cooperatives.find({
+    meters: {
+      $not: { $size: 0 }
+    }
+  }, (err, cooperatives) => {
     if (err) { return done(err); }
 
     Promise.all(cooperatives.map(cooperative => {
@@ -402,7 +406,7 @@ exports.addMeter = function(id, meterId, type, useInCalc, cb) {
       cb(new Error('Cooperative not found'));
     } else {
       cooperative.meters.push({
-        mType:type,
+        type:type,
         meterId: meterId,
         useInCalc: useInCalc
       });
@@ -416,9 +420,7 @@ exports.addMeter = function(id, meterId, type, useInCalc, cb) {
 };
 
 exports.getConsumption = function(id, options, done) {
-  Cooperatives.findOne({
-    _id: id
-  },function(err,cooperative){
+  Cooperatives.findOne({ _id: id }, (err, cooperative) => {
     if (err) {
       done(err);
     } else if (!cooperative) {
