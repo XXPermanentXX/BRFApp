@@ -29,32 +29,41 @@ db.actions.drop();
 db.cooperatives.find({}).forEach(function (cooperative) {
   var actions = [];
 
-  cooperative.actions.forEach(function (action) {
-    if (action instanceof ObjectId) {
-      actions.push(action);
-      return;
-    }
+  if (cooperative.actions) {
+    cooperative.actions.forEach(function (action) {
+      if (action instanceof ObjectId) {
+        actions.push(action);
+        return;
+      }
 
-    db.actions.insert({
-      name: action.name,
-      date: action.date,
-      cost: action.cost,
-      description: action.description,
-      types: action.types,
-      cooperative: cooperative._id,
-      user: cooperative.editors[0].editorId,
-      comments: action.comments.map(function (comment) {
-        return {
-          user: comment.user,
-          author: db.users.find({ _id: ObjectId(comment.user) }).profile.name,
-          comment: comment.comment,
-          date: comment.date
-        };
-      })
-    }, function (err, docs) {
-      actions.push(docs[0]._id);
+      db.actions.insert({
+        name: action.name,
+        date: action.date,
+        cost: action.cost,
+        description: action.description,
+        types: action.types,
+        cooperative: cooperative._id,
+        user: cooperative.editors[0].editorId,
+        comments: action.comments.map(function (comment) {
+          return {
+            user: comment.user,
+            author: db.users.find({ _id: ObjectId(comment.user) }).profile.name,
+            comment: comment.comment,
+            date: comment.date
+          };
+        })
+      }, function (err, docs) {
+        actions.push(docs[0]._id);
+      });
     });
-  });
+  }
+
+  const editors = [];
+  if (cooperative.editors) {
+    cooperative.editors.filter(Boolean).forEach(function (editor) {
+      editors.push(editor.editorId);
+    });
+  }
 
   db.cooperatives.update({ _id: cooperative._id }, {
     name: cooperative.name,
@@ -68,7 +77,7 @@ db.cooperatives.find({}).forEach(function (cooperative) {
     meters: cooperative.meters,
     performances: [],
     actions: actions,
-    editors: cooperative.editors.map(function (props) { return props.editorId; })
+    editors: editors
   });
 });
 
