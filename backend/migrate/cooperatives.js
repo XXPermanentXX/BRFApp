@@ -16,7 +16,7 @@ db.cooperatives.find({}).forEach(cooperative => {
   var ventilationType = [];
 
   if (cooperative.ventilationType) {
-    cooperative.ventilationType.forEach(type => {
+    cooperative.ventilationType.forEach(function (type) {
       ventilationType.push(VENTILATION_TYPE_MAP[type] || 'OTHER');
     });
   }

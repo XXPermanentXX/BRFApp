@@ -39,11 +39,11 @@ USERS.forEach(function (set) {
  * Refactor user model
  */
 
-db.users.find({}).forEach(user => {
-  const profile = assign({}, user.profile, {
+db.users.find({}).forEach(function (user) {
+  var profile = assign({}, user.profile, {
     language: lang(user.profile.language)
   });
-  const props = { profile: profile };
+  var props = { profile: profile };
 
   if (user.cooperativeId) {
     props.cooperative = user.cooperativeId;
