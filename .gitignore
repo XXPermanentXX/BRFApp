@@ -13,4 +13,5 @@ backend/public
 *.swp
 .db
 .env
+.env.test
 .test.env
