@@ -122,7 +122,8 @@
   "Update information": "Uppdatera informationen",
   "How do household pay for their electricity?": "Hur hanteras avtal för hushållsel i föreningen?",
   "All household have individual contracts and can choose energy provider": "Alla hushåll har egna avtal och kan själva välja elbolag",
-  "The cooperative has a contract covering all energy use, households are charged by usage or fixed ammount": "Föreningen har avtal med ett elbolag för all elanvändning (och hushållen debiteras antingen baserat på undermätning eller schablon)",
+  "The cooperative has a contract covering all energy use": "Föreningen har avtal med ett elbolag för all elanvändning",
+  "Households are charged by usage or fixed ammount": "Hushållen debiteras antingen baserat på undermätning eller schablon",
   "Don't know": "Vet ej",
   "Edit details": "Ändra uppgifter"
 }

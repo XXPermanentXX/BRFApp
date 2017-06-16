@@ -33,7 +33,6 @@
   display: block;
   max-width: 100%;
   height: auto;
-  margin: var(--space-s) 0 var(--space-m);
 }
 
 .Onboarding-pagination {

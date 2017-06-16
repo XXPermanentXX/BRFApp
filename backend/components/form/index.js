@@ -131,10 +131,10 @@ exports.select = function (props) {
 };
 
 exports.checkbox = function checkbox(props) {
-  const classNames = [ 'Form-checkbox' ].concat([ props.class, props.className ]);
+  const classNames = [ 'Form-toggle' ].concat([ props.class, props.className ]);
 
-  const element =  html`
-    <label class="Form-item Form-item--checkbox">
+  return html`
+    <label class="Form-item Form-item--toggle" onselectstart=${ event => event.preventDefault() }>
       <span class="u-flexGrow1">
         <span class="Form-label Form-label--lg">${ props.label }</span>
         ${ props.description ? html`<span class="Form-label u-colorDark">${ props.description }</span>` : null }
@@ -143,10 +143,23 @@ exports.checkbox = function checkbox(props) {
       <span class="Form-proxy Form-proxy--checkbox"></span>
     </label>
   `;
+};
 
-  element.addEventListener('selectstart', event => event.preventDefault());
+exports.radiogroup = function radiogroup(options) {
+  return options.map(option => {
+    const classNames = [ 'Form-toggle' ].concat([ option.class, option.className ]);
 
-  return element;
+    return html`
+      <label class="Form-item Form-item--toggle" onselectstart=${ event => event.preventDefault() }>
+        <span class="u-flexGrow1">
+          <span class="Form-label Form-label--lg">${ option.label }</span>
+          ${ option.description ? html`<span class="Form-label u-colorDark">${ option.description }</span>` : null }
+        </span>
+        ${ spread(html`<input type="radio" class=${ classNames.filter(Boolean).join(' ') } />`, option) }
+        <span class="Form-proxy Form-proxy--radio"></span>
+      </label>
+    `;
+  });
 };
 
 function option(props) {

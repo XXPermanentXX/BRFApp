@@ -7,8 +7,6 @@
 .Modal {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
 
@@ -19,12 +17,6 @@
   z-index: 2;
   pointer-events: none;
   transition: background-color var(--Modal-transition-duration) linear;
-}
-
-@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
-  .Modal {
-    padding: var(--viewport-padding);
-  }
 }
 
 .Modal.is-open {
@@ -45,7 +37,7 @@
   margin: auto; /* 3 */
 
   background-color: #fff;
-  overflow: hidden;
+  /*overflow: hidden;*/
   visibility: hidden;
 }
 

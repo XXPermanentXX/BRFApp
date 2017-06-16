@@ -325,10 +325,16 @@ exports.update = function(id, data, done) {
       selection[key] = data[key];
     });
 
+    const unsetHousehold = data.incHouseholdElectricity = null;
+    if (unsetHousehold) {
+      delete selection.incHouseholdElectricity;
+      delete cooperative.incHouseholdElectricity;
+    }
+
     // Assign all data to cooperative
     Object.assign(cooperative, selection, { needUpdate: false });
 
-    if (areaChanged || data.incHouseholdElectricity !== cooperative.incHouseholdElectricity) {
+    if (areaChanged || unsetHousehold) {
       // Remove last perfomance calculation if area has changed
       cooperative.performances.$pop();
 
