@@ -7,7 +7,7 @@ const component = require('../components/utils/component');
 const { __ } = require('../locale');
 
 const UNKNOWN = null;
-const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'UNKNOWN', 'OTHER' ];
+const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'OTHER' ];
 
 module.exports = view;
 

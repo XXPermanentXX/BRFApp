@@ -6,17 +6,12 @@ const Comments = require('./comments');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ActionSchema = new Schema({
-  name: {
-    type: String,
-  },
-  types: {
-    type: [String],
-  },
   type: {
-    type: String,
+    type: Number,
     required: true
   },
   cost: Number,
+  contractor: String,
   description: String,
   date: {
     type: Date,

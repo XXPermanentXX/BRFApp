@@ -42,7 +42,6 @@
   "VENTILATION_TYPE_F": "F (mekanisk frånluftsventilation)",
   "VENTILATION_TYPE_FT": "FT (mekanisk från- och tilluftsventilation)",
   "VENTILATION_TYPE_S": "S (självdragsventilation)",
-  "VENTILATION_TYPE_UNKNOWN": "Vet ej",
   "VENTILATION_TYPE_OTHER": "Annat",
   "Back to %s": "Tillbaka till %s",
   "Category": {
