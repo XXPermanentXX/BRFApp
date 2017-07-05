@@ -6,6 +6,11 @@ const Cooperatives = require('../models/cooperatives');
 const Log = require('../models').logs;
 const { __ } = require('../locale');
 
+router.get('/', (req, res) => {
+  // All traffic to cooperatives root are redirected to site root
+  req.redirect('/');
+});
+
 router.post('/', auth.authenticate(), (req, res) => {
   const { body } = req;
 
