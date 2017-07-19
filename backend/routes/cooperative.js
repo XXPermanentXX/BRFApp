@@ -8,7 +8,7 @@ const { __ } = require('../locale');
 
 router.get('/', (req, res) => {
   // All traffic to cooperatives root are redirected to site root
-  req.redirect('/');
+  res.redirect('/');
 });
 
 router.post('/', auth.authenticate(), (req, res) => {
@@ -239,7 +239,7 @@ module.exports = router;
 function isEditor(param) {
   return function (req, res, next) {
     auth.authenticate()(req, res, () => {
-      Cooperatives.find(req.params[param], (err, cooperative) => {
+      Cooperatives.get(req.params[param], (err, cooperative) => {
         if (err) { return next(err); }
 
         const editor = cooperative.editors.find(editor => {
