@@ -25,25 +25,29 @@ router.get('/', (req, res) => {
  * Redirect to Metry OAuth
  */
 
-router.get('/metry', passport.authenticate('metry'));
+router.get('/metry', passport.authenticate('metry', {
+  failureRedirect: '/auth'
+}));
 
 /**
  * Handle Metry callback redirect
  */
 
-router.get('/callback',
-  passport.authenticate('metry', {
-    failWithError: true
-  }),
-  (req, res) => res.redirect(url.format({
-    pathname: `/cooperatives/${ req.user.cooperative }`,
-    query: { access_token: req.user.accessToken }
-  })),
-  (err, req, res) => res.redirect(url.format({
-    pathname: '/auth',
-    query: { access_token: null, err: 'METRY_ERROR' }
-  }))
-);
+router.get('/callback', (req, res, next) => {
+  passport.authenticate('metry', err => {
+    if (err) {
+      res.redirect(url.format({
+        pathname: '/auth',
+        query: { error: 'METRY_ERROR' }
+      }));
+    } else {
+      res.redirect(url.format({
+        pathname: `/cooperatives/${ req.user.cooperative }`,
+        query: { access_token: req.user.accessToken }
+      }));
+    }
+  })(req, res, next);
+});
 
 /**
  * Sign out

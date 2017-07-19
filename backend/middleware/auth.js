@@ -12,6 +12,7 @@ const {
   METRY_PATH_AUTHORIZE,
   METRY_PATH_TOKEN,
   METRY_CLIENT_ID,
+  METRY_OPEN_CHANNEL,
   METRY_CLIENT_SECRET,
   METRY_PROFILE_PATH,
   METRY_PATH_METERS,
@@ -54,7 +55,8 @@ exports.initialize = function initialize() {
     tokenURL: url.resolve(METRY_BASE_URL, METRY_PATH_TOKEN),
     clientID: METRY_CLIENT_ID,
     clientSecret: METRY_CLIENT_SECRET,
-    callbackURL: url.resolve(BRFENERGI_SERVICE_URL, 'auth/callback')
+    callbackURL: url.resolve(BRFENERGI_SERVICE_URL, 'auth/callback'),
+    scope: [ 'basic', 'add_to_open_channels' ]
   }, (accessToken, refreshToken, profile, done) => {
     Users.model.findOne({ metryId: profile._id }, (err, user) => {
       if (err) { return done(err); }
@@ -62,30 +64,67 @@ exports.initialize = function initialize() {
         return done(null, false, { message: 'User not recognized' });
       }
 
-      request({
+      const options = {
         json: true,
         method: 'GET',
-        headers: {
-          'Authorization': `Bearer ${ accessToken }`
-        },
+        headers: { 'Authorization': `Bearer ${ accessToken }` }
+      };
+
+      /**
+       * Fetch cooperative meters
+       */
+
+      request(Object.assign({}, options, {
         uri: url.format(Object.assign({}, ENDPOINT, {
           pathname: url.resolve(ENDPOINT.pathname, METRY_PATH_METERS),
           query: {
             box: 'active'
           }
         }))
-      }, (err, response, body) => {
+      }), (err, response, body) => {
         if (err) { return done(err); }
         if (response.body.code !== 200) {
           return done(new Error(response.body.message));
         }
 
-        Cooperatives.model.update({ _id: user.cooperative }, { $set: {
-          meters: body.data.map(meter => ({
-            type: meter.type,
-            meterId: meter._id
-          }))
-        }}, err => {
+        Promise.all(body.data.map(meter => new Promise((resolve, reject) => {
+
+          /**
+           * Make sure that the meter is in our open channel
+           */
+
+          request(Object.assign({}, options, {
+            method: 'POST',
+            uri: url.resolve(
+              process.env.METRY_ENDPOINT_URL,
+              'open_channels',
+              METRY_OPEN_CHANNEL,
+              'meters'
+            ),
+            body: JSON.stringify({ meter_id: meter._id })
+          }), (err, response, body) => {
+            if (err) { return reject(err); }
+            if (body.code !== 200) { return reject(new Error(body.message)); }
+            resolve();
+          });
+        })).concat([
+
+          /**
+           * Update cooperative with active meters
+           */
+
+          new Promise((resolve, reject) => {
+            Cooperatives.update(user.cooperative, {
+              meters: body.data.map(meter => ({
+                type: meter.type,
+                meterId: meter._id
+              }))
+            }, err => {
+              if (err) { return reject(err); }
+              resolve();
+            });
+          })
+        ])).then(() => {
           if (err) { return done(err); }
 
           /**
@@ -97,7 +136,7 @@ exports.initialize = function initialize() {
             if (err) { return done(err); }
             done(null, saved);
           });
-        });
+        }, done);
       });
     });
   }));

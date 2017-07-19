@@ -1,4 +1,5 @@
 const User = require('../models/users');
+const { __ } = require('../locale');
 
 /**
  * Overwrite native `res.render` with one that conforms with request type and
@@ -44,18 +45,20 @@ module.exports = function render(req, res, next) {
      */
 
     function send(_state) {
-      const output = Object.assign({}, _state);
-
       // Ensure state consistency
-      output.href = route;
-      output.geoip = {};
-      output.consumptions = {};
-      output.actions = _state.actions || [];
-      output.cooperatives = _state.cooperatives || [];
-      output.user = Object.assign({
-        hasBoarded: res.locals.hasBoarded,
-        isAuthenticated: false
-      }, _state.user);
+      const output = Object.assign({
+        href: route,
+        geoip: {},
+        consumptions: {},
+        actions: [],
+        cooperatives: [],
+        user: Object.assign({
+          hasBoarded: JSON.parse(req.cookies.hasBoarded || false),
+          isAuthenticated: false
+        }, _state.user),
+        error: req.query.error ? __(req.query.error) : null
+      }, _state);
+
 
       if (req.user) {
         User.get(req.user._id, (err, user) => {
