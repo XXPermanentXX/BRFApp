@@ -194,7 +194,7 @@ function getQueries(now, cooperative, state) {
 
   const queries = [];
   queries.push(Object.assign({
-    name: granularity === 'month' ? __('Current year') : cooperative.name,
+    name: compare === 'prev_year' ? __('Current year') : cooperative.name,
     types: [ type ],
     normalize: normalize,
     cooperative: cooperative._id
@@ -312,7 +312,7 @@ function getPeriod(granularity, now = Date.now()) {
     };
     case 'year': return {
       from: moment(now).subtract(11, 'years').startOf('year').toDate(),
-      to: moment(now).endOf('year').toDate()
+      to: moment(now).subtract(1, 'year').endOf('year').toDate()
     };
     default: throw (new Error(`Granularity "${ granularity }" not supported`));
   }
