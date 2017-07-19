@@ -65,7 +65,7 @@ module.exports = function form(cooperative, state, emit) {
 
             return html`
               <option value=${ key } selected=${ type === key }>
-                ${ addSuffix ? __('%s incl. households', __(TYPES[key])) : __(TYPES[key]) }
+                ${ addSuffix ? __('Total %s (incl. households)', __('elec')) : __(TYPES[key]) }
               </option>
             `;
           }) }
