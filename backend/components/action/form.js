@@ -3,7 +3,7 @@ const moment = require('moment');
 const { __ } = require('../../locale');
 const { select, input, textarea } = require('../form');
 
-const DATE_FORMAT = 'YYYY-MM-DD';
+const DATE_FORMAT = 'YYYY-MM';
 const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302 ];
 
 module.exports = function action(action, onsave) {
@@ -16,14 +16,15 @@ module.exports = function action(action, onsave) {
       ` }
 
       <div class="Form-collapse u-marginBb">
-        ${ select({ label: __('Action'), name: 'type', required:true, children: TYPES.filter(type => (type % 100) === 0).map(category => ({
-          label: __(`ACTION_TYPE_${ category }`),
-          children: TYPES.filter(type => type > category && type < category + 100).map(type => ({
-            selected: action ? (action.type === type || false) : false,
-            value: type,
-            label: __(`ACTION_TYPE_${ type }`)
-          }))
-        }))}) }
+        ${ select({ label: __('Action'), name: 'type', required: true, children: TYPES.filter(type => (type % 100) === 0).map(category => html`
+          <optgroup label=${ __(`ACTION_TYPE_${ category }`) }>
+            ${ TYPES.filter(type => type > category && type < category + 100).map(type => html`
+              <option selected=${ action ? (action.type === type || false) : false } value=${ type }>
+                ${ __(`ACTION_TYPE_${ type }`) }
+              </option>
+            `) }
+          </optgroup>
+        `)}) }
         ${ input({ label: __('Date'), type: 'month', name: 'date', required: true, value: action ? moment(action.date).format(DATE_FORMAT) : '' }) }
         ${ input({ label: __('Cost'), type: 'number', name: 'cost', value: ((action && action.cost) || ''), suffix: 'kr' }) }
         ${ textarea({ label: __('Description'), rows: 3, name: 'description', value: ((action && action.description) || '') }) }

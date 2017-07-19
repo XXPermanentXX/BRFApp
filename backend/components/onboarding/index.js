@@ -12,13 +12,20 @@ module.exports = component({
   onload(element, doc, onboarded) {
     let bounceScroll;
     let scrollstart = null;
-    let inTransition = false;
+    let isCaptured = false;
 
     const cards = doc.getGroup('onboarding.cards').toArray();
 
     const next = element.querySelector('.js-next');
     const reel = element.querySelector('.js-reel');
     let { offsetWidth } = reel;
+
+    const preventScroll = (event) => {
+      if (isCaptured) {
+        this.debug('captured', reel.scrollLeft);
+        event.preventDefault();
+      }
+    };
 
     const justify = (target) => {
       const { scrollLeft } = reel;
@@ -37,8 +44,6 @@ module.exports = component({
 
       let currentTime = 0;
 
-      inTransition = true;
-
       const tick = () => {
         currentTime += 1 / 60;
 
@@ -50,9 +55,9 @@ module.exports = component({
           requestAnimationFrame(tick);
           reel.scrollLeft = scrollLeft + ((offset - scrollLeft) * factor);
         } else {
-          inTransition = false;
           reel.scrollLeft = offset;
           this.page = frame;
+          isCaptured = false;
           this.update(doc, onboarded);
         }
       };
@@ -63,6 +68,16 @@ module.exports = component({
     window.addEventListener('resize', debounce(() => {
       offsetWidth = reel.offsetWidth;
     }, 200));
+
+    window.addEventListener('wheel', preventScroll);
+    reel.addEventListener('touchmove', preventScroll);
+
+    reel.addEventListener('touchend', event => {
+      if (event.touches.length) { return; }
+      clearTimeout(bounceScroll);
+      isCaptured = true;
+      justify();
+    });
 
     next.addEventListener('click', event => {
       if (this.page === cards.length - 1) {
@@ -77,8 +92,7 @@ module.exports = component({
     reel.addEventListener('scroll', () => {
       const { scrollLeft } = reel;
 
-      if (inTransition) {
-        event.preventDefault();
+      if (isCaptured) {
         return;
       }
 
@@ -90,27 +104,21 @@ module.exports = component({
       clearTimeout(bounceScroll);
 
       const delta = scrollstart - scrollLeft;
-      if (Math.abs(delta) > (offsetWidth / 5)) {
+      if (!isCaptured && (Math.abs(delta) > (offsetWidth / 5))) {
         justify(this.page + delta > 0 ? -1 : 1);
+        this.debug('exceeded threshold')
         scrollstart = null;
+        isCaptured = true;
       } else {
         bounceScroll = setTimeout(() => {
-          scrollstart = null;
-          justify();
-        }, 200);
+          this.debug('time')
+          if (!isCaptured) {
+            isCaptured = true;
+            scrollstart = null;
+            justify();
+          }
+        }, 250);
       }
-    });
-
-    reel.addEventListener('touchmove', event => {
-      if (inTransition) {
-        event.preventDefault();
-      }
-    });
-
-    reel.addEventListener('touchend', event => {
-      if (event.touches.length) { return; }
-      clearTimeout(timeout);
-      justify();
     });
   },
 

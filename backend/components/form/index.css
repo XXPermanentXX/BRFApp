@@ -99,10 +99,6 @@
 .Form-label {
   display: block;
 
-  position: absolute;
-  top: var(--Form-padding-y);
-  left: var(--Form-padding-x);
-
   color: var(--color-text);
   font-size: calc(14rem / var(--base-font-size));
   font-weight: var(--font-weight-bold);
@@ -113,8 +109,14 @@
   font-size: calc(16rem / var(--base-font-size));
 }
 
+.Form-label--sup {
+  position: absolute;
+  top: var(--Form-padding-y);
+  left: var(--Form-padding-x);
+  color: var(--color-dark);
+}
+
 .Form-item--toggle .Form-label {
-  position: static;
   line-height: 1.4rem;
 }
 
@@ -143,7 +145,7 @@
   box-sizing: border-box;
   display: block;
   flex-grow: 1;
-  padding: var(--Form-padding-y) var(--Form-padding-x);
+  padding: calc(var(--Form-padding-y) * 0.75) var(--Form-padding-x) calc(var(--Form-padding-y) * 1.25);
   border: 0;
 
   outline: 0;
@@ -220,9 +222,10 @@
 }
 
 .Form-proxy {
-  border: 2px solid var(--color-dim);
   width: 1.5em;
   height: 1.5em;
+  border: 2px solid var(--color-dim);
+  margin-left: 0.5em;
   pointer-events: none;
 }
 
@@ -235,10 +238,10 @@
 .Form-proxy--radio {
   border-radius: 100%;
   box-shadow: inset 0 0 0 0.75em #fff;
-  background-color: currentColor;
   transition: box-shadow 150ms ease-out;
 }
 
+.Form-toggle:active + .Form-proxy,
 .Form-toggle:checked + .Form-proxy {
   border-color: currentColor;
 }
@@ -251,6 +254,7 @@
 
 .Form-toggle:checked + .Form-proxy--radio {
   box-shadow: inset 0 0 0 0.3em #fff;
+  background-color: currentColor;
 }
 
 .Form-tab {
