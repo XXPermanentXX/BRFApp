@@ -112,7 +112,8 @@ module.exports = {
     title: { text: null },
     labels: { enabled: false },
     gridLineWidth: 0,
-    maxPadding: 0.4
+    maxPadding: 0.4,
+    softMin: 0
   },
   plotOptions: {
     spline: {
