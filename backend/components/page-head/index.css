@@ -32,7 +32,7 @@
 }
 
 .PageHead-title {
-  display: block;
+  display: flex;
   margin-right: auto;
 
   font-style: italic;
@@ -43,6 +43,12 @@
 .PageHead-title:hover,
 .PageHead-title:focus {
   text-decoration: none;
+}
+
+.PageHead-logo {
+  display: block;
+  height: 1em;
+  margin-right: var(--space-s);
 }
 
 .PageHead-navigation {

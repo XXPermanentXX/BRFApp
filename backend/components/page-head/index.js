@@ -3,6 +3,7 @@ const pick = require('lodash.pick');
 const omit = require('lodash.omit');
 const menu = require('../menu');
 const modal = require('../modal');
+const logo = require('./logo');
 const { loader, chevron } = require('../icons');
 const resolve = require('../../resolve');
 const { __ } = require('../../locale');
@@ -60,7 +61,9 @@ module.exports = function createHeader(view) {
 
     return html`
       <div id="${ view }-header" class="PageHead">
-        <a href=${ resolve('/') } class="PageHead-title" onclick=${ collapse }>BRF Energi</a>
+        <a href=${ resolve('/') } class="PageHead-title" onclick=${ collapse }>
+          ${ logo() } Brf Energi
+        </a>
         <nav class="PageHead-navigation">
 
           <!-- Small viewport: drop down menu list -->
