@@ -24,7 +24,7 @@ module.exports = function createHeader(view) {
     }),
     about: () => ({
       href: resolve('/about-the-project'),
-      title: __('About the project'),
+      title: __('About Brf Energi'),
       onclick: collapse
     }),
     faq: () => ({

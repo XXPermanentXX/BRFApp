@@ -40,4 +40,4 @@ function view(state, emit) {
   `;
 }
 
-view.title = () => __('About the project');
+view.title = () => __('About Brf Energi');

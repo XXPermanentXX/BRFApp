@@ -8,7 +8,7 @@
     "one": "Energiåtgärd",
     "other": "Energiåtgärder"
   },
-  "About the project": "Om projektet",
+  "About Brf Energi": "Om Brf Energi",
   "How it works": "Hur funkar det?",
   "Sign in": "Logga in",
   "Menu": "Meny",
@@ -125,5 +125,6 @@
   "Households are charged by usage or fixed ammount": "Hushållen debiteras antingen baserat på undermätning eller schablon",
   "Don't know": "Vet ej",
   "Edit details": "Ändra uppgifter",
-  "What type of ventilation is installed?": "Vilken ventilationstyp är installerad?"
+  "What type of ventilation is installed?": "Vilken ventilationstyp är installerad?",
+  "About the project": "About the project"
 }
