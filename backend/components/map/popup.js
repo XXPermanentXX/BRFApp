@@ -13,6 +13,9 @@ const {
 module.exports = function popup(feature) {
   const { properties: props } = feature;
 
+  // Mapbox casts nested json objects to string
+  const actions = JSON.parse(props.actions);
+
   return html`
     <div class="Map-popup">
       <div class="u-nbfc">
@@ -31,11 +34,11 @@ module.exports = function popup(feature) {
             </div>
           `
         }
-        ${ props.actions.length ?
+        ${ actions.length ?
           html`
             <span>
-              <span class="u-textBold">${ props.actions.length }</span>
-              ${ ' ' + __n('Energy action', 'Energy actions', props.actions.length) }
+              <span class="u-textBold">${ actions.length }</span>
+              ${ ' ' + __n('Energy action', 'Energy actions', actions.length) }
             </span>
           ` :
           html`<em class="u-colorDim">${ __('No energy actions') }</span>`

@@ -3,7 +3,7 @@ const request = require('request');
 const passport = require('passport');
 const basic = require('express-basic-auth');
 const OAuth2Strategy = require('passport-oauth2').Strategy;
-const User = require('../models/users');
+const Users = require('../models/users');
 
 const ENDPOINT = url.parse(process.env.METRY_ENDPOINT_URL);
 const {
@@ -54,7 +54,7 @@ exports.initialize = function initialize() {
     clientSecret: METRY_CLIENT_SECRET,
     callbackURL: url.resolve(BRFENERGI_SERVICE_URL, 'auth/callback')
   }, (accessToken, refreshToken, profile, done) => {
-    User.model.findOne({ metryId: profile._id }, (err, user) => {
+    Users.model.findOne({ metryId: profile._id }, (err, user) => {
       if (err) { return done(err); }
       if (!user) {
         return done(null, false, { message: 'User not recognized' });
@@ -77,7 +77,7 @@ exports.initialize = function initialize() {
    */
 
   passport.serializeUser((user, done) => done(null, user._id));
-  passport.deserializeUser((id, done) => User.model.findById(id, done));
+  passport.deserializeUser((id, done) => Users.model.findById(id, done));
 
   return passport.initialize();
 };

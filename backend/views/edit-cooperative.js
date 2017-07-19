@@ -1,12 +1,13 @@
 const html = require('choo/html');
 const header = require('../components/page-head')('edit-cooperative');
 const footer = require('../components/app/footer');
-const { input, select, checkbox } = require('../components/form');
+const { input, select, checkbox, radiogroup } = require('../components/form');
 const { loader } = require('../components/icons');
 const component = require('../components/utils/component');
 const { __ } = require('../locale');
 
-const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'UNKNOWN', 'OTHER' ];
+const UNKNOWN = null;
+const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'OTHER' ];
 
 module.exports = view;
 
@@ -53,17 +54,14 @@ const form = component({
     };
 
     const onHousholdUsageChange = event => {
-      const index = event.target.selectedIndex;
-      let value;
+      let value = +event.target.value;
 
-      if (index === 0) {
-        value = false;
-      } else if (index === 1) {
-        value = true;
-      }
-
-      if (typeof value !== 'undefined') {
-        this.props.incHouseholdElectricity = value;
+      if (value === 0) {
+        this.props.incHouseholdElectricity = false;
+      } else if (value === 1) {
+        this.props.incHouseholdElectricity = true;
+      } else {
+        this.props.incHouseholdElectricity = UNKNOWN;
       }
 
       this.update(cooperative, state, emit);
@@ -100,29 +98,36 @@ const form = component({
     const ventilationOptions = VENTILATION_TYPES.map(type => ({
       label: __(`VENTILATION_TYPE_${ type }`),
       value: type,
-      selected: props.ventilationType.includes(type)
+      selected: props.ventilationType.includes(type),
+      disabled: props.ventilationType.includes(type)
     }));
 
     const householdUsageOptions = [
-      'All household have individual contracts and can choose energy provider',
-      'The cooperative has a contract covering all energy use, households are charged by usage or fixed ammount',
-      'Don\'t know'
+      ['All household have individual contracts and can choose energy provider'],
+      [
+        'The cooperative has a contract covering all energy use',
+        'Households are charged by usage or fixed ammount'
+      ],
+      ['Don\'t know']
     ].map((label, index) => {
-      let isSelected = false;
+      let checked = false;
       let { incHouseholdElectricity } = props;
 
-      if (typeof incHouseholdElectricity === 'undefined') {
-        isSelected = index === 2;
+      if (incHouseholdElectricity === UNKNOWN) {
+        checked = index === 2;
       } else if (index === 1) {
-        isSelected = incHouseholdElectricity;
+        checked = incHouseholdElectricity;
       } else if (index === 0) {
-        isSelected = incHouseholdElectricity === false;
+        checked = incHouseholdElectricity === false;
       }
 
       return {
-        label: __(label),
+        label: __(label[0]),
+        description: label[1] ? __(label[1]) : null,
         value: index,
-        selected: isSelected
+        checked: checked,
+        name: 'incHouseholdElectricity',
+        onchange: onHousholdUsageChange
       };
     });
 
@@ -140,10 +145,17 @@ const form = component({
             ${ input({ label: __('Number of apartments'), type: 'number', name: 'numOfApartments', oninput: stash, value: props.numOfApartments }) }
             ${ input({ label: __('Year of construction'), type: 'number', name: 'yearOfConst', oninput: stash, max: (new Date()).getFullYear(), pattern: '\\d{4}', value: props.yearOfConst }) }
             ${ input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, required: true, 'data-cast': 'number', suffix: props.area && html`<span>m<sup>2</sup></span>`, value: props.area }) }
-            ${ select({ label: __('How do household pay for their electricity?'), onchange: onHousholdUsageChange, name: 'incHouseholdElectricity', children: householdUsageOptions }) }
             ${ select({ label: __('Ventilation type'), onchange: onVentilationChange, name: 'ventilationType', multiple: true, children: ventilationOptions }) }
             ${ props.email && !cooperative._id ? checkbox({ label: __('Reuse e-mail address from registration'), description: __('Register using %s', cooperative.email), onchange: onreuse, checked: props.reuse }) : null }
             ${ input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, readonly: props.reuse, value: this.props.email || ((props.reuse || cooperative._id) && cooperative.email) }) }
+          </div>
+
+          <div class="Type">
+            <h2>${ __('How do household pay for their electricity?') }</h2>
+          </div>
+
+          <div class="Form-collapse u-marginVm">
+            ${ radiogroup(householdUsageOptions) }
           </div>
 
           <div class="Type">

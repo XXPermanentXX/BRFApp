@@ -10,7 +10,7 @@ module.exports = component({
   page: 0,
 
   onload(element, doc, onboarded) {
-    let timeout;
+    let bounceScroll;
     let scrollstart = null;
     let inTransition = false;
 
@@ -20,16 +20,14 @@ module.exports = component({
     const reel = element.querySelector('.js-reel');
     let { offsetWidth } = reel;
 
-    const justify = (extra = 0) => {
+    const justify = (target) => {
       const { scrollLeft } = reel;
-      let frame = Math.max(0, Math.ceil(cards.length * (scrollLeft / offsetWidth)) - 1);
+      let frame = target || Math.max(0, Math.ceil(scrollLeft / offsetWidth));
 
-      if ((frame + extra) < 0) {
+      if (frame < 0) {
         frame = 0;
-      } else if ((frame + extra) > (cards.length - 1)) {
+      } else if (frame > (cards.length - 1)) {
         frame = cards.length - 1;
-      } else {
-        frame += extra;
       }
 
       const offset = offsetWidth * frame;
@@ -52,8 +50,8 @@ module.exports = component({
           requestAnimationFrame(tick);
           reel.scrollLeft = scrollLeft + ((offset - scrollLeft) * factor);
         } else {
-          reel.scrollLeft = offset;
           inTransition = false;
+          reel.scrollLeft = offset;
           this.page = frame;
           this.update(doc, onboarded);
         }
@@ -70,7 +68,7 @@ module.exports = component({
       if (this.page === cards.length - 1) {
         onboarded();
       } else {
-        justify(1);
+        justify(this.page + 1);
       }
 
       event.preventDefault();
@@ -89,17 +87,17 @@ module.exports = component({
         return;
       }
 
-      clearTimeout(timeout);
+      clearTimeout(bounceScroll);
 
       const delta = scrollstart - scrollLeft;
       if (Math.abs(delta) > (offsetWidth / 5)) {
-        justify(delta > 0 ? -1 : 1);
+        justify(this.page + delta > 0 ? -1 : 1);
         scrollstart = null;
       } else {
-        timeout = setTimeout(() => {
+        bounceScroll = setTimeout(() => {
           scrollstart = null;
           justify();
-        }, 100);
+        }, 200);
       }
     });
 
@@ -128,7 +126,9 @@ module.exports = component({
             return html`
               <article class="Onboarding-card">
                 ${ image ? html`
-                  <img class="Onboarding-image" src=${ image.url } />
+                  <div class="u-marginTm u-marginBl u-marginHm">
+                    <img class="Onboarding-image" src=${ image.url } />
+                  </div>
                 ` : null }
                 <h2 class="Display Display--4">
                   ${ card.getStructuredText('title').asText() }

@@ -33,12 +33,12 @@ module.exports = function form(cooperative, state, emit) {
 
       <!-- Medium & large viewports: move granularity toggle to end of form -->
       <div class="u-flex u-flexWrap u-md-flexOrderLast u-lg-flexOrderLast u-marginRb">
-        <div class="Form-toggleGroup u-marginBs u-sizeFull">
-          <label class="Form-toggle u-flexGrow1">
+        <div class="Form-switchGroup u-marginBs u-sizeFull">
+          <label class="Form-switch u-flexGrow1">
             <input class="u-hiddenVisually" type="radio" name="consumptions:granularity" value="month" onchange=${ onchange } checked=${ granularity === 'month' } disabled=${ disabled }/>
             <span class="Form-label">${ __('Monthly') }</span>
           </label>
-          <label class="Form-toggle u-flexGrow1">
+          <label class="Form-switch u-flexGrow1">
             <input class="u-hiddenVisually" type="radio" name="consumptions:granularity" value="year" onchange=${ onchange } checked=${ granularity === 'year' } disabled=${ disabled } />
             <span class="Form-label">${ __('Yearly') }</span>
           </label>
@@ -79,7 +79,9 @@ module.exports = function form(cooperative, state, emit) {
           </option>
           <optgroup label=${ __('Other cooperatives') }>
             ${ cooperatives
-                .filter(item => item._id !== cooperative._id)
+                .filter(item => {
+                  return item.performances.length && (item._id !== cooperative._id);
+                })
                 .map(cooperative => {
                   const value = `cooperative:${ cooperative._id }`;
 

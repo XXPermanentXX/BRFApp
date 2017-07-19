@@ -1,4 +1,4 @@
-/* global db, ObjectId */
+/* global db */
 
 const VENTILATION_TYPE_MAP = {
   'FTX (mekanisk från- och tilluft med återvinning)': 'FTX',
@@ -6,7 +6,6 @@ const VENTILATION_TYPE_MAP = {
   'F (mekanisk frånluftsventilation)': 'F',
   'FT (mekanisk från- och tilluftsventilation)': 'FT',
   'S (självdragsventilation)': 'S',
-  'Vet ej': 'UNKNOWN',
   'Annat': 'OTHER'
 };
 

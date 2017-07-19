@@ -24,7 +24,7 @@ module.exports = function action(action, onsave) {
             label: __(`ACTION_TYPE_${ type }`)
           }))
         }))}) }
-        ${ input({ label: __('Date'), type: 'date', name: 'date', required: true, value: action ? moment(action.date).format(DATE_FORMAT) : '' }) }
+        ${ input({ label: __('Date'), type: 'month', name: 'date', required: true, value: action ? moment(action.date).format(DATE_FORMAT) : '' }) }
         ${ input({ label: __('Cost'), type: 'number', name: 'cost', value: ((action && action.cost) || ''), suffix: 'kr' }) }
         ${ textarea({ label: __('Description'), rows: 3, name: 'description', value: ((action && action.description) || '') }) }
       </div>

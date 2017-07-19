@@ -74,7 +74,7 @@ router.get('/:id/comments/:commentId', isMongoId('id', 'commentId'), (req, res) 
   }
 });
 
-router.delete('/:id/comments/:commentId', isMongoId('id', 'commentId'), auth.authenticate(), (req, res) => {
+router.delete('/:id/comments/:commentId', isMongoId('id', 'commentId'), isEditor('id'), (req, res) => {
   Actions.deleteComment(req.params.commentId, err => {
     if (err) {
       res.status(500).render('/error', { err: err.message });
@@ -108,15 +108,23 @@ router.post('/', auth.authenticate(), (req, res) => {
           err: err.message
         }, req.body));
       } else {
-        Actions.create(req.body, req.user, cooperative, (err, action) => {
-          if (err) {
-            res.status(500).render('/error', Object.assign({
-              err: err.message
-            }, req.body));
-          } else {
-            res.redirect(`/actions/${ action._id }`);
-          }
+        const editor = cooperative.editors.find(item => {
+          return item._id.toString() === req.user._id.toString();
         });
+
+        if (!editor) {
+          res.status(401).redirect('/auth');
+        } else {
+          Actions.create(req.body, req.user, cooperative, (err, action) => {
+            if (err) {
+              res.status(500).render('/error', Object.assign({
+                err: err.message
+              }, req.body));
+            } else {
+              res.redirect(`/actions/${ action._id }`);
+            }
+          });
+        }
       }
     });
   }
@@ -129,7 +137,7 @@ router.post('/', auth.authenticate(), (req, res) => {
   });
 });
 
-router.put('/:id', auth.authenticate(), isMongoId('id'), (req, res) => {
+router.put('/:id', isMongoId('id'), isEditor('id'), (req, res) => {
   const { body, params: { id }} = req;
 
   Actions.update(id, body, (err, action) => {
@@ -184,7 +192,7 @@ router.get('/:id', isMongoId('id'), (req, res) => {
   });
 });
 
-router.get('/:id/edit', isMongoId('id'), auth.authenticate(), (req, res) => {
+router.get('/:id/edit', isMongoId('id'), isEditor('id'), (req, res) => {
   if (!req.accepts('html')) {
     res.redirect(`/actions/${ req.params.id }`);
   } else {
@@ -213,7 +221,7 @@ router.get('/:id/edit', isMongoId('id'), auth.authenticate(), (req, res) => {
   }
 });
 
-router.delete('/:id', isMongoId('id'), auth.authenticate(), (req, res) => {
+router.delete('/:id', isMongoId('id'), isEditor('id'), (req, res) => {
   Actions.get(req.params.id, (err, action) => {
     if (err) {
       res.status(404).render('/error', { err: err.message });
@@ -276,6 +284,30 @@ router.get('/search', (req, res) => {
 });
 
 module.exports = router;
+
+function isEditor(param) {
+  return function (req, res, next) {
+    auth.authenticate()(req, res, () => {
+      Actions.find(req.params[param], (err, action) => {
+        if (err) { return next(err); }
+
+        Cooperatives.find(action.cooperative, (err, cooperative) => {
+          if (err) { return next(err); }
+
+          const editor = cooperative.editors.find(editor => {
+            return editor._id.toString() === req.user._id.toString();
+          });
+
+          if (editor) {
+            next();
+          } else {
+            res.status(401).redirect('/auth');
+          }
+        });
+      });
+    });
+  };
+}
 
 function isMongoId(...params) {
   return (req, res, next) => {
