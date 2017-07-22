@@ -1,5 +1,6 @@
 const html = require('choo/html');
 const header = require('../components/page-head')('edit-cooperative');
+const error = require('../components/app/error');
 const footer = require('../components/app/footer');
 const { input, checkbox, radiogroup } = require('../components/form');
 const { loader } = require('../components/icons');
@@ -74,6 +75,17 @@ const form = component({
       this.update(cooperative, state, emit);
 
       event.preventDefault();
+    };
+
+    const onclick = event => {
+      const form = event.target.form;
+
+      if (form && form.checkValidity && !form.checkValidity()) {
+        emit('error', new Error(__('Some required fields need to be filled in or are malformatted')));
+        event.preventDefault();
+      } else {
+        emit('error:dismiss');
+      }
     };
 
     const props = Object.assign({
@@ -216,7 +228,7 @@ const form = component({
             </div>
           ` : null }
 
-          <button type="submit" class="Button u-block u-sizeFull">
+          <button type="submit" class="Button u-block u-sizeFull" onclick=${ onclick }>
             ${ __('Save') }
           </button>
         </fieldset>
@@ -235,6 +247,7 @@ function view(state, emit) {
 
   return html`
     <div class="App">
+      ${ error(state, emit) }
       ${ header(state, emit) }
       <div class="App-container App-container--sm u-flexExpand">
         ${ state.registration ? html`

@@ -8,7 +8,7 @@ module.exports = function error(initialState) {
         console.error(err.stack);
       }
 
-      state.error = err.message;
+      state.error = err.message || err;
 
       emitter.emit('render');
     });

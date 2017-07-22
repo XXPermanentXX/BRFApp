@@ -135,5 +135,7 @@
   "What type of ventilation is installed?": "Vilken ventilationstyp är installerad?",
   "About the project": "About the project",
   "No data": "Data saknas",
-  "Fetching data": "Häntar data"
+  "Fetching data": "Häntar data",
+  "This field is requried": "Detta fält är obligatoriskt",
+  "Some required fields need to be filled in or are malformatted": "Ett eller flera obligatoriska fält behöver fyllas i eller är felformaterade"
 }

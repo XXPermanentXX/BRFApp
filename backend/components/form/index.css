@@ -120,6 +120,11 @@
   line-height: 1.4rem;
 }
 
+.Form-item--required .Form-label::after {
+  content: " •";
+  color: var(--color-tomato);
+}
+
 .Form-suffix {
   padding: var(--Form-padding-y) var(--Form-padding-x);
   color: var(--color-dim);
