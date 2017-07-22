@@ -78,3 +78,19 @@ exports.solarPanel = function solarPanel(size = 18) {
     </icon>
   `;
 };
+
+exports.garage = function garage(size = 18) {
+  return html`
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
+      <use class="Icon-path" xlink:href="#icon-garage" />
+    </icon>
+  `;
+};
+
+exports.laundry = function laundry(size = 18) {
+  return html`
+    <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
+      <use class="Icon-path" xlink:href="#icon-laundry" />
+    </icon>
+  `;
+};

@@ -10,10 +10,22 @@ const { chevron, loader } = require('../components/icons');
 const error = require('../components/app/error');
 const footer = require('../components/app/footer');
 const onboarding = require('../components/onboarding');
+const icons = require('../components/icons');
 const { __, __n } = require('../locale');
 const resolve = require('../resolve');
 
 const chart = createChart();
+
+const COOPERATIVE_PROPS = [
+  [ 'hasLaundryRoom', __('Shared laundry room'), icons.laundry(26) ],
+  [ 'hasGarage', __('Garage'), icons.garage(26) ],
+  [ 'hasCharger', __('Electric car charger'), icons.electricCar(26) ],
+  [ 'hasEnergyProduction', __('Renewable energy production'), icons.solarPanel(26) ],
+  [ 'hasRepresentative', __('Designated Energyrepresentative'), icons.energyRepresentative(26) ],
+  [ 'hasConsumptionMapping', __('Energy consumption mapping'), icons.energyMap(26) ],
+  [ 'hasGoalManagement', __('Goal oriented energy management'), icons.target(26) ],
+  [ 'hasBelysningsutmaningen', __('Part of belysningsutmaningen'), icons.lightChallenge(26) ]
+];
 
 module.exports = view;
 
@@ -39,6 +51,9 @@ function view(state, emit) {
     `;
   }
 
+  const totalCooperativeProps = COOPERATIVE_PROPS.reduce((total, [prop]) => {
+    return total + cooperative[prop] ? 1 : 0;
+  }, 0);
   const hasAllActions = actions.length === cooperative.actions.length;
   const missingActions = !hasAllActions && cooperative.actions.filter(id => {
     return !actions.find(action => action._id === id);
@@ -90,6 +105,23 @@ function view(state, emit) {
               [__('Year of construction')]: cooperative.yearOfConst,
               [__('Ventilation type')]: cooperative.ventilationType.map(type => __(`VENTILATION_TYPE_${ type }`)).join(', ')
             }) }
+
+            <div class="u-flex u-flexJustifyCenter u-marginTl u-marginBs u-sizeFull">
+              <div class="u-textNowrap">
+                <span class="u-floatLeft u-textG u-marginRb">${ totalCooperativeProps }</span>
+                <span class="u-textL u-colorPale">/${ COOPERATIVE_PROPS.length }</span>
+                <br />
+                <em>${ __n('Energy action', 'Energy actions', totalCooperativeProps) }</em>
+              </div>
+            </div>
+
+            <ul>
+              ${ COOPERATIVE_PROPS.map(([ prop, title, icon ]) => html`
+                <li class="u-flex u-flexAlignItemsCenter u-marginTb u-textLight u-color${ cooperative[prop] ? 'Current' : 'Dim' }">
+                  <span class="u-block u-marginRb">${ icon }</span> ${ title }
+                </li>
+              `) }
+            </ul>
 
             ${ state.user.cooperative === cooperative._id ? html`
             <a class="Button u-block u-marginTm" href=${ resolve(`/cooperatives/${ cooperative._id }/edit`) }>
