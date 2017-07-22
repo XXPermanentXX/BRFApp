@@ -1,13 +1,12 @@
 const async = require('async');
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Cooperatives = require('./cooperatives');
 const Comments = require('./comments');
 const escapeStringRegexp = require('escape-string-regexp');
 
 const ActionSchema = new Schema({
   type: {
-    type: Number,
+    type: String,
     required: true
   },
   cost: Number,
@@ -35,21 +34,11 @@ const ActionSchema = new Schema({
  * Add a hook that removes action from it's parent cooperative
  */
 
-ActionSchema.pre('remove', next => {
+ActionSchema.pre('remove', function (next) {
   async.parallel([
-    done => this.model('Comment').remove({ action: this._id }, done),
-    done => Cooperatives
-      .findOne({ _id: this.cooperative }, { actions: true })
-      .exec((err, cooperative) => {
-        if (err) { return done(err); }
-        const index = cooperative.actions.findIndex(id => id === this.id);
-        cooperative.actions.splice(index, 1);
-        cooperative.markModified('actions');
-        cooperative.save(err => {
-          if (err) { return done(err); }
-          done(null);
-        });
-      })
+    done => this.model('Cooperative').update({ _id: this.cooperative }, {
+      $pull: { actions: this._id }
+    }, done)
   ], next);
 });
 
@@ -166,7 +155,10 @@ exports.update = function (id, props, done) {
 };
 
 exports.delete = function(id, done) {
-  Actions.remove({ _id: id }, done);
+  Actions.findById(id, (err, doc) => {
+    if (err) { return done(err); }
+    doc.remove(done);
+  });
 };
 
 exports.getSuggested = function(user, done) {

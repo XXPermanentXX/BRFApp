@@ -6,10 +6,11 @@ const { definition } = require('../components/list');
 const createChart = require('../components/chart');
 const footer = require('../components/app/footer');
 const comment = require('../components/comment');
-const resolve = require('../resolve');
 const { chevron, loader } = require('../components/icons');
 const { format } = require('../components/utils');
+const { textarea } = require('../components/form');
 const { __, __n } = require('../locale');
+const resolve = require('../resolve');
 
 const chart = createChart();
 
@@ -47,7 +48,7 @@ function view(state, emit) {
           <!-- The chart -->
           ${ chart(html`
             <div class="u-marginBb">
-              <h1 class="Display Display--4 u-marginBb u-textNowrap">
+              <h1 class="Display Display--4 u-marginBb">
                 ${ __(`ACTION_TYPE_${ action.type }`) }
               </h1>
               <a class="u-colorCurrent" href=${ resolve(`/cooperatives/${ cooperative._id }`) }>
@@ -93,10 +94,7 @@ function view(state, emit) {
           ${ user.isAuthenticated ? html`
             <form action="${ action._id }/comments" method="POST" class="Form">
               <div class="u-marginBb">
-                <label class="Form-item">
-                  <span class="Form-label">${ __('Leave a comment') }</span>
-                  <textarea name="comment" rows="3" class="Form-input"></textarea>
-                </label>
+                ${ textarea({ label: __('Leave a comment'), rows: 3, name: 'comment' }) }
               </div>
               <button type="submit" class="Button u-block u-sizeFull">${ __('Post') }</button>
             </form>

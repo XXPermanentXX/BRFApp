@@ -82,6 +82,11 @@ const form = component({
 
       if (form && form.checkValidity && !form.checkValidity()) {
         emit('error', new Error(__('Some required fields need to be filled in or are malformatted')));
+
+        if (form.reportValidity) {
+          form.reportValidity();
+        }
+
         event.preventDefault();
       } else {
         emit('error:dismiss');

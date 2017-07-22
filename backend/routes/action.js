@@ -115,13 +115,13 @@ router.post('/', auth.authenticate(), (req, res) => {
         if (!editor) {
           res.status(401).redirect('/auth');
         } else {
-          Actions.create(req.body, req.user, cooperative, (err, action) => {
+          Actions.create(req.body, req.user, cooperative, err => {
             if (err) {
               res.status(500).render('/error', Object.assign({
                 err: err.message
               }, req.body));
             } else {
-              res.redirect(`/actions/${ action._id }`);
+              res.redirect(`/cooperatives/${ cooperative._id}`);
             }
           });
         }
@@ -140,18 +140,24 @@ router.post('/', auth.authenticate(), (req, res) => {
 router.put('/:id', isMongoId('id'), isEditor('id'), (req, res) => {
   const { body, params: { id }} = req;
 
-  Actions.update(id, body, (err, action) => {
+  Actions.update(id, body, err => {
     if (err) {
       res.status(500).render(`/actions/${ id }`, Object.assign({
         err: err.message
       }, body));
     } else {
-      res.locals.title = __(`ACTION_TYPE_${ action.type }`);
-      res.render(`/actions/${ id }`, action, done => {
-        done(null, {
-          cooperatives: [ action.cooperative.toJSON() ],
-          actions: [ action.toJSON() ]
-        });
+      Actions.get(id, (err, action) => {
+        if (err) {
+          res.status(500).render(`/error`, { err: err.message });
+        } else {
+          res.locals.title = __(`ACTION_TYPE_${ action.type }`);
+          res.render(`/actions/${ id }`, action, done => {
+            done(null, {
+              cooperatives: [ action.cooperative.toJSON() ],
+              actions: [ action.toJSON() ]
+            });
+          });
+        }
       });
     }
   });
@@ -288,10 +294,10 @@ module.exports = router;
 function isEditor(param) {
   return function (req, res, next) {
     auth.authenticate()(req, res, () => {
-      Actions.find(req.params[param], (err, action) => {
+      Actions.get(req.params[param], (err, action) => {
         if (err) { return next(err); }
 
-        Cooperatives.find(action.cooperative, (err, cooperative) => {
+        Cooperatives.get(action.cooperative._id, (err, cooperative) => {
           if (err) { return next(err); }
 
           const editor = cooperative.editors.find(editor => {

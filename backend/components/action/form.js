@@ -1,43 +1,119 @@
 const html = require('choo/html');
 const moment = require('moment');
-const { __ } = require('../../locale');
 const { select, input, textarea } = require('../form');
+const component = require('../utils/component');
+const { __ } = require('../../locale');
 
 const DATE_FORMAT = 'YYYY-MM';
-const TYPES = [ 100, 101, 102, 103, 105, 106, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302 ];
+const TYPES_PER_CATEGORY = [ 14, 3, 10, 4, 4, 7 ];
 
-module.exports = function action(action, onsave) {
-  return html`
-    <form action="/actions${ action._id ? `/${ action._id }` : '' }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
-      ${ action._id ? html`
-        <input type="hidden" name="_method" value="PUT" />
-      ` : html`
-        <input type="hidden" name="cooperative" value=${ action.cooperative } />
-      ` }
+module.exports = component({
+  name: 'action-form',
+  props: {
+    category: null
+  },
 
-      <div class="Form-collapse u-marginBb">
-        ${ select({ label: __('Action'), name: 'type', required: true, children: TYPES.filter(type => (type % 100) === 0).map(category => html`
-          <optgroup label=${ __(`ACTION_TYPE_${ category }`) }>
-            ${ TYPES.filter(type => type > category && type < category + 100).map(type => html`
-              <option selected=${ action ? (action.type === type || false) : false } value=${ type }>
-                ${ __(`ACTION_TYPE_${ type }`) }
+  onload() {
+    this.props = {
+      category: null
+    };
+  },
+
+  render(action, emit) {
+    const onchange = event => {
+      this.props[event.target.name] = event.target.value;
+      this.update(action, emit);
+    };
+
+    const props = Object.assign({
+      type: action.type || null,
+      date: action.date || Date.now(),
+      cost: action.cost || null,
+      contractor: action.contractor || null,
+      description: action.description || null
+    }, this.props);
+
+    if (!props.category && props.type) {
+      const match = props.type.match(/^(\d+)_/);
+      props.category = match && match[1];
+    }
+
+    const types = [];
+    if (props.category) {
+      for (let i = 0; i < TYPES_PER_CATEGORY[+props.category - 1]; i += 1) {
+        const value = `${ props.category }_${ i + 1 }`;
+        types.push({
+          value: value,
+          selected: props.type === value,
+          label: __(`ACTION_TYPE_${ value }`)
+        });
+      }
+
+      const other = `${ props.category }_x`;
+      types.push({
+        value: other,
+        selected: props.type === other,
+        label: __(`ACTION_TYPE_${ other }`)
+      });
+    }
+
+    return html`
+      <form action="/actions${ action._id ? `/${ action._id }` : '' }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
+        ${ action._id ? html`
+          <input type="hidden" name="_method" value="PUT" />
+        ` : html`
+          <input type="hidden" name="cooperative" value=${ action.cooperative } />
+        ` }
+
+        <div class="Form-collapse u-marginBb">
+
+          ${ select({ label: __('Type of action'), name: 'category', required: true, onchange: onchange, pattern: '[\\d_]+', children: [
+            html`<option disabled selected=${ !props.category } label=${ __('Pick one') }></option>`
+          ].concat(TYPES_PER_CATEGORY.map((total, index) => {
+            const category = (index + 1) + '';
+            return html`
+              <option value=${ category } selected=${ props.category === category }>
+                ${ __(`ACTION_TYPE_${ category }`) }
               </option>
-            `) }
-          </optgroup>
-        `)}) }
-        ${ input({ label: __('Date'), type: 'month', name: 'date', required: true, value: action ? moment(action.date).format(DATE_FORMAT) : '' }) }
-        ${ input({ label: __('Cost'), type: 'number', name: 'cost', value: ((action && action.cost) || ''), suffix: 'kr' }) }
-        ${ textarea({ label: __('Description'), rows: 3, name: 'description', value: ((action && action.description) || '') }) }
-      </div>
+            `;
+          }))}) }
 
-      <button type="submit" class="Button u-block u-sizeFull">${ __('Save') }</button>
-    </form>
-  `;
+          ${ props.category ? select({ label: __('Åtgärd'), name: 'type', required: true, onchange: onchange, children: [
+            html`<option disabled selected=${ !props.type } label=${ __('Pick one') }></option>`
+          ].concat(types.map(option => html`
+            <option value=${ option.value } selected=${ option.selected }>${ option.label }</option>
+          `))}) : null }
 
-  function onsubmit(event) {
-    if (typeof onsave === 'function') {
-      onsave(new FormData(event.target));
-      event.preventDefault();
+          ${ input({ label: __('Date'), type: 'month', name: 'date', required: true, onchange: onchange, value: props.date ? moment(props.date).format(DATE_FORMAT) : null }) }
+          ${ input({ label: __('Cost'), type: 'number', name: 'cost', onchange: onchange, value: props.cost, suffix: 'kr' }) }
+          ${ input({ label: __('Contractor'), type: 'text', name: 'contractor', onchange: onchange, value: props.contractor }) }
+          ${ textarea({ label: __('Description'), rows: 3, name: 'description', onchange: onchange, value: props.description }) }
+        </div>
+
+        <button type="submit" class="Button u-block u-sizeFull" onclick=${ onclick }>${ __('Save') }</button>
+      </form>
+    `;
+
+    function onclick(event) {
+      const form = event.target.form;
+
+      if (form && form.checkValidity && !form.checkValidity()) {
+        emit('error', new Error(__('Some required fields need to be filled in or are malformatted')));
+
+        if (form.reportValidity) {
+          form.reportValidity();
+        }
+
+        event.preventDefault();
+      } else {
+        emit('error:dismiss');
+      }
+    }
+
+    function onsubmit(event) {
+      emit(`action:${ action._id ? 'add' : 'update' }`, new FormData(event.target));
+      // TODO: Save changes async and navigate back to action
+      // event.preventDefault();
     }
   }
-};
+});

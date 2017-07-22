@@ -12,7 +12,7 @@ exports.input = function input(props) {
 
   return html`
     <label class="Form-item ${ props.required ? 'Form-item--required' : '' }">
-      <span class="Form-label Form-label--sup" title=${ props.required ? __('This field is requried') : null }>${ props.label }</span>
+      <span class="Form-label Form-label--sup" title=${ props.required ? __('This field is required') : null }>${ props.label }</span>
       ${ spread(html`<input class=${ classNames.filter(Boolean).join(' ') } />`, props) }
       ${ props.unit ? html`
         <span class="Form-unit">
@@ -33,7 +33,7 @@ exports.textarea = function textarea(props) {
 
   return html`
     <label class="Form-item ${ props.required ? 'Form-item--required' : '' }">
-      <span class="Form-label Form-label--sup" title=${ props.required ? __('This field is requried') : null }>${ props.label }</span>
+      <span class="Form-label Form-label--sup" title=${ props.required ? __('This field is required') : null }>${ props.label }</span>
       ${ spread(html`<textarea class=${ classNames.filter(Boolean).join(' ') }>${ value }</textarea>`, attributes) }
     </label>
   `;
@@ -45,9 +45,9 @@ exports.select = function (props) {
   return html`
     <div class="Form-item Form-item--select ${ props.required ? 'Form-item--required' : '' }">
       <label class="u-block u-sizeFull u-flex">
-        <span class="Form-label Form-label--sup u-clickthrough" title=${ props.required ? __('This field is requried') : null }>${ props.label }</span>
+        <span class="Form-label Form-label--sup u-clickthrough">${ props.label }</span>
         ${ spread(html`
-          <select class=${ classNames.filter(Boolean).join(' ') }>
+          <select class=${ classNames.filter(Boolean).join(' ') } title=${ props.required ? __('This field is required') : null }>
             ${ props.children }
           </select>
         `, props) }
@@ -62,7 +62,7 @@ exports.checkbox = function checkbox(props) {
   return html`
     <label class="Form-item Form-item--toggle ${ props.required ? 'Form-item--required' : '' }" onselectstart=${ event => event.preventDefault() }>
       <span class="u-flexGrow1">
-        <span class="Form-label Form-label--lg" title=${ props.required ? __('This field is requried') : null }>${ props.label }</span>
+        <span class="Form-label Form-label--lg" title=${ props.required ? __('This field is required') : null }>${ props.label }</span>
         ${ props.description ? html`<span class="Form-label u-colorDark">${ props.description }</span>` : null }
       </span>
       ${ spread(html`<input type="checkbox" class=${ classNames.filter(Boolean).join(' ') } />`, props) }
@@ -93,7 +93,10 @@ function spread(element, props) {
     .filter(key => !RESERVED.includes(key) && !(/^on/.test(key)))
     .forEach(key => {
       const isBool = typeof props[key] === 'boolean';
-      if ((!isBool || props[key]) && typeof props[key] !== 'undefined') {
+      const isNull = props[key] === null;
+      const isUndefined = typeof props[key] === 'undefined';
+
+      if ((!isBool || props[key]) && !isUndefined && !isNull) {
         element.setAttribute(key, isBool ? '' : props[key].toString());
       }
     });

@@ -82,7 +82,7 @@ const CooperativeSchema = new Schema({
  * Add a hook that removes action from it's parent cooperative
  */
 
-CooperativeSchema.pre('remove', next => {
+CooperativeSchema.pre('remove', function (next) {
   this.model('Action').remove({ cooperative: this._id }, next);
 });
 
