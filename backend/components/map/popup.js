@@ -10,6 +10,15 @@ const {
   solarPanel
 } = require('../icons');
 
+const COOPERATIVE_PROPS = [
+  [ 'hasCharger', __('Electric car charger'), electricCar(22) ],
+  [ 'hasEnergyProduction', __('Eenergy production'), solarPanel(22) ],
+  [ 'hasRepresentative', __('Energy representative'), energyRepresentative(22) ],
+  [ 'hasConsumptionMapping', __('Consumption mapping'), energyMap(22) ],
+  [ 'hasGoalManagement', __('Energy management'), target(22) ],
+  [ 'hasBelysningsutmaningen', __('Belysningsutmaningen'), lightChallenge(22) ]
+];
+
 module.exports = function popup(feature) {
   const { properties: props } = feature;
 
@@ -43,20 +52,11 @@ module.exports = function popup(feature) {
           ` :
           html`<em class="u-colorDim">${ __('No energy actions') }</span>`
         }
-        <br />
-        <div class="u-nbfc u-marginTb">
-          ${
-            [
-              [ 'hasCharger', __('Charger for electric cars'), electricCar(22) ],
-              [ 'hasEnergyProduction', __('Renewable energy production'), solarPanel(22) ],
-              [ 'hasRepresentative', __('Assigned energy representative'), energyRepresentative(22) ],
-              [ 'hasConsumptionMapping', __('Energy consumption mapping'), energyMap(22) ],
-              [ 'hasGoalManagement', __('Goal oriented energy management'), target(22) ],
-              [ 'hasBelysningsutmaningen', __('Part of belysningsutmaningen'), lightChallenge(22) ]
-            ].map(([ prop, label, icon ]) => html`
-              <div class="u-floatLeft u-marginRb" style="color: ${ props[prop] ? 'currentColor' : '#bbbbbb' };" title=${ label }>${ icon }</div>
-            `)
-          }
+        <div class="Map-coopProps">
+          ${ COOPERATIVE_PROPS.map(([ prop, label, icon ]) => html`
+            <div class="Map-coopProp u-color${ props[prop] ? 'Current' : 'Unknown' }" data-title=${ label }>${ icon }</div>
+          `) }
+          <span class="Map-propsSum">${ COOPERATIVE_PROPS.reduce((total, [prop]) => total + props[prop] ? 1 : 0, 0) } / ${ COOPERATIVE_PROPS.length }</span>
         </div>
       </div>
     </div>

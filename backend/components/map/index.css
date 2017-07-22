@@ -56,6 +56,51 @@
   -webkit-font-smoothing: antialiased;
 }
 
+.Map-coopProps {
+  margin: var(--space-b) calc((var(--space-b) / 2) * -1) 0;
+  padding-bottom: 1.5em;
+  overflow: hidden;
+  position: relative;
+}
+
+.Map-coopProp {
+  float: left;
+  padding: 0 calc(var(--space-b) / 2);
+}
+
+.Map-propsSum {
+  display: block;
+  width: 100%;
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  text-align: center;
+  color: var(--color-unknown);
+}
+
+.Map-coopProp:hover::after {
+  content: attr(data-title);
+  display: block;
+  width: 100%;
+  padding: 0 calc(var(--space-b) / 2);
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+  color: var(--color-text);
+}
+
+.Map-coopProp:hover ~ .Map-propsSum {
+  display: none;
+}
+
 .mapboxgl-popup-content {
   padding: 0;
   background: transparent;

@@ -33,6 +33,7 @@
 
 .PageHead-title {
   display: flex;
+  align-items: baseline;
   margin-right: auto;
 
   font-style: italic;
@@ -47,8 +48,14 @@
 
 .PageHead-logo {
   display: block;
-  height: 1em;
+  height: 23px;
   margin-right: var(--space-s);
+}
+
+@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
+  .PageHead-logo {
+    height: 31px;
+  }
 }
 
 .PageHead-navigation {

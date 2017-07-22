@@ -49,6 +49,15 @@
   --color-dark: #777777;
   --color-text: #222222;
 
+  --color-A: #009036;
+  --color-B: #55AB26;
+  --color-C: #C8D200;
+  --color-D: #FFED00;
+  --color-E: #FBBA00;
+  --color-F: #EB6909;
+  --color-G: #E2001A;
+  --color-unknown: #bbbbbb;
+
   --sm-viewport: 480px;
   --md-viewport: 800px;
   --lg-viewport: 1280px;
