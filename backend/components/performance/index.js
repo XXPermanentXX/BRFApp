@@ -20,11 +20,6 @@ module.exports = component((cooperative, user) => {
   const performance = getPerformance(cooperative);
   const energyClass = performance && getEnergyClass(performance.value);
   const classPosition = energyClass ? Object.keys(ENERGY_CLASSES).indexOf(energyClass) : 3;
-  const linkPosition = classPosition > Object.keys(ENERGY_CLASSES).length / 2 ? 'Left' : 'Right';
-
-  if (energyClass === 'A' || energyClass === 'G') {
-    classNames.push(`Performance--align${ linkPosition }`);
-  }
 
   let disclaimer = null;
   if (performance && performance.isGuesstimate) {
@@ -41,9 +36,6 @@ module.exports = component((cooperative, user) => {
   return html`
     <div class=${ classNames.join(' ') }>
       <figure>
-        <figcaption>
-          <a href=${resolve('/how-it-works')} class="Performance-link u-float${ linkPosition }" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
-        </figcaption>
         <svg class="Performance-graph" viewBox="0 0 512 93">
           <defs>
             <path id="def-single-building-small" d="M16,42 L23.0272375,42 L23.0272375,34.8525992 L27.2511797,34.8525992 L27.2511797,42 L34.2784172,42 L34.2784172,10 L16,10 L16,42 Z M26.4214431,13.7712076 L30.6453033,13.7712076 L30.6453033,17.972531 L26.4214431,17.972531 L26.4214431,13.7712076 Z M26.4214431,20.5233491 L30.6453033,20.5233491 L30.6453033,24.7246726 L26.4214431,24.7246726 L26.4214431,20.5233491 Z M26.4214431,27.2753274 L30.6453033,27.2753274 L30.6453033,31.4766509 L26.4214431,31.4766509 L26.4214431,27.2753274 Z M19.6330319,13.7712076 L23.8568921,13.7712076 L23.8568921,17.972531 L19.6330319,17.972531 L19.6330319,13.7712076 Z M19.6330319,20.5233491 L23.8568921,20.5233491 L23.8568921,24.7246726 L19.6330319,24.7246726 L19.6330319,20.5233491 Z M19.6330319,27.2753274 L23.8568921,27.2753274 L23.8568921,31.4766509 L19.6330319,31.4766509 L19.6330319,27.2753274 Z" />
@@ -58,7 +50,7 @@ module.exports = component((cooperative, user) => {
               ${ Object.keys(ENERGY_CLASSES).map((className, index) => html`
                 <g transform="translate(${ index * 70 }, 0)">
                   <polygon fill=${ energyClass ? ENERGY_CLASSES[className] : UNKNOWN_ENERGY_CLASS } points="0 0 68 0 68 52 0 52" />
-                  <use width="18" height="32" transform="translate(9, 0)" fill-opacity="0.5" fill="#FFFFFF" xlink:href="#def-single-building-small" />
+                  <use width="18" height="32" transform="translate(9, 0)" fill-opacity="0.25" fill="#FFFFFF" xlink:href="#def-single-building-small" />
                 </g>
               `) }
             </g>
@@ -71,12 +63,15 @@ module.exports = component((cooperative, user) => {
             </g>
           </g>
         </svg>
+        ${ energyClass ? html`
+          <figcaption class="u-textCenter">
+            <h2 class="Performance-title">
+              ${ Math.round(performance.value) } kWh/m<sup>2</sup>
+            </h2>
+            <a href=${resolve('/how-it-works')} class="Performance-link" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
+          </figcaption>
+        ` : null }
       </figure>
-      ${ energyClass ? html`
-        <h2 class="Performance-title">
-          ${ Math.round(performance.value) } kWh/m<sup>2</sup>
-        </h2>
-      ` : null }
       ${ disclaimer }
     </div>
   `;

@@ -12,15 +12,6 @@
   pointer-events: none;
 }
 
-.Performance--alignLeft .Performance-graph {
-  width: 102.34375%;
-}
-
-.Performance--alignRight .Performance-graph {
-  width: 102.34375%;
-  left: 0;
-}
-
 .Performance-link {
   margin-bottom: -0.85em;
   font-size: calc(14rem / var(--base-font-size));
