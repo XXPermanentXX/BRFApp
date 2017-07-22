@@ -133,5 +133,7 @@
   "Don't know": "Vet ej",
   "Edit details": "Ändra uppgifter",
   "What type of ventilation is installed?": "Vilken ventilationstyp är installerad?",
-  "About the project": "About the project"
+  "About the project": "About the project",
+  "No data": "Data saknas",
+  "Fetching data": "Häntar data"
 }

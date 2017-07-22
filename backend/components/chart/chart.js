@@ -60,6 +60,10 @@ module.exports = function createComponent() {
         element.innerHTML = '';
 
         const config = merge({
+          lang: {
+            noData: __('No data'),
+            loading: __('Fetching data')
+          },
           tooltip: {
             // Position tooltip relative to chart width
             positioner(width, height, point) {

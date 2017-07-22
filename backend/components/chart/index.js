@@ -165,7 +165,7 @@ module.exports = function createChart() {
               ${ header }
             </div>
           </div>
-          <div class="Chart-graph u-textCenter u-paddingVl">
+          <div class="Chart-graph u-flex u-flexJustifyCenter u-flexAlignItemsCenter u-paddingVl">
             ${ content }
           </div>
         </div>
