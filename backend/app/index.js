@@ -71,6 +71,15 @@ app.use(require('./models/cooperatives')(INITIAL_STATE.cooperatives, INITIAL_STA
 app.use(require('./models/consumptions')(INITIAL_STATE.consumptions, INITIAL_STATE.auth));
 
 /**
+ * Scroll to top on navigate
+ */
+
+app.use((state, emitter) => {
+  emitter.on('pushState', () => document.body.scrollIntoView(true));
+  emitter.on('replaceState', () => document.body.scrollIntoView(true));
+});
+
+/**
  * Start application when running in browser
  */
 
