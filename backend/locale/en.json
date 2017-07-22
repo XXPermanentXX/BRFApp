@@ -55,9 +55,16 @@
   "Find me": "Find me",
   "Edit": "Edit",
   "Electric car charger": "Electric car charger",
-  "Eenergy production": "Eenergy production",
+  "Energy production": "Energy production",
   "Energy representative": "Energy representative",
   "Consumption mapping": "Consumption mapping",
   "Energy management": "Energy management",
-  "Belysningsutmaningen": "Belysningsutmaningen"
+  "Belysningsutmaningen": "Belysningsutmaningen",
+  "Renewable energy production": "Renewable energy production",
+  "Designated Energyrepresentative": "Designated Energyrepresentative",
+  "Energy consumption mapping": "Energy consumption mapping",
+  "Goal oriented energy management": "Goal oriented energy management",
+  "Part of belysningsutmaningen": "Part of belysningsutmaningen",
+  "Shared laundry room": "Shared laundry room",
+  "Garage": "Garage"
 }
