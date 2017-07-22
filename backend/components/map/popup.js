@@ -10,7 +10,7 @@ const {
   solarPanel
 } = require('../icons');
 
-const COOPERATIVE_PROPS = [
+const INITIATIVES = [
   [ 'hasCharger', __('Electric car charger'), electricCar(22) ],
   [ 'hasEnergyProduction', __('Energy production'), solarPanel(22) ],
   [ 'hasRepresentative', __('Energy representative'), energyRepresentative(22) ],
@@ -24,6 +24,10 @@ module.exports = function popup(feature) {
 
   // Mapbox casts nested json objects to string
   const actions = JSON.parse(props.actions);
+
+  const completedInitiatives = INITIATIVES.reduce((total, [prop]) => {
+    return total + (props[prop] ? 1 : 0);
+  }, 0);
 
   return html`
     <div class="Map-popup">
@@ -53,10 +57,12 @@ module.exports = function popup(feature) {
           html`<em class="u-colorDim">${ __('No energy actions') }</span>`
         }
         <div class="Map-coopProps">
-          ${ COOPERATIVE_PROPS.map(([ prop, label, icon ]) => html`
+          ${ INITIATIVES.map(([ prop, label, icon ]) => html`
             <div class="Map-coopProp u-color${ props[prop] ? 'Current' : 'Pale' }" data-title=${ label }>${ icon }</div>
           `) }
-          <span class="Map-propsSum">${ COOPERATIVE_PROPS.reduce((total, [prop]) => total + props[prop] ? 1 : 0, 0) } / ${ COOPERATIVE_PROPS.length }</span>
+          <span class="Map-propsSum">
+            ${ completedInitiatives } / ${ INITIATIVES.length } ${ __n('Initiative', 'Initiatives', completedInitiatives).toLowerCase() }
+          </span>
         </div>
       </div>
     </div>

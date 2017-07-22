@@ -16,7 +16,7 @@ const resolve = require('../resolve');
 
 const chart = createChart();
 
-const COOPERATIVE_PROPS = [
+const INITIATIVES = [
   [ 'hasLaundryRoom', __('Shared laundry room'), icons.laundry(26) ],
   [ 'hasGarage', __('Garage'), icons.garage(26) ],
   [ 'hasCharger', __('Electric car charger'), icons.electricCar(26) ],
@@ -51,8 +51,8 @@ function view(state, emit) {
     `;
   }
 
-  const totalCooperativeProps = COOPERATIVE_PROPS.reduce((total, [prop]) => {
-    return total + cooperative[prop] ? 1 : 0;
+  const completedInitiatives = INITIATIVES.reduce((total, [prop]) => {
+    return total + (cooperative[prop] ? 1 : 0);
   }, 0);
   const hasAllActions = actions.length === cooperative.actions.length;
   const missingActions = !hasAllActions && cooperative.actions.filter(id => {
@@ -106,17 +106,17 @@ function view(state, emit) {
               [__('Ventilation type')]: cooperative.ventilationType.map(type => __(`VENTILATION_TYPE_${ type }`)).join(', ')
             }) }
 
+            <!-- Cooperative initatives -->
             <div class="u-flex u-flexJustifyCenter u-marginTl u-marginBs u-sizeFull">
               <div class="u-textNowrap">
-                <span class="u-floatLeft u-textG u-marginRb">${ totalCooperativeProps }</span>
-                <span class="u-textL u-colorPale">/${ COOPERATIVE_PROPS.length }</span>
+                <span class="u-floatLeft u-textG u-marginRb">${ completedInitiatives }</span>
+                <span class="u-textL u-colorPale">/${ INITIATIVES.length }</span>
                 <br />
-                <em>${ __n('Energy action', 'Energy actions', totalCooperativeProps) }</em>
+                <em>${ __n('Initiative', 'Initiatives', completedInitiatives) }</em>
               </div>
             </div>
-
             <ul>
-              ${ COOPERATIVE_PROPS.map(([ prop, title, icon ]) => html`
+              ${ INITIATIVES.map(([ prop, title, icon ]) => html`
                 <li class="u-flex u-flexAlignItemsCenter u-marginTb u-textLight u-color${ cooperative[prop] ? 'Current' : 'Dim' }">
                   <span class="u-block u-marginRb">${ icon }</span> ${ title }
                 </li>
@@ -147,7 +147,7 @@ function view(state, emit) {
         <!-- List of all energy actions -->
         <div class="App-part App-part--secondary u-marginBm" id="actions-${ id }">
           <h2 class="Display Display--4 u-marginBs u-textItalic">
-            ${ actions.length ? __n('Energy action', 'Energy actions', actions.length) : __('No energy actions') }
+            ${ actions.length ? __n('Energy action', 'Energy actions', cooperative.actions.length) : __('No energy actions') }
           </h2>
 
           ${ hasAllActions ?
