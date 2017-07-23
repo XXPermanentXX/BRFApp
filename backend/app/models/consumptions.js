@@ -31,11 +31,15 @@ module.exports = function consumtions(initialState, auth) {
     });
 
     emitter.on('consumptions:granularity', granularity => {
-      state.consumptions.granularity = granularity;
+      const { consumptions: { compare }} = state;
 
-      if (granularity === 'year' && state.consumptions.compare === 'prev_year') {
+      if (granularity === 'year' && compare === 'prev_year') {
         state.consumptions.compare = null;
+      } else if (granularity === 'month' && compare === null) {
+        state.consumptions.compare = 'prev_year';
       }
+
+      state.consumptions.granularity = granularity;
 
       emitter.emit('render');
     });
