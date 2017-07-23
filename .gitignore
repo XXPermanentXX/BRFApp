@@ -13,3 +13,4 @@ backend/public
 *.swp
 .db
 .env*
+.vscode

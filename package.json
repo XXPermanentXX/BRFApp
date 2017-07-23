@@ -5,7 +5,7 @@
   "main": "backend/server.js",
   "scripts": {
     "start": "node backend/server.js",
-    "restart": "nodemon -x 'node -r ./hotfix -r dotenv/config backend/server.js' -i frontend -i backend/locale -i backend/views -i backend/components -i backend/app",
+    "restart": "nodemon -x 'node -r ./hotfix -r dotenv/config --inspect=5858 backend/server.js' -i frontend -i backend/locale -i backend/views -i backend/components -i backend/app",
     "test": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 mocha",
     "coverage": "cd backend && NODE_ENV=test MONGOOSE_DISABLE_STABILITY_WARNING=1 istanbul cover _mocha -- -R spec",
     "build:js": "npm run build:js:app && npm run build:js:mapbox && npm run build:js:highcharts",
