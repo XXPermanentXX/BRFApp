@@ -12,7 +12,7 @@ module.exports = function consumtions(initialState, auth) {
       type: 'electricity',
       compare: 'prev_year',
       granularity: 'month',
-      normalize: true
+      normalized: true
     }, initialState);
 
     emitter.on('consumptions:type', type => {
@@ -25,8 +25,8 @@ module.exports = function consumtions(initialState, auth) {
       emitter.emit('render');
     });
 
-    emitter.on('consumptions:normalize', normalize => {
-      state.consumptions.normalize = normalize;
+    emitter.on('consumptions:normalized', normalized => {
+      state.consumptions.normalized = normalized;
       emitter.emit('render');
     });
 
@@ -81,7 +81,7 @@ module.exports = function consumtions(initialState, auth) {
       return Object.assign({
         types: [ state.consumptions.type ],
         granularity: 'month',
-        normalize: state.consumptions.normalize
+        normalized: state.consumptions.normalized
       }, options);
     }
   };
@@ -94,7 +94,7 @@ module.exports = function consumtions(initialState, auth) {
    */
 
   function fetchConsumtion(options) {
-    const { from, to, types, granularity, normalize, cooperative: id } = options;
+    const { from, to, types, granularity, normalized, cooperative: id } = options;
     const headers = { accept: 'application/json' };
 
     if (auth) {
@@ -106,7 +106,7 @@ module.exports = function consumtions(initialState, auth) {
         pathname: `/cooperatives/${ id }/consumption`,
         query: {
           types: types.join(','),
-          normalize: normalize,
+          normalized: normalized,
           granularity: granularity,
           from: moment(from).format(FORMAT),
           to: moment(to).format(FORMAT)

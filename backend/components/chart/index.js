@@ -17,7 +17,7 @@ module.exports = function createChart() {
     if (typeof window === 'undefined') { return empty(loader()); }
 
     const { page, inEdit } = state.chart;
-    const { granularity, items, normalize, type, compare } = state.consumptions;
+    const { granularity, items, normalized, type, compare } = state.consumptions;
 
     /**
      * Figure out where (when) to center the graph
@@ -114,8 +114,9 @@ module.exports = function createChart() {
 
                 <!-- Compiled summary of current filter settings -->
                 <strong>${ __('Showing') }: </strong>
-                <em>${ normalize ? (__('normalized') + ' ') : '' }</em>
-                ${ __('energy use for') + ' ' }
+                ${ __('Energy use').toLowerCase() + ' ' }
+                <em>${ normalized ? ` (${ __('normalized') })` : '' }</em>
+                ${ __('for') + ' ' }
                 <em>${ getType(cooperative, type).toLowerCase() + ' ' }</em>
                 ${ __('per') + ' ' }
                 <em>${ __(granularity) + ' ' }</em>
@@ -190,13 +191,13 @@ function getType(cooperative, type) {
  */
 
 function getQueries(now, cooperative, state) {
-  const { granularity, type, compare, normalize } = state.consumptions;
+  const { granularity, type, compare, normalized } = state.consumptions;
 
   const queries = [];
   queries.push(Object.assign({
     name: compare === 'prev_year' ? __('Current year') : cooperative.name,
     types: [ type ],
-    normalize: normalize,
+    normalized: normalized,
     cooperative: cooperative._id
   }, getPeriod(granularity, now)));
 
@@ -207,7 +208,7 @@ function getQueries(now, cooperative, state) {
     queries.push(Object.assign({
       name: __('Previous year'),
       types: [ type ],
-      normalize: normalize,
+      normalized: normalized,
       cooperative: cooperative._id
     }, period));
   }

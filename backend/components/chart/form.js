@@ -10,7 +10,7 @@ const TYPES = {
 module.exports = function form(cooperative, state, emit) {
   const consumptions = state.consumptions || {};
   const cooperatives = state.cooperatives || [];
-  const { granularity, type, compare, normalize } = consumptions;
+  const { granularity, type, compare, normalized } = consumptions;
   const disabled = consumptions.isLoading;
   const onchange = event => {
     const { target } = event;
@@ -56,7 +56,7 @@ module.exports = function form(cooperative, state, emit) {
     <form class="Form u-flex u-flexCol u-flexJustifyEnd u-md-flexRow u-lg-flexRow u-md-flexAlignItemsBaseline u-lg-flexAlignItemsBaseline u-paddingLb">
 
       <!-- Medium & large viewports: move granularity toggle to end of form -->
-      <div class="u-flex u-flexWrap u-md-flexOrderLast u-lg-flexOrderLast u-marginRb">
+      <div class="u-md-flexOrderLast u-lg-flexOrderLast u-marginRb">
         <div class="Form-switchGroup u-marginBs u-sizeFull">
           <label class="Form-switch u-flexGrow1">
             <input class="u-hiddenVisually" type="radio" name="consumptions:granularity" value="month" onchange=${ onchange } checked=${ granularity === 'month' } disabled=${ disabled }/>
@@ -69,7 +69,7 @@ module.exports = function form(cooperative, state, emit) {
         </div>
 
         <label class="u-flex u-marginBs u-sizeFull">
-          <input class="Form-target Form-target--compex" type="checkbox" name="consumptions:normalize" onchange=${ onchange } checked=${ normalize } disabled=${ type !== 'electricity' || disabled } />
+          <input class="Form-target Form-target--compex" type="checkbox" name="consumptions:normalized" onchange=${ onchange } checked=${ normalized } disabled=${ type !== 'heat' || disabled } />
           <span class="Form-pill Form-pill--leading Form-pill--checkmark u-flex u-flexAlignItemsCenter">
             ${ checkmark(14) }
           </span>
