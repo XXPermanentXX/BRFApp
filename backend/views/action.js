@@ -141,6 +141,10 @@ function properties(action) {
     props[__('Cost')] = `${ format(action.cost) }kr`;
   }
 
+  if (action.contractor) {
+    props[__('Contractor')] = action.contractor;
+  }
+
   if (action.description) {
     props[__('Description')] = action.description;
   }
