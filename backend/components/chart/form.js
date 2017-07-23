@@ -18,6 +18,30 @@ module.exports = function form(cooperative, state, emit) {
     emit(target.name, value);
   };
 
+  const typeOptions = Object.keys(TYPES).map(key => {
+    const { incHouseholdElectricity } = cooperative;
+    const addSuffix = key === 'electricity' && incHouseholdElectricity;
+
+    return {
+      value: key,
+      isSelected: type === key,
+      label: addSuffix ? __('Total %s (incl. households)', __('elec')) : __(TYPES[key])
+    };
+  });
+
+  let compareLabel = __('Pick one');
+  if (compare) {
+    if (compare === 'prev_year') {
+      compareLabel = __('Previous year')
+    } else {
+      const match = compare.match(/cooperative:(.+)/);
+      const cooperative = cooperatives.find(item => item._id === match[1]);
+      compareLabel = cooperative.name;
+    }
+  } else if (granularity === 'year') {
+    compareLabel = __('Pick a cooperative');
+  }
+
   /**
    * Using a lot of flex and margin utilities here to:
    * - Switch between row/col flex layout depending on viewport width
@@ -56,44 +80,48 @@ module.exports = function form(cooperative, state, emit) {
       </div>
 
       <!-- Medium & large viewports: break grid and flex elements horizontally -->
-      <div class="Form-grid u-marginRb">
-        <label for="form_type" class="Form-pill Form-pill--leading u-marginBs">${ __('Show') }</label>
-        <select id="form_type" class="Form-pill Form-pill--trailing Form-pill--select u-marginBs" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
-          ${ Object.keys(TYPES).map(key => {
-            const { incHouseholdElectricity } = cooperative;
-            const addSuffix = key === 'electricity' && incHouseholdElectricity;
-
-            return html`
-              <option value=${ key } selected=${ type === key }>
-                ${ addSuffix ? __('Total %s (incl. households)', __('elec')) : __(TYPES[key]) }
+      <div class="u-marginRb">
+        <label class="u-flex u-posRelative u-marginBs">
+          <span class="Form-pill Form-pill--leading">${ __('Show') }</span>
+          <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1">${ typeOptions.find(item => item.isSelected).label }</span>
+          <select class="u-overlay" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
+            <option disabled label=${ __('Show') }></option>
+            ${ typeOptions.map(({ value, label, isSelected }) => html`
+              <option value=${ value } selected=${ isSelected }>
+                ${ label }
               </option>
-            `;
-          }) }
-        </select>
+            `) }
+          </select>
+        </label>
 
-        <label for="form_compare" class="Form-pill Form-pill--leading u-textNowrap">${ __('Compare with') }</label>
-        <select id="form_compare" class="Form-pill Form-pill--trailing Form-pill--select" name="consumptions:compare" disabled=${ disabled } onchange=${ onchange }>
-          ${ !compare ? html`<option selected disabled>${ __('Pick one') }</option>` : null }
-          <option value="prev_year" selected=${ compare === 'prev_year' } disabled=${ granularity === 'year' }>
-            ${ __('Previous year') }
-          </option>
-          <optgroup label=${ __('Other cooperatives') }>
-            ${ cooperatives
-                .filter(item => {
-                  return item.performances.length && (item._id !== cooperative._id);
-                })
-                .map(cooperative => {
-                  const value = `cooperative:${ cooperative._id }`;
+        <label class="u-flex u-posRelative">
+          <span class="Form-pill Form-pill--leading">${ __('Compare with') }</span>
+          <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1">${ compareLabel }</span>
+          <select class="u-overlay" name="consumptions:compare" disabled=${ disabled } onchange=${ onchange }>
+            <option disabled selected=${ !compare } label=${ __('Compare with') }></option>
+            ${ granularity === 'month' ? html`
+              <option value="prev_year" selected=${ compare === 'prev_year' } disabled=${ granularity === 'year' }>
+                ${ __('Previous year') }
+              </option>
+            ` : null }
+            <optgroup label=${ __('Other cooperatives') }>
+              ${ cooperatives
+                  .filter(item => {
+                    return item.performances.length && (item._id !== cooperative._id);
+                  })
+                  .map(cooperative => {
+                    const value = `cooperative:${ cooperative._id }`;
 
-                  return html`
-                    <option value=${ value } selected=${ compare === value }>
-                      ${ cooperative.name }
-                    </option>
-                  `;
-                })
-            }
-          </optgroup>
-        </select>
+                    return html`
+                      <option value=${ value } selected=${ compare === value }>
+                        ${ cooperative.name }
+                      </option>
+                    `;
+                  })
+              }
+            </optgroup>
+          </select>
+        </label>
       </div>
     </form>
   `;
