@@ -15,6 +15,7 @@ module.exports = function (state) {
       <meta name="apple-mobile-web-app-title" content="Brf Energi">
       <meta name="application-name" content="Brf Energi">
       <meta name="theme-color" content="#ffffff">
+      <script>document.documentElement.classList.add('has-js');</script>
       <link rel="stylesheet" href="/index.css">
     </head>
   `;
