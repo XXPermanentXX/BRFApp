@@ -36,7 +36,7 @@ exports.getEnergimolnetConsumption = function (options, done) {
   endpoint += `?metric=${ normalized ? 'energy_norm' : 'energy' }`;
   endpoint += `&meters=${ meters
     .filter(meter => types.includes(meter.type))
-    .map(meter => meterIDs[meter.meterId] || meter.meterId)
+    .map(meter => meter.meterId)
     .filter(Boolean).join(',')
   }`;
 

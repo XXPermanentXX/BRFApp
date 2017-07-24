@@ -97,11 +97,9 @@ exports.initialize = function initialize() {
             method: 'POST',
             uri: url.resolve(
               process.env.METRY_ENDPOINT_URL,
-              'open_channels',
-              METRY_OPEN_CHANNEL,
-              'meters'
+              `open_channels/${ METRY_OPEN_CHANNEL }/meters`
             ),
-            body: JSON.stringify({ meter_id: meter._id })
+            body: { meter_id: meter._id }
           }), (err, response, body) => {
             if (err) { return reject(err); }
             if (body.code !== 200) { return reject(new Error(body.message)); }

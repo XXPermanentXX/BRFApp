@@ -34,17 +34,17 @@ router.get('/metry', passport.authenticate('metry', {
  */
 
 router.get('/callback', (req, res, next) => {
-  passport.authenticate('metry', err => {
+  passport.authenticate('metry', (err, user) => {
     if (err) {
       res.redirect(url.format({
         pathname: '/auth',
         query: { error: 'METRY_ERROR' }
       }));
     } else {
-      res.redirect(url.format({
-        pathname: `/cooperatives/${ req.user.cooperative }`,
-        query: { access_token: req.user.accessToken }
-      }));
+      req.logIn(user, err => {
+        if (err) { return next(err); }
+        res.redirect(`/cooperatives/${ user.cooperative }`);
+      });
     }
   })(req, res, next);
 });
