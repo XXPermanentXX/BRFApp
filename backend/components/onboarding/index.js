@@ -15,8 +15,21 @@ module.exports = component({
     window.addEventListener('wheel', preventScroll);
     reel.addEventListener('touchmove', preventScroll);
 
+    this.unload = () => {
+      window.removeEventListener('wheel', preventScroll);
+      reel.removeEventListener('touchmove', preventScroll);
+    };
+
     function preventScroll(event) {
-      event.preventDefault();
+      let node = event.target;
+
+      while (node) {
+        if (node === reel) {
+          event.preventDefault();
+          break;
+        }
+        node = node.parentElement;
+      }
     }
   },
 
