@@ -19,7 +19,8 @@
   transition: background-color var(--Modal-transition-duration) linear;
 }
 
-.Modal.is-open {
+.Modal.is-open,
+:root:not(.has-js) .Modal {
   pointer-events: auto;
   background-color: rgba(0, 0, 0, 0.6);
 }
@@ -72,7 +73,8 @@
   }
 }
 
-.Modal.is-open .Modal-window {
+.Modal.is-open .Modal-window,
+:root:not(.has-js) .Modal-window {
   visibility: visible;
   animation-name: Modal-window--appear;
   animation-duration: 500ms;
