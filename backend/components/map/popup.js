@@ -1,36 +1,37 @@
 const html = require('choo/html');
 const { __, __n } = require('../../locale');
 const resolve = require('../../resolve');
-const {
-  energyRepresentative,
-  energyMap,
-  target,
-  lightChallenge,
-  electricCar,
-  solarPanel
-} = require('../icons');
+const icons = require('../icons');
 
 const INITIATIVES = [
-  [ 'hasCharger', __('Electric car charger'), electricCar(22) ],
-  [ 'hasEnergyProduction', __('Energy production'), solarPanel(22) ],
-  [ 'hasRepresentative', __('Energy representative'), energyRepresentative(22) ],
-  [ 'hasConsumptionMapping', __('Consumption mapping'), energyMap(22) ],
-  [ 'hasGoalManagement', __('Energy management'), target(22) ],
-  [ 'hasBelysningsutmaningen', __('Belysningsutmaningen'), lightChallenge(22) ]
+  [ 'hasCharger', 'Electric car charger', icons.electricCar ],
+  [ 'hasEnergyProduction', 'Energy production', icons.solarPanel ],
+  [ 'hasRepresentative', 'Energy representative', icons.energyRepresentative ],
+  [ 'hasConsumptionMapping', 'Consumption mapping', icons.energyMap ],
+  [ 'hasGoalManagement', 'Energy management', icons.target ],
+  [ 'hasBelysningsutmaningen', 'Belysningsutmaningen', icons.lightChallenge ]
 ];
 
 module.exports = function popup(feature) {
   const { properties: props } = feature;
+  const classNames = [ 'Map-popup' ];
 
-  // Mapbox casts nested json objects to string
-  const actions = JSON.parse(props.actions);
+  if (props.flat) {
+    classNames.push('Map-popup--flat');
+  }
+
+  let actions = props.actions;
+  if (typeof props.action === 'string') {
+    // Mapbox casts nested json objects to string
+    actions = JSON.parse(props.actions);
+  }
 
   const completedInitiatives = INITIATIVES.reduce((total, [prop]) => {
     return total + (props[prop] ? 1 : 0);
   }, 0);
 
   return html`
-    <div class="Map-popup">
+    <div class=${ classNames.join(' ') }>
       <div class="u-nbfc">
         <a class="u-textBold" href=${ resolve(`/cooperatives/${ props._id }`) }>
           ${ props.name }
@@ -58,7 +59,7 @@ module.exports = function popup(feature) {
         }
         <div class="Map-coopProps">
           ${ INITIATIVES.map(([ prop, label, icon ]) => html`
-            <div class="Map-coopProp u-color${ props[prop] ? 'Current' : 'Pale' }" data-title=${ label }>${ icon }</div>
+            <div class="Map-coopProp u-color${ props[prop] ? 'Current' : 'Pale' }" data-title=${ __(label) }>${ icon(22) }</div>
           `) }
           <span class="Map-propsSum">
             ${ completedInitiatives } / ${ INITIATIVES.length } ${ __n('Initiative', 'Initiatives', completedInitiatives).toLowerCase() }

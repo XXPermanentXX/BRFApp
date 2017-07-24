@@ -16,6 +16,10 @@
   right: var(--viewport-padding);
 }
 
+:root:not(.has-js) .Map-locate {
+  display: none;
+}
+
 .Map-position {
   padding: 0.5em 1em;
 
@@ -54,6 +58,12 @@
   border-radius: 3px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.085);
   -webkit-font-smoothing: antialiased;
+}
+
+.Map-popup--flat {
+  padding: 0;
+  box-shadow: none;
+  border-radius: 0;
 }
 
 .Map-coopProps {

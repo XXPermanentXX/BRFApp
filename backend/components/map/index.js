@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const map = require('./map');
-const { __ } = require('../../locale');
 const { loader } = require('../icons');
+const { __ } = require('../../locale');
 
 module.exports = function (state, emit) {
   let center;
@@ -24,6 +24,7 @@ module.exports = function (state, emit) {
   return html`
     <div class="Map u-sizeFill u-flex u-flexCol u-flexJustifyCenter" onload=${ onload }>
       ${ center ? map(state.cooperatives.slice(), center) : loader() }
+
       <div class="Map-locate">
         <button class="Button Button--round u-textS" onclick=${ onclick } disabled=${ !!geoip.isLoading }>
           ${ __('Find me') }
