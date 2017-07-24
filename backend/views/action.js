@@ -138,7 +138,7 @@ function properties(action) {
   }
 
   if (action.cost) {
-    props[__('Cost')] = `${ format(action.cost) }kr`;
+    props[__('Cost')] = `${ format(action.cost) } kr`;
   }
 
   if (action.contractor) {
