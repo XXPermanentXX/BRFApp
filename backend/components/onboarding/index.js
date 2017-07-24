@@ -1,5 +1,5 @@
 const html = require('choo/html');
-const debounce = require('lodash.debounce');
+const nanomorph = require('nanomorph');
 const component = require('../utils/component');
 const { __ } = require('../../locale');
 
@@ -9,130 +9,67 @@ module.exports = component({
   name: 'onboarding',
   page: 0,
 
-  onload(element, doc, onboarded) {
-    let bounceScroll;
-    let scrollstart = null;
-    let isCaptured = false;
-
-    const cards = doc.getGroup('onboarding.cards').toArray();
-
-    const next = element.querySelector('.js-next');
+  onload(element) {
     const reel = element.querySelector('.js-reel');
-    let { offsetWidth } = reel;
-
-    const preventScroll = (event) => {
-      if (isCaptured) {
-        this.debug('captured', reel.scrollLeft);
-        event.preventDefault();
-      }
-    };
-
-    const justify = (target) => {
-      const { scrollLeft } = reel;
-      let frame = target || Math.max(0, Math.ceil(scrollLeft / offsetWidth));
-
-      if (frame < 0) {
-        frame = 0;
-      } else if (frame > (cards.length - 1)) {
-        frame = cards.length - 1;
-      }
-
-      const offset = offsetWidth * frame;
-
-      // Modulate between 300ms and 800ms animation
-      const time = Math.max(0.3, Math.min(Math.abs(scrollLeft - offset) / SPEED_FACTOR, 0.8));
-
-      let currentTime = 0;
-
-      const tick = () => {
-        currentTime += 1 / 60;
-
-        const progress = currentTime / time;
-        const factor = easeInOut(progress);
-
-        // As long as progress is greater than 1, keep animating.
-        if (progress < 1) {
-          requestAnimationFrame(tick);
-          reel.scrollLeft = scrollLeft + ((offset - scrollLeft) * factor);
-        } else {
-          reel.scrollLeft = offset;
-          this.page = frame;
-          isCaptured = false;
-          this.update(doc, onboarded);
-        }
-      };
-
-      tick();
-    };
-
-    window.addEventListener('resize', debounce(() => {
-      offsetWidth = reel.offsetWidth;
-    }, 200));
 
     window.addEventListener('wheel', preventScroll);
     reel.addEventListener('touchmove', preventScroll);
 
-    reel.addEventListener('touchend', event => {
-      if (event.touches.length) { return; }
-      clearTimeout(bounceScroll);
-      isCaptured = true;
-      justify();
-    });
+    function preventScroll(event) {
+      event.preventDefault();
+    }
+  },
 
-    next.addEventListener('click', event => {
-      if (this.page === cards.length - 1) {
+  update(element, state, onboarded) {
+    let currentTime = 0;
+    const reel = element.querySelector('.js-reel');
+    const { scrollLeft, offsetWidth } = reel;
+    const offset = offsetWidth * this.page;
+
+    // Modulate between 300ms and 800ms animation
+    const time = Math.max(0.3, Math.min(Math.abs(scrollLeft - offset) / SPEED_FACTOR, 0.8));
+
+    const tick = () => {
+      currentTime += 1 / 60;
+
+      const progress = currentTime / time;
+      const factor = easeInOut(progress);
+
+      // As long as progress is greater than 1, keep animating.
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+        reel.scrollLeft = scrollLeft + ((offset - scrollLeft) * factor);
+      } else {
+        reel.scrollLeft = offset;
+        nanomorph(element, this.render(state, onboarded));
+      }
+    };
+
+    tick();
+  },
+
+  render(state, onboarded) {
+    const doc = state.onboarding;
+    const cards = doc.getGroup('onboarding.cards').toArray();
+    const onclick = page => event => {
+      if (page >= cards.length) {
         onboarded();
       } else {
-        justify(this.page + 1);
+        this.page = page;
+        this.update(state, onboarded);
       }
 
       event.preventDefault();
-    });
-
-    reel.addEventListener('scroll', () => {
-      const { scrollLeft } = reel;
-
-      if (isCaptured) {
-        return;
-      }
-
-      if (!scrollstart) {
-        scrollstart = scrollLeft;
-        return;
-      }
-
-      clearTimeout(bounceScroll);
-
-      const delta = scrollstart - scrollLeft;
-      if (!isCaptured && (Math.abs(delta) > (offsetWidth / 5))) {
-        justify(this.page + delta > 0 ? -1 : 1);
-        this.debug('exceeded threshold')
-        scrollstart = null;
-        isCaptured = true;
-      } else {
-        bounceScroll = setTimeout(() => {
-          this.debug('time')
-          if (!isCaptured) {
-            isCaptured = true;
-            scrollstart = null;
-            justify();
-          }
-        }, 250);
-      }
-    });
-  },
-
-  render(doc) {
-    const cards = doc.getGroup('onboarding.cards').toArray();
+    };
 
     return html`
       <div class="Onboarding">
         <div class="Onboarding-reel js-reel">
-          ${ cards.map(card => {
+          ${ cards.map((card, index) => {
             const image = card.getImage('image');
 
             return html`
-              <article class="Onboarding-card">
+              <article class="Onboarding-card" id="${ this.name }-${ index }">
                 ${ image ? html`
                   <div class="u-marginTm u-marginBl u-marginHm">
                     <img class="Onboarding-image" src=${ image.url } />
@@ -152,16 +89,24 @@ module.exports = component({
         <ol class="Onboarding-pagination">
           ${ cards.map((card, index) => html`
             <li>
-              <button class="Onboarding-page ${ this.page === index ? 'is-active' : '' }">
+              <a data-no-routing href="#${ this.name }-${ index }" class="Onboarding-page ${ this.page === index ? 'is-active' : '' }" onclick=${ onclick(index) }>
                 ${ card.getStructuredText('title').asText() }
-              </button>
+              </a>
             </li>
           `) }
         </ol>
 
-        <button class="Button u-block u-sizeFull js-next">
-          ${ this.page === cards.length - 1 ? __('Close') : __('Next') }
-        </button>
+        ${ typeof window === 'undefined' || this.page === (cards.length - 1) ? html`
+          <form action=${ state.location } method="GET">
+            <button type="submit" name="hasBoarded" value="true" class="Button u-block u-sizeFull" onclick=${ onclick(this.page + 1) }>
+              ${ __('Close') }
+            </button>
+          </form>
+        ` : html`
+          <a data-no-routing href="#${ this.name }-${ this.page + 1 }" class="Button u-block u-sizeFull" onclick=${ onclick(this.page + 1) }>
+            ${ __('Next') }
+          </a>
+        ` }
       </div>
     `;
   }

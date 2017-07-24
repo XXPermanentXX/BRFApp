@@ -113,20 +113,23 @@ function footer(req, res, next) {
  */
 
 function onboarding(req, res, next) {
+  if (!req.accepts('html')) { return next(); }
+
   const userBoarded = (req.user && req.user.hasBoarded);
   let hasBoarded = userBoarded || JSON.parse(req.cookies.hasBoarded || false);
 
   if (req.query.hasBoarded) {
+    hasBoarded = true;
+    res.cookie('hasBoarded', true);
+
     if (req.user) {
       req.user.hasBoarded = true;
-      req.user.save();
+      return req.user.save(next);
     }
-
-    res.cookie('hasBoarded', true);
-    hasBoarded = true;
   }
 
-  if (!req.accepts('html') || hasBoarded) {
+  if (hasBoarded) {
+    res.locals.hasBoarded = true;
     return next();
   }
 

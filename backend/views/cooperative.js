@@ -170,7 +170,7 @@ function view(state, emit) {
       ${ footer(state, emit) }
 
       ${ state.user.hasBoarded ? null : modal(
-        onboarding(state.onboarding, modal.close),
+        onboarding(state, modal.close),
         () => emit('user:boarded')
       ) }
     </div>

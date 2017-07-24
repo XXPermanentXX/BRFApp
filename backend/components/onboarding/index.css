@@ -75,7 +75,8 @@
   border-color: var(--color-sky);
 }
 
-.Onboarding-page.is-active::after {
+:root.has-js .Onboarding-page.is-active::after,
+.Onboarding-page:target::after {
   border-width: 4px;
   border-color: var(--color-sky);
 }

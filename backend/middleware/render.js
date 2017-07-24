@@ -47,15 +47,15 @@ module.exports = function render(req, res, next) {
       const output = Object.assign({}, _state);
 
       // Ensure state consistency
+      output.location = route;
       output.geoip = {};
       output.consumptions = {};
       output.actions = _state.actions || [];
       output.cooperatives = _state.cooperatives || [];
       output.user = Object.assign({
-        hasBoarded: JSON.parse(req.cookies.hasBoarded || false),
+        hasBoarded: res.locals.hasBoarded,
         isAuthenticated: false
       }, _state.user);
-      output.auth = req.get('Authorization');
 
       if (req.user) {
         User.get(req.user._id, (err, user) => {
