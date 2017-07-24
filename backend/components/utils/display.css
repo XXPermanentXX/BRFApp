@@ -17,3 +17,15 @@
     display: none !important;
   }
 }
+
+/**
+ * Show/Hide element depending on JavaScript being availible
+ */
+
+:root.has-js .u-hiddenHasScript {
+  display: none !important;
+}
+
+:root:not(.has-js) .u-hiddenNoScript {
+  display: none !important;
+}

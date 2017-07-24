@@ -14,7 +14,16 @@ module.exports = function createChart() {
   const chart = createComponent();
 
   return function render(header, center, cooperative, actions, state, emit) {
-    if (typeof window === 'undefined') { return empty(loader()); }
+    if (typeof window === 'undefined') {
+      return empty(html`
+        <div>
+          <div class="u-hiddenNoScript">${ loader() }</div>
+          <div class="u-hiddenHasScript">
+            ${ __('There would be pretty charts here, had you enabled JavaScript') }
+          </div>
+        </div>
+      `);
+    }
 
     const { page, inEdit } = state.chart;
     const { granularity, items, normalized, type, compare } = state.consumptions;
