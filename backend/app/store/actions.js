@@ -1,4 +1,6 @@
-module.exports = function actions(initialState, auth) {
+const INIT = { credentials: 'include', headers: { accept: 'application/json' }};
+
+module.exports = function actions(initialState) {
   return (state, emitter) => {
     state.actions = (initialState || []).map(action => {
       return Object.assign({}, action,{ date: new Date(action.date) });
@@ -34,12 +36,6 @@ module.exports = function actions(initialState, auth) {
    */
 
   function fetchAction(id) {
-    const headers = { accept: 'application/json' };
-
-    if (auth) {
-      headers.Authorization = auth;
-    }
-
-    return fetch(`/actions/${ id }`, { headers }).then(body => body.json());
+    return fetch(`/actions/${ id }`, INIT).then(body => body.json());
   }
 };

@@ -1,4 +1,5 @@
 const choo = require('choo');
+const createStore = require('./store');
 const { setLocale } = require('../locale');
 
 const DEFAULT_LANGUAGE = 'sv';
@@ -51,33 +52,10 @@ routes.map(localize('sv')).forEach(([route, view]) => app.route(route, view));
 routes.map(localize('en')).forEach(([route, view]) => app.route(route, view));
 
 /**
- * Set upp app models
+ * Create app state models
  */
 
-app.use(require('./models/geoip')());
-app.use(require('./models/chart')());
-app.use(require('./models/cms')({
-  faq: INITIAL_STATE.faq,
-  about: INITIAL_STATE.about,
-  footer: INITIAL_STATE.footer,
-  onboarding: INITIAL_STATE.onboarding,
-  registration: INITIAL_STATE.registration,
-  'sign-in': INITIAL_STATE['sign-in']
-}));
-app.use(require('./models/error')(INITIAL_STATE.error));
-app.use(require('./models/user')(INITIAL_STATE.user, INITIAL_STATE.auth));
-app.use(require('./models/actions')(INITIAL_STATE.actions, INITIAL_STATE.auth));
-app.use(require('./models/cooperatives')(INITIAL_STATE.cooperatives, INITIAL_STATE.auth));
-app.use(require('./models/consumptions')(INITIAL_STATE.consumptions, INITIAL_STATE.auth));
-
-/**
- * Scroll to top on navigate
- */
-
-app.use((state, emitter) => {
-  emitter.on('pushState', () => document.body.scrollIntoView(true));
-  emitter.on('replaceState', () => document.body.scrollIntoView(true));
-});
+app.use(createStore(INITIAL_STATE));
 
 /**
  * Start application when running in browser

@@ -3,8 +3,9 @@ const moment = require('moment');
 const hash = require('object-hash');
 
 const FORMAT = 'YYYYMM';
+const INIT = { credentials: 'include', headers: { accept: 'application/json' }};
 
-module.exports = function consumtions(initialState, auth) {
+module.exports = function consumtions(initialState) {
   return (state, emitter) => {
     state.consumptions = Object.assign({
       items: {},
@@ -95,26 +96,18 @@ module.exports = function consumtions(initialState, auth) {
 
   function fetchConsumtion(options) {
     const { from, to, types, granularity, normalized, cooperative: id } = options;
-    const headers = { accept: 'application/json' };
+    const endpoint = url.format({
+      pathname: `/cooperatives/${ id }/consumption`,
+      query: {
+        types: types.join(','),
+        normalized: normalized,
+        granularity: granularity,
+        from: moment(from).format(FORMAT),
+        to: moment(to).format(FORMAT)
+      }
+    });
 
-    if (auth) {
-      headers.Authorization = auth;
-    }
-
-    return fetch(
-      url.format({
-        pathname: `/cooperatives/${ id }/consumption`,
-        query: {
-          types: types.join(','),
-          normalized: normalized,
-          granularity: granularity,
-          from: moment(from).format(FORMAT),
-          to: moment(to).format(FORMAT)
-        }
-      }),
-      { headers }
-    )
-    .then(body => body.json().then(body => {
+    return fetch(endpoint, INIT).then(body => body.json().then(body => {
       const values = body
         // Index values by date
         .map((value, index) => {
