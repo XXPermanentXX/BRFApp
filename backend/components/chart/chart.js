@@ -91,11 +91,9 @@ module.exports = function createComponent() {
 
     render() {
       return html`
-        <div>
+        <div class="u-flexGrow1 u-sizeFull u-flex u-flexAlignItemsCenter">
           <!-- Insert intermediary loader while waiting for Highcharts -->
-          <div class="u-textCenter u-paddingVl">
-            ${ loader() }
-          </div>
+          ${ loader() }
         </div>
       `;
     }

@@ -19,7 +19,7 @@ module.exports = function createChart() {
         <div>
           <div class="u-hiddenNoScript">${ loader() }</div>
           <div class="u-hiddenHasScript">
-            ${ __('There would be pretty charts here, had you enabled JavaScript') }
+            ${ __('There would be a pretty chart here, had you enabled JavaScript') }
           </div>
         </div>
       `);
@@ -101,10 +101,14 @@ module.exports = function createChart() {
 
     if (!isLoading) {
       if (!series[0].values.length) {
-        return empty(html`<em>${ __('No data') }</em>`);
+        element = html`
+          <div class="u-flexExpand">
+            <em>${ __('No data') }</em>
+          </div>
+        `;
+      } else {
+        element = chart(granularity, formatActions(actions, series, granularity), series);
       }
-
-      element = chart(granularity, formatActions(actions, series, granularity), series);
     }
 
     return html`

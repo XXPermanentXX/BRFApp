@@ -18,6 +18,8 @@
 }
 
 .Chart-graph {
+  display: flex;
+  flex-direction: column;
   flex-grow: 1;
   margin-bottom: var(--viewport-padding);
   position: relative;
