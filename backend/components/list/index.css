@@ -17,6 +17,7 @@
 
 .List--definition {
   overflow: hidden;
+  line-height: 1.4;
 }
 
 .List-term {
@@ -28,7 +29,7 @@
 }
 
 .List-definition {
-  margin-bottom: 0.65em;
+  margin-bottom: 0.6em;
   font-weight: var(--font-weight-light);
   -webkit-font-smoothing: antialiased;
 }
