@@ -3,8 +3,8 @@ const { __ } = require('../../locale');
 const { checkmark } = require('../icons');
 
 const TYPES = {
-  heat: 'Heating & Hot water',
-  electricity: 'Electricity'
+  electricity: 'Electricity',
+  heat: 'Heating & Hot water'
 };
 
 module.exports = function form(cooperative, state, emit) {
@@ -73,7 +73,7 @@ module.exports = function form(cooperative, state, emit) {
           <span class="Form-pill Form-pill--leading Form-pill--checkmark u-flex u-flexAlignItemsCenter">
             ${ checkmark(14) }
           </span>
-          <span class="Form-pill Form-pill--trailing u-flexGrow1">
+          <span class="Form-pill Form-pill--trailing u-flexGrow1 u-textNowrap">
             ${ __('Normalize') }
           </span>
         </label>
@@ -83,7 +83,7 @@ module.exports = function form(cooperative, state, emit) {
       <div class="u-marginRb">
         <label class="u-flex u-posRelative u-marginBs">
           <span class="Form-pill Form-pill--leading">${ __('Show') }</span>
-          <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1">${ typeOptions.find(item => item.isSelected).label }</span>
+          <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1 u-textNowrap">${ typeOptions.find(item => item.isSelected).label }</span>
           <select class="u-overlay" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
             <option disabled label=${ __('Show') }></option>
             ${ typeOptions.map(({ value, label, isSelected }) => html`
@@ -96,7 +96,7 @@ module.exports = function form(cooperative, state, emit) {
 
         <label class="u-flex u-posRelative">
           <span class="Form-pill Form-pill--leading">${ __('Compare with') }</span>
-          <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1">${ compareLabel }</span>
+          <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1 u-textNowrap">${ compareLabel }</span>
           <select class="u-overlay" name="consumptions:compare" disabled=${ disabled } onchange=${ onchange }>
             <option disabled selected=${ !compare } label=${ __('Compare with') }></option>
             ${ granularity === 'month' ? html`

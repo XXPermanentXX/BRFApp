@@ -146,7 +146,7 @@ function view(state, emit) {
 
         <!-- List of all energy actions -->
         <div class="App-part App-part--secondary u-marginBm" id="actions-${ id }">
-          <h2 class="Display Display--4 u-marginBs u-textItalic">
+          <h2 class="Display Display--4 u-marginBm u-textItalic">
             ${ actions.length ? __n('Energy action', 'Energy actions', cooperative.actions.length) : __('No energy actions') }
           </h2>
 

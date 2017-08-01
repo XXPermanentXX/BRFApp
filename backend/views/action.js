@@ -82,7 +82,7 @@ function view(state, emit) {
 
         <!-- Comments -->
         <div class="App-part App-part--secondary u-marginBm" id="comments-${ action._id }">
-          <h2 class="Display Display--4 u-marginBb u-textItalic">
+          <h2 class="Display Display--4 u-marginBm u-textItalic">
             ${ action.comments.length ? __n('Comment', 'Comments', action.comments.length) : __('No comments yet') }
           </h2>
 
