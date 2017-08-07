@@ -38,7 +38,7 @@
   margin: auto; /* 3 */
 
   background-color: #fff;
-  /*overflow: hidden;*/
+  overflow: hidden;
   visibility: hidden;
 }
 

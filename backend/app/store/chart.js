@@ -7,12 +7,11 @@ module.exports = function chart() {
 
   return (state, emitter) => {
     state.chart = {
-      isReady: false,
       inEdit: false,
       page: 0
     };
 
-    emitter.on('DOMContentLoaded', () => {
+    emitter.on(state.events.DOMCONTENTLOADED, () => {
       state.chart.inEdit = vw() >= 800;
     });
 
@@ -28,20 +27,13 @@ module.exports = function chart() {
       }, 250));
     }
 
-    emitter.on('cooperatives:fetch', id => {
-      if (!id) {
-        state.chart.isReady = true;
-        emitter.emit('render');
-      }
-    });
-
-    emitter.on('pushState', path => {
+    emitter.on(state.events.NAVIGATE, () => {
       hasChanged = false;
-      cache[window.location.href] = { page: state.chart.page };
+      cache[state.href] = { page: state.chart.page };
       Object.assign(state.chart, {
         page: 0,
         inEdit: vw() >= 800
-      }, cache[path]);
+      }, cache[window.location.pathname]);
     });
 
     emitter.on('chart:edit', () => {

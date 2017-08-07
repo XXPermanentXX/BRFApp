@@ -31,9 +31,9 @@ module.exports = function popup(feature) {
   }, 0);
 
   return html`
-    <div class=${ classNames.join(' ') }>
+    <div class="${ classNames.join(' ') }">
       <div class="u-nbfc">
-        <a class="u-textBold" href=${ resolve(`/cooperatives/${ props._id }`) }>
+        <a class="u-textBold" href="${ resolve(`/cooperatives/${ props._id }`) }">
           ${ props.name }
         </a>
         ${ props.performance ?
@@ -55,11 +55,11 @@ module.exports = function popup(feature) {
               ${ ' ' + __n('Energy action', 'Energy actions', actions.length) }
             </span>
           ` :
-          html`<em class="u-colorDim">${ __('No energy actions') }</span>`
+          html`<em class="u-colorDim">${ __('No energy actions') }</em>`
         }
         <div class="Map-coopProps">
           ${ INITIATIVES.map(([ prop, label, icon ]) => html`
-            <div class="Map-coopProp u-color${ props[prop] ? 'Current' : 'Pale' }" data-title=${ __(label) }>${ icon(22) }</div>
+            <div class="Map-coopProp u-color${ props[prop] ? 'Current' : 'Pale' }" data-title="${ __(label) }">${ icon(22) }</div>
           `) }
           <span class="Map-propsSum">
             ${ completedInitiatives } / ${ INITIATIVES.length } ${ __n('Initiative', 'Initiatives', completedInitiatives).toLowerCase() }

@@ -11,8 +11,8 @@ module.exports = function summary(action, state) {
 
   return html`
     <article class="Action" id="action-${ action._id }">
-      <a href=${ href } class="u-linkComplex u-block">
-        <time class="Action-date" datetime=${ JSON.stringify(action.date) }>
+      <a href="${ href }" class="u-linkComplex u-block">
+        <time class="Action-date" datetime="${ JSON.stringify(action.date) }">
           ${ capitalize(moment(action.date).format('MMM YYYY')) }
         </time>
         <h3 class="u-linkComplexTarget Action-title">${ __(`ACTION_TYPE_${ action.type }`) }</h3>

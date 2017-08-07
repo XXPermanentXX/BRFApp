@@ -108,6 +108,18 @@
 }
 
 /**
+ * Toggle visibility depending on wether JavaScript is availible
+ */
+
+.has-js .u-hiddenHasScript {
+  display: none !important;
+}
+
+:root:not(.has-js) .u-hiddenNoScript {
+  display: none !important;
+}
+
+/**
  * Invisibly cover bounding rect
  */
 

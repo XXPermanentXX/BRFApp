@@ -1,15 +1,15 @@
 const html = require('choo/html');
-const header = require('../components/page-head')('actions');
+const app = require('../components/app');
 const { __ } = require('../locale');
 
-module.exports = view;
+module.exports = app(view, title);
 
 function view(state, emit) {
   return html`
-    <div class="App">
-      ${ header(state, emit) }
-    </div>
+    <div>hello?</div>
   `;
 }
 
-view.title = () => __('Actions');
+function title() {
+  return __('Actions');
+}

@@ -1,7 +1,5 @@
 const html = require('choo/html');
-const header = require('../components/page-head')('edit-cooperative');
-const error = require('../components/app/error');
-const footer = require('../components/app/footer');
+const app = require('../components/app');
 const { input, checkbox, radiogroup } = require('../components/form');
 const { loader } = require('../components/icons');
 const component = require('../components/utils/component');
@@ -9,7 +7,7 @@ const { __ } = require('../locale');
 
 const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'OTHER' ];
 
-module.exports = view;
+module.exports = app(view, title);
 
 const form = component({
   name: 'registration-form',
@@ -19,12 +17,12 @@ const form = component({
   },
 
   render(cooperative, state, emit) {
-    const { registration: doc } = state;
+    const doc = state.content.registration;
     const url = cooperative._id ? `/cooperatives/${ cooperative._id }` : '/cooperatives';
 
     const onreuse = event => {
       this.props.reuse = event.target.checked;
-      this.update(cooperative, state, emit);
+      this.render(cooperative, state, emit);
     };
 
     const stash = event => {
@@ -44,7 +42,7 @@ const form = component({
       }
 
       this.props[event.target.name] = value;
-      this.update(cooperative, state, emit);
+      this.render(cooperative, state, emit);
     };
 
     const onHousholdUsageChange = event => {
@@ -58,7 +56,7 @@ const form = component({
         delete this.props.incHouseholdElectricity;
       }
 
-      this.update(cooperative, state, emit);
+      this.render(cooperative, state, emit);
     };
 
     const onsubmit = event => {
@@ -66,13 +64,12 @@ const form = component({
 
       if (!cooperative._id && !this.props.hasAgreed) {
         this.props.showMustAgree = true;
+        this.render(cooperative, state, emit);
       } else if (cooperative) {
         emit('cooperatives:update', { cooperative, data });
       } else {
         emit('cooperatives:add', { data });
       }
-
-      this.update(cooperative, state, emit);
 
       event.preventDefault();
     };
@@ -142,7 +139,7 @@ const form = component({
 
     return html`
       <form action="${ url }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
-        <fieldset disabled=${ state.isLoading || false }>
+        <fieldset disabled=${ state.isLoading || null }>
           ${ cooperative._id ? html`<input type="hidden" name="_method" value="PUT" />` : null }
 
           <div class="Type">
@@ -180,7 +177,7 @@ const form = component({
                   this.props.ventilationType.splice(index, 1);
                 }
 
-                this.update(cooperative, state, emit);
+                this.render(cooperative, state, emit);
               }
             })) }
           </div>
@@ -246,31 +243,26 @@ function view(state, emit) {
   const { params: { cooperative: id }} = state;
   const cooperative = state.cooperatives.find(item => item._id === id);
 
-  if (!state.registration) {
-    emit('cms:registration');
+  if (!state.content.registration) {
+    emit('content:fetch', 'registration');
   }
 
   return html`
-    <div class="App">
-      ${ error(state, emit) }
-      ${ header(state, emit) }
-      <div class="App-container App-container--sm u-flexExpand">
-        ${ state.registration ? html`
-          <div class="u-marginVm">
-            ${ form(cooperative, state, emit) }
-          </div>
-        ` : html`
-          <div class="u-marginVl u-textCenter">
-            ${ loader() }
-          </div>
-        ` }
-      </div>
-      ${ footer(state, emit) }
+    <div class="App-container App-container--sm u-flexExpand">
+      ${ state.content.registration ? html`
+        <div class="u-marginVm">
+          ${ form(cooperative, state, emit) }
+        </div>
+      ` : html`
+        <div class="u-marginVl u-textCenter">
+          ${ loader() }
+        </div>
+      ` }
     </div>
   `;
 }
 
-view.title = state => {
+function title(state) {
   const { params: { cooperative: id }} = state;
   const cooperative = state.cooperatives.find(item => item._id === id);
 
@@ -279,4 +271,4 @@ view.title = state => {
   }
 
   return __('Add cooperative');
-};
+}

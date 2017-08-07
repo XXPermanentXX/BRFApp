@@ -18,8 +18,6 @@
   "What's this?": "Vad är detta?",
   "Sign out": "Logga ut",
   "Sign in with Metry": "Logga in med Metry",
-  "PROJECT_IN_SHORT": "BRF Energi Är ett pågående forskningsprojekt. Om du har några frågor är du välkomment att <a href=\"mailto:%s\" data-no-routing=\"true\">kontakta oss</a>.",
-  "LICENSE_NOTICE": "All källkod är släppt under <a href=\"https://www.apache.org/licenses/LICENSE-2.0\" data-no-routing=\"true\">Apache Licence 2.0</a> och publikt tillgänglig på <a href=\"%s\" data-no-routing=\"true\">Github</a>.",
   "COPYRIGHT": "© %s KTH Kungliga Tekniska Högskolan",
   "ACTION_TYPE_1": "Värme",
   "ACTION_TYPE_1_1": "Sänkt temperatur i allmänna utrymmen (t.ex. garage, trapphus, källare)",
@@ -185,5 +183,6 @@
   "Åtgärd": "Åtgärd",
   "No consumtion data": "Ingen data om energiprestanda",
   "Pick a cooperative": "Välj en förening",
-  "There would be pretty charts here, had you enabled JavaScript": "Här skulle det finnas snygga grafer om du aktiverat JavaScript"
+  "There would be pretty charts here, had you enabled JavaScript": "Här skulle det finnas snygga grafer om du aktiverat JavaScript",
+  "There would be a pretty chart here, had you enabled JavaScript": "There would be a pretty chart here, had you enabled JavaScript"
 }

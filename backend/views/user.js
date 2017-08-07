@@ -1,14 +1,16 @@
 const html = require('choo/html');
-const header = require('../components/page-head')('user');
+const app = require('../components/app');
 
-module.exports = view;
+module.exports = app(view, title);
 
 function view(state, emit) {
   return html`
-    <div class="App">
-      ${ header(state, emit) }
-    </div>
+    <pre>
+      ${ JSON.stringify(state.user, null, 2) }
+    </pre>
   `;
 }
 
-view.title = state => state.user.name;
+function title(state) {
+  return state.user.name;
+}

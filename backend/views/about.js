@@ -1,43 +1,39 @@
 const html = require('choo/html');
-const header = require('../components/page-head')('about');
-const footer = require('../components/app/footer');
+const app = require('../components/app');
 const { loader } = require('../components/icons');
 const { __ } = require('../locale');
 const resolve = require('../resolve');
 
-module.exports = view;
+module.exports = app(view, title);
 
 function view(state, emit) {
-  let doc = state.about;
+  let doc = state.content.about;
 
   if (!doc) {
-    emit('cms:about');
+    emit('content:fetch', 'about');
   }
 
   return html`
-    <div class="App">
-      ${ header(state, emit) }
-      <div class="App-container App-container--md u-flexExpand">
-        ${ doc ?
-          html`
-            <div class="u-marginVl">
-              <h1 class="Display Display--2">
-                ${ doc.getStructuredText('about.title').asText() }
-              </h1>
-              <div class="Type">
-                ${ doc.getStructuredText('about.body').asElement(resolve) }
-              </div>
-            </div>` :
-          html`
-            <div class="u-marginVl u-textCenter">
-              ${ loader() }
+    <div class="App-container App-container--md u-flexExpand">
+      ${ doc ?
+        html`
+          <div class="u-marginVl">
+            <h1 class="Display Display--2">
+              ${ doc.getStructuredText('about.title').asText() }
+            </h1>
+            <div class="Type">
+              ${ doc.getStructuredText('about.body').asElement(resolve) }
             </div>
-        ` }
-      </div>
-
-      ${ footer(state, emit) }
+          </div>` :
+        html`
+          <div class="u-marginVl u-textCenter">
+            ${ loader() }
+          </div>
+      ` }
     </div>
   `;
 }
 
-view.title = () => __('About Brf Energi');
+function title() {
+  return __('About Brf Energi');
+}

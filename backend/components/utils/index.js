@@ -82,6 +82,15 @@ exports.id = function id() {
 };
 
 /**
+ * Override choo link handler and follow link href
+ */
+
+exports.follow = function follow(event) {
+  location.assign(event.target.href);
+  event.preventDefault();
+};
+
+/**
  * Compile class name based on booleans.
  * Takes either a default class and an object with switches or just the object
  *
@@ -103,7 +112,7 @@ exports.className = function className(...args) {
     }
   });
 
-  return classList.join(' ');
+  return classList.filter(Boolean).join(' ');
 };
 
 /**
@@ -112,19 +121,27 @@ exports.className = function className(...args) {
  * @return {Promise}        Resolves to resource module
  */
 
+const cache = {};
 exports.resource = function resource(source) {
+  if (cache[source]) {
+    return Promise.resolve(cache[source]);
+  }
+
   return new Promise((resolve, reject) => {
     if (/\.css$/.test(source)) {
-      document.head.insertBefore(
-        html`<link rel="stylesheet" href=${ source } onload=${ resolve } />`,
-        document.head.querySelector('link')
-      );
+      const link = html`<link rel="stylesheet" href="${ source }" />`;
+      link.onload = () => {
+        cache[source] = true;
+        resolve();
+      };
+      document.head.insertBefore(link, document.head.querySelector('link'));
     } else {
       const script = html`<script async></script>`;
       script.onerror = reject;
       script.onload = () => {
+        cache[source] = require(source);
         script.parentNode.removeChild(script);
-        resolve(require(source));
+        resolve(cache[source]);
       };
       document.head.appendChild(script);
       script.src = `/${ source }.js`;

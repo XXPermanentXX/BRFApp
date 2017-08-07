@@ -1,7 +1,7 @@
 const html = require('choo/html');
 const moment = require('moment');
 const hash = require('object-hash');
-const createComponent = require('./chart');
+const createChart = require('./chart');
 const form = require('./form');
 const { loader, chevron } = require('../icons');
 const { className } = require('../utils');
@@ -9,9 +9,8 @@ const { __ } = require('../../locale');
 
 const SELECTED_COOPERATIVE = /cooperative:(\w+)/;
 
-module.exports = function createChart() {
-  let element;
-  const chart = createComponent();
+module.exports = function createWrapper(name) {
+  const chart = createChart(name);
 
   return function render(header, center, cooperative, actions, state, emit) {
     if (typeof window === 'undefined') {
@@ -112,7 +111,7 @@ module.exports = function createChart() {
     }
 
     return html`
-      <div class=${ className('Chart', { 'is-loading': isLoading }) }>
+      <div class="${ className('Chart', { 'is-loading': isLoading }) }">
         <div class="Chart-header">
           <div class="Chart-title">
             ${ header }
@@ -152,7 +151,7 @@ module.exports = function createChart() {
           </span>
 
           <!-- Cached Highcharts container element -->
-          ${ element }
+          ${ chart(granularity, formatActions(actions, series, granularity), series) }
 
           <!-- Paginate buttons -->
           <button class="Chart-paginate Chart-paginate--left" onclick=${ () => emit('chart:paginate', -1) } disabled=${ !hasEarlier }>

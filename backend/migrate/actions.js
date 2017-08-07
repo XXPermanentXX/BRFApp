@@ -71,14 +71,11 @@ db.cooperatives.find({}).forEach(function (cooperative) {
         return;
       }
 
+      var editor = cooperative.editors[0];
       var props = assign({
-        date: action.date,
-        cost: action.cost,
-        contractor: action.contractor,
-        description: action.description,
         type: action.type,
         cooperative: cooperative._id,
-        user: cooperative.editors[0].editorId,
+        user: editor.editorId || editor,
         comments: action.comments.map(function (comment) {
           return {
             user: comment.user,
@@ -90,6 +87,12 @@ db.cooperatives.find({}).forEach(function (cooperative) {
       }, MIGRATION_PATH.find(function (item) {
         return item._id === (action._id + '');
       }));
+
+      [ 'date', 'cost', 'contractor', 'description' ].forEach(function (key) {
+        if (action[key]) {
+          props[key] = action[key];
+        }
+      });
 
       props._id = new ObjectId();
 

@@ -1,24 +1,14 @@
-const choo = require('choo');
+const Core = require('./core');
 const createStore = require('./store');
 const { setLocale } = require('../locale');
 
 const DEFAULT_LANGUAGE = 'sv';
-const INITIAL_STATE = {};
-
-/**
- * Read initial state from DOM
- */
-
-if (typeof document !== 'undefined') {
-  const src = document.querySelector('.js-initialState');
-  Object.assign(INITIAL_STATE, JSON.parse(src.innerText));
-}
 
 /**
  * Create the application instance
  */
 
-const app = module.exports = choo();
+const app = module.exports = new Core();
 
 /**
  * Take a list of routes/view pairs (`[<path>, <view>]`) and wrap each
@@ -42,7 +32,7 @@ const routes = [
   ['/actions/:action/edit', require('../views/edit-action')],
   ['/404', require('../views/error')],
   ['/error', require('../views/error')],
-].map(titleize);
+];
 
 /**
  * Localize all the routes with a lang prefix
@@ -51,54 +41,39 @@ const routes = [
 routes.map(localize('sv')).forEach(([route, view]) => app.route(route, view));
 routes.map(localize('en')).forEach(([route, view]) => app.route(route, view));
 
+
 /**
- * Create app state models
+ * Read initial state from DOM and create app state models
  */
 
-app.use(createStore(INITIAL_STATE));
+const initialState = {};
+
+if (typeof window !== 'undefined') {
+  const src = document.querySelector('.js-initialState');
+  Object.assign(initialState, JSON.parse(src.innerText));
+  src.parentElement.removeChild(src);
+}
+
+app.use(createStore(initialState));
 
 /**
  * Start application when running in browser
  */
 
 if (typeof window !== 'undefined') {
-  /**
-   * Remove url hash as choo includes them in routes
-   */
-
-  if (window.location.hash) {
-    history.replaceState({}, document.title, window.location.pathname);
-  }
-
    /**
    * Mount the application
    */
 
   try {
-    const staticEl = document.querySelector('.js-static');
-    staticEl.parentElement.replaceChild(app.start(), staticEl);
+    app.mount('.js-app');
   } catch (err) {
+    if (process.env.NODE_ENV === 'development') {
+      // eslint-disable-next-line no-console
+      console.error(err);
+    }
     document.documentElement.classList.remove('has-js');
   }
-}
-
-/**
- * Set document title derrived from `view.title(state)` on render
- * @param  {String} route   View route
- * @param  {Function} _view View function optionally decorated with `title`
- * @return {Array}          Identical route/view pair wit wrapped view
- */
-
-function titleize([route, _view]) {
-  if (typeof document === 'undefined') { return [route, _view]; }
-
-  function view(state, emit) {
-    const title = _view.title ? _view.title(state) : '';
-    document.title = `${ title && title + ' | ' }BRF Energi`;
-    return _view(state, emit);
-  }
-
-  return [route, view];
 }
 
 /**

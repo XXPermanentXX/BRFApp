@@ -1,6 +1,6 @@
 const geoip = require('./geoip');
 const chart = require('./chart');
-const cms = require('./cms');
+const content = require('./content');
 const error = require('./error');
 const user = require('./user');
 const actions = require('./actions');
@@ -9,8 +9,8 @@ const consumptions = require('./consumptions');
 
 module.exports = function (initialState) {
   return function (state, emitter) {
-    emitter.on('pushState', onnavigate);
-    emitter.on('replaceState', onnavigate);
+    emitter.on(state.events.PUSHSTATE, onnavigate);
+    emitter.on(state.events.REPLACESTATE, onnavigate);
 
     /**
      * Initialize all state models with their respective initial state
@@ -19,13 +19,7 @@ module.exports = function (initialState) {
     [
       geoip(),
       chart(),
-      cms([
-        'faq', 'about', 'footer', 'onboarding', 'registration', 'sign-in'
-      ].reduce((docs, key) => {
-        // Pluck out CMS content as key/value pairs
-        docs[key] = initialState[key];
-        return docs;
-      }, {})),
+      content(initialState.content),
       error(initialState.error),
       user(initialState.user),
       actions(initialState.actions),
@@ -35,10 +29,9 @@ module.exports = function (initialState) {
 
     function onnavigate() {
       // Scroll to top on navigate
-      document.body.scrollIntoView(true);
-
-      // Store window location in state
-      state.location = window.location.href.match(/^https?:\/(.+)/)[1];
+      if (!location.hash) {
+        document.body.scrollIntoView(true);
+      }
     }
   };
 };

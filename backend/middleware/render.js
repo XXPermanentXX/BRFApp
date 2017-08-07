@@ -47,7 +47,7 @@ module.exports = function render(req, res, next) {
       const output = Object.assign({}, _state);
 
       // Ensure state consistency
-      output.location = route;
+      output.href = route;
       output.geoip = {};
       output.consumptions = {};
       output.actions = _state.actions || [];

@@ -22,7 +22,7 @@ module.exports = component({
   render(action, emit) {
     const onchange = event => {
       this.props[event.target.name] = event.target.value;
-      this.update(action, emit);
+      this.render(action, emit);
     };
 
     const props = Object.assign({

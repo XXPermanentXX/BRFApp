@@ -11,15 +11,18 @@ exports.chevron = function chevron(direction) {
   return html`
     <svg class="Icon">
       <use width="0.75em" height="0.75em" y="0.25em" class="Icon-path" xlink:href="#icon-chevron" transform="rotate(${ deg[direction] || 0 })" />
-    </icon>
+    </svg>
   `;
 };
 
 exports.loader = function loader() {
   return html`
-    <svg class="Icon Icon--large Icon--center">
-      <use class="Icon-path" xlink:href="#icon-loader" />
-    </icon>
+    <div class="Icon Icon--loader">
+      <div class="Icon-loaderCube"></div>
+      <div class="Icon-loaderCube"></div>
+      <div class="Icon-loaderCube"></div>
+      <div class="Icon-loaderCube"></div>
+    </div>
   `;
 };
 
@@ -27,7 +30,7 @@ exports.energyRepresentative = function energyRepresentative(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-energyRepresentative" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -35,7 +38,7 @@ exports.energyMap = function energyMap(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-energyMap" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -43,7 +46,7 @@ exports.target = function target(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-target" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -51,7 +54,7 @@ exports.lightChallenge = function lightChallenge(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-lightChallenge" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -59,7 +62,7 @@ exports.electricCar = function electricCar(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-electricCar" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -67,7 +70,7 @@ exports.checkmark = function checkmark(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-checkmark" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -75,7 +78,7 @@ exports.solarPanel = function solarPanel(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-solarpanel" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -83,7 +86,7 @@ exports.garage = function garage(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-garage" />
-    </icon>
+    </svg>
   `;
 };
 
@@ -91,6 +94,6 @@ exports.laundry = function laundry(size = 18) {
   return html`
     <svg class="Icon" style="width: ${ size }px; height: ${ size }px;">
       <use class="Icon-path" xlink:href="#icon-laundry" />
-    </icon>
+    </svg>
   `;
 };

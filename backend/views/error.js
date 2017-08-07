@@ -1,16 +1,15 @@
 const html = require('choo/html');
-const header = require('../components/page-head')('error');
+const app = require('../components/app');
 const { __ } = require('../locale');
 
-module.exports = view;
+module.exports = app(view, title);
 
 function view(state, emit) {
   return html`
-    <div class="App">
-      ${ header(state, emit) }
-      <h1>Oops!</h1>
-    </div>
+    <h1>Oops!</h1>
   `;
 }
 
-view.title = () => __('An error has occured');
+function title() {
+  return __('An error has occured');
+}

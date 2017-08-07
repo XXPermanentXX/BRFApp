@@ -18,8 +18,6 @@
   },
   "Leave a comment": "Leave a comment",
   "Sign in with Metry": "Sign in with Metry",
-  "PROJECT_IN_SHORT": "BRF Energi is an ongoing research project. For any inquiries or questions, please <a href=\"mailto:%s\" data-no-routing=\"true\">contact us</a>.",
-  "LICENSE_NOTICE": "All source code and content is released under the <a href=\"https://www.apache.org/licenses/LICENSE-2.0\" data-no-routing=\"true\">Apache Licence 2.0</a> and publicly availible on <a href=\"%s\" data-no-routing=\"true\">Github</a>.",
   "COPYRIGHT": "© %s KTH Royal Institute of Technology",
   "Sign out": "Sign out",
   "ACTION_TYPE_1": "Värme",

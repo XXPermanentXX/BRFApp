@@ -8,53 +8,23 @@ const { __ } = require('../../locale');
 const { format, className, resource, vw } = require('../utils');
 const component = require('../utils/component');
 
-module.exports = function createComponent() {
+module.exports = function createChart(name) {
   return component({
-    name: 'chart',
-    cache: true,
-    isInitialized: false,
+    name: name || 'chart',
 
-    shouldUpdate(args, prev) {
-      const [granularity, actions, data] = args;
-      const [prevGranularity, prevActions, prevData] = prev;
+    update(element, args, prev) {
+      if (shouldUpdate(args, prev) && this.chart) {
+        const [ granularity, actions, data ] = args;
 
-      // Compare granularity
-      if (granularity !== prevGranularity) {
-        return true;
+        this.chart.update(Object.assign({
+          series: compose(actions, data)
+        }, getConfig(granularity)));
       }
 
-      // Compare number of actions
-      if (actions.length !== prevActions.length) {
-        return true;
-      }
-
-      // Compare number of data series
-      if (data.length !== prevData.length) {
-        return true;
-      }
-
-      // Compare data series
-      return data.reduce((result, serie, serieIndex) => {
-        return result || serie.values.reduce((diff, value, index) => {
-          return diff || value !== prevData[serieIndex].values[index];
-        }, false);
-      }, false);
+      return false;
     },
 
-    update(element, granularity, actions, data) {
-      if (this.chart) {
-        this.chart.update(getConfig(granularity, actions, data));
-      }
-    },
-
-    onload(element, granularity, actions, data) {
-      // Exit early if Highcharts has been initialized already
-      if (this.isInitialized) {
-        return;
-      } else {
-        this.isInitialized = true;
-      }
-
+    load(element, granularity, actions, data) {
       resource('highcharts').then(Highcharts => {
         // Remove loader from chart container
         element.innerHTML = '';
@@ -83,7 +53,7 @@ module.exports = function createComponent() {
               return { x: point.plotX - 2 + offset, y: point.plotY - 15 };
             }
           }
-        }, defaults, getConfig(granularity, actions, data));
+        }, defaults, getConfig(granularity), { series: compose(actions, data) });
 
         this.chart = Highcharts.chart(element, config, chart => chart.reflow());
       });
@@ -101,16 +71,13 @@ module.exports = function createComponent() {
 };
 
 /**
- * Create Highcharts options based on data
+ * Create Highcharts options based on type of data
  * @param  {String} granularity Chart granularity setting
- * @param  {Array}  actions     List of actions
- * @param  {Array}  data        List of data series
  * @return {Object}             Highcharts compatible options
  */
 
-function getConfig(granularity, actions, data) {
+function getConfig(granularity) {
   return {
-    series: compose(actions, data),
     tooltip: {
       formatter: formatters[granularity]
     },
@@ -122,6 +89,39 @@ function getConfig(granularity, actions, data) {
   };
 }
 
+/**
+ * Compare arguments to determine whether to update the chart
+ * @param {any} args New arguments
+ * @param {any} prev Previous arguments
+ * @returns {boolean}
+ */
+
+function shouldUpdate(args, prev) {
+  const [granularity, actions, data] = args;
+  const [prevGranularity, prevActions, prevData] = prev;
+
+  // Compare granularity
+  if (granularity !== prevGranularity) {
+    return true;
+  }
+
+  // Compare number of actions
+  if (actions.length !== prevActions.length) {
+    return true;
+  }
+
+  // Compare number of data series
+  if (data.length !== prevData.length) {
+    return true;
+  }
+
+  // Compare data series
+  return data.reduce((result, serie, serieIndex) => {
+    return result || serie.values.reduce((diff, value, index) => {
+      return diff || value !== prevData[serieIndex].values[index];
+    }, false);
+  }, false);
+}
 
 /**
  * Adapt xAxis labels to granularity

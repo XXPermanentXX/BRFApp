@@ -17,6 +17,11 @@ module.exports = function (state) {
       <meta name="theme-color" content="#ffffff">
       <script>document.documentElement.classList.add('has-js');</script>
       <link rel="stylesheet" href="/index.css">
+      ${ process.env.NODE_ENV !== 'development' ? html`
+        <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=default,fetch,Array.prototype.includes,Object.values"></script>
+      ` : '' }
+      <script src="/index.js" async></script>
+      <script type="application/json" class="js-initialState">${ JSON.stringify(state) }</script>
     </head>
   `;
 };

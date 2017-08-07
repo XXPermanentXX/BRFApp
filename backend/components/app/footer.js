@@ -6,7 +6,7 @@ module.exports = function footer(state, emit) {
     <footer class="App-footer">
       <div class="App-container App-container--md">
         <div class="Type u-textCenter">
-          ${ state.footer.getStructuredText('footer.body').asElement(resolve) }
+          ${ state.content.footer.getStructuredText('footer.body').asElement(resolve) }
         </div>
       </div>
     </footer>

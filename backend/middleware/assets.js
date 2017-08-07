@@ -18,9 +18,7 @@ const jsmiddleware = watchify(bundler);
 
 const cssBundler = postcss([
   require('postcss-import')(),
-  require('postcss-custom-media')(),
-  require('postcss-custom-properties')(),
-  require('autoprefixer')()
+  require('postcss-custom-media')()
 ]);
 
 let deferred = processCSS();

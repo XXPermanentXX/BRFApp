@@ -1,12 +1,9 @@
 const html = require('choo/html');
 const component = require('../utils/component');
+const { id } = require('../utils');
 const { __ } = require('../../locale');
 
-function Modal(...args) {
-  if (!(this instanceof Modal)) { return new Modal(...args); }
-}
-
-Modal.prototype = Object.create({
+const modal = {
   name: 'modal',
   isOpen: false,
 
@@ -14,7 +11,7 @@ Modal.prototype = Object.create({
     throw (new Error('No `onclose` method has been assigned'));
   },
 
-  onload(element, content, onclose) {
+  load(element, content, onclose) {
     const onescape = event => ((event.code === 'Escape') && this.close());
 
     window.addEventListener('keydown', onescape);
@@ -49,7 +46,7 @@ Modal.prototype = Object.create({
     this.onclose = onclose;
 
     return html`
-      <div role="dialog" class="Modal ${ this.isOpen ? 'is-open' : '' }">
+      <div role="dialog" id="modal-${ id() }" class="Modal ${ this.isOpen ? 'is-open' : '' }">
         <div class="Modal-window">
           ${ content }
           <button class="Modal-dismiss" onclick=${ () => this.close() }>
@@ -59,9 +56,8 @@ Modal.prototype = Object.create({
       </div>
     `;
   }
-});
+};
 
-const modal = new Modal();
 module.exports = component(modal);
 module.exports.close = () => {
   return modal.close();

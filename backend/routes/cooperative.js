@@ -153,9 +153,9 @@ router.get('/:id/edit', isMongoId('id'), isEditor('id'), (req, res, next) => {
       } else {
         req.prismic.api.getSingle('registration').then(doc => {
           res.locals.title = `${ __('Edit') } ${ cooperative.name }`;
+          res.locals.content.registration = doc;
           res.render(`/cooperatives/${ req.params.id }/edit`, {
-            cooperatives: [ cooperative.toJSON() ],
-            registration: doc
+            cooperatives: [ cooperative.toJSON() ]
           });
         }, next);
       }

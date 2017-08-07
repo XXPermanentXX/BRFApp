@@ -21,25 +21,23 @@ module.exports = function (state, emit) {
     };
   }
 
+  if (typeof window !== 'undefined' && !center) {
+    emit('geoip:fetch');
+  }
+
   return html`
-    <div class="Map u-sizeFill u-flex u-flexCol u-flexJustifyCenter" onload=${ onload }>
-      ${ center ? map(state.cooperatives.slice(), center) : loader() }
+    <div class="Map u-sizeFill u-flex u-flexCol u-flexJustifyCenter">
+      ${ center ? map(state.cooperatives.slice(), center) : html`
+        <div class="u-colorSky u-flex u-flexJustifyCenter">
+          ${ loader() }
+        </div>
+      ` }
 
       <div class="Map-locate">
-        <button class="Button Button--round u-textS" onclick=${ onclick } disabled=${ !!geoip.isLoading }>
+        <button class="Button Button--round u-textS" onclick=${ () => emit('geoip:getPosition') } disabled=${ !!geoip.isLoading }>
           ${ __('Find me') }
         </button>
       </div>
     </div>
   `;
-
-  function onclick() {
-    emit('geoip:getPosition');
-  }
-
-  function onload() {
-    if (!center) {
-      emit('geoip:fetch');
-    }
-  }
 };

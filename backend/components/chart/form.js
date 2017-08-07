@@ -85,9 +85,9 @@ module.exports = function form(cooperative, state, emit) {
           <span class="Form-pill Form-pill--leading">${ __('Show') }</span>
           <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1 u-textNowrap">${ typeOptions.find(item => item.isSelected).label }</span>
           <select class="u-overlay" name="consumptions:type" onchange=${ onchange } disabled=${ disabled }>
-            <option disabled label=${ __('Show') }></option>
+            <option disabled label="${ __('Show') }"></option>
             ${ typeOptions.map(({ value, label, isSelected }) => html`
-              <option value=${ value } selected=${ isSelected }>
+              <option value="${ value }" selected=${ isSelected }>
                 ${ label }
               </option>
             `) }
@@ -95,16 +95,16 @@ module.exports = function form(cooperative, state, emit) {
         </label>
 
         <label class="u-flex u-posRelative">
-          <span class="Form-pill Form-pill--leading">${ __('Compare with') }</span>
+          <span class="Form-pill Form-pill--leading u-textNowrap">${ __('Compare with') }</span>
           <span class="Form-pill Form-pill--trailing Form-pill--select u-flexGrow1 u-textNowrap">${ compareLabel }</span>
           <select class="u-overlay" name="consumptions:compare" disabled=${ disabled } onchange=${ onchange }>
-            <option disabled selected=${ !compare } label=${ __('Compare with') }></option>
+            <option disabled selected=${ !compare } label="${ __('Compare with') }"></option>
             ${ granularity === 'month' ? html`
               <option value="prev_year" selected=${ compare === 'prev_year' } disabled=${ granularity === 'year' }>
                 ${ __('Previous year') }
               </option>
             ` : null }
-            <optgroup label=${ __('Other cooperatives') }>
+            <optgroup label="${ __('Other cooperatives') }">
               ${ cooperatives
                   .filter(item => {
                     return item.performances.length && (item._id !== cooperative._id);
@@ -113,7 +113,7 @@ module.exports = function form(cooperative, state, emit) {
                     const value = `cooperative:${ cooperative._id }`;
 
                     return html`
-                      <option value=${ value } selected=${ compare === value }>
+                      <option value="${ value }" selected=${ compare === value }>
                         ${ cooperative.name }
                       </option>
                     `;

@@ -19,9 +19,9 @@ module.exports = function comment(comment, action, state) {
   }
 
   return html`
-    <div class=${ classList.join(' ') } id="comment-${ comment._id }">
+    <div class="${ classList.join(' ') }" id="comment-${ comment._id }">
       ${ comment.short ? null : html`
-        <time class="Comment-date" datetime=${ JSON.stringify(comment.date) }>
+        <time class="Comment-date" datetime="${ JSON.stringify(comment.date) }">
           ${ moment(comment.date).fromNow() }
         </time>
       ` }

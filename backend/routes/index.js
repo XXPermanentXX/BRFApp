@@ -72,7 +72,8 @@ router.get('/', onboarding, footer, (req, res, next) => {
 router.get('/how-it-works', onboarding, footer, (req, res, next) => {
   req.prismic.api.getSingle('faq').then(doc => {
     res.locals.title = doc.getStructuredText('faq.title').asText();
-    res.render('/how-it-works', { faq: doc });
+    res.locals.content.faq = doc;
+    res.render('/how-it-works');
   }, next);
 
   Log.create({
@@ -85,7 +86,8 @@ router.get('/how-it-works', onboarding, footer, (req, res, next) => {
 router.get('/about-the-project', onboarding, footer, (req, res, next) => {
   req.prismic.api.getSingle('about').then(doc => {
     res.locals.title = doc.getStructuredText('about.title').asText();
-    res.render('/about-the-project', { about: doc });
+    res.locals.content.about = doc;
+    res.render('/about-the-project');
   }, next);
 
   Log.create({
@@ -103,7 +105,7 @@ function footer(req, res, next) {
   if (!req.accepts('html')) { return next(); }
 
   req.prismic.api.getSingle('footer').then(doc => {
-    res.locals.footer = doc;
+    res.locals.content.footer = doc;
     next();
   }, next);
 }
@@ -134,7 +136,7 @@ function onboarding(req, res, next) {
   }
 
   req.prismic.api.getSingle('onboarding').then(doc => {
-    res.locals.onboarding = doc;
+    res.locals.content.onboarding = doc;
     next();
   }, next);
 }

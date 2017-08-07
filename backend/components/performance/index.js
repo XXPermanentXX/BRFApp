@@ -15,8 +15,7 @@ const ENERGY_CLASSES = {
   G: '#E2001A'
 };
 
-module.exports = component((cooperative, user) => {
-  const classNames = [ 'Performance' ];
+module.exports = component(function performanceGraph(cooperative, user) {
   const performance = getPerformance(cooperative);
   const energyClass = performance && getEnergyClass(performance.value);
   const classPosition = energyClass ? Object.keys(ENERGY_CLASSES).indexOf(energyClass) : 3;
@@ -27,14 +26,14 @@ module.exports = component((cooperative, user) => {
       <div class="Performance-disclaimer">
         ${ __('This figure may be misleading due to the coopeartive not having supplied sufficient information.') }
         ${ user.cooperative === cooperative._id ? html`
-          <a href=${ resolve(`/cooperatives/${ cooperative._id }/edit`) }>${ __('Update information') }</a>
+          <a href="${ resolve(`/cooperatives/${ cooperative._id }/edit`) }">${ __('Update information') }</a>
         ` : null }
       </div>
     `;
   }
 
   return html`
-    <div class=${ classNames.join(' ') }>
+    <div class="Performance">
       <figure>
         <svg class="Performance-graph" viewBox="0 0 512 93">
           <defs>
@@ -49,13 +48,13 @@ module.exports = component((cooperative, user) => {
             <g opacity="0.25" transform="translate(12.000000, 20.000000)">
               ${ Object.keys(ENERGY_CLASSES).map((className, index) => html`
                 <g transform="translate(${ index * 70 }, 0)">
-                  <polygon fill=${ energyClass ? ENERGY_CLASSES[className] : UNKNOWN_ENERGY_CLASS } points="0 0 68 0 68 52 0 52" />
+                  <polygon fill="${ energyClass ? ENERGY_CLASSES[className] : UNKNOWN_ENERGY_CLASS }" points="0 0 68 0 68 52 0 52" />
                   <use width="18" height="32" transform="translate(9, 0)" fill-opacity="0.25" fill="#FFFFFF" xlink:href="#def-single-building-small" />
                 </g>
               `) }
             </g>
             <g transform="translate(${ (classPosition * 70) }, 0)">
-              <ellipse fill=${ energyClass ? ENERGY_CLASSES[energyClass] : UNKNOWN_ENERGY_CLASS } fill-rule="evenodd" cx="46" cy="47.3942308" rx="46" ry="45.6057692" stroke="#ffffff" stroke-width="2" />
+              <ellipse fill="${ energyClass ? ENERGY_CLASSES[energyClass] : UNKNOWN_ENERGY_CLASS }" fill-rule="evenodd" cx="46" cy="47.3942308" rx="46" ry="45.6057692" stroke="#ffffff" stroke-width="2" />
               <g>
                 <use fill="black" fill-opacity="1" filter="url(#def-drop-shadow)" xlink:href="#def-single-building-large" />
                 <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#def-single-building-large" />
@@ -68,7 +67,9 @@ module.exports = component((cooperative, user) => {
             <h2 class="Performance-title">
               ${ Math.round(performance.value) } kWh/m<sup>2</sup>
             </h2>
-            <a href=${resolve('/how-it-works')} class="Performance-link" title=${ __('Learn about how we calculate energy performance') }>${ __('What\'s this?') }</a>
+            <a href="${resolve('/how-it-works#energiprestanda-i-brf-energi')}" class="Performance-link" title="${ __('Learn about how we calculate energy performance') }">
+              ${ __('What\'s this?') }
+            </a>
           </figcaption>
         ` : null }
       </figure>

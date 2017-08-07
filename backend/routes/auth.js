@@ -10,7 +10,8 @@ router.get('/', (req, res) => {
     if (req.accepts('html')) {
       req.prismic.api.getSingle('sign-in').then(doc => {
         res.locals.title = doc.getStructuredText('sign-in.title').asText();
-        res.render('/auth', { 'sign-in': doc });
+        res.locals.content['sign-in'] = doc;
+        res.render('/auth');
       }, err => res.status(500).render('/error', { err: err.message }));
     } else {
       res.status(406).end();

@@ -14,3 +14,68 @@
   display: block;
   margin: 0 auto;
 }
+
+.Icon--loader {
+	width: 41px;
+	height: 41px;
+	margin: 0 auto;
+	margin-top: 27px;
+	position: relative;
+	transform: rotateZ(45deg);
+}
+.Icon-loaderCube {
+	float: left;
+	width: 50%;
+	height: 50%;
+	position: relative;
+	transform: scale(1.1);
+}
+.Icon-loaderCube::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: currentColor;
+	animation: Icon-loaderCube--spin 2.76s infinite linear both;
+	transform-origin: 100% 100%;
+}
+.Icon-loaderCube:nth-child(2) {
+	transform: scale(1.1) rotateZ(90deg);
+}
+.Icon-loaderCube:nth-child(3) {
+  float: right;
+	transform: scale(1.1) rotateZ(180deg);
+}
+.Icon-loaderCube:nth-child(4) {
+	transform: scale(1.1) rotateZ(270deg);
+}
+.Icon-loaderCube:nth-child(2)::before {
+	animation-delay: 0.35s;
+}
+.Icon-loaderCube:nth-child(3)::before {
+	animation-delay: 0.69s;
+}
+.Icon-loaderCube:nth-child(4)::before {
+	animation-delay: 1.04s;
+}
+
+
+
+@keyframes Icon-loaderCube--spin {
+	0%, 10% {
+		transform: perspective(77px) rotateX(-180deg);
+		opacity: 0;
+	}
+	25%,
+				75% {
+		transform: perspective(77px) rotateX(0deg);
+		opacity: 1;
+	}
+	90%,
+				100% {
+		transform: perspective(77px) rotateY(180deg);
+		opacity: 0;
+	}
+}

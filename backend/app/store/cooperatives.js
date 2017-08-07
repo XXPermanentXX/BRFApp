@@ -76,7 +76,7 @@ module.exports = function cooperatives(initialState) {
       const index = items.findIndex(item => item._id === props._id);
 
       if (index !== -1) {
-        items.splice(index, 1, Object.assign({}, items[index], props));
+        Object.assign(items[index], props);
       } else {
         items.push(props);
       }

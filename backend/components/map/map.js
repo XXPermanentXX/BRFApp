@@ -22,22 +22,10 @@ module.exports = component({
   cache: true,
   isInitialized: false,
 
-  shouldUpdate([cooperatives, center], [prevCooperatives, prevCenter]) {
-    // Check if number of cooperatives has changed
-    if (cooperatives.length !== prevCooperatives.length) {
-      return true;
-    }
+  update(element, args, prev) {
+    if (shouldUpdate(args, prev) && this.map) {
+      const [ cooperatives, center ] = args;
 
-    // Check if center has changed
-    if (coordinatesDiff(center, prevCenter)) {
-      return true;
-    }
-
-    return false;
-  },
-
-  update(element, cooperatives, center) {
-    if (this.map) {
       // Update map source
       this.map.getSource('cooperatives').setData({
         type: 'FeatureCollection',
@@ -51,7 +39,7 @@ module.exports = component({
         if (center.precission === 'exact') {
           if (!this.position) {
             // Create position marker for exact position
-            this.position = new this.mapbox.Marker(myLocation());
+            this.position = new this.mapboxgl.Marker(myLocation());
           }
 
           // Update position coordinates
@@ -65,9 +53,11 @@ module.exports = component({
         this.map.fitBounds(bounds, { padding: element.offsetWidth * 0.1 });
       }
     }
+
+    return false;
   },
 
-  onload(element, cooperatives, center) {
+  load(element, cooperatives, center) {
     if (this.isInitialized) { return; }
     this.isInitialized = true;
     this.center = center;
@@ -83,10 +73,10 @@ module.exports = component({
       element.innerHTML = '';
 
       // Stash mapbox api in scoped variable
-      const mapbox = this.mapbox = mapboxgl;
+      this.mapboxgl = mapboxgl;
 
-      mapbox.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
-      const map = this.map = new mapbox.Map({
+      mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
+      const map = this.map = new mapboxgl.Map({
         container: element,
         style: process.env.MAPBOX_STYLE,
         maxZoom: 17
@@ -103,7 +93,7 @@ module.exports = component({
 
       if (center.precission === 'exact') {
         // Create a marker for exact position
-        this.position = new mapbox.Marker(myLocation())
+        this.position = new mapboxgl.Marker(myLocation())
           .setLngLat(getLngLat(center))
           .addTo(map);
       }
@@ -206,7 +196,7 @@ module.exports = component({
             });
           } else {
             // Show cooperative popup
-            this.popup = new mapbox.Popup({ closeButton: false, offset: POPUP_OFFSET });
+            this.popup = new mapboxgl.Popup({ closeButton: false, offset: POPUP_OFFSET });
             this.popup
               .setLngLat(feature.geometry.coordinates)
               .setDOMContent(createPopup(feature))
@@ -226,7 +216,7 @@ module.exports = component({
   render() {
     return html`
       <div class="Map u-sizeFill is-loading">
-        ${ loader() }
+        <div class="u-colorSky u-sizeFull">${ loader() }</div>
       </div>
     `;
   },
@@ -240,7 +230,7 @@ module.exports = component({
 
   getBounds(cooperatives, center) {
     let include;
-    const bounds = new this.mapbox.LngLatBounds();
+    const bounds = new this.mapboxgl.LngLatBounds();
     const closest = cooperatives.map(cooperative => {
       return getPositionDistance(center, getLngLat(cooperative));
     }).sort()[0];
@@ -267,6 +257,27 @@ module.exports = component({
     return bounds;
   }
 });
+
+/**
+ * Determin whether map should update
+ * @param {any} [cooperatives, center]
+ * @param {any} [prevCooperatives, prevCenter]
+ * @returns {boolean}
+ */
+
+function shouldUpdate([cooperatives, center], [prevCooperatives, prevCenter]) {
+  // Check if number of cooperatives has changed
+  if (cooperatives.length !== prevCooperatives.length) {
+    return true;
+  }
+
+  // Check if center has changed
+  if (coordinatesDiff(center, prevCenter)) {
+    return true;
+  }
+
+  return false;
+}
 
 /**
  * Generic "You are here"-location marker
