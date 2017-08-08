@@ -20,6 +20,7 @@ module.exports = component({
       this.isExpanded = false;
       return true;
     }
+
     return false;
   },
 
@@ -51,17 +52,21 @@ module.exports = component({
       auth: (state, emit) => ({
         href: resolve(state.user.isAuthenticated ? '/auth/signout' : '/auth'),
         title: state.user.isAuthenticated ? __('Sign out') : __('Sign in'),
-        onclick: (!state.user.isAuthenticated ? event => {
-          this.hasModal = true;
-          this.isExpanded = false;
-          this.render(state, emit);
+        onclick: event => {
+          if (state.user.isAuthenticated) {
+            window.location.assign(resolve('/auth/signout'));
+          } else {
+            this.hasModal = true;
+            this.isExpanded = false;
+            this.render(state, emit);
 
-          if (!state.content['sign-in']) {
-            emit('content:fetch', 'sign-in');
+            if (!state.content['sign-in']) {
+              emit('content:fetch', 'sign-in');
+            }
           }
 
           event.preventDefault();
-        } : null)
+        }
       })
     };
 
@@ -113,7 +118,7 @@ module.exports = component({
             (function () {
               const props = pages.auth(state, emit);
               return html`
-                <a href=${ props.href } class="PageHead-link PageHead-trigger PageHead-trigger--large" onclick=${ props.onclick || null }>
+                <a href=${ props.href } class="PageHead-link PageHead-trigger PageHead-trigger--large" onclick=${ props.onclick }>
                   ${ props.title }
                 </a>
               `;
@@ -154,7 +159,7 @@ function signin(doc) {
     `;
   } else {
     return html`
-      <div class="u-marginVl u-textCenter">
+      <div class="u-marginVl u-textCenter u-colorSky">
         ${ loader() }
       </div>
     `;

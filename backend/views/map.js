@@ -5,6 +5,7 @@ const popup = require('../components/map/popup');
 const modal = require('../components/modal');
 const onboarding = require('../components/onboarding');
 const { getEnergyClass, getPerformance } = require('../components/utils');
+const { __ } = require('../locale');
 
 module.exports = app(view, title);
 
@@ -44,5 +45,5 @@ function view(state, emit) {
 }
 
 function title() {
-  return 'Brf Energi';
+  return __('Welcome');
 }

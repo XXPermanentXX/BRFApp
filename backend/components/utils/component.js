@@ -1,3 +1,4 @@
+const morph = require('nanomorph');
 const nanologger = require('nanologger');
 const Nanocomponent = require('nanocomponent');
 
@@ -60,10 +61,28 @@ function createComponent(props) {
   function Component() {
     Nanocomponent.call(this);
     this.log = nanologger(props.name);
-    props.debug = (...args) => this.log.debug(args[0], args.slice(1));
-    props.update = (...args) => this.update(...args);
-    props.render = (...args) => this.render(...args);
     this.log.debug('create');
+
+    // Expose debug logger on props
+    props.debug = (...args) => this.log.debug(args[0], args.slice(1));
+
+    // Overwrite (or add) update method to props
+    props.update = (...args) => this.update(...args);
+
+    // Overwrite render with a force morph wrapper for internal use
+    props.render = (...args) => {
+      if (this._hasWindow && _element) {
+        this.log.debug('render', args);
+        morph(_element, _render.apply(props, args));
+        _args = args;
+      } else {
+        return this.render(...args);
+      }
+    };
+
+    Object.defineProperty(props, 'id', {
+      get: () => this._id
+    });
   }
 
   Component.prototype = Object.create(Nanocomponent.prototype);

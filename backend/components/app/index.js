@@ -7,7 +7,7 @@ const { className } = require('../utils');
 
 module.exports = function wrapper(view, title) {
   return function app(state, emit) {
-    emit(state.events.DOMTITLECHANGE, title(state));
+    emit(state.events.DOMTITLECHANGE, `${ title(state) } | Brf Energi`);
 
     return html`
       <body class="${ className('App', { 'js-app': typeof window === 'undefined' }) }">

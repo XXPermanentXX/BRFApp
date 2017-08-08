@@ -139,7 +139,7 @@ const form = component({
 
     return html`
       <form action="${ url }" method="POST" class="Form" enctype="application/x-www-form-urlencoded" onsubmit=${ onsubmit }>
-        <fieldset disabled=${ state.isLoading || null }>
+        <fieldset disabled=${ state.isLoading || false }>
           ${ cooperative._id ? html`<input type="hidden" name="_method" value="PUT" />` : null }
 
           <div class="Type">

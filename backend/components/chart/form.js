@@ -32,7 +32,7 @@ module.exports = function form(cooperative, state, emit) {
   let compareLabel = __('Pick one');
   if (compare) {
     if (compare === 'prev_year') {
-      compareLabel = __('Previous year')
+      compareLabel = __('Previous year');
     } else {
       const match = compare.match(/cooperative:(.+)/);
       const cooperative = cooperatives.find(item => item._id === match[1]);
