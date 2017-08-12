@@ -18,8 +18,8 @@ const app = module.exports = new Core();
  */
 
 const routes = [
-  ['/', require('../views/map')],
-  ['/cooperatives', require('../views/map')],
+  ['/', require('../views/home')],
+  ['/cooperatives', require('../views/home')],
   ['/auth', require('../views/sign-in')],
   ['/user', require('../views/user')],
   ['/how-it-works', require('../views/faq')],

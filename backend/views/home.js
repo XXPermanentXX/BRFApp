@@ -7,7 +7,7 @@ const onboarding = require('../components/onboarding');
 const { getEnergyClass, getPerformance } = require('../components/utils');
 const { __ } = require('../locale');
 
-module.exports = app(view, title);
+module.exports = app(view);
 
 function view(state, emit) {
   return html`
@@ -42,8 +42,4 @@ function view(state, emit) {
       ) }
     </div>
   `;
-}
-
-function title() {
-  return __('Welcome');
 }
