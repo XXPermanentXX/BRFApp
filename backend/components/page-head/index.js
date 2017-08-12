@@ -14,18 +14,25 @@ module.exports = component({
   href: null,
   hasModal: false,
   isExpanded: false,
+  allowRender: false,
 
   update(element, [ state ]) {
+
+    /**
+     * Close menu drop down on navigate
+     */
+
     if (state.href !== this.href) {
       this.isExpanded = false;
       return true;
     }
 
-    return false;
+    return this.allowRender;
   },
 
   render(state, emit) {
     this.href = state.href;
+    this.allowRender = false;
 
     const { user } = state;
     const toggle = open => event => {
@@ -61,6 +68,7 @@ module.exports = component({
             this.render(state, emit);
 
             if (!state.content['sign-in']) {
+              this.allowRender = true;
               emit('content:fetch', 'sign-in');
             }
           }
