@@ -12,9 +12,11 @@ module.exports = function summary(action, state) {
   return html`
     <article class="Action" id="action-${ action._id }">
       <a href="${ href }" class="u-linkComplex u-block">
-        <time class="Action-date" datetime="${ JSON.stringify(action.date) }">
-          ${ capitalize(moment(action.date).format('MMM YYYY')) }
-        </time>
+        ${ action.data ? html`
+          <time class="Action-date" datetime="${ JSON.stringify(action.date) }">
+            ${ capitalize(moment(action.date).format('MMM YYYY')) }
+          </time>
+        ` : null }
         <h3 class="u-linkComplexTarget Action-title">${ __(`ACTION_TYPE_${ action.type }`) }</h3>
       </a>
       ${ numComments ? comment(Object.assign({ short: true }, action.comments[numComments - 1]), action, state) : null }
