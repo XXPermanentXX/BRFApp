@@ -10,6 +10,7 @@ const { __ } = require('../../locale');
 const SELECTED_COOPERATIVE = /cooperative:(\w+)/;
 
 module.exports = function createWrapper(name) {
+  let element;
   const chart = createChart(name);
 
   return function render(header, center, cooperative, actions, state, emit) {
@@ -150,8 +151,8 @@ module.exports = function createWrapper(name) {
             ${ getType(cooperative, type) } (kWh/m<sup>2</sup>)
           </span>
 
-          <!-- Cached Highcharts container element -->
-          ${ chart(granularity, formatActions(actions, series, granularity), series) }
+          <!-- Cached container element -->
+          ${ element }
 
           <!-- Paginate buttons -->
           <button class="Chart-paginate Chart-paginate--left" onclick=${ () => emit('chart:paginate', -1) } disabled=${ !hasEarlier }>
