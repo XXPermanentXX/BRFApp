@@ -13,6 +13,7 @@ const method = require('./middleware/method');
 const prismic = require('./middleware/prismic');
 const app = require('./app');
 
+mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGO_URL);
 
 const db = mongoose.connection;
@@ -116,6 +117,6 @@ db.once('open', function() {
     const { address: host, port } = listener.address();
 
     // eslint-disable-next-line no-console
-    console.info(`> Server listening at ${ host.replace('::', 'localhost') }:${ port }`);
+    console.info(`> Server listening at http://localhost:${ port }`);
   });
 });
