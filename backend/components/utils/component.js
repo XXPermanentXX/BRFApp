@@ -73,8 +73,7 @@ function createComponent(props) {
     props.render = (...args) => {
       if (this._hasWindow && _element) {
         this.log.debug('render', args);
-        morph(_element, _render.apply(props, args));
-        _args = args;
+        morph(_element, this._handleRender(args));
       } else {
         return this.render(...args);
       }
@@ -91,7 +90,7 @@ function createComponent(props) {
     let value;
 
     if (_update) {
-      value = _update.call(props, this.element, args, _args);
+      value = _update.call(props, _element, args, _args);
     } else {
       value = shouldUpdate(args, _args);
     }
@@ -148,7 +147,7 @@ function shouldUpdate(args, prev) {
   // A different set of arguments issues a rerender
   if (args.length !== prev.length) { return true; }
 
-  // Check for challow diff in list of arguments
+  // Check for shallow diff in list of arguments
   return args.reduce((diff, arg, index) => {
     if (prev[index] && prev[index].isSameNode && arg instanceof Element) {
       // Handle argument being an element

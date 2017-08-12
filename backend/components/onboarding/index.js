@@ -60,10 +60,9 @@ module.exports = component({
 
       tick();
 
-      return false;
     }
 
-    return true;
+    return false;
   },
 
   render(state, onboarded) {
