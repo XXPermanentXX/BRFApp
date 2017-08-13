@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "restart": "nodemon -r dotenv/config --inspect index.js -i lib/components",
-    "test": "eslint ./",
+    "test": "eslint --ignore-pattern /public ./",
     "build:js": "npm run build:js:app && npm run build:js:mapbox && npm run build:js:highcharts",
     "build:js:app": "browserify lib/app/index.js -t localenvify -t yo-yoify -t [ babelify --presets [ babel-preset-es2015 ] ] -g unassertify -g yo-yoify -g uglifyify | uglifyjs -o public/index.js",
     "build:js:mapbox": "browserify -r mapbox-gl | uglifyjs -o public/mapbox-gl.js",
