@@ -1,8 +1,6 @@
 # BRF Energi
 
 [![Join the chat at https://gitter.im/CIVIS-project/CIVIS](https://img.shields.io/badge/gitter-join%20chat-green.svg)](https://gitter.im/CIVIS-project/YouPower?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](https://travis-ci.org/CIVIS-project/YouPower.svg?branch=master)](https://travis-ci.org/CIVIS-project/YouPower)
-[![Coverage Status](https://coveralls.io/repos/CIVIS-project/YouPower/badge.svg?branch=master)](https://coveralls.io/r/CIVIS-project/YouPower?branch=master)
 
 ## Setup
 
@@ -21,18 +19,18 @@ Create a file named `.env` in the project root (same folder as this file). Fill 
 ```bash
 # Environment
 PORT=3000
+BRFENERGI_LANG=sv
 NODE_ENV=development
 
-# Client
+# Mapbox
 MAPBOX_ACCESS_TOKEN=<MAPBOX_TOKEN_HERE>
 MAPBOX_STYLE=mapbox://styles/tornqvist/ciye3wh1c000s2sqyhepqpnrz
 
-# Generic OAuth
-BRFENERGI_CLIENT_URL=http://localhost:8100/#/
+# OAuth
 BRFENERGI_SERVICE_URL=http://localhost:3000
-BRFENERGI_SESSION_SECRET=such_secret_must_never_tell
+BRFENERGI_SESSION_SECRET=<SOME_STRING>
 
-# Metry OAuth credentials
+# Metry credentials
 METRY_CLIENT_ID=<CLIENT_ID_HERE>
 METRY_CLIENT_SECRET=<CLIENT_SECRET_HERE>
 METRY_BASE_URL=https://app.metry.io/
@@ -45,53 +43,30 @@ METRY_PROFILE_PATH=accounts/me
 PRISMIC_API=https://brf-energi.cdn.prismic.io/api
 
 # Database
-MONGO_URL=localhost:27017/brf-energi
+MONGO_URL=localhost:27017/brf-energi-dev
 ```
 
 ## Running the application
 
-Fire up mongodb. Provide credentials and address in your `.env` file (see [Environment](#environment)).
+Fire up mongodb and run the appropiate command.
 
 ```bash
+# If environment variables have been set elsewhere
 $ npm start
-```
 
-To have the server watch for changes and restart when needed
+# If environment variables have been saved to a local .env file
+$ node -r dotenv/config index.js
 
-```bash
+# To have the server restart on file changes and expose inpector on default port (9229)
 $ npm restart
 ```
 
-## Running unit tests
+## Running code inspection
 
-Make sure that unit tests pass before pushing your code into the repository:
+Make sure that unit tests pass before pushing your code into the repository.
 
 ```bash
 $ npm test
-```
-
-### Metrics
-
-Most REST API calls are logged into the DB. The logs can be read using the
-`metricsViewer.js` tool. It takes the following options:
-
-```bash
-  -c   Colorize output
-  -e   Ellipsize long lines (only show first row)
-  -h   Show help
-```
-
-Run it as
-
-```bash
-$ node backend/metricsViewer.js
-```
-
-It defaults to a local mongodb instance (named youpower), you can change this
-by setting the `MONGO_URL` environment variable as such:
-
-```bash
-$ MONGO_URL=mongodb://somewhere.else.com/youpower node backend/metricsViewer.js
 ```
 
 ## Licence
