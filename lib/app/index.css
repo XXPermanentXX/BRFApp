@@ -1,5 +1,4 @@
-@import url('https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i');
-
+@import url("https://fonts.googleapis.com/css?family=Lato:300,300i,400,400i,700,700i");
 @import "../components/app/base";
 @import "../components/action";
 @import "../components/app";
@@ -19,7 +18,6 @@
 @import "../components/performance";
 @import "../components/sheet";
 @import "../components/type";
-
 @import "suitcss-components-grid";
 @import "suitcss-utils-display";
 @import "suitcss-utils-flex";
@@ -38,25 +36,25 @@
   --font-weight-light: 300;
   --base-font-size: 16;
 
-  --color-sky: #388EE8;
-  --color-cyan: #19DDC0;
-  --color-gold: #FEC73D;
+  --color-sky: #388ee8;
+  --color-cyan: #19ddc0;
+  --color-gold: #fec73d;
   --color-tomato: #e83848;
-  --color-background: #F4F7FA;
-  --color-light: #EFEFEF;
-  --color-pale: #C5CCD3;
-  --color-dim: #A8A8A8;
-  --color-dark: #777777;
-  --color-text: #222222;
+  --color-background: #f4f7fa;
+  --color-light: #efefef;
+  --color-pale: #c5ccd3;
+  --color-dim: #a8a8a8;
+  --color-dark: #777;
+  --color-text: #222;
 
   --color-A: #009036;
-  --color-B: #55AB26;
-  --color-C: #C8D200;
-  --color-D: #FFED00;
-  --color-E: #FBBA00;
-  --color-F: #EB6909;
-  --color-G: #E2001A;
-  --color-unknown: #bbbbbb;
+  --color-B: #55ab26;
+  --color-C: #c8d200;
+  --color-D: #ffed00;
+  --color-E: #fbba00;
+  --color-F: #eb6909;
+  --color-G: #e2001a;
+  --color-unknown: #bbb;
 
   --sm-viewport: 480px;
   --md-viewport: 800px;

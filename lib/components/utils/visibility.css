@@ -48,6 +48,7 @@
     display: inline-block !important;
     max-width: 100%; /* 1 */
   }
+
   .u-md-table {
     display: table !important;
   }
@@ -78,6 +79,7 @@
     display: inline-block !important;
     max-width: 100%; /* 1 */
   }
+
   .u-lg-table {
     display: table !important;
   }
@@ -133,5 +135,5 @@
   outline: none !important;
   color: transparent !important;
   background: transparent !important;
-  -webkit-appearance: none !important;
+  appearance: none !important;
 }

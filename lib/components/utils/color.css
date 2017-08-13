@@ -73,9 +73,9 @@
 }
 
 .u-colorCurrent {
-  color: currentColor !important
+  color: currentColor !important;
 }
 
 .u-colorTransparent {
-  color: transparent !important
+  color: transparent !important;
 }

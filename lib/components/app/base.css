@@ -1,6 +1,7 @@
 @import "suitcss-base";
 
-html, body {
+html,
+body {
   height: 100%;
   color: var(--color-text);
   font-family: var(--font-family);
@@ -9,7 +10,8 @@ html, body {
 }
 
 @media (--sm-viewport), (--md-viewport), (--lg-viewport) {
-  html, body {
+  html,
+  body {
     font-size: calc(1px * var(--base-font-size));
   }
 }
@@ -18,7 +20,15 @@ html, body {
  * 1. Lightly lighten default bolded text
  */
 
-h1, h2, h3, h4, h5, h6, strong, b, dt {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+dt {
   -webkit-font-smoothing: antialiased; /* 1 */
 }
 
@@ -31,7 +41,7 @@ h1, h2, h3, h4, h5, h6, strong, b, dt {
 }
 
 :visited {
-  color: #AE38E8;
+  color: #ae38e8;
 }
 
 /**

@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "restart": "nodemon -r dotenv/config --inspect index.js -i lib/components",
-    "test": "eslint --ignore-pattern /public ./",
+    "test": "eslint --ignore-pattern /public ./ && stylelint **/*.css",
     "build:js": "npm run build:js:app && npm run build:js:mapbox && npm run build:js:highcharts",
     "build:js:app": "browserify lib/app/index.js -t localenvify -t yo-yoify -t [ babelify --presets [ babel-preset-es2015 ] ] -g unassertify -g yo-yoify -g uglifyify | uglifyjs -o public/index.js",
     "build:js:mapbox": "browserify -r mapbox-gl | uglifyjs -o public/mapbox-gl.js",
@@ -38,6 +38,8 @@
     "postcss-custom-properties": "^5.0.2",
     "postcss-import": "^9.1.0",
     "stream-cache": "0.0.2",
+    "stylelint": "^8.0.0",
+    "stylelint-config-suitcss": "^11.0.0",
     "suitcss-base": "^2.0.0",
     "suitcss-components-button": "^6.0.0",
     "suitcss-components-grid": "^3.0.3",
