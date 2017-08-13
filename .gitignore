@@ -5,12 +5,10 @@ node_modules
 npm-debug.log
 
 # Build
-backend/apidoc
-backend/coverage
-backend/public
+public
 
 # Environment
 *.swp
 .db
-.env*
+*.env
 .vscode
