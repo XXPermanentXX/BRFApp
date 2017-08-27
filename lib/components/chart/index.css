@@ -1,4 +1,4 @@
-/** @define Graph */
+/** @define Chart */
 
 .Chart {
   display: flex;
@@ -13,13 +13,10 @@
 }
 
 .Chart.is-loading .Chart-graph {
-  opacity: 0.6;
   pointer-events: none;
 }
 
 .Chart-graph {
-  display: flex;
-  flex-direction: column;
   flex-grow: 1;
   margin-bottom: var(--viewport-padding);
   position: relative;
@@ -84,9 +81,11 @@
 
 .Chart-tooltip {
   display: block;
+  max-width: 50vw;
   padding: 3px 10px 5px 24px;
 
   position: relative;
+  overflow: hidden;
 
   color: var(--color-text);
   background-color: rgba(255, 255, 255, 0.9);
@@ -121,6 +120,33 @@
 .Chart-tooltip--hasAction::after {
   border-color: var(--color-gold);
   background-color: var(--color-gold);
+}
+
+.Chart-tipRow {
+  display: block;
+}
+
+.Chart-label {
+  float: left;
+  max-width: 100%;
+  padding-right: 0.65em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.Chart-value {
+  float: left;
+}
+
+@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
+  .Chart-label {
+    float: none;
+  }
+
+  .Chart-value {
+    float: none;
+  }
 }
 
 .Chart-action {
@@ -196,4 +222,28 @@
 
 .Chart-paginate:not(:disabled):hover .Chart-pageLabel {
   opacity: 1;
+}
+
+.Chart-loading,
+.highcharts-loading-inner,
+.highcharts-no-data > span {
+  display: inline-block;
+  padding: 0.8em 1em 1em;
+
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  font-size: calc(14rem / var(--base-font-size));
+  font-style: italic;
+  font-weight: var(--font-weight-bold);
+  border-radius: 3px;
+  color: var(--color-text);
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 0 2px rgba(0, 0, 0, 0.15);
+}
+
+.highcharts-no-data > span {
+  transform: none;
 }

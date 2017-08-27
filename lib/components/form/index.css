@@ -1,4 +1,4 @@
-/** @define From */
+/** @define Form */
 
 :root {
   --Form-background-color: #fff;
@@ -307,7 +307,8 @@
   font-size: calc(14rem / var(--base-font-size));
 }
 
-.Form-pill:disabled {
+.Form-pill:disabled,
+.Form-pill.is-disabled {
   opacity: 0.6;
 }
 

@@ -10,7 +10,9 @@
     "build:js": "npm run build:js:app && npm run build:js:mapbox && npm run build:js:highcharts",
     "build:js:app": "browserify lib/app/index.js -t localenvify -t yo-yoify -t [ babelify --presets [ babel-preset-es2015 ] ] -g unassertify -g yo-yoify -g uglifyify | uglifyjs -o public/index.js",
     "build:js:mapbox": "browserify -r mapbox-gl | uglifyjs -o public/mapbox-gl.js",
-    "build:js:highcharts": "browserify -r highcharts | uglifyjs -o public/highcharts.js",
+    "build:js:highcharts": "npm run build:js:highcharts:main && npm run build:js:highcharts:no-data",
+    "build:js:highcharts:main": "browserify -r highcharts | uglifyjs -o public/highcharts.js",
+    "build:js:highcharts:no-data": "browserify -r highcharts/modules/no-data-to-display | uglifyjs -o public/highcharts/modules/no-data-to-display.js",
     "build:css": "postcss lib/app/index.css --no-map -u postcss-import -u postcss-custom-media -u postcss-custom-properties -u autoprefixer -u postcss-csso -o public/index.css",
     "build": "npm run build:css && npm run build:js"
   },
