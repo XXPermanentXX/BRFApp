@@ -1,5 +1,9 @@
 /** @define Performance */
 
+.Performance {
+  overflow: hidden;
+}
+
 .Performance-graph {
   width: calc(100% + (2.34375% * 2));
   margin: 0 0 0.5em;
