@@ -24,6 +24,7 @@
   float: left;
   clear: left;
   margin-right: 0.5em;
+  margin-bottom: 0.6em;
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
 }
@@ -36,6 +37,10 @@
 
 .List-definition:last-child {
   margin-bottom: 0;
+}
+
+.List-definition a {
+  font-weight: var(--font-weight-bold);
 }
 
 /**
