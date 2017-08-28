@@ -24,9 +24,14 @@
   float: left;
   clear: left;
   margin-right: 0.5em;
-  margin-bottom: 0.6em;
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+}
+
+.List-term--noDefinition {
+  float: none;
+  display: block;
+  margin-bottom: 0.6em;
 }
 
 .List-definition {
