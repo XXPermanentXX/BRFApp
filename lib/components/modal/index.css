@@ -15,14 +15,13 @@
   left: 0;
   overflow: auto;
   z-index: 2;
-  pointer-events: none;
+  pointer-events: auto;
+  background-color: rgba(0, 0, 0, 0.6);
   transition: background-color var(--Modal-transition-duration) linear;
 }
 
-.Modal.is-open,
-:root:not(.has-js) .Modal {
-  pointer-events: auto;
-  background-color: rgba(0, 0, 0, 0.6);
+:root.has-js .Modal.is-static {
+  display: none;
 }
 
 /**
@@ -39,7 +38,11 @@
 
   background-color: #fff;
   overflow: hidden;
-  visibility: hidden;
+
+  animation-name: Modal-window--appear;
+  animation-duration: 500ms;
+  animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.175);
+  animation-fill-mode: forwards;
 }
 
 @media (--sm-viewport), (--md-viewport), (--lg-viewport) {
@@ -73,15 +76,6 @@
   100% {
     transform: translate(0, -100vh);
   }
-}
-
-.Modal.is-open .Modal-window,
-:root:not(.has-js) .Modal-window {
-  visibility: visible;
-  animation-name: Modal-window--appear;
-  animation-duration: 500ms;
-  animation-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.175);
-  animation-fill-mode: forwards;
 }
 
 .Modal.is-disappearing {
