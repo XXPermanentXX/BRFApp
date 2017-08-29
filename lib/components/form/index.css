@@ -260,12 +260,11 @@
 
 .Form-switchGroup {
   display: flex;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
 }
 
 .Form-switch {
   float: left;
+  flex: 1 1 50%;
 }
 
 .Form-switch .Form-label {
