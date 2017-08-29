@@ -81,6 +81,7 @@
   font-size: calc(14rem / var(--base-font-size));
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .Form-label--lg {
@@ -109,6 +110,7 @@
   font-size: calc(14rem / var(--base-font-size));
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .Form-unit {
@@ -300,6 +302,7 @@
   align-items: center;
   padding: 0.5em 0.8em;
   border: 1px solid #fff;
+  position: relative;
   font-weight: normal;
   line-height: 1;
   color: currentColor;
@@ -338,11 +341,24 @@
 
 .Form-pill--select {
   padding-right: 2em;
+  position: relative;
   background-color: var(--color-sky);
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='8'><polygon stroke='none' fill='#ffffff' fill-rule='evenodd' points='0.641242789 -0.641242789 -0.419417382 0.419417382 5.77817459 6.61700936 11.9757666 0.419417382 10.9151064 -0.641242789 5.77817459 4.49568901' /></svg>");
-  background-repeat: no-repeat;
-  background-position: calc(100% - 0.5em) calc(50% + 1px);
-  appearance: none;
+  -webkit-appearance: none;
+}
+
+.Form-pill--select::after {
+  content: "";
+  display: block;
+  width: 9px;
+  height: 9px;
+  border: solid currentColor;
+  border-width: 0 1px 1px 0;
+
+  position: absolute;
+  right: 0.7em;
+  top: 50%;
+
+  transform: translateY(-68%) rotate(45deg);
 }
 
 .Form-pill--checkmark {

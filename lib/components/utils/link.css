@@ -23,6 +23,7 @@
   font-style: italic !important;
   color: var(--color-sky) !important;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .u-linkComplex:hover .u-linkComplexTarget,

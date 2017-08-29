@@ -29,7 +29,8 @@ h6,
 strong,
 b,
 dt {
-  -webkit-font-smoothing: antialiased; /* 1 */
+  -webkitfont-smoothing: antialiased; /* 1 */
+  -moz-osx-font-smoothing: grayscale;
 }
 
 :link,
@@ -38,6 +39,7 @@ dt {
   font-style: italic;
   color: var(--color-sky);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 :visited {

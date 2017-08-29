@@ -10,6 +10,7 @@
   color: #fff;
   background-color: var(--color-sky);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .Chart.is-loading .Chart-graph {
@@ -181,6 +182,7 @@
   font-size: calc(14rem / var(--base-font-size));
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 
   transition:
     opacity 175ms linear,

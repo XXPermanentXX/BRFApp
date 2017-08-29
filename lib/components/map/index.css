@@ -34,6 +34,7 @@
   background-color: var(--color-sky);
   transform: translate(-50%, calc(-100% - 7px));
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .Map-position::after {
@@ -58,6 +59,7 @@
   border-radius: 3px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.085);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .Map-popup--flat {

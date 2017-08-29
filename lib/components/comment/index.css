@@ -13,6 +13,7 @@
   color: var(--color-dim);
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .Comment--slim {
@@ -22,4 +23,5 @@
 .Comment-author {
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
