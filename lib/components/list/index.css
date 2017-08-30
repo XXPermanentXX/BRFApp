@@ -26,16 +26,28 @@
   margin-right: 0.5em;
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.List-term--noDefinition {
+  float: none;
+  display: block;
+  margin-bottom: 0.6em;
 }
 
 .List-definition {
   margin-bottom: 0.6em;
   font-weight: var(--font-weight-light);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .List-definition:last-child {
   margin-bottom: 0;
+}
+
+.List-definition a {
+  font-weight: var(--font-weight-bold);
 }
 
 /**

@@ -69,6 +69,7 @@ if (process.env.NODE_ENV === 'test') {
   server.use(auth.basic);
 }
 
+server.use(express.static(__dirname + '/public'));
 server.use(require('./lib/middleware/render'));
 server.use(compression());
 server.use(cookieParser());
@@ -87,7 +88,6 @@ server.use(auth.session());
 server.use(prismic());
 server.use(lang('sv'), routes);
 server.use('/en', lang('en'), routes);
-server.use(express.static(__dirname + '/public'));
 
 // eslint-disable-next-line no-console
 db.on('error', err => console.error(err));

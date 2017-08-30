@@ -111,6 +111,8 @@
   "electricity": "Fastighetsel",
   "elec": "el",
   "Total %s (incl. households)": "Total %s (inkl. hushållsel)",
+  "%s (incl. households)": "%s (inkl. hushållsel)",
+  "%s (estimate)": "%s (osäkert värde)",
   "Monthly": "Månad",
   "month": "månad",
   "Yearly": "År",
@@ -176,13 +178,16 @@
   "Type of action": "Typ av åtgärd",
   "This field is required": "Detta fält är obligatorisk och måste fyllas i",
   "Contractor": "Utfört av",
-  "Initiative": {
-    "one": "Initiativ",
-    "other": "Initiativ"
-  },
+  "Energy initiatives": "Energiinitiativ",
   "Åtgärd": "Åtgärd",
   "No consumtion data": "Ingen data om energiprestanda",
   "Pick a cooperative": "Välj en förening",
   "There would be a pretty chart here, had you enabled JavaScript": "Här skulle det finnas snygga grafer om du aktiverat JavaScript",
-  "METRY_ERROR": "Något gick fel vid inloggningen. Vänligen försök igen."
+  "METRY_ERROR": "Något gick fel vid inloggningen. Vänligen försök igen.",
+  "Unauthorized": "Rättigheter saknas",
+  "Does not have shared laundry room": "Har inte gemensam tvättstuga",
+  "Has shared laundry room": "Har gemensam tvättstuga",
+  "Does not have garage": "Har inte garage",
+  "Has garage": "Har garage",
+  "Contact regarding energy": "Kontakt för energifrågor"
 }

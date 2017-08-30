@@ -14,6 +14,9 @@ module.exports = {
         "node": true,
         "es6": true
     },
+    "parserOptions": {
+      "ecmaVersion": 2017
+    },
     "extends": "eslint:recommended",
     "rules": {
         "accessor-pairs": "error",
@@ -94,7 +97,7 @@ module.exports = {
         "no-await-in-loop": "error",
         "no-bitwise": "error",
         "no-caller": "error",
-        "no-catch-shadow": "error",
+        "no-catch-shadow": "off",
         "no-cond-assign": [
             "error",
             "except-parens"

@@ -29,6 +29,11 @@
   background: #fff;
 }
 
+.Onboarding-container {
+  width: 100%;
+  margin: var(--space-m) var(--space-m) var(--space-l);
+}
+
 .Onboarding-image {
   display: block;
   max-width: 100%;

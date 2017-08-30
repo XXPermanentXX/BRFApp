@@ -20,6 +20,7 @@
   font-weight: var(--font-weight-bold);
   background-color: var(--Button-background-color);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /**

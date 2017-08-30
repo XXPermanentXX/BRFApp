@@ -4,7 +4,7 @@
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: flex-start;
   padding: 0.5rem var(--viewport-padding);
   border-bottom: 1px solid var(--color-light);
 
@@ -37,6 +37,7 @@
   margin-right: auto;
 
   font-style: italic;
+  white-space: nowrap;
   font-size: calc(27rem / var(--base-font-size));
   color: var(--color-pale);
 }
