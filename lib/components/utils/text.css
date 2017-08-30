@@ -1,0 +1,47 @@
+/** @define utilities */
+
+/**
+ * 1. Arbitary number for visual alignment in common cases
+ */
+
+.u-textG {
+  font-size: calc(62rem / var(--base-font-size)) !important;
+  line-height: 0.8870967742 !important; /* 1 */
+}
+
+.u-textL {
+  font-size: calc(32rem / var(--base-font-size)) !important;
+}
+
+.u-textM {
+  font-size: calc(18rem / var(--base-font-size)) !important;
+}
+
+.u-textB {
+  font-size: calc(16rem / var(--base-font-size)) !important;
+}
+
+.u-textS {
+  font-size: calc(14rem / var(--base-font-size)) !important;
+}
+
+.u-textItalic {
+  font-style: italic !important;
+}
+
+.u-textNormal {
+  font-weight: var(--font-weight-normal) !important;
+}
+
+.u-textLight {
+  font-weight: var(--font-weight-light) !important;
+}
+
+.u-textBold {
+  font-weight: var(--font-weight-bold) !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+.u-textNowrap {
+  white-space: nowrap !important;
+}

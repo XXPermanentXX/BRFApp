@@ -1,7 +1,14 @@
+# Libraries
 node_modules
+
+# Logs
 npm-debug.log
-backend/apidoc
-backend/coverage
+
+# Build
+public
+
+# Environment
 *.swp
 .db
-.env
+*.env
+.vscode

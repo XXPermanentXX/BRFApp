@@ -1,0 +1,37 @@
+/* @define Sheet */
+
+:root {
+  --Sheet-padding: var(--viewport-padding);
+  --Sheet-border: 1px solid var(--color-light);
+  --Sheet-background-color: #fff;
+}
+
+.Sheet:not(.Sheet--conditional) {
+  padding: var(--Sheet-padding);
+  border: var(--Sheet-border);
+  background-color: var(--Sheet-background-color);
+}
+
+@media (--sm-viewport) {
+  .Sheet--sm {
+    padding: var(--Sheet-padding);
+    border: var(--Sheet-border);
+    background-color: var(--Sheet-background-color);
+  }
+}
+
+@media (--md-viewport) {
+  .Sheet--md {
+    padding: var(--Sheet-padding);
+    border: var(--Sheet-border);
+    background-color: var(--Sheet-background-color);
+  }
+}
+
+@media (--lg-viewport) {
+  .Sheet--lg {
+    padding: var(--Sheet-padding);
+    border: var(--Sheet-border);
+    background-color: var(--Sheet-background-color);
+  }
+}

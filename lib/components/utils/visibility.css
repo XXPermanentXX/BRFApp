@@ -1,0 +1,138 @@
+/** @define utilities */
+
+@media (--sm-viewport) {
+  .u-sm-hidden {
+    display: none !important;
+  }
+
+  .u-sm-block {
+    display: block !important;
+  }
+
+  .u-sm-inline {
+    display: inline !important;
+  }
+
+  .u-sm-inlineBlock {
+    display: inline-block !important;
+    max-width: 100%; /* 1 */
+  }
+
+  .u-sm-table {
+    display: table !important;
+  }
+
+  .u-sm-tableCell {
+    display: table-cell !important;
+  }
+
+  .u-sm-tableRow {
+    display: table-row !important;
+  }
+}
+
+@media (--md-viewport) {
+  .u-md-hidden {
+    display: none !important;
+  }
+
+  .u-md-block {
+    display: block !important;
+  }
+
+  .u-md-inline {
+    display: inline !important;
+  }
+
+  .u-md-inlineBlock {
+    display: inline-block !important;
+    max-width: 100%; /* 1 */
+  }
+
+  .u-md-table {
+    display: table !important;
+  }
+
+  .u-md-tableCell {
+    display: table-cell !important;
+  }
+
+  .u-md-tableRow {
+    display: table-row !important;
+  }
+}
+
+@media (--lg-viewport) {
+  .u-lg-hidden {
+    display: none !important;
+  }
+
+  .u-lg-block {
+    display: block !important;
+  }
+
+  .u-lg-inline {
+    display: inline !important;
+  }
+
+  .u-lg-inlineBlock {
+    display: inline-block !important;
+    max-width: 100%; /* 1 */
+  }
+
+  .u-lg-table {
+    display: table !important;
+  }
+
+  .u-lg-tableCell {
+    display: table-cell !important;
+  }
+
+  .u-lg-tableRow {
+    display: table-row !important;
+  }
+}
+
+/**
+ * Utilities for toggling visibility with the target selector
+ */
+
+.u-hiddenTarget:not(:target) {
+  display: none !important;
+}
+
+.u-hiddenTargetComplex:not(:target) .u-hiddenComplexTarget {
+  display: none !important;
+}
+
+.u-hiddenTargetComplex:target .u-hiddenTargetSlave {
+  display: none !important;
+}
+
+/**
+ * Toggle visibility depending on wether JavaScript is availible
+ */
+
+.has-js .u-hiddenHasScript {
+  display: none !important;
+}
+
+:root:not(.has-js) .u-hiddenNoScript {
+  display: none !important;
+}
+
+/**
+ * Invisibly cover bounding rect
+ */
+
+.u-overlay {
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+  position: absolute !important;
+  left: 0 !important;
+  top: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  appearance: none !important;
+}

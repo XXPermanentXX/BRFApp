@@ -1,0 +1,81 @@
+/** @define utilities */
+
+.u-colorSky {
+  color: var(--color-sky) !important;
+}
+
+.u-colorCyan {
+  color: var(--color-cyan) !important;
+}
+
+.u-colorGold {
+  color: var(--color-gold) !important;
+}
+
+.u-colorTomato {
+  color: var(--color-tomato) !important;
+}
+
+.u-colorBackground {
+  color: var(--color-background) !important;
+}
+
+.u-colorLight {
+  color: var(--color-light) !important;
+}
+
+.u-colorPale {
+  color: var(--color-pale) !important;
+}
+
+.u-colorDim {
+  color: var(--color-dim) !important;
+}
+
+.u-colorDark {
+  color: var(--color-dark) !important;
+}
+
+.u-colorText {
+  color: var(--color-text) !important;
+}
+
+.u-colorA {
+  color: var(--color-A) !important;
+}
+
+.u-colorB {
+  color: var(--color-B) !important;
+}
+
+.u-colorC {
+  color: var(--color-C) !important;
+}
+
+.u-colorD {
+  color: var(--color-D) !important;
+}
+
+.u-colorE {
+  color: var(--color-E) !important;
+}
+
+.u-colorF {
+  color: var(--color-F) !important;
+}
+
+.u-colorG {
+  color: var(--color-G) !important;
+}
+
+.u-colorUnknown {
+  color: var(--color-unknown) !important;
+}
+
+.u-colorCurrent {
+  color: currentColor !important;
+}
+
+.u-colorTransparent {
+  color: transparent !important;
+}

@@ -1,0 +1,37 @@
+/* @define Link */
+
+.Link,
+.Link:visited {
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  text-decoration: none;
+  font-style: italic;
+  cursor: pointer;
+  color: var(--color-sky);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/**
+ * 1. Don't colorize visited internal links
+ */
+
+.Link:visited[href^="#"],
+.Link:visited[href^="/"] {
+  color: var(--color-sky); /* 1 */
+}
+
+.Link:visited,
+.Link:visited[href^="//"] {
+  color: #ae38e8;
+}
+
+.Link:hover,
+.Link:active {
+  text-decoration: underline;
+}
+
+.Link--noSmoothing {
+  -webkit-font-smoothing: auto;
+}
