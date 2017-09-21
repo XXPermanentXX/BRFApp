@@ -190,10 +190,16 @@
   "Does not have garage": "Har inte garage",
   "Has garage": "Har garage",
   "Contact regarding energy": "Kontakt för energifrågor",
-  "An error has occured": "An error has occured",
-  "Oops!": "Oops!",
-  "An unforseen error has occured. It might be temporary and you could": "An unforseen error has occured. It might be temporary and you could",
-  "try again": "try again",
-  "or go to": "or go to",
-  "the homepage": "the homepage"
+  "An error has occured": "Något har gått fel",
+  "Oops!": "Hoppsan!",
+  "An unforseen error has occured. It might be temporary and you could": "Något har gått fel. Det kan vara tillfälligt och du kan",
+  "try again": "försöka igen",
+  "or go to": "eller gå till",
+  "the homepage": "hemsidan",
+  "Meter #%s": "Mätare #%s",
+  "You must agree to the terms to continue": "Du måste acceptera vilkoren för att gå vidare",
+  "This page could not be found. Try using the menu or go back to": "Sidan kunde inte hittas. Använd menyn för att hitta rätt eller gå tillbaka till",
+  "Page not found": "Sidan kunde inte hittas",
+  "Cooperative not found": "Föreningen kunde inte hittas",
+  "Some information is missing, please review and try again": "Något saknas, vänligen se över uppgifterna och försök igen"
 }

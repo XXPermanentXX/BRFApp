@@ -5,6 +5,7 @@ const session = require('express-session');
 const compression = require('compression');
 const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
+const chalk = require('chalk');
 const document = require('./lib/document');
 const routes = require('./lib/routes');
 const lang = require('./lib/middleware/lang');
@@ -92,7 +93,7 @@ mongoose.Promise = Promise;
 mongoose.connect(process.env.MONGO_URL, { useMongoClient: true }).then(() => {
   server.listen(process.env.PORT, () => {
     // eslint-disable-next-line no-console
-    console.info(`> Server listening at http://localhost:${ process.env.PORT }`);
+    console.info('> ' + chalk.bold(`Server listening at ${ chalk.underline(`http://localhost:${ process.env.PORT }`) }`));
   });
 }, err => {
   // eslint-disable-next-line no-console

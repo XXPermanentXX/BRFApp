@@ -99,7 +99,7 @@
   line-height: 1.4rem;
 }
 
-.Form-item--required .Form-label::after {
+.Form-item--required .Form-label:not(.Form-label--description)::after {
   content: " •";
   color: var(--color-tomato);
 }
