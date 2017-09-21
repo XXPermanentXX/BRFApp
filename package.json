@@ -75,6 +75,7 @@
     "express-validator": "^2.10.0",
     "friendly-url": "^1.0.3",
     "fun-component": "^1.0.3",
+    "got": "^7.1.0",
     "highcharts": "^5.0.14",
     "lodash.capitalize": "^4.2.1",
     "lodash.debounce": "^4.0.8",
@@ -83,14 +84,13 @@
     "mapbox-gl": "^0.35.1",
     "method-override": "^2.3.9",
     "moment": "^2.18.1",
-    "mongoose": "^4.10.6",
+    "mongoose": "^4.11.12",
     "nanohref": "^3.0.0",
     "object-hash": "^1.1.8",
     "passport": "^0.2.1",
     "passport-oauth2": "^1.4.0",
     "prismic-element": "^0.2.2",
     "prismic.io": "^3.5.7",
-    "request": "^2.55.0",
     "y18n": "^3.2.1"
   }
 }

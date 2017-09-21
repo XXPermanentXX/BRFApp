@@ -20,3 +20,7 @@
 .u-sizeFullV {
   height: 100% !important;
 }
+
+.u-scroll {
+  overflow: scroll !important;
+}

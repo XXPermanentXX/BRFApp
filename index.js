@@ -11,12 +11,9 @@ const lang = require('./lib/middleware/lang');
 const auth = require('./lib/middleware/auth');
 const method = require('./lib/middleware/method');
 const prismic = require('./lib/middleware/prismic');
+const error = require('./lib/middleware/error');
 const app = require('./lib/app');
 
-mongoose.Promise = Promise;
-mongoose.connect(process.env.MONGO_URL);
-
-const db = mongoose.connection;
 const server = express();
 
 /**
@@ -88,12 +85,17 @@ server.use(auth.session());
 server.use(prismic());
 server.use(lang('sv'), routes);
 server.use('/en', lang('en'), routes);
+server.use(error);
 
-// eslint-disable-next-line no-console
-db.on('error', err => console.error(err));
-db.once('open', () => {
+
+mongoose.Promise = Promise;
+mongoose.connect(process.env.MONGO_URL, { useMongoClient: true }).then(() => {
   server.listen(process.env.PORT, () => {
     // eslint-disable-next-line no-console
     console.info(`> Server listening at http://localhost:${ process.env.PORT }`);
   });
+}, err => {
+  // eslint-disable-next-line no-console
+  console.error(err);
+  process.exit(1);
 });
