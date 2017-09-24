@@ -72,7 +72,6 @@
 }
 
 .App-error {
-  max-height: 3rem;
   position: relative;
   z-index: 2;
   color: #fff;
