@@ -204,5 +204,7 @@
   "Cooperative not found": "Föreningen kunde inte hittas",
   "Some information is missing, please review and try again": "Något saknas, vänligen se över uppgifterna och försök igen",
   "Missing your cooperative?": "Finns din förening inte med än?",
-  "Add your cooperative": "Lägg till din förening"
+  "Add your cooperative": "Lägg till din förening",
+  "Something went wrong when signing you in. Please try again.": "Något gick fel vid inloggningen. Vänligen försök igen.",
+  "Något gick fel vid inloggningen. Vänligen försök igen.": "Något gick fel vid inloggningen. Vänligen försök igen."
 }
