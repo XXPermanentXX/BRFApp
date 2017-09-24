@@ -28,7 +28,7 @@
  */
 
 .Button:link {
-  cursor: auto; /* 1 */
+  cursor: pointer; /* 1 */
 }
 
 .Button:hover,
