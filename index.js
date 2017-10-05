@@ -67,7 +67,7 @@ if (process.env.NODE_ENV === 'test') {
   server.use(auth.basic);
 }
 
-server.use(express.static(__dirname + '/public'));
+server.use(express.static('public', { maxage: 1000 * 60 * 60 * 24 * 365 }));
 server.use(require('./lib/middleware/render'));
 server.use(compression());
 server.use(cookieParser());
