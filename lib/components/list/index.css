@@ -65,6 +65,10 @@
   overflow: hidden;
 }
 
+.List--numbered .List-item  {
+  margin-bottom: var(--space-m);
+}
+
 /**
  * 1. Verically align with adjacent content
  */
@@ -82,7 +86,6 @@
   background-color: var(--color-gold);
   border-radius: 1em;
 }
-
 
 .List-number .List-item:not(:last-child) {
   margin-bottom: 1.5em;
