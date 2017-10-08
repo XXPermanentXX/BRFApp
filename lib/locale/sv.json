@@ -111,7 +111,7 @@
   "Electricity": "Fastighetsel",
   "electricity": "Fastighetsel",
   "elec": "el",
-  "Total %s (incl. households)": "Total %s (inkl. hushållsel)",
+  "Total elec (incl. households)": "Total el (inkl. hushållsel)",
   "%s (incl. households)": "%s (inkl. hushållsel)",
   "%s (estimate)": "%s (osäkert värde)",
   "Monthly": "Månad",
