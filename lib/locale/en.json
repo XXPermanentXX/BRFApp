@@ -109,5 +109,6 @@
   "Part of belysningsutmaningen": "Part of belysningsutmaningen",
   "Shared laundry room": "Shared laundry room",
   "Garage": "Garage",
-  "METRY_ERROR": "Something went wrong when signing you in. Please try again."
+  "METRY_ERROR": "Something went wrong when signing you in. Please try again.",
+  "Cooperative not found": "Cooperative not found"
 }

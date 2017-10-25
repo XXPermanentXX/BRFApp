@@ -5,18 +5,16 @@ const session = require('express-session');
 const compression = require('compression');
 const expressValidator = require('express-validator');
 const mongoose = require('mongoose');
+const chalk = require('chalk');
 const document = require('./lib/document');
 const routes = require('./lib/routes');
 const lang = require('./lib/middleware/lang');
 const auth = require('./lib/middleware/auth');
 const method = require('./lib/middleware/method');
 const prismic = require('./lib/middleware/prismic');
+const error = require('./lib/middleware/error');
 const app = require('./lib/app');
 
-mongoose.Promise = Promise;
-mongoose.connect(process.env.MONGO_URL);
-
-const db = mongoose.connection;
 const server = express();
 
 /**
@@ -69,7 +67,7 @@ if (process.env.NODE_ENV === 'test') {
   server.use(auth.basic);
 }
 
-server.use(express.static(__dirname + '/public'));
+server.use(express.static('public', { maxage: 1000 * 60 * 60 * 24 * 365 }));
 server.use(require('./lib/middleware/render'));
 server.use(compression());
 server.use(cookieParser());
@@ -88,12 +86,17 @@ server.use(auth.session());
 server.use(prismic());
 server.use(lang('sv'), routes);
 server.use('/en', lang('en'), routes);
+server.use(error);
 
-// eslint-disable-next-line no-console
-db.on('error', err => console.error(err));
-db.once('open', () => {
+
+mongoose.Promise = Promise;
+mongoose.connect(process.env.MONGO_URL, { useMongoClient: true }).then(() => {
   server.listen(process.env.PORT, () => {
     // eslint-disable-next-line no-console
-    console.info(`> Server listening at http://localhost:${ process.env.PORT }`);
+    console.info('> ' + chalk.bold(`Server listening at ${ chalk.underline(`http://localhost:${ process.env.PORT }`) }`));
   });
+}, err => {
+  // eslint-disable-next-line no-console
+  console.error(err);
+  process.exit(1);
 });

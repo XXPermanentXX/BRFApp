@@ -5,8 +5,13 @@
   padding: 0;
 }
 
-.List-item:not(:last-child) {
-  margin-bottom: 1.5em;
+.List-item {
+  line-height: 1.6;
+}
+
+.List--disc {
+  list-style: disc;
+  list-style-position: inside;
 }
 
 /**
@@ -60,6 +65,10 @@
   overflow: hidden;
 }
 
+.List--numbered .List-item  {
+  margin-bottom: var(--space-m);
+}
+
 /**
  * 1. Verically align with adjacent content
  */
@@ -76,4 +85,8 @@
   font-size: calc(15rem / var(--base-font-size));
   background-color: var(--color-gold);
   border-radius: 1em;
+}
+
+.List-number .List-item:not(:last-child) {
+  margin-bottom: 1.5em;
 }
