@@ -98,6 +98,7 @@
     "method-override": "^2.3.9",
     "moment": "^2.18.1",
     "mongoose": "^4.11.12",
+    "nanocomponent": "^6.4.2",
     "nanohref": "^3.0.0",
     "object-hash": "^1.1.8",
     "passport": "^0.2.1",
