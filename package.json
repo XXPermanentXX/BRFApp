@@ -93,6 +93,7 @@
     "lodash.debounce": "^4.0.8",
     "lodash.merge": "^4.6.0",
     "lodash.pick": "^4.4.0",
+    "mapbox": "^1.0.0-beta9",
     "mapbox-gl": "^0.35.1",
     "method-override": "^2.3.9",
     "moment": "^2.18.1",
