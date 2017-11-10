@@ -30,11 +30,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/CIVIS-project/BRFEnergi"
+    "url": "https://github.com/CIVIS-project/BRFApp"
   },
   "license": "Apache-2.0",
   "engines": {
-    "node": ">=8.3.0"
+    "node": ">=8.0.0"
   },
   "devDependencies": {
     "autoprefixer": "^6.7.2",

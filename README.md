@@ -4,7 +4,7 @@
 
 ## Setup
 
-The application runs on [Node.js](https://nodejs.org) (version 6 or above) and [mongodb](https://docs.mongodb.com/manual/).
+The application runs on [Node.js](https://nodejs.org) (version 8 or above) and [mongodb](https://docs.mongodb.com/manual/).
 
 ### Install dependencies
 
