@@ -25,7 +25,7 @@
   width: 1px;
 }
 
-.Form-target:disabled ~ .Form-proxy {
+.Form-target:disabled + .Form-proxy {
   opacity: 0.6;
 }
 
@@ -227,9 +227,14 @@
   transition: box-shadow 150ms ease-out;
 }
 
+.Form-proxy--small {
+  width: 16px;
+  height: 16px;
+}
+
 .Form-toggle:active + .Form-proxy,
 .Form-toggle:checked + .Form-proxy {
-  border-color: currentColor;
+  border-color: var(--color-text);
 }
 
 .Form-toggle:disabled + .Form-proxy {
@@ -240,6 +245,10 @@
   background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 23' width='15' height='12.5'><path d='M27.0320729,3.93301911 C27.0320729,4.10797669 26.9671622,4.25991355 26.8378393,4.38882966 L9.36089195,21.7925055 C9.24992721,21.9214216 9.10197421,21.9858797 8.91703297,21.9858797 L8.88929178,21.9858797 L8.8615506,21.9858797 C8.69510348,21.9858797 8.54715049,21.9214216 8.41769162,21.7925055 L0.317265227,13.7536647 C0.187806358,13.5879155 0.123076923,13.4314196 0.123076923,13.2840417 C0.123076923,13.136709 0.187806358,12.9803035 0.317265227,12.8144639 L3.78491351,9.36135361 C4.09931362,9.08510478 4.41371373,9.08510478 4.72811384,9.36135361 L8.88929178,13.5327108 L22.427036,0.0241434065 C22.5935738,-0.104772711 22.7507285,-0.169230769 22.8985455,-0.169230769 C23.0466798,-0.169230769 23.2036986,-0.104772711 23.3701457,0.0241434065 L26.837794,3.47725369 C26.9672528,3.60612467 27.0320729,3.75806152 27.0320729,3.93301911 Z' fill='currentColor' /></svg>");
   background-repeat: no-repeat;
   background-position: center;
+}
+
+.Form-toggle:checked + .Form-proxy--checkbox.Form-proxy--small {
+  background-size: 85%;
 }
 
 .Form-toggle:checked + .Form-proxy--radio {
@@ -288,11 +297,16 @@
 .Form-switch input:checked + .Form-label {
   font-style: normal;
   color: var(--color-sky);
+  font-weight: bold;
   background-color: #fff;
 }
 
 .Form-switch input:disabled + .Form-label {
   opacity: 0.6;
+}
+
+.Form-switch input:checked:disabled + .Form-label {
+  color: var(--color-dark);
 }
 
 .Form-pill {
@@ -318,6 +332,7 @@
   clear: left;
   border-width: 1px 0 1px 1px;
   color: var(--color-sky);
+  font-weight: bold;
   background-color: #fff;
   border-radius: 2em 0 0 2em;
 }
@@ -328,6 +343,20 @@
   border-radius: 0 2em 2em 0;
   color: #fff;
   background-color: var(--color-sky);
+}
+
+.Form-pill--single {
+  float: none;
+  border-width: 0;
+  color: var(--color-sky);
+  font-weight: bold;
+  background-color: #fff;
+  border-radius: 2em;
+}
+
+.Form-pill--leading.is-disabled,
+.Form-pill--single.is-disabled {
+  color: var(--color-dark);
 }
 
 .Form-pill--leading.Form-pill--outline {
