@@ -49,6 +49,7 @@
   color: var(--Button-background-color);
   font-weight: var(--font-weight-normal);
   background-color: transparent;
+  text-align: left;
 }
 
 .Button--link:hover,

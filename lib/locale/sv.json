@@ -131,7 +131,7 @@
   "Consumption mapping": "Energikartläggning",
   "Energy management": "Målstyrd energiförvaltning",
   "Belysningsutmaningen": "Berlysningsutmaningen",
-  "Other cooperatives": "Andra föreningar",
+  "Other cooperatives close by": "Andra föreningar i närheten",
   "Pick one": "Välj en",
   "Find me": "Hitta mig",
   "You are here": "Du är här",
@@ -206,5 +206,8 @@
   "Missing your cooperative?": "Finns din förening inte med än?",
   "Add your cooperative": "Lägg till din förening",
   "Something went wrong when signing you in. Please try again.": "Något gick fel vid inloggningen. Vänligen försök igen.",
-  "Något gick fel vid inloggningen. Vänligen försök igen.": "Något gick fel vid inloggningen. Vänligen försök igen."
+  "Något gick fel vid inloggningen. Vänligen försök igen.": "Något gick fel vid inloggningen. Vänligen försök igen.",
+  "Find cooperative": "Hitta förening",
+  "Type here": "Skriv här",
+  "Sorry, we couldn't find any cooperative by that name": "Vi kunde inte hitta någon förening med det namnet"
 }
