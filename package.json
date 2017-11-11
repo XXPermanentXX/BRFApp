@@ -73,7 +73,7 @@
     "uglifyify": "^3.0.4",
     "unassertify": "^2.0.4",
     "watchify-middleware": "^1.6.0",
-    "yo-yoify": "^3.7.3"
+    "yo-yoify": "^4.0.0"
   },
   "dependencies": {
     "body-parser": "~1.12.0",
