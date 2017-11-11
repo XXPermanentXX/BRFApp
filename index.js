@@ -67,6 +67,10 @@ if (process.env.NODE_ENV === 'test') {
   server.use(auth.basic)
 }
 
+if (process.env.NODE_ENV !== 'production') {
+  server.use(require('./lib/middleware/robots'))
+}
+
 server.use(express.static('public', { maxage: 1000 * 60 * 60 * 24 * 365 }))
 server.use(require('./lib/middleware/render'))
 server.use(compression())
