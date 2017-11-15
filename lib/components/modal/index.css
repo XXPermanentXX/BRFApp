@@ -42,7 +42,7 @@
   margin: auto; /* 3 */
 
   background-color: #fff;
-  overflow: hidden;
+  overflow: auto;
 
   animation-name: Modal-window--appear;
   animation-duration: 500ms;
