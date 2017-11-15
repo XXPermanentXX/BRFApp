@@ -28,7 +28,7 @@
  */
 
 .Button:link {
-  cursor: auto; /* 1 */
+  cursor: pointer; /* 1 */
 }
 
 .Button:hover,
@@ -49,6 +49,7 @@
   color: var(--Button-background-color);
   font-weight: var(--font-weight-normal);
   background-color: transparent;
+  text-align: left;
 }
 
 .Button--link:hover,

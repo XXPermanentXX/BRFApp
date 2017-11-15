@@ -20,6 +20,11 @@
   transition: background-color var(--Modal-transition-duration) linear;
 }
 
+.Modal--placeholder {
+  display: none;
+  background-color: transparent;
+}
+
 :root.has-js .Modal.is-static {
   display: none;
 }

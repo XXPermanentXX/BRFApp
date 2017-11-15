@@ -8,6 +8,7 @@ npm-debug.log
 public
 
 # Environment
+data
 *.swp
 .db
 *.env
