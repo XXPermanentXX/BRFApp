@@ -44,4 +44,4 @@ readFile('.env').then(content => {
       console.warn(`> Missing environment variable ${key}`)
     }
   }
-}).catch(() => writeFile('.env', DEFAULT.trim()))
+}, () => writeFile('.env', DEFAULT.trim()))
