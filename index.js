@@ -24,36 +24,24 @@ const server = express()
 server.render = function (route, options, done) {
   let output
   const state = Object.assign({}, this.locals, options._locals, options)
-  const cache = this.enabled('view cache')
 
   // Remove any nested duplicates
   delete state._locals
 
-  if (cache) {
-    this.cache[state.lang] = this.cache[state.lang] || {}
-    output = this.cache[state.lang][route]
-  }
+  try {
+    // Determine whether route needs to be prefixed with language pathname
+    const prefix = state.lang === 'sv' ? '' : `/${state.lang}`
 
-  if (!output) {
-    try {
-      // Determine whether route needs to be prefixed with language pathname
-      const prefix = state.lang === 'sv' ? '' : `/${state.lang}`
+    // Join route with prefix to generate actual view path
+    const pathname = `${prefix}${route}`.replace(/\/$/, '')
 
-      // Join route with prefix to generate actual view path
-      const pathname = `${prefix}${route}`.replace(/\/$/, '')
+    // Wrap app `toString` method for injection into page
+    const view = (...args) => app.toString(pathname, ...args)
 
-      // Wrap app `toString` method for injection into page
-      const view = (...args) => app.toString(pathname, ...args)
-
-      // Inject view in page and ensure that state is handled by `toJSON`
-      output = document(view, state)
-    } catch (err) {
-      return done(err)
-    }
-  }
-
-  if (cache) {
-    this.cache[state.lang][route] = output
+    // Inject view in page and ensure that state is handled by `toJSON`
+    output = document(view, state)
+  } catch (err) {
+    return done(err)
   }
 
   done(null, output)
