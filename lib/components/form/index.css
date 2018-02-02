@@ -34,6 +34,8 @@
  */
 
 .Form-collapse {
+  display: flex;
+  flex-wrap: wrap;
   margin: 0 calc(var(--viewport-padding) * -1);
 }
 
@@ -44,8 +46,8 @@
 }
 
 .Form-item {
+  flex: 1 0 100%;
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
   position: relative;
   padding-top: calc(var(--Form-padding-x) + 1em);
@@ -129,6 +131,7 @@
 .Form-input {
   box-sizing: border-box;
   display: block;
+  width: 100%;
   flex-grow: 1;
   padding: calc(var(--Form-padding-y) * 0.75) var(--Form-padding-x) calc(var(--Form-padding-y) * 1.25);
   border: 0;

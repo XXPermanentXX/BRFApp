@@ -1,22 +1,87 @@
 /* @define Address */
 
+@import "../form";
+
 .Address {
-  position: relative;
 }
 
-.Address-map {
+.Address-street {
+  flex: 1 0 100%;
+}
+
+.Address-postalCode {
+  flex: 1 0 35%;
+}
+
+.Address-postalTown {
+  flex: 1 0 65%;
+}
+
+.Address-validity {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 2em;
   position: relative;
+  font-weight: bold;
+  font-size: calc(14rem / var(--base-font-size));
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.Address-validity.is-loading {
+  color: var(--color-sky);
+}
+
+.Address-validity.is-valid {
+  color: var(--color-B);
+}
+
+.Address-validity.is-invalid {
+  color: var(--color-tomato);
+}
+
+.Address-validity::after {
+  content: "";
+  height: 3px;
   width: 100%;
-  height: 0;
-  padding-bottom: calc(100% * (9 / 16));
-  background-color: #fff;
-  border: solid var(--color-light);
-  border-width: 0 1px 1px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
 }
 
-.Address-loader {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+.Address-validity.is-loading::after {
+  background-color: var(--color-sky);
+  animation: Address-validity--loading 15s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+@keyframes Address-validity--loading {
+  to {
+    transform: scaleX(0.97);
+  }
+}
+
+.Address-validity.is-valid::after {
+  background-color: transparent;
+  animation: Address-validity--valid 400ms linear;
+}
+
+@keyframes Address-validity--valid {
+  to {
+    background-color: var(--color-B);
+    transform: scaleX(1);
+  }
+}
+
+.Address-validity.is-invalid::after {
+  animation: Address-validity--invalid 400ms cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+@keyframes Address-validity--invalid {
+  to {
+    background-color: var(--color-tomato);
+    transform: scaleX(1);
+  }
 }

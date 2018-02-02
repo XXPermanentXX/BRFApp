@@ -211,5 +211,8 @@
   "Type here": "Skriv här",
   "Sorry, we couldn't find any cooperative by that name": "Vi kunde inte hitta någon förening med det namnet",
   "Address": "Adress",
-  "Add cooperative": "Lägg till förening"
+  "Add cooperative": "Lägg till förening",
+  "Postnummer": "Postnummer",
+  "Ort": "Ort",
+  "Did not recognize the address": "Vi känner inte igen den adressen"
 }
