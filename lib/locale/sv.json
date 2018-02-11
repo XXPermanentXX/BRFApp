@@ -214,5 +214,10 @@
   "Add cooperative": "Lägg till förening",
   "Postnummer": "Postnummer",
   "Ort": "Ort",
-  "Did not recognize the address": "Vi känner inte igen den adressen"
+  "Did not recognize the address": "Vi känner inte igen den adressen",
+  "Geothermal heating": "Bergvärme",
+  "Solar panels": "Solceller",
+  "Other": "Annat",
+  " and ": " och ",
+  "Has %s": "Har %s"
 }
