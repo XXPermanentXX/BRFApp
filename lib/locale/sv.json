@@ -219,5 +219,7 @@
   "Solar panels": "Solceller",
   "Other": "Annat",
   " and ": " och ",
-  "Has %s": "Har %s"
+  "Has %s": "Har %s",
+  "Disable tracking": "Stäng av spårning",
+  "Enable tracking": "Slå på spårning"
 }
