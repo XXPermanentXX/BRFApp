@@ -33,7 +33,7 @@ server.render = function (route, options, done) {
     const prefix = state.lang === 'sv' ? '' : `/${state.lang}`
 
     // Join route with prefix to generate actual view path
-    const pathname = `${prefix}${route}`.replace(/\/$/, '')
+    const pathname = `${prefix}${route}`.replace(/(\/?.+)\/$/, '$1')
 
     // Wrap app `toString` method for injection into page
     const view = (...args) => app.toString(pathname, ...args)

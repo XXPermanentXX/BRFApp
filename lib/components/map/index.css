@@ -22,55 +22,51 @@
 }
 
 .Map-recruit {
+  display: none;
+  justify-content: space-between;
   width: 100%;
-  padding: 0 var(--viewport-padding);
-  bottom: var(--viewport-padding);
+  padding: var(--viewport-padding);
   white-space: nowrap;
   -webkit-font-smoothing: antialiased;
-  transform: translateY(calc(100% + var(--viewport-padding)));
-  animation: Map-recruitPanel--appear 350ms 3000ms cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
 :root.has-js .Map-recruit {
   position: absolute;
+  top: 0;
+  left: 0;
 }
 
-@keyframes Map-recruitPanel--appear {
-  to {
-    transform: translateY(0%);
-  }
-}
-
-.Map-recruitPanel {
-  display: none;
+.Map-panel {
   background: #fff;
-  padding: 1rem;
+  padding: 1em;
   border: 1px solid var(--color-light);
 }
 
-@media (--sm-viewport), (--md-viewport), (--lg-viewport) {
-  .Map-recruit {
-    width: auto;
-    padding: 0;
-    position: absolute;
-    left: 50%;
-    top: 1rem;
-    bottom: auto;
-    transform: translate(-50%, calc(-100% - 1rem));
-  }
+.Map-controls {
+  display: none;
+  width: 100%;
+  padding: var(--viewport-padding) calc(var(--viewport-padding) / 2);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
 
-  @keyframes Map-recruitPanel--appear {
-    to {
-      transform: translate(-50%, 0);
-    }
-  }
+:root.has-js .Map-controls {
+  display: flex;
+}
 
-  .Map-recruitPanel {
-    display: block;
-  }
+:root.has-js .Map-controls > * {
+  display: block;
+  margin: 0 calc(var(--viewport-padding) / 2);
+}
 
-  .Map-recruitButton {
+@media (--md-viewport), (--lg-viewport) {
+  :root.has-js .Map-controls {
     display: none;
+  }
+
+  .Map-recruit {
+    display: flex;
   }
 }
 
