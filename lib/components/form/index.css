@@ -72,7 +72,7 @@
   margin: 0 -1px;
 }
 
-.Form-collapse .Form-item + .Form-item {
+.Form-item + .Form-item {
   border-width: 0 1px 1px;
 }
 
