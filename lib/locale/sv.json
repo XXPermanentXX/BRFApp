@@ -225,5 +225,6 @@
   "Filter": "Filtrera",
   "Search": "Sök",
   "Select which cooperatives are shown on the map by picking energy initiatives below.": "Bestäm vilka föreningar som visas på kartan genom att välja energiinitiativ här nedan.",
-  "Find a cooperative by searhing for it by its name.": "Hitta en förening genom att söka på dess namn."
+  "Find a cooperative by searhing for it by its name.": "Hitta en förening genom att söka på dess namn.",
+  "Reset": "Återställ"
 }
