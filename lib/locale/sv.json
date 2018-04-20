@@ -123,9 +123,10 @@
   "Energy mapping": "Genomförd energikartläggning",
   "Contract for goal oriented energy management": "Har kontrakt för målstyrd energiförvaltning",
   "Participating in belysningsutmaningen": "Deltar i belysningsutmaningen",
-  "Charger for electric cars": "Har laddare för elbil",
-  "Electric car charger": "Laddare för elbil",
-  "Renewable energy production": "Har förnybar energiproduktion",
+  "Has charger for electric cars": "Har laddare för elbil",
+  "Charger for electric cars": "Laddare för elbil",
+  "Has renewable energy production": "Har förnybar energiproduktion",
+  "Renewable energy production": "Förnybar energiproduktion",
   "Energy production": "Energiproduktion",
   "Energy representative": "Energiansvarig",
   "Consumption mapping": "Energikartläggning",
@@ -224,7 +225,10 @@
   "Search and filter": "Sök och filtrera",
   "Filter": "Filtrera",
   "Search": "Sök",
-  "Select which cooperatives are shown on the map by picking energy initiatives below.": "Bestäm vilka föreningar som visas på kartan genom att välja energiinitiativ här nedan.",
+  "Select which cooperatives are shown on the map based on what they have or do not have.": "Bestäm vilka föreningar som visas på kartan beroende på vad de har eller inte har.",
+  "Pick one or more energy initiatives below.": "Välj en eller flera energiinitativ här nedan.",
   "Find a cooperative by searhing for it by its name.": "Hitta en förening genom att söka på dess namn.",
-  "Reset": "Återställ"
+  "Reset": "Återställ",
+  "Show cooperatives that have": "Visa föreningar som har",
+  "Show cooperatives that _do not_ have": "Visa föreningar som _inte_ har"
 }
