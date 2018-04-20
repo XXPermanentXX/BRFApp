@@ -59,8 +59,8 @@
 
 .Modal-dismiss {
   position: absolute;
-  top: var(--space-b);
-  right: var(--space-b);
+  top: var(--space-s);
+  right: var(--space-s);
 }
 
 @keyframes Modal-window--appear {
