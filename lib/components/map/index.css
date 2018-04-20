@@ -26,8 +26,10 @@
 .Map-recruit {
   display: none;
   justify-content: space-between;
-  width: 100%;
-  padding: var(--viewport-padding);
+  align-items: baseline;
+  height: 0;
+  width: calc(100% - var(--viewport-padding) * 2);
+  margin: var(--viewport-padding);
   white-space: nowrap;
   -webkit-font-smoothing: antialiased;
 }
