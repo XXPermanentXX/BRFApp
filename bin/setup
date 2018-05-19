@@ -28,7 +28,6 @@ METRY_CLIENT_SECRET=<CLIENT_SECRET>
 METRY_OPEN_CHANNEL=<OPEN_CHANNEL_ID>
 METRY_ENDPOINT=https://app.metry.io/api/v2/
 # METRY_ENDPOINT=https://metry-development.herokuapp.com/api/v2/
-METRY_METER_VIEW=https://app.metry.io/app/meters/active/{{meter_id}}/overview
 
 # CMS
 PRISMIC_API=https://brf-energi.cdn.prismic.io/api
