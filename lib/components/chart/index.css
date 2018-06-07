@@ -246,6 +246,23 @@
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1), 0 0 2px rgba(0, 0, 0, 0.15);
 }
 
+/**
+ * 1. Fix that the `useHTML` option ignores font-size
+ */
+
+.highcharts-plot-line-label {
+  font-size: 11px !important; /* 1 */
+  color: rgba(255, 255, 255, 0.26);
+}
+
+/**
+ * 1. Hack to align legend using variables, not pixels
+ */
+
+.highcharts-legend-item:not(div) {
+  margin-left: var(--viewport-padding); /* 1 */
+}
+
 .highcharts-no-data > span {
   transform: none;
 }
