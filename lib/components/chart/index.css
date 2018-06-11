@@ -3,7 +3,7 @@
 .Chart {
   display: flex;
   flex-direction: column;
-  padding: var(--viewport-padding) 0;
+  padding: var(--viewport-padding) 0 calc(var(--viewport-padding) / 4);
 
   position: relative;
 
