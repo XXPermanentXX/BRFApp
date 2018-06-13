@@ -1,6 +1,6 @@
 {
   "name": "brf-energi",
-  "version": "2.7.0",
+  "version": "2.7.1",
   "description": "Brf Energi webapp",
   "main": "index.js",
   "scripts": {
