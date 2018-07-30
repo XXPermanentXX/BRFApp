@@ -12,6 +12,7 @@ const DEFAULT = `
 NODE_ENV=development
 BRFENERGI_LANG=sv
 PORT=3000
+FORUM_URL=http://localhost:3000
 
 # Services
 MAPBOX_ACCESS_TOKEN=<MAPBOX_TOKEN>
