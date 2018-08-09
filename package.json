@@ -46,7 +46,7 @@
     "eslint": "^3.19.0",
     "husky": "^0.14.3",
     "localenvify": "^1.0.1",
-    "nodemon": "^1.17.5",
+    "nodemon": "^1.18.3",
     "postcss": "^5.2.18",
     "postcss-cli": "^3.2.0",
     "postcss-csso": "^1.1.2",
@@ -75,7 +75,7 @@
     "yo-yoify": "^4.3.0"
   },
   "dependencies": {
-    "body-parser": "~1.12.0",
+    "body-parser": "^1.18.3",
     "chalk": "^2.4.1",
     "choo": "^6.11.0",
     "compression": "^1.7.2",
@@ -90,6 +90,7 @@
     "friendly-url": "^1.0.3",
     "got": "^7.1.0",
     "highcharts": "^5.0.15",
+    "jsonwebtoken": "^8.3.0",
     "lodash.capitalize": "^4.2.1",
     "lodash.merge": "^4.6.1",
     "lodash.pick": "^4.4.0",
@@ -105,6 +106,7 @@
     "prismic-element": "^0.7.1",
     "prismic-javascript": "^1.5.0-beta.4",
     "prismic-richtext": "^0.2.7",
+    "simple-encryptor": "^1.4.0",
     "smoothscroll-polyfill": "^0.4.3",
     "y18n": "^3.2.1"
   }
