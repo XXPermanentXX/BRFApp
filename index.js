@@ -75,7 +75,6 @@ server.use(session({
 server.use(expressValidator())
 server.use(auth.initialize())
 server.use(auth.session())
-server.use(auth.nodebb())
 server.use(prismic())
 server.use(lang('sv'), routes)
 server.use('/en', lang('en'), routes)
