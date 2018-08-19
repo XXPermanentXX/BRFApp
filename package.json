@@ -88,6 +88,7 @@
     "express-session": "^1.15.6",
     "express-validator": "^2.10.0",
     "friendly-url": "^1.0.3",
+    "geoip-lite": "1.2.2",
     "got": "^7.1.0",
     "highcharts": "^5.0.15",
     "jsonwebtoken": "^8.3.0",

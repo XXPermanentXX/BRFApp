@@ -18,6 +18,12 @@ const prismic = require('./lib/middleware/prismic')
 const server = express()
 
 /**
+ * Trust nginx proxy to forward client IP
+ */
+
+server.enable('trust proxy')
+
+/**
  * Extend Express native render method with a custom framework compatible one
  */
 
