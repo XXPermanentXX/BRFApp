@@ -6,7 +6,6 @@ const session = require('express-session')
 const compression = require('compression')
 const cookieParser = require('cookie-parser')
 const expressValidator = require('express-validator')
-const app = require('./lib/app')
 const routes = require('./lib/routes')
 const document = require('./lib/document')
 const lang = require('./lib/middleware/lang')
@@ -29,6 +28,7 @@ server.enable('trust proxy')
 
 server.render = function (route, options, done) {
   let output
+  const app = require('./lib/app')
   const state = Object.assign({}, this.locals, options._locals, options)
 
   // Remove any nested duplicates

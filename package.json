@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "restart": "mongod --dbpath data --fork --logpath /dev/null && nodemon -r dotenv/config --inspect index.js -i lib/components && npm stop",
+    "restart": "mongod --dbpath data --fork --logpath /dev/null && nodemon -r dotenv/config --inspect index.js -i lib/components -i lib/views -i lib/app -i lib/locale && npm stop",
     "stop": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
     "test": "standard && stylelint **/*.css",
     "postmerge": "bin/setup",
