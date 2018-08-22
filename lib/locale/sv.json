@@ -132,6 +132,7 @@
   "Consumption mapping": "Energikartläggning",
   "Energy management": "Målstyrd energiförvaltning",
   "Belysningsutmaningen": "Belysningsutmaningen",
+  "Other renewable energy production": "Annan förenyelsebar energiproduktion",
   "Other cooperatives close by": "Andra föreningar i närheten",
   "Pick one": "Välj en",
   "Find me": "Hitta mig",
@@ -231,5 +232,7 @@
   "Reset": "Återställ",
   "Show cooperatives that have": "Visa föreningar som har",
   "Show cooperatives that _do not_ have": "Visa föreningar som _inte_ har",
-  "Forum": "Forum"
+  "Forum": "Forum",
+  "Yes": "Ja",
+  "No": "Nej"
 }
