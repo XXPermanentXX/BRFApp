@@ -9,6 +9,7 @@ const expressValidator = require('express-validator')
 const app = require('./lib/app')
 const routes = require('./lib/routes')
 const document = require('./lib/document')
+const cors = require('./lib/middleware/cors')
 const lang = require('./lib/middleware/lang')
 const auth = require('./lib/middleware/auth')
 const error = require('./lib/middleware/error')
@@ -59,6 +60,7 @@ if (process.env.NODE_ENV !== 'production') {
   server.use(require('./lib/middleware/robots'))
 }
 
+server.use(cors)
 server.use(express.static('public', { maxage: 1000 * 60 * 60 * 24 * 365 }))
 server.use(require('./lib/middleware/render'))
 server.use(compression())
