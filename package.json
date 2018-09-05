@@ -96,7 +96,7 @@
     "lodash.merge": "^4.6.1",
     "lodash.pick": "^4.4.0",
     "mapbox": "^1.0.0-beta9",
-    "mapbox-gl": "^0.44.2",
+    "mapbox-gl": "^0.48.0",
     "method-override": "^2.3.10",
     "moment": "^2.22.2",
     "mongoose": "^4.13.14",

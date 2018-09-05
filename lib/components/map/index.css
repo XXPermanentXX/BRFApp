@@ -1,7 +1,5 @@
 /* @define Map */
 
-@import "mapbox-gl/dist/mapbox-gl.css";
-
 .Map {
   flex: 1 0 auto;
   position: relative;
