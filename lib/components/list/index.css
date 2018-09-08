@@ -1,5 +1,7 @@
 /** @define List */
 
+@import "../link";
+
 .List {
   margin: 0;
   padding: 0;
@@ -29,6 +31,7 @@
   float: left;
   clear: left;
   margin-right: 0.5em;
+  margin-bottom: 0.6em;
   font-weight: var(--font-weight-bold);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
