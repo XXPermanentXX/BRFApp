@@ -17,8 +17,6 @@ module.exports = class Highchart extends Component {
   }
 
   update (granularity, actions, data, isLoading) {
-    this.args = [...arguments]
-
     if (this.chart) {
       if (isLoading) {
         this.chart.showLoading()
@@ -34,6 +32,8 @@ module.exports = class Highchart extends Component {
         ))
       }
     }
+
+    this.args = [...arguments]
 
     return false
   }
