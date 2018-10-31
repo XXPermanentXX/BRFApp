@@ -29,7 +29,7 @@ app.use(async function (ctx, next) {
   ctx.set('Access-Control-Allow-Origin', process.env.FORUM_URL)
   ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
   if (!ctx.response.get('Cache-Control')) {
-    ctx.set('Cache-Control', 'no-cache, max-age=0, must-revalidate')
+    ctx.set('Cache-Control', 'no-cache, max-age=0')
   }
   return next()
 })
