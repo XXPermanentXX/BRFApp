@@ -13,9 +13,12 @@ module.exports = class Highchart extends Component {
     super(id)
     this.isInitialized = false
     this.hasLoaded = false
+    this.args = []
   }
 
   update (granularity, actions, data, isLoading) {
+    this.args = [...arguments]
+
     if (this.chart) {
       if (isLoading) {
         this.chart.showLoading()
@@ -23,7 +26,7 @@ module.exports = class Highchart extends Component {
         this.chart.hideLoading()
       }
 
-      if (!isLoading && shouldUpdate(arguments, this._arguments)) {
+      if (!isLoading && shouldUpdate(arguments, this.args)) {
         this.chart.update(Object.assign({},
           defaults,
           getConfig(granularity),
@@ -36,7 +39,7 @@ module.exports = class Highchart extends Component {
   }
 
   load () {
-    if (this.hasLoaded) return this.init(...this._arguments)
+    if (this.hasLoaded) return this.init(...this.args)
     this.hasLoaded = true
 
     Promise.all([
@@ -46,7 +49,7 @@ module.exports = class Highchart extends Component {
       // Initialize the no data plugin with Highcharts
       noData(Highcharts)
       this.Highcharts = Highcharts
-      this.init(...this._arguments)
+      this.init(...this.args)
     })
   }
 
@@ -104,6 +107,8 @@ module.exports = class Highchart extends Component {
   }
 
   createElement () {
+    this.args = [...arguments]
+
     return html`
       <div class="u-flexGrow1 u-sizeFull u-flex u-flexAlignItemsCenter">
         <!-- Insert intermediary loader while waiting for Highcharts -->
