@@ -26,6 +26,7 @@ app.use(require('./lib/middleware/auth')())
 app.use(require('./lib/middleware/prismic'))
 
 app.use(async function (ctx, next) {
+  ctx.set('Access-Control-Allow-Origin', process.env.FORUM_URL)
   if (!ctx.response.get('Cache-Control')) {
     ctx.set('Cache-Control', 'no-cache, max-age=0, must-revalidate')
   }
