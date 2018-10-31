@@ -25,6 +25,13 @@ app.use(require('./lib/middleware/geoip'))
 app.use(require('./lib/middleware/auth')())
 app.use(require('./lib/middleware/prismic'))
 
+app.use(async function (ctx, next) {
+  if (!ctx.response.get('Cache-Control')) {
+    ctx.set('Cache-Control', 'no-cache, max-age=0, must-revalidate')
+  }
+  return next()
+})
+
 const routes = compose([router.routes(), router.allowedMethods()])
 app.use(mount('/en', compose([lang('en'), routes])))
 app.use(routes)
