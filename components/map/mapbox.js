@@ -97,11 +97,10 @@ module.exports = class Mapbox extends Component {
 
     this.hasLoaded = true
     this.element.addEventListener('touchmove', this)
-    const version = process.env.npm_package_dependencies_mapbox_gl
 
     Promise.all([
       import('mapbox-gl'),
-      load(`https://api.mapbox.com/mapbox-gl-js/v${version.replace(/^[^\d]/, '')}/mapbox-gl.css`)
+      load(`https://api.mapbox.com/mapbox-gl-js/v0.48.0/mapbox-gl.css`)
     ]).then(([mapboxgl]) => {
       // Stash mapbox api in scoped variable
       this.mapboxgl = mapboxgl
