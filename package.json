@@ -6,11 +6,7 @@
   "style": "index.css",
   "scripts": {
     "start": "node server.js",
-    "start:db": "mongod --dbpath data --fork --logpath /dev/null",
-    "stop:db": "mongo admin --eval 'db.shutdownServer()' > /dev/null",
-    "test": "standard",
-    "postmerge": "bin/setup",
-    "postinstall": "bin/setup"
+    "test": "standard"
   },
   "documentify": {
     "transform": [
@@ -42,15 +38,13 @@
     "@koa/cors": "^2.2.2",
     "choo": "^6.13.1",
     "dedent": "^0.6.0",
-    "dotenv": "^2.0.0",
     "escape-string-regexp": "^1.0.3",
     "friendly-url": "^1.0.3",
     "geoip-lite": "1.2.2",
     "got": "^7.1.0",
     "highcharts": "^5.0.15",
     "hstream": "^1.2.0",
-    "husky": "^0.14.3",
-    "jalla": "^0.10.0-16",
+    "jalla": "^0.10.0-17",
     "jsonwebtoken": "^8.3.0",
     "koa-basic-auth": "^3.0.0",
     "koa-body": "^4.0.4",

@@ -1,5 +1,3 @@
-require('dotenv/config')
-
 const jalla = require('jalla')
 const mount = require('koa-mount')
 const mongoose = require('mongoose')
