@@ -49,6 +49,7 @@ routes.map(localize('en')).forEach(([route, view]) => app.route(route, view))
 
 if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
   app.use(require('choo-devtools')())
+  app.use(require('choo-service-worker/clear')())
 }
 
 /**
@@ -56,6 +57,7 @@ if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
  */
 
 app.use(require('./stores/reset'))
+app.use(require('choo-service-worker')('/sw.js'))
 app.use(require('./stores/navigation'))
 app.use(require('./stores/content'))
 app.use(require('./stores/error'))
