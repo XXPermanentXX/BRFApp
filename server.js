@@ -5,7 +5,7 @@ const compose = require('koa-compose')
 const router = require('./lib/router')
 const lang = require('./lib/middleware/lang')
 
-const app = jalla('index.js', { css: 'index.css' })
+const app = jalla('index.js', { css: 'index.css', sw: 'sw.js' })
 app.keys = [process.env.BRFENERGI_SESSION_SECRET]
 
 if (process.env.BRFENERGI_USER && process.env.BRFENERGI_PASS) {
