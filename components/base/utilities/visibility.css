@@ -134,5 +134,7 @@
   top: 0 !important;
   outline: none !important;
   background: transparent !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
   appearance: none !important;
 }
