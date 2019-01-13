@@ -1,5 +1,6 @@
 const html = require('choo/html')
 const Component = require('choo/component')
+const { loader } = require('../icons')
 const { __ } = require('../../lib/locale')
 
 class Modal extends Component {
@@ -49,6 +50,14 @@ class Modal extends Component {
   placeholder () {
     if (typeof window === 'undefined') return this.render()
     return this.render(this.children, this.onclose)
+  }
+
+  loader () {
+    return html`
+      <div class="u-paddingVl u-textCenter u-colorSky">
+        ${loader()}
+      </div>
+    `
   }
 
   createElement (children, onclose) {

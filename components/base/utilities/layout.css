@@ -21,6 +21,10 @@
   height: 100% !important;
 }
 
+.u-sizeFillV {
+  flex: 1 1 100% !important;
+}
+
 .u-scroll {
   overflow: scroll !important;
 }
