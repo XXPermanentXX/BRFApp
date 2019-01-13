@@ -4,7 +4,7 @@ const { __ } = require('../../lib/locale')
 
 module.exports = signup
 
-function signup (content = null, callback = null) {
+function signup (content = null) {
   return html`
     <form method="post" action="/auth">
       <input type="hidden" name="create" value="true">
