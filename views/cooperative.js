@@ -11,7 +11,7 @@ const { summary } = require('../components/action')
 const Performance = require('../components/performance')
 const { chevron, loader } = require('../components/icons')
 const { Definition, Numbered } = require('../components/list')
-const { format, captureAnchor, vw } = require('../components/base')
+const { format, captureAnchor, vw, follow } = require('../components/base')
 
 const INITIATIVES = [
   [ 'hasRepresentative', 'Designated Energyrepresentative', icons.energyRepresentative(26) ],
@@ -73,6 +73,7 @@ class Loading extends Component {
 function cooperativeView (state, emit) {
   const { consumptions, params: { cooperative: id } } = state
   const cooperative = state.cooperatives.find(props => props._id === id)
+  const isEditor = state.user && state.user.cooperative === cooperative._id
   const actions = state.actions
     .filter(props => props.cooperative === id)
     .sort((a, b) => a.date > b.date ? 1 : -1)
@@ -156,6 +157,14 @@ function cooperativeView (state, emit) {
             ${state.cache(Performance, cooperative._id + '-performance').render(cooperative, state.user)}
           </div>
 
+          ${!cooperative.metryId ? html`
+            <div class="Type u-marginBm">
+              <p>${__('COOPERATIVE_NOT_VERIFIED')} ${isEditor ? html`
+                <a href="${resolve('/auth/metry')}" onclick=${follow}>${__('Verify with Metry')}</a>
+              ` : null}</p>
+            </div>
+          ` : null}
+
           <!-- Small viewport: energy action summary -->
           <div class="u-md-hidden u-lg-hidden">
             <hr class="u-marginBm u-marginHl" />
@@ -192,11 +201,11 @@ function cooperativeView (state, emit) {
             </div>
           ` : null}
 
-          ${state.user && state.user.cooperative === cooperative._id ? html`
-          <a class="Button u-block u-marginTm" href="${resolve(`/cooperatives/${cooperative._id}/edit`)}">
-            ${__('Edit details')}
-          </a>
-        ` : null}
+          ${isEditor ? html`
+            <a class="Button u-block u-marginTm" href="${resolve(`/cooperatives/${cooperative._id}/edit`)}">
+              ${__('Edit details')}
+            </a>
+          ` : null}
         </div>
       </div>
 
