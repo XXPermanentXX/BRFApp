@@ -186,7 +186,7 @@ class Form extends Component {
             ${input({ label: __('Cooperative name'), name: 'name', oninput: stash, required: true, value: props.name })}
             ${input({ label: __('Number of apartments'), type: 'number', name: 'numOfApartments', oninput: stash, value: props.numOfApartments })}
             ${input({ label: __('Year of construction'), type: 'number', name: 'yearOfConst', oninput: stash, max: (new Date()).getFullYear(), pattern: '\\d{4}', value: props.yearOfConst })}
-            ${input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, suffix: html`<span>m<sup>2</sup></span>`, value: props.area })}
+            ${input({ label: __('Heated area'), type: 'number', name: 'area', oninput: stash, required: true, suffix: html`<span>m<sup>2</sup></span>`, value: props.area })}
             ${!cooperative.hasRegistered ? checkbox({ label: __('Reuse e-mail address from registration'), description: __('Register using %s', this.state.user.email), onchange: onreuse, checked: props.reuse }) : null}
             ${input({ label: __('E-mail address of energy representative'), type: 'email', name: 'email', oninput: stash, readonly: props.reuse, value: (props.reuse && this.state.user.email) || this.props.email })}
           </div>

@@ -238,9 +238,11 @@
   "No": "Nej",
   "Show more": "Visa mer",
   "Hide": "Dölj",
-  "This cooperative is verified with Metry, click to learn more": "Föreningen är kopplad till Metry, klicka för att läsa mer",
+  "This cooperative is verified with Metry, click to learn more": "Föreningen är ansluten till Metry, klicka för att läsa mer",
   "E-mail": "E-mail",
   "Password": "Password",
   "or": "eller",
-  "If you have a Metry account you may": "Om du redan har ett Metry konto kan du"
+  "If you have a Metry account you may": "Om du redan har ett Metry konto kan du",
+  "COOPERATIVE_NOT_VERIFIED": "Föreningen är inte ansluten till Metry och vi kan därför inte beräkna energiprestanda eller göra några jämförelser.",
+  "Verify with Metry": "Anslut Metry"
 }
