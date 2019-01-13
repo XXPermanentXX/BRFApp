@@ -1,7 +1,7 @@
 /* eslint-env serviceworker */
 
-var CACHE_KEY = process.env.npm_package_version
-var FILES = [
+const CACHE_KEY = process.env.npm_package_version
+const FILES = [
   '/',
   '/manifest.json'
 ].concat(process.env.ASSET_LIST).filter(Boolean)
@@ -20,7 +20,7 @@ self.addEventListener('activate', function onactivate (event) {
 })
 
 self.addEventListener('fetch', function onfetch (event) {
-  var req = event.request
+  const req = event.request
   event.respondWith(
     caches.open(CACHE_KEY).then(function (cache) {
       return cache.match(req).then(update)
@@ -49,6 +49,10 @@ self.addEventListener('fetch', function onfetch (event) {
 // () -> Promise
 function clear () {
   return caches.keys().then(function (keys) {
-    return Promise.all(keys.map((key) => caches.delete(key)))
+    return Promise.all(
+      keys
+        .filter((key) => key !== CACHE_KEY)
+        .map((key) => caches.delete(key))
+    )
   })
 }
