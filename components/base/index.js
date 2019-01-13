@@ -240,6 +240,6 @@ exports.distance = function distance (posA, posB) {
 exports.captureAnchor = function captureAnchor (event) {
   const el = document.getElementById(event.target.hash.substr(1))
   if (!el) return
-  el.scrollIntoView({behavior: 'smooth', block: 'start'})
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   event.preventDefault()
 }

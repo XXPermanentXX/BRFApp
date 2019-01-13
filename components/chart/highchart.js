@@ -96,7 +96,7 @@ module.exports = class Highchart extends Component {
     }
 
     const onresize = nanoraf(() => {
-      this.chart.update({legend: {x: vw() * 0.02 - 8}})
+      this.chart.update({ legend: { x: vw() * 0.02 - 8 } })
     })
 
     window.addEventListener('resize', onresize)

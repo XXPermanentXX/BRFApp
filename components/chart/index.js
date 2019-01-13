@@ -154,7 +154,7 @@ module.exports = class Chart extends Component {
      */
 
     if (series.length === 2 && !hasLater) {
-      const length = series[0].values.reduceRight((count, {value}) => {
+      const length = series[0].values.reduceRight((count, { value }) => {
         return value || count ? count + 1 : 0
       }, 0)
       series[1].values.splice(length)
@@ -170,7 +170,7 @@ module.exports = class Chart extends Component {
             <!-- Toggle form/summary view -->
             ${inEdit ? this.cache(ChartFilter, this.id + '-chart-form').render(cooperative, onfilter) : html`
               <div class="Chart-summary">
-                <button class="Button Button--round Button--inverse u-marginLs u-floatRight" onclick=${() => this.setState({inEdit: true})}>
+                <button class="Button Button--round Button--inverse u-marginLs u-floatRight" onclick=${() => this.setState({ inEdit: true })}>
                   ${__('Edit')}
                 </button>
 
@@ -204,10 +204,10 @@ module.exports = class Chart extends Component {
           ${this.cache(Highchart, this.id + '-highchart').render(granularity, formatActions(actions, series, granularity), series, this.isLoading)}
 
           <!-- Paginate buttons -->
-          <button class="Chart-paginate Chart-paginate--left" onclick=${() => this.setState({page: page - 1})}>
+          <button class="Chart-paginate Chart-paginate--left" onclick=${() => this.setState({ page: page - 1 })}>
             ${chevron('left')} <span class="Chart-pageLabel">${__('Show earlier')}</span>
           </button>
-          <button class="Chart-paginate Chart-paginate--right" onclick=${() => this.setState({page: page + 1})} disabled=${!hasLater}>
+          <button class="Chart-paginate Chart-paginate--right" onclick=${() => this.setState({ page: page + 1 })} disabled=${!hasLater}>
             <span class="u-floatRight">
               <span class="Chart-pageLabel">${__('Show more recent')}</span> ${chevron('right')}
             </span>

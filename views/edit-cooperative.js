@@ -196,7 +196,7 @@ class Form extends Component {
           </div>
 
           <div class="u-marginTm u-marginBm">
-            ${this.cache(Address, 'edit-cooperative-address').render(Object.assign({isValid: !!(props.lat && props.lng)}, props.address), onlocation)}
+            ${this.cache(Address, 'edit-cooperative-address').render(Object.assign({ isValid: !!(props.lat && props.lng) }, props.address), onlocation)}
           </div>
 
           <div class="Type">
