@@ -5,9 +5,9 @@ const divider = require('../divider')
 const resolve = require('../../lib/resolve')
 const { __ } = require('../../lib/locale')
 
-module.exports = login
+module.exports = signin
 
-function login (content = null, callback = null) {
+function signin (content = null, callback = null) {
   return html`
     <form method="post" action="/auth">
       ${content ? html`<div class="u-marginBm">${content}</div>` : null}
