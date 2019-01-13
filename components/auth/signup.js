@@ -13,7 +13,7 @@ function signup (content = null) {
         ${input({ label: __('E-mail'), name: 'email', type: 'email', autocomplete: 'email', required: true })}
         ${input({ label: __('Password'), name: 'password', type: 'password', autocomplete: 'new-password', required: true })}
       </div>
-      <button type="submit" class="Button u-block u-sizeFull">${__('Create account')}</button>
+      <button type="submit" class="Button u-block u-sizeFull">${__('Create an account')}</button>
     </form>
   `
 }

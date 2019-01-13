@@ -17,7 +17,7 @@
   "Learn about how we calculate energy performance": "Läs mer om hur vi beräknar prestanda",
   "What's this?": "Vad är detta?",
   "Sign out": "Logga ut",
-  "Sign in with Metry": "Logga in med Metry",
+  "sign in with Metry": "logga in med Metry",
   "Create an account": "Skapa konto",
   "COPYRIGHT": "© %s KTH Kungliga Tekniska Högskolan",
   "ACTION_TYPE_1": "Värme",
@@ -237,5 +237,10 @@
   "Yes": "Ja",
   "No": "Nej",
   "Show more": "Visa mer",
-  "Hide": "Dölj"
+  "Hide": "Dölj",
+  "This cooperative is verified with Metry, click to learn more": "Föreningen är kopplad till Metry, klicka för att läsa mer",
+  "E-mail": "E-mail",
+  "Password": "Password",
+  "or": "eller",
+  "If you have a Metry account you may": "Om du redan har ett Metry konto kan du"
 }

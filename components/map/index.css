@@ -175,6 +175,12 @@
   display: none;
 }
 
+.Map-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+}
+
 .mapboxgl-popup-content {
   padding: 0;
   background: transparent;

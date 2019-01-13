@@ -64,6 +64,14 @@
   -webkit-font-smoothing: inherit;
 }
 
-.Type p:not(:first-child):not(:last-child) {
+.Type p {
   margin: 0.7em 0;
+}
+
+.Type p:first-child {
+  margin-top: 0;
+}
+
+.Type:last-child {
+  margin-bottom: 0;
 }

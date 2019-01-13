@@ -40,6 +40,9 @@ module.exports = function popup (feature) {
         <a class="u-textBold" href="${resolve(`/cooperatives/${props._id}`)}">
           ${props.name}
         </a>
+        ${props.metryId ? html`
+          <a href="/how-it-works#varifran-kommer-informationen" class="Map-badge" title="${__('This cooperative is verified with Metry, click to learn more')}">${icons.metry(20)}</a>
+        ` : null}
         ${props.performance
           ? html`
             <div>
