@@ -1,0 +1,20 @@
+/** @define Details */
+.Divider {
+  display: flex;
+  align-items: center;
+}
+
+.Divider-text {
+  flex: 0 0 auto;
+  display: block;
+  margin: 0 0.7rem;
+  font-size: 1rem;
+  font-style: italic;
+}
+
+.Divider-line {
+  flex: 1 1 auto;
+  height: 1px;
+  border: 0;
+  background: rgba(0, 0, 0, 0.075);
+}
