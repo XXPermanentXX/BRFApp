@@ -76,3 +76,11 @@ exports.solarPanel = function solarPanel (size = 18) {
     </svg>
   `
 }
+
+exports.metry = function metry (size = 18) {
+  return html`
+    <svg class="Icon" style="width: ${size}px; height: ${size}px;">
+      <use class="Icon-path" xlink:href="#icon-metry" />
+    </svg>
+  `
+}
