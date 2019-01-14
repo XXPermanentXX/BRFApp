@@ -5,8 +5,7 @@ const { asText } = require('prismic-richtext')
 const modal = require('../modal')
 const Mapbox = require('./mapbox')
 const Filter = require('./filter')
-const { follow } = require('../base')
-const { loader } = require('../icons')
+const signup = require('../auth/signup')
 const { __ } = require('../../lib/locale')
 const resolve = require('../../lib/resolve')
 
@@ -32,13 +31,12 @@ module.exports = class MapExplorer extends Component {
   }
 
   createElement () {
-    this.registration = this.state.content.registration
     this.cooperatives = this.state.cooperatives.map(item => item._id)
 
     const { user } = this.state
     const cooperatives = Filter.apply(this.state.cooperatives, this.filter)
 
-    const filter = () => {
+    const renderFilter = () => {
       return this.cache(Filter, this.id + '-filter').render(
         this.state.cooperatives,
         (props) => {
@@ -60,29 +58,20 @@ module.exports = class MapExplorer extends Component {
       event.preventDefault()
     }
 
-    const signup = () => {
-      if (!this.registration) {
+    const renderSignup = () => {
+      const doc = this.state.content.registration
+      if (!doc) {
         this.emit('content:fetch', 'registration')
-        return html`
-          <div class="u-marginVl u-textCenter u-colorSky">
-            ${loader()}
-          </div>
-        `
+        return modal.loader()
       }
-
       return html`
-        <div class="u-flex u-flexCol u-sizeFullV">
-          <div class="u-flexGrow1 u-paddingVl u-paddingHm">
-            <h1 class="Display Display--2 u-textCenter">
-              ${asText(this.registration.data.disclaimer_title)}
-            </h1>
-            <div class="Type">
-              ${asElement(this.registration.data.disclaimer_body)}
+        <div class="u-sizeFullV u-paddingTl u-paddingHm u-paddingBm">
+          ${signup(html`
+            <div>
+              <h1 class="Display Display--2 u-textCenter">${asText(doc.data.disclaimer_title)}</h1>
+              <div class="Type">${asElement(doc.data.disclaimer_body)}</div>
             </div>
-          </div>
-          <a href="${resolve('/auth/metry/sign-up')}" onclick=${follow} class="Button u-flexShrink0">
-            ${__('Create an account')}
-          </a>
+          `)}
         </div>
       `
     }
@@ -123,21 +112,21 @@ module.exports = class MapExplorer extends Component {
         <div class="Map-recruit" id="map-recruit">
           ${!this.state.user ? html`
             <div class="Map-panel" id="map-recruit-panel">
-              ${__('Missing your cooperative?') + ' '} <a href="${resolve('/auth/sign-up')}" onclick=${openModal(signup)}>${__('Add your cooperative')}</a>
+              ${__('Missing your cooperative?') + ' '} <a href="${resolve('/auth/sign-up')}" onclick=${openModal(renderSignup)}>${__('Add your cooperative')}</a>
             </div>
           ` : null}
-          <button class="Button" onclick=${openModal(filter)} style="margin-left: auto;">
+          <button class="Button" onclick=${openModal(renderFilter)} style="margin-left: auto;">
             ${__('Search and filter')} ${Object.keys(this.filter).length ? ` (${cooperatives.length})` : ''}
           </button>
         </div>
 
         <div class="Map-controls" id="map-recruit">
           ${!this.state.user ? html`
-            <a href="${resolve('/auth/sign-up')}" onclick=${openModal(signup)} class="Button u-flexGrow1" id="map-recruit-button">
+            <a href="${resolve('/auth/sign-up')}" onclick=${openModal(renderSignup)} class="Button u-flexGrow1" id="map-recruit-button">
               ${__('Add your cooperative')}
             </a>
           ` : null}
-          <button class="Button u-flexGrow1" onclick=${openModal(filter)}>
+          <button class="Button u-flexGrow1" onclick=${openModal(renderFilter)}>
             ${__('Search and filter')} ${Object.keys(this.filter).length ? ` (${cooperatives.length})` : ''}
           </button>
         </div>
