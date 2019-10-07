@@ -1,10 +1,7 @@
 /* eslint-env serviceworker */
 
 const CACHE_KEY = process.env.npm_package_version
-const FILES = [
-  '/',
-  '/manifest.json'
-].concat(process.env.ASSET_LIST).filter(Boolean)
+const FILES = ['/'].concat(process.env.ASSET_LIST).filter(Boolean)
 
 self.addEventListener('install', function oninstall (event) {
   event.waitUntil(
@@ -16,7 +13,13 @@ self.addEventListener('install', function oninstall (event) {
 })
 
 self.addEventListener('activate', function onactivate (event) {
-  event.waitUntil(clear().then(() => self.clients.claim()))
+  event.waitUntil(clear().then(function () {
+    if (!self.registration.navigationPreload) return self.clients.claim()
+    // enable navigation preloads
+    return self.registration.navigationPreload.enable().then(function () {
+      return self.clients.claim()
+    })
+  }))
 })
 
 self.addEventListener('fetch', function onfetch (event) {
@@ -27,19 +30,35 @@ self.addEventListener('fetch', function onfetch (event) {
 
       // fetch request and update cache
       // (Response?) -> Response|Promise
-      function update (fallback) {
+      function update (cached) {
         if (req.cache === 'only-if-cached' && req.mode !== 'same-origin') {
-          return fallback
+          return cached
         }
 
-        return self.fetch(req).then(function (response) {
-          if (!response.ok) throw response
-          else cache.put(req, response.clone())
+        if (event.preloadResponse) {
+          return event.preloadResponse.then(function (response) {
+            return response || self.fetch(req)
+          }).then(onresponse).catch(onerror)
+        }
+
+        return self.fetch(req).then(onresponse).catch(onerror)
+
+        // handle network response
+        // Response -> Response
+        function onresponse (response) {
+          if (!response.ok) return cached || response
+          if (req.method.toUpperCase() === 'GET') {
+            return cache.put(req, response.clone()).then(() => response)
+          }
           return response
-        }).catch(function (err) {
-          if (fallback) return fallback
+        }
+
+        // handle fetch error
+        // Response -> Response
+        function onerror (err) {
+          if (cached) return cached
           return err
-        })
+        }
       }
     })
   )
