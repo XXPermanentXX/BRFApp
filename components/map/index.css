@@ -94,7 +94,7 @@
   font-size: calc(14rem / var(--base-font-size));
   border-radius: 2em;
   background-color: var(--color-sky);
-  transform: translate(-50%, calc(-100% - 7px));
+  transform: translateY(-100%);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

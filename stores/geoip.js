@@ -1,7 +1,11 @@
 module.exports = geoip
 
 function geoip (state, emitter) {
-  state.geoip = state.geoip || {}
+  state.geoip = state.geoip || {
+    longitude: 18.05,
+    latitude: 59.3333,
+    precision: 'city'
+  }
   state.geoip.isLoading = false
 
   emitter.on('geoip:getPosition', () => {
@@ -9,9 +13,14 @@ function geoip (state, emitter) {
     emitter.emit('render')
 
     navigator.geolocation.getCurrentPosition(position => {
-      state.geoip.ll = [position.coords.latitude, position.coords.longitude]
+      state.geoip.latitude = position.coords.latitude
+      state.geoip.longitude = position.coords.longitude
+      state.geoip.precision = 'exact'
       state.geoip.isLoading = false
       emitter.emit('render')
-    }, err => emitter.emit('error', err))
+    }, err => {
+      state.geoip.isLoading = false
+      emitter.emit('error', err)
+    })
   })
 }

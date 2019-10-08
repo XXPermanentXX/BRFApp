@@ -33,7 +33,7 @@ module.exports = class MapExplorer extends Component {
   createElement () {
     this.cooperatives = this.state.cooperatives.map(item => item._id)
 
-    const { user } = this.state
+    const { user, geoip } = this.state
     const cooperatives = Filter.apply(this.state.cooperatives, this.filter)
 
     const renderFilter = () => {
@@ -85,20 +85,8 @@ module.exports = class MapExplorer extends Component {
     }
 
     if (!center) {
-      if (this.state.geoip && this.state.geoip.ll) {
-        const [latitude, longitude] = this.state.geoip.ll
-        center = {
-          longitude: longitude,
-          latitude: latitude,
-          precision: 'city'
-        }
-      } else {
-        center = {
-          longitude: 18.05,
-          latitude: 59.3333,
-          precision: 'city'
-        }
-      }
+      const { latitude, longitude, precision } = geoip
+      center = { latitude, longitude, precision }
     }
 
     if (this.modal) {
@@ -130,6 +118,14 @@ module.exports = class MapExplorer extends Component {
             ${__('Search and filter')} ${Object.keys(this.filter).length ? ` (${cooperatives.length})` : ''}
           </button>
         </div>
+
+        ${geoip.precision !== 'exact' ? html`
+          <div class="Map-locate">
+            <button class="Button Button--round u-textS" onclick=${() => this.emit('geoip:getPosition')} disabled=${!!geoip.isLoading}>
+              ${__('Find me')}
+            </button>
+          </div>
+        ` : null}
       </div>
     `
   }

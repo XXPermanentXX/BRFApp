@@ -39,6 +39,16 @@ module.exports = class Mapbox extends Component {
 
       if (!moved && !changed) return false
 
+      if (center.precision === 'exact') {
+        if (!this.position) {
+          // Create position marker for exact position
+          this.position = new this.mapboxgl.Marker(myLocation())
+        }
+
+        // Update position coordinates
+        this.position.setLngLat(getLngLat(center)).addTo(this.map)
+      }
+
       if (!this.map.getSource('cooperatives')) {
         this.addSource(cooperatives, center)
       } else {
@@ -57,16 +67,6 @@ module.exports = class Mapbox extends Component {
 
           // Include an updated position in bounds
           if (moved) bounds.extend(getLngLat(center))
-
-          if (center.precision === 'exact') {
-            if (!this.position) {
-              // Create position marker for exact position
-              this.position = new this.mapboxgl.Marker(myLocation())
-            }
-
-            // Update position coordinates
-            this.position.setLngLat(getLngLat(center)).addTo(this.map)
-          }
 
           if (cooperatives.length === 1) {
             // Open popup for any single cooperative hit after map has settled
@@ -125,7 +125,7 @@ module.exports = class Mapbox extends Component {
 
     Promise.all([
       import('mapbox-gl'),
-      load(`https://api.mapbox.com/mapbox-gl-js/v0.48.0/mapbox-gl.css`)
+      load('https://api.mapbox.com/mapbox-gl-js/v0.48.0/mapbox-gl.css')
     ]).then(([mapboxgl]) => {
       // Stash mapbox api in scoped variable
       this.mapboxgl = mapboxgl
@@ -205,10 +205,7 @@ module.exports = class Mapbox extends Component {
         animate: false
       })
     } else {
-      map.fitBounds(this.getBounds(getLngLat(center)), {
-        padding: this.element.offsetWidth * 0.1,
-        animate: false
-      })
+      map.setCenter(getLngLat(center))
     }
 
     if (center.precision === 'exact') {
