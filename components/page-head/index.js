@@ -19,7 +19,7 @@ module.exports = class PageHead extends Component {
     this.href = null
     this.modal = null
     this.isExpanded = false
-    this.allowRender = true // Forum notifications are dynamic, so rerender might be needed.
+    this.allowRender = false
   }
 
   update () {
@@ -208,7 +208,6 @@ module.exports = class PageHead extends Component {
 
           <!-- Medium & large viewport: horizontal menu list -->
           <ul class="u-hidden u-md-block u-lg-block">
-            <!-- 'forum' can also be added to show a link to the forum -->
             ${mediumHorizontalPages.map(page => {
               const props = page(this.state, this.emit)
               return html`
@@ -332,19 +331,6 @@ module.exports = class PageHead extends Component {
           this.rerender()
           event.preventDefault()
         }
-      }
-    }
-
-    function forum (state) {
-      let numNotifs = state.notificationsAmount
-      var notificationString = (state.user && numNotifs > 0)
-        ? ' (' + numNotifs + ')'
-        : ''
-      return {
-        href: process.env.FORUM_URL + (state.user
-          ? '/auth/brf?brfauth=' + state.user.forumAuthenticationToken
-          : '/authmetryifneeded'),
-        title: __('Forum') + notificationString
       }
     }
   }

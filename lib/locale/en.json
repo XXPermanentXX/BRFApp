@@ -123,5 +123,9 @@
   "try again": "try again",
   "or go to": "or go to",
   "the homepage": "the homepage",
-  "COOPERATIVE_NOT_VERIFIED": "This cooperative is not verified with Metry and we can therefore not calculate energy performance."
+  "COOPERATIVE_NOT_VERIFIED": "This cooperative is not verified with Metry and we can therefore not calculate energy performance.",
+  "Response code 500 (Internal Server Error)": "Response code 500 (Internal Server Error)",
+  "Could not create account": "Could not create account",
+  "Cannot read property 'uid' of undefined": "Cannot read property 'uid' of undefined",
+  "Failed to authenticate user": "Failed to authenticate user"
 }

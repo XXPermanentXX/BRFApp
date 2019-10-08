@@ -239,10 +239,14 @@
   "Show more": "Visa mer",
   "Hide": "Dölj",
   "This cooperative is verified with Metry, click to learn more": "Föreningen är ansluten till Metry, klicka för att läsa mer",
-  "E-mail": "E-mail",
-  "Password": "Password",
+  "E-mail": "E-postadress",
+  "Password": "Lösenord",
   "or": "eller",
-  "If you have a Metry account you may": "Om du redan har ett Metry konto kan du",
+  "If you have a Metry account you may": "Om du redan har ett Metry-konto kan du",
   "COOPERATIVE_NOT_VERIFIED": "Föreningen är inte ansluten till Metry och vi kan därför inte beräkna energiprestanda eller göra några jämförelser.",
-  "Verify with Metry": "Anslut Metry"
+  "Verify with Metry": "Anslut Metry",
+  "Your name": "Ditt namn",
+  "Could not create account, please check that everything is filled in as it should": "Misslyckades att skapa konto, vänligen kontroller att alla uppgifter stämmer",
+  "Failed to authenticate user, please check that everything is filled in as it should": "Något stämde inte vid inloggning, vänligen kontrollera att du skrev rätt",
+  "Could not find page": "Kunde inte hitta sidan du söker."
 }
