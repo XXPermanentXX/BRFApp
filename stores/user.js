@@ -11,25 +11,6 @@ function user (state, emitter) {
 
   var rerender = () => emitter.emit('render')
 
-  emitter.on('DOMContentLoaded', function () {
-    if (state.user) {
-      let init = {
-        headers: {
-          brfauth: state.user.forumAuthenticationToken,
-          'Accept': 'application/json',
-          'Cache-Control': 'no-store'
-        }
-      }
-
-      window.fetch(process.env.FORUM_URL + '/api/unread', init)
-        .then(resp => resp.json())
-        .then(json => {
-          state.notificationsAmount = json.topicCount
-          rerender()
-        })
-    }
-  })
-
   emitter.prependListener('navigate', function () {
     if (!state.hasBoarded) emitter.emit('user:boarded')
   })
@@ -45,7 +26,9 @@ function user (state, emitter) {
           },
           INIT,
           {
-            headers: Object.assign({ 'Content-Type': 'application/json' }, INIT.headers)
+            headers: Object.assign({
+              'Content-Type': 'application/json'
+            }, INIT.headers)
           }
         )
       ).then(response => response.json().then(user => {

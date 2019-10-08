@@ -19,6 +19,11 @@ function signUp (state, emit) {
     <div class="u-marginVl">
       <h1 class="Display Display--2 u-textCenter">${asText(doc.data.disclaimer_title)}</h1>
       <div class="Type">${asElement(doc.data.disclaimer_body)}</div>
+      ${state.error ? html`
+        <p class="u-marginVl u-colorTomato">
+          ${state.error.message}
+        </p>
+      ` : null}
     </div>
   ` : html`
     <div class="u-marginVl u-textCenter">

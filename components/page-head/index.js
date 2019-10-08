@@ -19,7 +19,7 @@ module.exports = class PageHead extends Component {
     this.href = null
     this.modal = null
     this.isExpanded = false
-    this.allowRender = true // Forum notifications are dynamic, so rerender might be needed.
+    this.allowRender = false
   }
 
   update () {
@@ -58,7 +58,6 @@ module.exports = class PageHead extends Component {
 
   createElement () {
     this.href = this.state.href
-    this.allowRender = true // For forum notifications
 
     const self = this
     const user = this.state.user
@@ -70,10 +69,6 @@ module.exports = class PageHead extends Component {
 
     var visiblePages = [home, about, faq, auth, tracking]
     var mediumHorizontalPages = [faq, about]
-    if (this.state.betatest) {
-      visiblePages.push(forum)
-      mediumHorizontalPages.push(forum)
-    }
     var mediumDropdownPages = [home, auth, tracking]
 
     return html`
@@ -97,7 +92,6 @@ module.exports = class PageHead extends Component {
 
           <!-- Medium & large viewport: horizontal menu list -->
           <ul class="u-hidden u-md-block u-lg-block">
-            <!-- 'forum' can also be added to show a link to the forum -->
             ${mediumHorizontalPages.map(page => {
               const props = page(this.state, this.emit)
               return html`
@@ -221,19 +215,6 @@ module.exports = class PageHead extends Component {
           this.rerender()
           event.preventDefault()
         }
-      }
-    }
-
-    function forum (state) {
-      let numNotifs = state.notificationsAmount
-      var notificationString = (state.user && numNotifs > 0)
-        ? ' (' + numNotifs + ')'
-        : ''
-      return {
-        href: process.env.FORUM_URL + (state.user
-          ? '/auth/brf?brfauth=' + state.user.forumAuthenticationToken
-          : '/authmetryifneeded'),
-        title: __('Forum') + notificationString
       }
     }
   }
