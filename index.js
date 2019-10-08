@@ -7,7 +7,7 @@ const DEFAULT_LANGUAGE = 'sv'
  * Create the application instance
  */
 
-const app = choo({ hash: false })
+const app = choo()
 
 /**
  * Take a list of routes/view pairs (`[<path>, <view>]`) and wrap each
