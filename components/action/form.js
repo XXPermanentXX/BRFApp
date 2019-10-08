@@ -85,10 +85,10 @@ module.exports = class ActionForm extends Component {
             ].concat(TYPES_PER_CATEGORY.map((total, index) => {
               const category = (index + 1) + ''
               return html`
-              <option value=${category} selected=${props.category === category}>
-                ${__(`ACTION_TYPE_${category}`)}
-              </option>
-            `
+                <option value=${category} selected=${props.category === category}>
+                  ${__(`ACTION_TYPE_${category}`)}
+                </option>
+              `
             }))
           })}
 
