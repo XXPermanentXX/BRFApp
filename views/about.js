@@ -10,7 +10,7 @@ const resolve = require('../lib/resolve')
 module.exports = view(about, title)
 
 function about (state, emit) {
-  let doc = state.content.about
+  const doc = state.content.about
 
   if (!doc) {
     emit('content:fetch', 'about')

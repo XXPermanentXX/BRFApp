@@ -9,7 +9,7 @@ function actions (state, emitter) {
       body: JSON.stringify(data),
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       }
     }
@@ -30,7 +30,7 @@ function actions (state, emitter) {
       body: JSON.stringify(data),
       credentials: 'include',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       }
     }

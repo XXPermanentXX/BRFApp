@@ -14,11 +14,11 @@ const { Definition, Numbered } = require('../components/list')
 const { format, captureAnchor, vw, follow } = require('../components/base')
 
 const INITIATIVES = [
-  [ 'hasRepresentative', 'Designated Energyrepresentative', icons.energyRepresentative(26) ],
-  [ 'hasConsumptionMapping', 'Energy consumption mapping', icons.energyMap(26) ],
-  [ 'hasGoalManagement', 'Goal oriented energy management', icons.target(26) ],
-  [ 'hasBelysningsutmaningen', 'Part of belysningsutmaningen', icons.lightChallenge(26) ],
-  [ 'hasCharger', 'Charger for electric cars', icons.electricCar(26) ],
+  ['hasRepresentative', 'Designated Energyrepresentative', icons.energyRepresentative(26)],
+  ['hasConsumptionMapping', 'Energy consumption mapping', icons.energyMap(26)],
+  ['hasGoalManagement', 'Goal oriented energy management', icons.target(26)],
+  ['hasBelysningsutmaningen', 'Part of belysningsutmaningen', icons.lightChallenge(26)],
+  ['hasCharger', 'Charger for electric cars', icons.electricCar(26)],
   [
     ['hasEnergyProduction', 'hasSolarPanels', 'hasGeothermalHeating'],
     function (cooperative) {
@@ -191,7 +191,7 @@ function cooperativeView (state, emit) {
             <div class="u-marginTm">
               ${details(`${__('Energy initiatives') + (!showDetails ? ` (${initiatives.length}/${INITIATIVES.length})` : '')}`, showDetails, html`
                 <ul>
-                  ${initiatives.map(([ , title, icon ]) => html`
+                  ${initiatives.map(([, title, icon]) => html`
                     <li class="u-flex u-flexAlignItemsCenter u-marginTb u-textLight u-colorCurrent">
                       <span class="u-block u-marginRb">${icon}</span> ${typeof title === 'function' ? title(cooperative) : __(title)}
                     </li>
@@ -260,7 +260,7 @@ function title (state) {
 }
 
 function hasInitiative (cooperative) {
-  return function ([ prop ]) {
+  return function ([prop]) {
     if (Array.isArray(prop)) return !!prop.find(key => cooperative[key])
     return !!cooperative[prop]
   }

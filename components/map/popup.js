@@ -4,11 +4,11 @@ const resolve = require('../../lib/resolve')
 const icons = require('../icons')
 
 const INITIATIVES = [
-  [ 'hasRepresentative', 'Energy representative', icons.energyRepresentative ],
-  [ 'hasConsumptionMapping', 'Consumption mapping', icons.energyMap ],
-  [ 'hasGoalManagement', 'Energy management', icons.target ],
-  [ 'hasBelysningsutmaningen', 'Belysningsutmaningen', icons.lightChallenge ],
-  [ 'hasCharger', 'Charger for electric cars', icons.electricCar ],
+  ['hasRepresentative', 'Energy representative', icons.energyRepresentative],
+  ['hasConsumptionMapping', 'Consumption mapping', icons.energyMap],
+  ['hasGoalManagement', 'Energy management', icons.target],
+  ['hasBelysningsutmaningen', 'Belysningsutmaningen', icons.lightChallenge],
+  ['hasCharger', 'Charger for electric cars', icons.electricCar],
   [
     ['hasEnergyProduction', 'hasSolarPanels', 'hasGeothermalHeating'],
     'Energy production',
@@ -18,7 +18,7 @@ const INITIATIVES = [
 
 module.exports = function popup (feature) {
   const { properties: props } = feature
-  const classNames = [ 'Map-popup' ]
+  const classNames = ['Map-popup']
 
   if (props.flat) {
     classNames.push('Map-popup--flat')
@@ -65,7 +65,7 @@ module.exports = function popup (feature) {
           : html`<em class="u-colorDim">${__('No energy actions')}</em>`
         }
         <div class="Map-coopProps">
-          ${INITIATIVES.map(([ prop, label, icon ]) => {
+          ${INITIATIVES.map(([prop, label, icon]) => {
             const hasProp = Array.isArray(prop) ? prop.find(key => props[key]) : props[prop]
             return html`
               <div class="Map-coopProp u-color${hasProp ? 'Current' : 'Pale'}" data-title="${__(label)}">${icon(22)}</div>

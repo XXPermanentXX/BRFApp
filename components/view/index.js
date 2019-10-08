@@ -6,8 +6,8 @@ const ApplicationError = require('./error')
 const Onboarding = require('../onboarding')
 
 const errors = {
-  '404': require('./404'),
-  '500': require('./500')
+  404: require('./404'),
+  500: require('./500')
 }
 
 const DEFAULT_TITLE = 'Brf Energi'

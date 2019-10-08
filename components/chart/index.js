@@ -257,7 +257,7 @@ function getQueries (now, cooperative, state) {
   const queries = []
   queries.push(Object.assign({
     name: compare === 'prev_year' ? __('Current year') : cooperative.name,
-    types: [ type ],
+    types: [type],
     normalized: normalized,
     cooperative: cooperative._id
   }, getPeriod(granularity, now)))
@@ -268,7 +268,7 @@ function getQueries (now, cooperative, state) {
 
     queries.push(Object.assign({
       name: __('Previous year'),
-      types: [ type ],
+      types: [type],
       normalized: normalized,
       cooperative: cooperative._id
     }, period))

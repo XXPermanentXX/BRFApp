@@ -70,7 +70,7 @@ exports.format = function format (src) {
   if (isNaN(src)) { return src }
 
   const factor = src > 1 ? 10 : 100
-  const [ whole, decimal ] = ((Math.round(src * factor) / factor) + '').split(/,|\./)
+  const [whole, decimal] = ((Math.round(src * factor) / factor) + '').split(/,|\./)
   const spaced = whole
     // Get individual numbers in reversed order
     .split('').reverse()

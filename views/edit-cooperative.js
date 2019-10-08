@@ -9,7 +9,7 @@ const { loader } = require('../components/icons')
 const { input, checkbox, radiogroup } = require('../components/form')
 
 const IGNORE = 'IGNORE'
-const VENTILATION_TYPES = [ 'FTX', 'FVP', 'F', 'FT', 'S', 'OTHER' ]
+const VENTILATION_TYPES = ['FTX', 'FVP', 'F', 'FT', 'S', 'OTHER']
 
 module.exports = view(editCooperative, title)
 
@@ -62,7 +62,7 @@ class Form extends Component {
       let value = target.value
 
       if (target.type === 'number') {
-        let num = parseInt(value.replace(/\s/g, ''))
+        const num = parseInt(value.replace(/\s/g, ''))
         if (!isNaN(num)) value = num
       }
 
@@ -78,7 +78,7 @@ class Form extends Component {
     }
 
     const onHousholdUsageChange = event => {
-      let value = +event.target.value
+      const value = +event.target.value
 
       if (value === 0) {
         this.props.incHouseholdElectricity = false
@@ -144,7 +144,7 @@ class Form extends Component {
       ]
     ].map((label, index) => {
       let checked = false
-      let { incHouseholdElectricity } = props
+      const { incHouseholdElectricity } = props
 
       if (index === 1) {
         checked = incHouseholdElectricity
@@ -282,17 +282,19 @@ class Form extends Component {
             ${checkbox({ label: __('Assigned energy representative'), onchange: stash, name: 'hasRepresentative', checked: props.hasRepresentative })}
             ${checkbox({ label: __('Energy consumption mapping'), onchange: stash, name: 'hasConsumptionMapping', checked: props.hasConsumptionMapping })}
             ${checkbox({ label: __('Goal oriented energy management'), onchange: stash, name: 'hasGoalManagement', checked: props.hasGoalManagement })}
-            ${checkbox({ label: __('Participating in belysningsutmaningen'),
+            ${checkbox({
+              label: __('Participating in belysningsutmaningen'),
               onchange: stash,
               name: 'hasBelysningsutmaningen',
               checked: props.hasBelysningsutmaningen,
               description: html`
-              <span>${__('Read more about the intiative') + ' '}
-                <a href="http://www.energimyndigheten.se/belysningsutmaningen/" target="_blank">
-                  ${__('Here').toLowerCase()}
-                </a>
-              </span>
-            ` })}
+                <span>${__('Read more about the intiative') + ' '}
+                  <a href="http://www.energimyndigheten.se/belysningsutmaningen/" target="_blank">
+                    ${__('Here').toLowerCase()}
+                  </a>
+                </span>
+              `
+            })}
             ${checkbox({ label: __('Has charger for electric cars'), onchange: stash, name: 'hasCharger', checked: props.hasCharger })}
             ${checkbox({ label: __('Has %s', __('Solar panels').toLowerCase()), onchange: stash, name: 'hasSolarPanels', checked: props.hasSolarPanels })}
             ${checkbox({ label: __('Has %s', __('Geothermal heating').toLowerCase()), onchange: stash, name: 'hasGeothermalHeating', checked: props.hasGeothermalHeating })}

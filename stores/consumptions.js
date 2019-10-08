@@ -98,7 +98,7 @@ function consumptions (state, emitter) {
 
   function defaults (options) {
     return Object.assign({
-      types: [ state.consumptions.type ],
+      types: [state.consumptions.type],
       granularity: 'month',
       normalized: state.consumptions.normalized
     }, options)
