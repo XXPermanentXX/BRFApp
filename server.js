@@ -22,8 +22,8 @@ if (process.env.BRFENERGI_USER && process.env.BRFENERGI_PASS) {
 app.use(require('@koa/cors')())
 app.use(require('koa-session')(app))
 app.use(require('koa-methodoverride')('_method'))
-app.use(require('./lib/middleware/error'))
 app.use(require('./lib/middleware/geoip'))
+app.use(require('./lib/middleware/error'))
 app.use(require('./lib/middleware/metry')())
 app.use(require('./lib/middleware/prismic'))
 
