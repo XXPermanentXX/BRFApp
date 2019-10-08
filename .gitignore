@@ -6,6 +6,7 @@ npm-debug.log
 
 # Build
 public
+dist
 
 # Environment
 data
