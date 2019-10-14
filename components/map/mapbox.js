@@ -110,7 +110,7 @@ module.exports = class Mapbox extends Component {
 
     Promise.all([
       import('mapbox-gl'),
-      load('https://api.mapbox.com/mapbox-gl-js/v0.48.0/mapbox-gl.css')
+      load('https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css')
     ]).then(([mapboxgl]) => {
       // Stash mapbox api in scoped variable
       this.mapboxgl = mapboxgl

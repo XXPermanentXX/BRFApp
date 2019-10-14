@@ -45,7 +45,7 @@ mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
   useNewUrlParser: true
 }).then(() => {
-  app.listen(process.env.PORT || 8080)
+  app.start(process.env.PORT || 8080)
 }, err => {
   app.emit('error', err)
   process.exit(1)
