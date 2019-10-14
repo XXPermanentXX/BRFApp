@@ -37,7 +37,7 @@ module.exports = function popup (feature) {
   return html`
     <div class="${classNames.join(' ')}">
       <div class="u-nbfc">
-        <a class="u-textBold" href="${resolve(`/cooperatives/${props._id}`)}">
+        <a class="u-block u-marginRm u-textBold" href="${resolve(`/cooperatives/${props._id}`)}">
           ${props.name}
         </a>
         ${props.metryId ? html`
