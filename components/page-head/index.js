@@ -140,7 +140,7 @@ module.exports = class PageHead extends Component {
       })
       return {
         href: resolve(`/cooperatives/${state.user.cooperative}`),
-        title: cooperative.name
+        title: cooperative.name || __('My cooperative')
       }
     }
 
