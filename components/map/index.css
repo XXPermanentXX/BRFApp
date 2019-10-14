@@ -78,6 +78,15 @@
   right: var(--viewport-padding);
 }
 
+@media (--md-viewport), (--lg-viewport) {
+  .Map-locate {
+    bottom: var(--viewport-padding);
+    top: auto;
+    right: 50%;
+    transform: translateX(50%);
+  }
+}
+
 :root:not(.has-js) .Map-locate {
   display: none;
 }
