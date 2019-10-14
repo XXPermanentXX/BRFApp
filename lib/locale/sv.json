@@ -248,5 +248,6 @@
   "Your name": "Ditt namn",
   "Could not create account, please check that everything is filled in as it should": "Misslyckades att skapa konto, vänligen kontroller att alla uppgifter stämmer",
   "Failed to authenticate user, please check that everything is filled in as it should": "Något stämde inte vid inloggning, vänligen kontrollera att du skrev rätt",
-  "Could not find page": "Kunde inte hitta sidan du söker."
+  "Could not find page": "Kunde inte hitta sidan du söker.",
+  "My cooperative": "Min förening"
 }
