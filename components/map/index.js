@@ -25,8 +25,9 @@ module.exports = class MapExplorer extends Component {
       modal.render(this.modal(), () => { this.modal = null })
     }
 
-    return this.cooperatives.reduce((shouldUpdate, cooperative, index) => {
-      return shouldUpdate || cooperative._id !== this.cooperatives[index]
+    if (this.cooperatives.length !== this.state.cooperatives.length) return true
+    return this.state.cooperatives.reduce((prev, cooperative, index) => {
+      return prev || cooperative._id !== this.cooperatives[index]
     }, false)
   }
 
