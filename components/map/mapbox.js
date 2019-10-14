@@ -192,8 +192,6 @@ module.exports = class Mapbox extends Component {
         padding: this.element.offsetWidth * 0.1,
         animate: false
       })
-    } else {
-      map.setCenter(getLngLat(center))
     }
 
     map.on('zoom', getCooperatives)
@@ -201,6 +199,10 @@ module.exports = class Mapbox extends Component {
     map.on('dragend', getCooperatives)
 
     map.on('load', () => {
+      if (!cooperatives.length) {
+        map.setCenter(getLngLat(center))
+      }
+
       if (!this.map.getSource('cooperatives') && cooperatives.length) {
         this.addSource(cooperatives, center)
       }
