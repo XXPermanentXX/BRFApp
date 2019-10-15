@@ -69,7 +69,7 @@
     "passport-oauth2": "^1.4.0",
     "postcss-custom-media": "^5.0.1",
     "postcss-custom-properties": "^5.0.2",
-    "prismic-element": "^1.0.0",
+    "prismic-element": "^2.0.3",
     "prismic-javascript": "^1.5.0",
     "prismic-richtext": "^0.4.2",
     "simple-encryptor": "^1.4.0",
