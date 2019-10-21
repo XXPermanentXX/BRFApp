@@ -8,7 +8,12 @@ const lang = require('./lib/middleware/lang')
 const app = jalla('index.js', {
   serve: process.env.NODE_ENV !== 'development',
   css: 'index.css',
-  sw: 'sw.js'
+  sw: 'sw.js',
+  skip: [
+    require.resolve('moment'),
+    require.resolve('mapbox-gl'),
+    require.resolve('highcharts')
+  ]
 })
 app.keys = [process.env.BRFENERGI_SESSION_SECRET]
 

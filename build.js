@@ -3,7 +3,12 @@ require('dotenv/config')
 const jalla = require('jalla')
 const app = jalla('index.js', {
   css: 'index.css',
-  sw: 'sw.js'
+  sw: 'sw.js',
+  skip: [
+    require.resolve('moment'),
+    require.resolve('mapbox-gl'),
+    require.resolve('highcharts')
+  ]
 })
 
 app.build('dist').then(function () {
