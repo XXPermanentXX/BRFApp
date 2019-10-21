@@ -92,7 +92,7 @@ module.exports = class Onboarding extends Component {
               <article class="Onboarding-card" id="${this.name}-${index}">
                 ${card.image.url ? html`
                   <div class="Onboarding-container">
-                    <img class="Onboarding-image" src="${card.image.url}" />
+                    <img class="Onboarding-image" src="${card.image.url}" alt="${card.image.alt || ''}" />
                   </div>
                 ` : null}
                 <h2 class="Display Display--4">
@@ -117,7 +117,7 @@ module.exports = class Onboarding extends Component {
         </ol>
 
         ${typeof window === 'undefined' || this.page === (cards.length - 1) ? html`
-          <form action="${this.state.href}" method="GET">
+          <form action="${this.state.href || '/'}" method="GET">
             <button type="submit" name="hasBoarded" value="true" class="Button u-block u-sizeFull" onclick=${onclick(this.page + 1)}>
               ${__('Close')}
             </button>

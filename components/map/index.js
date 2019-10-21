@@ -109,7 +109,7 @@ module.exports = class MapExplorer extends Component {
           </button>
         </div>
 
-        <div class="Map-controls" id="map-recruit">
+        <div class="Map-controls">
           ${!this.state.user ? html`
             <a href="${resolve('/auth/sign-up')}" onclick=${openModal(renderSignup)} class="Button u-flexGrow1" id="map-recruit-button">
               ${__('Add your cooperative')}

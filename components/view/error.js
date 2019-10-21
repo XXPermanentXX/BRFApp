@@ -23,7 +23,7 @@ module.exports = class ApplicationError extends Component {
     this.hasError = !!this.state.error
 
     return html`
-      <div role="${this.hasError ? 'alert' : 'none'}" class="View-error" id="app-error">
+      <div role="${this.hasError ? 'alert' : ''}" class="View-error" id="app-error">
         ${this.hasError ? html`
           <div class="View-container View-container--lg u-flexNoWrap u-flexAlignItemsStart u-flexJustifyBetween u-paddingVs">
             ${this.state.error.message}
