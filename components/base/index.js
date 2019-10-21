@@ -243,3 +243,17 @@ exports.captureAnchor = function captureAnchor (event) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   event.preventDefault()
 }
+
+/**
+ * Hash object
+ * @param {Object} obj Object to hash
+ */
+
+exports.hash = function hashObject (obj) {
+  var keys = Object.keys(obj).sort()
+  return keys.reduce(function (str, key) {
+    var value = obj[key]
+    if (typeof value === 'object') value = hashObject(obj[key])
+    return str + value
+  }, '')
+}
