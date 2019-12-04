@@ -1,0 +1,12 @@
+version: "3"
+services:
+  web:
+    build:
+      args:
+        - BRFENERGI_USER
+        - BRFENERGI_PASS
+    ports:
+      - "80:8080"
+    env_file: .env
+    environment:
+      - NODE_ENV=test

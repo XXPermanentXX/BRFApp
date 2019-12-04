@@ -47,7 +47,7 @@
     "got": "^7.1.0",
     "highcharts": "^5.0.15",
     "hstream": "^1.2.0",
-    "jalla": "^1.0.0-20",
+    "jalla": "^1.0.0-26",
     "jsonwebtoken": "^8.3.0",
     "koa-basic-auth": "^3.0.0",
     "koa-body": "^4.0.4",
