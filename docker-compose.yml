@@ -1,0 +1,35 @@
+version: "3"
+services:
+  web:
+    container_name: brf-energi-web
+    build:
+      context: .
+      args:
+        - NODE_ENV
+        - BRFENERGI_LANG
+        - PORT
+        - FORUM_URL
+        - URL_ENCRYPTION_KEY
+        - BRFENERGI_SERVICE_URL
+        - BRFENERGI_SESSION_SECRET
+        - MAPBOX_ACCESS_TOKEN
+        - MAPBOX_STYLE
+        - GOOGLE_ANALYTICS_ID
+        - GOOGLE_GEOCODE_KEY
+        - IPSTACK_KEY
+        - METRY_CLIENT_ID
+        - METRY_CLIENT_SECRET
+        - METRY_OPEN_CHANNEL
+        - METRY_ENDPOINT
+        - PRISMIC_API
+        - MONGO_URL
+    environment:
+      MONGO_URL: "mongodb://mongo:27017"
+
+  mongo:
+    container_name: brf-energi-mongo
+    image: "mongo:4.2.1"
+    expose:
+      - "27017"
+    volumes:
+      - "./data:/data/"

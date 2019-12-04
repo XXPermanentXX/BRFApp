@@ -1,0 +1,16 @@
+version: "3"
+services:
+  web:
+    ports:
+      - "9229:9229"
+      - "8080:8080"
+    env_file: .env
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ".:/usr/src/app"
+    command: npx nodemon -w lib -w server.js -i lib/locale -x 'node --inspect=0.0.0.0:9229 server.js'
+
+  mongo:
+    ports:
+      - "27017:27017"
