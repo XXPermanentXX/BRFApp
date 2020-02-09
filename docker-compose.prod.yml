@@ -1,6 +1,10 @@
 version: "3"
 services:
   web:
+    build:
+      args:
+        - MONGO_USER
+        - MONGO_PASS
     ports:
       - "80:8080"
     environment:
