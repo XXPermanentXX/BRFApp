@@ -46,8 +46,16 @@ const routes = compose([router.routes(), router.allowedMethods()])
 app.use(mount('/en', compose([lang('en'), routes])))
 app.use(routes)
 
+var opts = { useMongoClient: true }
+if (process.env.MONGO_USER && process.env.MONGO_PASS) {
+  opts.auth = {
+    user: process.env.MONGO_USER,
+    password: process.env.MONGO_PASS
+  }
+}
+
 mongoose.Promise = Promise
-mongoose.connect(process.env.MONGO_URL, { useMongoClient: true }).then(() => {
+mongoose.connect(process.env.MONGO_URL, opts).then(() => {
   app.listen(process.env.PORT || 8080)
 }, err => {
   app.emit('error', err)
