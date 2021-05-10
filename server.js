@@ -39,7 +39,10 @@ app.use(mount('/en', compose([lang('en'), routes])))
 app.use(routes)
 
 mongoose.Promise = Promise
-mongoose.connect(process.env.MONGO_URL, { useMongoClient: true }).then(() => {
+mongoose.connect(process.env.MONGO_URL, {
+  useUnifiedTopology: true,
+  useNewUrlParser: true
+}).then(() => {
   app.listen(process.env.PORT || 8080)
 }, err => {
   app.emit('error', err)
