@@ -34,9 +34,9 @@
     "node": ">=8.0.0"
   },
   "devDependencies": {
-    "babel-eslint": "^10.0.1",
+    "babel-eslint": "^10.1.0",
     "choo-devtools": "^2.5.1",
-    "standard": "^10.0.3"
+    "standard": "^14.3.4"
   },
   "dependencies": {
     "@koa/cors": "^2.2.2",

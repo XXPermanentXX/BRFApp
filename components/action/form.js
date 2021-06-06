@@ -5,7 +5,7 @@ const { select, input, textarea } = require('../form')
 const { __ } = require('../../lib/locale')
 
 const DATE_FORMAT = 'YYYY-MM'
-const TYPES_PER_CATEGORY = [ 14, 3, 10, 4, 4, 7 ]
+const TYPES_PER_CATEGORY = [14, 3, 10, 4, 4, 7]
 
 module.exports = class ActionForm extends Component {
   constructor (id, state, emit) {
@@ -74,7 +74,8 @@ module.exports = class ActionForm extends Component {
 
         <div class="Form-collapse u-marginBb">
 
-          ${select({ label: __('Type of action'),
+          ${select({
+            label: __('Type of action'),
             name: 'category',
             required: true,
             onchange: onchange,
@@ -88,17 +89,20 @@ module.exports = class ActionForm extends Component {
                 ${__(`ACTION_TYPE_${category}`)}
               </option>
             `
-            }))})}
+            }))
+          })}
 
-          ${props.category ? select({ label: __('Åtgärd'),
+          ${props.category ? select({
+            label: __('Åtgärd'),
             name: 'type',
             required: true,
             onchange: onchange,
             children: [
               html`<option disabled selected=${!props.type} label=${__('Pick one')}></option>`
             ].concat(types.map(option => html`
-            <option value=${option.value} selected=${option.selected}>${option.label}</option>
-          `))}) : null}
+              <option value=${option.value} selected=${option.selected}>${option.label}</option>
+            `))
+          }) : null}
 
           ${input({ label: __('Date'), type: 'month', name: 'date', required: true, onchange: onchange, value: props.date ? moment(props.date).format(DATE_FORMAT) : null })}
           ${input({ label: __('Cost'), type: 'number', name: 'cost', onchange: onchange, value: props.cost, suffix: 'kr' })}

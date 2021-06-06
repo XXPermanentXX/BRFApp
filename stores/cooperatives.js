@@ -1,7 +1,7 @@
 const INIT = {
   credentials: 'include',
   headers: {
-    'Accept': 'application/json'
+    Accept: 'application/json'
   }
 }
 
@@ -19,7 +19,7 @@ function cooperatives (state, emitter) {
       body: JSON.stringify(data),
       method: 'POST',
       headers: Object.assign({
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       }, INIT.headers)
     })
@@ -39,7 +39,7 @@ function cooperatives (state, emitter) {
       body: JSON.stringify(data),
       method: 'PUT',
       headers: Object.assign({
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json'
       }, INIT.headers)
     })

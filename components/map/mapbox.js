@@ -7,14 +7,14 @@ const { getEnergyClass, getPerformance, load, distance } = require('../base')
 
 const CLUSTER_THRESHOLD = 12
 const POPUP_OFFSET = {
-  'top': [0, -15],
+  top: [0, -15],
   'top-left': [0, -15],
   'top-right': [0, -15],
-  'bottom': [0, -36],
+  bottom: [0, -36],
   'bottom-left': [0, -36],
   'bottom-right': [0, -36],
-  'left': [6, -26],
-  'right': [-6, -26]
+  left: [6, -26],
+  right: [-6, -26]
 }
 
 module.exports = class Mapbox extends Component {
@@ -331,9 +331,9 @@ module.exports = class Mapbox extends Component {
         'icon-allow-overlap': true,
         'icon-image': 'marker-cluster',
         'text-field': '{point_count}',
-        'text-font': [ 'Lato Bold' ],
+        'text-font': ['Lato Bold'],
         'text-size': 14,
-        'text-offset': [ 0, 0.85 ]
+        'text-offset': [0, 0.85]
       },
       paint: {
         'text-color': '#fff'
@@ -423,7 +423,7 @@ function asFeature (cooperative) {
     type: 'Feature',
     geometry: {
       type: 'Point',
-      coordinates: [ cooperative.lng, cooperative.lat ]
+      coordinates: [cooperative.lng, cooperative.lat]
     },
     properties: Object.assign({
       id: cooperative._id,

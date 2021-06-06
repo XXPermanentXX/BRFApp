@@ -6,7 +6,7 @@ const SHORT_LENGTH = 50
 
 module.exports = function comment (comment, action, state) {
   const { user } = state
-  const classList = [ 'Comment' ]
+  const classList = ['Comment']
   let content = comment.comment
   const isAuthor = user && user._id === comment.user
 

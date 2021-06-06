@@ -150,7 +150,7 @@ module.exports = class PageHead extends Component {
         }
       },
       forum: (state) => {
-        let numNotifs = state.notificationsAmount
+        const numNotifs = state.notificationsAmount
         var notificationString = (state.user && numNotifs > 0)
           ? ' (' + numNotifs + ')'
           : ''

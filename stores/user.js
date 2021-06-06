@@ -13,10 +13,10 @@ function user (state, emitter) {
 
   emitter.on('DOMContentLoaded', function () {
     if (state.user) {
-      let init = {
+      const init = {
         headers: {
           brfauth: state.user.forumAuthenticationToken,
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Cache-Control': 'no-store'
         }
       }

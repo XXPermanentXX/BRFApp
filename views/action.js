@@ -40,7 +40,7 @@ function action (state, emit) {
         </header>
 
         <!-- The chart -->
-        ${state.cache(Chart, `action-${action._id}`).render(header, action.date ? Date.parse(action.date) : moment().startOf('day'), cooperative, [Object.assign({merge: true}, action)])}
+        ${state.cache(Chart, `action-${action._id}`).render(header, action.date ? Date.parse(action.date) : moment().startOf('day'), cooperative, [Object.assign({ merge: true }, action)])}
       </div>
 
       <div class="View-part View-part--secondary View-part--last u-marginBm">

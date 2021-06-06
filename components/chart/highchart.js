@@ -45,7 +45,7 @@ module.exports = class Highchart extends Component {
     Promise.all([
       import('highcharts'),
       import('highcharts/modules/no-data-to-display')
-    ]).then(([ Highcharts, noData ]) => {
+    ]).then(([Highcharts, noData]) => {
       // Initialize the no data plugin with Highcharts
       noData(Highcharts)
       this.Highcharts = Highcharts
@@ -96,7 +96,7 @@ module.exports = class Highchart extends Component {
     }
 
     const onresize = nanoraf(() => {
-      this.chart.update({legend: {x: vw() * 0.02 - 8}})
+      this.chart.update({ legend: { x: vw() * 0.02 - 8 } })
     })
 
     window.addEventListener('resize', onresize)
@@ -214,7 +214,7 @@ const formatters = {
           <span class="Chart-tipRow">
             <strong class="Chart-label">${isAligned ? serie.name : moment(serie.data[index].name).format('YYYY')}</strong>
             <span class="Chart-value">
-              ${serie.data[index].isNull ? `–` : `
+              ${serie.data[index].isNull ? '–' : `
                 <span class="Chart-value">${format(serie.data[index].y)} kWh/m<sup>2</sup></span>
               `}
             </span>

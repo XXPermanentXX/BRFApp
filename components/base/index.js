@@ -70,7 +70,7 @@ exports.format = function format (src) {
   if (isNaN(src)) { return src }
 
   const factor = src > 1 ? 10 : 100
-  const [ whole, decimal ] = ((Math.round(src * factor) / factor) + '').split(/,|\./)
+  const [whole, decimal] = ((Math.round(src * factor) / factor) + '').split(/,|\./)
   const spaced = whole
     // Get individual numbers in reversed order
     .split('').reverse()
@@ -241,6 +241,6 @@ exports.distance = function distance (posA, posB) {
 exports.captureAnchor = function captureAnchor (event) {
   const el = document.getElementById(event.target.hash.substr(1))
   if (!el) return
-  el.scrollIntoView({behavior: 'smooth', block: 'start'})
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   event.preventDefault()
 }
