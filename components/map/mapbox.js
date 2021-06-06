@@ -49,25 +49,6 @@ module.exports = class Mapbox extends Component {
         })
 
         if (changed && cooperatives.length) {
-          // Recalculate bounds
-          const bounds = new this.mapboxgl.LngLatBounds()
-          cooperatives.forEach(cooperative => {
-            bounds.extend(getLngLat(cooperative))
-          })
-
-          // Include an updated position in bounds
-          if (moved) bounds.extend(getLngLat(center))
-
-          if (center.precision === 'exact') {
-            if (!this.position) {
-              // Create position marker for exact position
-              this.position = new this.mapboxgl.Marker(myLocation())
-            }
-
-            // Update position coordinates
-            this.position.setLngLat(getLngLat(center)).addTo(this.map)
-          }
-
           if (cooperatives.length === 1) {
             // Open popup for any single cooperative hit after map has settled
             const feature = asFeature(cooperatives[0])
@@ -81,12 +62,6 @@ module.exports = class Mapbox extends Component {
 
           // Close any open popup before applying new bounds
           if (this.popup.isOpen()) this.popup.remove()
-
-          // Fit new bounds in map
-          this.map.fitBounds(bounds, {
-            maxZoom: 15,
-            padding: this.element.offsetWidth * 0.1
-          })
         }
       }
     }
@@ -174,6 +149,8 @@ module.exports = class Mapbox extends Component {
   }
 
   init (cooperatives, center) {
+    const { emit } = this
+
     this.isInitialized = true
 
     /**
@@ -193,7 +170,8 @@ module.exports = class Mapbox extends Component {
     const map = this.map = new this.mapboxgl.Map({
       container: this.element,
       style: process.env.MAPBOX_STYLE,
-      maxZoom: 17
+      maxZoom: 17,
+      zoom: 11
     })
 
     /**
@@ -201,7 +179,7 @@ module.exports = class Mapbox extends Component {
      */
 
     if (cooperatives.length) {
-      map.fitBounds(this.getBounds(cooperatives, getLngLat(center)), {
+      map.fitBounds(this.getBounds(getLngLat(center), cooperatives), {
         padding: this.element.offsetWidth * 0.1,
         animate: false
       })
@@ -212,19 +190,19 @@ module.exports = class Mapbox extends Component {
       })
     }
 
-    if (center.precision === 'exact') {
-      // Create a marker for exact position
-      this.position = new this.mapboxgl.Marker(myLocation())
-        .setLngLat(getLngLat(center))
-        .addTo(map)
-    } else {
-      this.map.setZoom(11)
-    }
+    map.on('zoom', getCooperatives)
+    map.on('resize', getCooperatives)
+    map.on('dragend', getCooperatives)
 
     map.on('load', () => {
       if (!this.map.getSource('cooperatives') && cooperatives.length) {
         this.addSource(cooperatives, center)
       }
+
+      /**
+       * Ensure that we have all cooperatives which should be in view
+       */
+      getCooperatives()
 
       /**
        * Handle clicking on the map
@@ -284,6 +262,21 @@ module.exports = class Mapbox extends Component {
 
     function onmouseleave () {
       map.getCanvas().style.cursor = ''
+    }
+
+    let timeout
+    function getCooperatives () {
+      clearTimeout(timeout)
+      timeout = setTimeout(function () {
+        const bounds = map.getBounds()
+        const coordinates = [
+          bounds.getNorthWest(),
+          bounds.getNorthEast(),
+          bounds.getSouthEast(),
+          bounds.getSouthWest()
+        ].map((point) => point.toArray())
+        emit('cooperatives:within', coordinates)
+      }, 600)
     }
   }
 
@@ -361,14 +354,14 @@ module.exports = class Mapbox extends Component {
    * @return {mapbox.LngLatBounds}
    */
 
-  getBounds (cooperatives, center) {
-    let include
+  getBounds (center, cooperatives) {
+    let include = []
     const bounds = new this.mapboxgl.LngLatBounds()
-    const closest = cooperatives.map(cooperative => {
+    const closest = cooperatives ? cooperatives.map(cooperative => {
       return distance(center, getLngLat(cooperative))
-    }).sort()[0]
+    }).sort()[0] : null
 
-    if (closest < 200) {
+    if (closest && closest < 200) {
       // Include center
       bounds.extend(center)
 
@@ -380,27 +373,18 @@ module.exports = class Mapbox extends Component {
           return aDistance > bDistance ? 1 : -1
         })
         .filter((item, index) => index < 5)
-    } else {
+    } else if (cooperatives) {
       // Include all cooperatives if center is too far off
       include = cooperatives
+    } else {
+      // Include center
+      bounds.extend(center)
     }
 
     include.forEach(cooperative => bounds.extend(getLngLat(cooperative)))
 
     return bounds
   }
-}
-
-/**
- * Generic "You are here"-location marker
- */
-
-function myLocation () {
-  return html`
-    <div>
-      <div class="Map-position">${__('You are here')}</div>
-    </div>
-  `
 }
 
 /**

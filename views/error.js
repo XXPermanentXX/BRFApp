@@ -1,7 +1,7 @@
 const view = require('../components/view')
 const views = {
-  '404': require('../components/view/404'),
-  '500': require('../components/view/500')
+  404: require('../components/view/404'),
+  500: require('../components/view/500')
 }
 
 module.exports = function error (state, emit) {

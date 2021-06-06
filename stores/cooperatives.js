@@ -10,8 +10,22 @@ module.exports = cooperatives
 function cooperatives (state, emitter) {
   state.cooperatives = state.cooperatives || []
 
-  emitter.on('DOMContentLoaded', () => {
-    emitter.emit('cooperatives:fetch')
+  emitter.on('cooperatives:within', function (coordinates) {
+    const pairs = coordinates.reduce((acc, pair) => {
+      // const point = pair.map((val) => val.toFixed(5))
+      acc.push(`ll=${pair.join(',')}`)
+      return acc
+    }, [])
+    const uri = `/cooperatives?${pairs.join('&')}`
+    window.fetch(uri, INIT).then(capture).then(body => {
+      if (Array.isArray(body)) {
+        body.forEach(inject)
+      } else {
+        inject(body)
+      }
+
+      emitter.emit('render')
+    }, err => emitter.emit('error', err))
   })
 
   emitter.on('cooperatives:add', ({ data }) => {

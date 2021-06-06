@@ -10,7 +10,7 @@ const { loader } = require('../components/icons')
 module.exports = view(faq, title)
 
 function faq (state, emit) {
-  let doc = state.content.faq
+  const doc = state.content.faq
 
   if (!doc) {
     emit('content:fetch', 'faq')
