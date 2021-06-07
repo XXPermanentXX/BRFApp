@@ -2,7 +2,6 @@ const html = require('choo/html')
 const Component = require('choo/component')
 const createPopup = require('./popup')
 const { loader } = require('../icons')
-const { __ } = require('../../lib/locale')
 const { getEnergyClass, getPerformance, load, distance } = require('../base')
 
 const CLUSTER_THRESHOLD = 12
