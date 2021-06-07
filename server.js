@@ -9,7 +9,12 @@ const lang = require('./lib/middleware/lang')
 
 const app = jalla('index.js', {
   serve: process.env.NODE_ENV !== 'development',
-  css: 'index.css'
+  css: 'index.css',
+  skip: [
+    require.resolve('moment'),
+    require.resolve('mapbox-gl'),
+    require.resolve('highcharts')
+  ]
 })
 app.keys = [process.env.BRFENERGI_SESSION_SECRET]
 
@@ -44,7 +49,8 @@ app.use(routes)
 mongoose.Promise = Promise
 mongoose.connect(process.env.MONGO_URL, {
   useUnifiedTopology: true,
-  useNewUrlParser: true
+  useNewUrlParser: true,
+  useCreateIndex: true
 }).then(() => {
   app.listen(process.env.PORT || 8080)
 }, err => {

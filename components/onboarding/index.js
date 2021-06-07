@@ -10,6 +10,7 @@ const SPEED_FACTOR = 1000
 module.exports = class Onboarding extends Component {
   constructor (id, state, emit) {
     super(id)
+    this.id = id
     this.page = 0
     this.isLoading = false
     this.state = state
@@ -109,7 +110,7 @@ module.exports = class Onboarding extends Component {
         <ol class="Onboarding-pagination">
           ${cards.map((card, index) => html`
             <li>
-              <a href="#${this.name}-${index}" class="Onboarding-page ${this.page === index ? 'is-active' : ''}" onclick=${onclick(index)}>
+              <a href="#${this.id}-${index}" class="Onboarding-page ${this.page === index ? 'is-active' : ''}" onclick=${onclick(index)}>
                 ${asText(card.title)}
               </a>
             </li>
@@ -123,7 +124,7 @@ module.exports = class Onboarding extends Component {
             </button>
           </form>
         ` : html`
-          <a href="#${this.name}-${this.page + 1}" class="Button u-block u-sizeFull" onclick=${onclick(this.page + 1)}>
+          <a href="#${this.id}-${this.page + 1}" class="Button u-block u-sizeFull" onclick=${onclick(this.page + 1)}>
             ${__('Next')}
           </a>
         `}
