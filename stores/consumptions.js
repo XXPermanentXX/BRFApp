@@ -1,8 +1,8 @@
 const url = require('url')
 const moment = require('moment')
-const hash = require('object-hash')
 const assert = require('../lib/assert')
 const { __ } = require('../lib/locale')
+const { hash } = require('../components/base')
 
 const FORMAT = 'YYYYMM'
 const INIT = { credentials: 'include', headers: { accept: 'application/json' } }

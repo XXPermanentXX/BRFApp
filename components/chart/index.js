@@ -1,13 +1,12 @@
 const moment = require('moment')
 const html = require('choo/html')
 const nanoraf = require('nanoraf')
-const hash = require('object-hash')
 const Component = require('choo/component')
 const { __ } = require('../../lib/locale')
 const { chevron } = require('../icons')
 const ChartFilter = require('./filter')
 const Highchart = require('./highchart')
-const { className, getPerformance, vw } = require('../base')
+const { className, getPerformance, vw, hash } = require('../base')
 
 const SELECTED_COOPERATIVE = /cooperative:(\w+)/
 

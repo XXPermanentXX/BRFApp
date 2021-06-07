@@ -244,3 +244,23 @@ exports.captureAnchor = function captureAnchor (event) {
   el.scrollIntoView({ behavior: 'smooth', block: 'start' })
   event.preventDefault()
 }
+
+/**
+ * Predictably stringify an object
+ * @param {Object} obj
+ * @param {String} [prefix='']
+ * @returns {String}
+ */
+
+exports.hash = function hash (obj, prefix = '') {
+  if ('toJSON' in obj) return `${prefix ? `${prefix}=` : ''}${obj.toJSON()}`
+  var keys = Object.keys(obj).sort()
+  return keys.reduce(function (str, key) {
+    var value = obj[key]
+    if (str) str += ','
+    if (prefix) key = `${prefix}.${key}`
+    if (value && typeof value === 'object') str += hash(value, key)
+    else str += `${key}=${value}`
+    return str
+  }, '')
+}
