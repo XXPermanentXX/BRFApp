@@ -6,6 +6,7 @@
   "style": "index.css",
   "scripts": {
     "start": "node server.js",
+    "inspect": "node --inspect server.js",
     "build": "jalla build index.js --css index.css",
     "test": "standard"
   },
