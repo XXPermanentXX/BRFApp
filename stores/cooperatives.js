@@ -16,7 +16,8 @@ function cooperatives (state, emitter) {
       acc.push(`ll=${pair.join(',')}`)
       return acc
     }, [])
-    const uri = `/cooperatives?${pairs.join('&')}`
+    const exclude = state.cooperatives.map((cooperative) => cooperative._id)
+    const uri = `/cooperatives?${pairs.join('&')}&exclude=${exclude.join(',')}`
     window.fetch(uri, INIT).then(capture).then(body => {
       if (Array.isArray(body)) {
         body.forEach(inject)
