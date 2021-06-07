@@ -19,7 +19,6 @@ class Form extends Component {
     this.cache = state.cache
     this.state = state
     this.emit = emit
-    this.hasGeoip = false
     this.props = {
       reuse: false,
       needUpdate: false,
@@ -28,10 +27,6 @@ class Form extends Component {
   }
 
   update (cooperative) {
-    if (this.state.geoip.precision && !this.hasGeoip) {
-      this.hasGeoip = true
-      return true
-    }
     return this.cooperative !== cooperative._id
   }
 

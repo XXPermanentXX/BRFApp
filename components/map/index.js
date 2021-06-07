@@ -33,7 +33,7 @@ module.exports = class MapExplorer extends Component {
     this.registration = this.state.content.registration
     this.cooperatives = this.state.cooperatives.map(item => item._id)
 
-    const { user } = this.state
+    const { user, geoip } = this.state
     const cooperatives = Filter.apply(this.state.cooperatives, this.filter)
 
     const filter = () => {
@@ -94,20 +94,8 @@ module.exports = class MapExplorer extends Component {
     }
 
     if (!center) {
-      if (this.state.geoip && this.state.geoip.ll) {
-        const [latitude, longitude] = this.state.geoip.ll
-        center = {
-          longitude: longitude,
-          latitude: latitude,
-          precision: 'city'
-        }
-      } else {
-        center = {
-          longitude: 18.05,
-          latitude: 59.3333,
-          precision: 'city'
-        }
-      }
+      const { latitude, longitude } = geoip
+      center = { latitude, longitude }
     }
 
     if (this.modal) {
