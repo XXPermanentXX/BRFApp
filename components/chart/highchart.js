@@ -2,6 +2,7 @@ const html = require('choo/html')
 const nanoraf = require('nanoraf')
 const merge = require('lodash.merge')
 const Component = require('choo/component')
+const splitRequire = require('split-require')
 const capitalize = require('lodash.capitalize')
 const moment = require('moment')
 const defaults = require('./defaults')
@@ -43,8 +44,8 @@ module.exports = class Highchart extends Component {
     this.hasLoaded = true
 
     Promise.all([
-      import('highcharts'),
-      import('highcharts/modules/no-data-to-display')
+      splitRequire('highcharts'),
+      splitRequire('highcharts/modules/no-data-to-display')
     ]).then(([Highcharts, noData]) => {
       // Initialize the no data plugin with Highcharts
       noData(Highcharts)

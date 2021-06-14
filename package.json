@@ -73,6 +73,7 @@
     "prismic-richtext": "^1.0.3",
     "simple-encryptor": "^1.4.0",
     "smoothscroll-polyfill": "^0.4.3",
+    "split-require": "^3.1.2",
     "suitcss-base": "^2.0.0",
     "suitcss-components-button": "^6.0.2",
     "suitcss-components-grid": "^3.0.3",

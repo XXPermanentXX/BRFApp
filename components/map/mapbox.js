@@ -1,5 +1,6 @@
 const html = require('choo/html')
 const Component = require('choo/component')
+const splitRequire = require('split-require')
 const createPopup = require('./popup')
 const { loader } = require('../icons')
 const { getEnergyClass, getPerformance, load, distance } = require('../base')
@@ -98,7 +99,7 @@ module.exports = class Mapbox extends Component {
     this.element.addEventListener('touchmove', this)
 
     Promise.all([
-      import('mapbox-gl'),
+      splitRequire('mapbox-gl'),
       load('https://api.mapbox.com/mapbox-gl-js/v2.3.0/mapbox-gl.css')
     ]).then(([mapboxgl]) => {
       // Stash mapbox api in scoped variable
