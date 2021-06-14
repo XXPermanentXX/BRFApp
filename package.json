@@ -64,7 +64,7 @@
     "mapbox-gl": "^2.3.0",
     "moment": "^2.22.2",
     "mongoose": "^5.12.13",
-    "nanoraf": "^3.0.1",
+    "nanoraf": "^3.1.0",
     "passport-oauth2": "^1.4.0",
     "postcss-custom-media": "^5.0.1",
     "postcss-custom-properties": "^5.0.2",
