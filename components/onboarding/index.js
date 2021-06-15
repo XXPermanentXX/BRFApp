@@ -4,6 +4,7 @@ const asElement = require('prismic-element')
 const { asText, Elements } = require('prismic-richtext')
 const resolve = require('../../lib/resolve')
 const { __ } = require('../../lib/locale')
+const { loader } = require('../icons')
 
 const SPEED_FACTOR = 1000
 
@@ -19,6 +20,7 @@ module.exports = class Onboarding extends Component {
 
   load (element) {
     const reel = element.querySelector('.js-reel')
+    if (!reel) return
 
     let timeout
     const onscroll = event => {
@@ -35,8 +37,12 @@ module.exports = class Onboarding extends Component {
 
   update (callback) {
     this.callback = callback
-    this.align()
-    return false
+    if (!this.isLoading) this.align()
+    return this.isLoading
+  }
+
+  afterupdate (el) {
+    this.load(el)
   }
 
   align () {
@@ -71,8 +77,21 @@ module.exports = class Onboarding extends Component {
 
   createElement (callback) {
     this.callback = callback
-    const { emit } = this
-    const doc = this.state.content.onboarding
+    const { emit, state, isLoading } = this
+    const doc = state.content && state.content.onboarding
+
+    if (!doc) {
+      if (!isLoading) emit('content:fetch', 'onboarding')
+      this.isLoading = true
+      return html`
+        <div class="Onboarding">
+          <div class="u-marginVl u-flexGrow1 u-sizeFull u-flex u-flexAlignItemsCenter">
+            ${loader()}
+          </div>
+        </div>
+      `
+    }
+
     const cards = doc.data.cards
     const onclick = page => event => {
       if (page >= cards.length) {
