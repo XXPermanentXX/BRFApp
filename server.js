@@ -19,6 +19,8 @@ const app = jalla('index.js', {
 app.keys = [process.env.BRFENERGI_SESSION_SECRET]
 app.proxy = true
 
+app.on('error', console.error)
+
 if (process.env.BRFENERGI_USER && process.env.BRFENERGI_PASS) {
   app.use(require('koa-basic-auth')({
     name: process.env.BRFENERGI_USER,

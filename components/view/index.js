@@ -28,7 +28,7 @@ module.exports = function createView (view, title) {
         title = errors['500'].title
         content = errors['500'](err)
 
-        if (process.env.NODE_ENV === 'development') {
+        if (process.env.NODE_ENV === 'development' || typeof window === 'undefined') {
           console.error(err) // eslint-disable-line no-console
         }
       }
