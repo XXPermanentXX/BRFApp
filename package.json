@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@koa/cors": "^2.2.2",
+    "@koa/router": "^10.0.0",
     "choo": "^7.0.0",
     "choo-service-worker": "^3.0.0",
     "dedent": "^0.6.0",
@@ -55,7 +56,6 @@
     "koa-methodoverride": "^2.0.0",
     "koa-mount": "^4.0.0",
     "koa-passport": "^4.1.1",
-    "koa-router": "^7.4.0",
     "koa-session": "^5.9.0",
     "lodash.capitalize": "^4.2.1",
     "lodash.merge": "^4.6.1",
