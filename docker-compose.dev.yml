@@ -1,0 +1,16 @@
+version: '3'
+services:
+  web:
+    ports:
+      - '9229:9229'
+      - '${PORT}:${PORT}'
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    command: node --inspect server.js
+
+  mongo:
+    expose:
+      - '27017'
+    volumes:
+      - './data/db:/data/'
