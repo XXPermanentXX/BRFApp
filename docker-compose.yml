@@ -1,7 +1,10 @@
 version: '3'
 services:
   web:
+    restart: always
     container_name: brf-energi-web
+    depends_on:
+      - mongo
     build:
       context: .
       args:
@@ -11,5 +14,6 @@ services:
       - '${PORT}:${PORT}'
 
   mongo:
+    restart: always
     container_name: brf-energi-mongo
     image: 'mongo:5.0.6'
