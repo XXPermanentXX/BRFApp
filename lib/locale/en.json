@@ -123,5 +123,7 @@
   "try again": "try again",
   "or go to": "or go to",
   "the homepage": "the homepage",
-  "An error has occured": "An error has occured"
+  "An error has occured": "An error has occured",
+  "Operation `cooperatives.find()` buffering timed out after 10000ms": "Operation `cooperatives.find()` buffering timed out after 10000ms",
+  "ll.map is not a function": "ll.map is not a function"
 }

@@ -11,7 +11,7 @@ const DEFAULT = `
 # General
 NODE_ENV=development
 BRFENERGI_LANG=sv
-PORT=3000
+PORT=3000 l
 FORUM_URL=http://localhost:3000
 
 # Services

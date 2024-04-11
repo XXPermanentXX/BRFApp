@@ -107,7 +107,7 @@ module.exports = class Onboarding extends Component {
     return html`
       <div class="Onboarding">
         <div class="Onboarding-reel js-reel">
-          ${cards.map((card, index) => {
+          ${(cards || []).map((card, index) => {
             return html`
               <article class="Onboarding-card" id="${this.name}-${index}">
                 ${card.image.url ? html`
@@ -127,7 +127,7 @@ module.exports = class Onboarding extends Component {
         </div>
 
         <ol class="Onboarding-pagination">
-          ${cards.map((card, index) => html`
+          ${(cards || []).map((card, index) => html`
             <li>
               <a href="#${this.id}-${index}" class="Onboarding-page ${this.page === index ? 'is-active' : ''}" onclick=${onclick(index)}>
                 ${asText(card.title)}
