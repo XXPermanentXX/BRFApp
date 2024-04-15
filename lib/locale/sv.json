@@ -237,5 +237,6 @@
   "Yes": "Ja",
   "No": "Nej",
   "Show more": "Visa mer",
-  "Hide": "Dölj"
+  "Hide": "Dölj",
+  "request to https://brf-energi.cdn.prismic.io/api failed, reason: connect ETIMEDOUT 13.33.33.85:443": "request to https://brf-energi.cdn.prismic.io/api failed, reason: connect ETIMEDOUT 13.33.33.85:443"
 }

@@ -24,7 +24,7 @@ function faq (state, emit) {
   } else if (state.params.anchor) {
     emit('scrollto', state.params.anchor)
   }
-
+  console.log(doc.data.title)
   return html`
     <div class="View-container View-container--md u-flexExpand">
       <div class="u-marginVl">

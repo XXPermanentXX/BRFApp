@@ -51,7 +51,8 @@ app.use(mount('/en', compose([lang('en'), routes])))
 app.use(routes)
 
 mongoose.Promise = Promise
-mongoose.connect(process.env.MONGO_URL, {
+console.log(1111111111, process.env.MONGO_URL)
+mongoose.connect("mongodb+srv://shiqig_mongoDB:jGKPG3T8v-KS.XL@brfapp.ozxos53.mongodb.net/?retryWrites=true&w=majority&appName=BRFApp", {
   useUnifiedTopology: true,
   useNewUrlParser: true,
   useCreateIndex: true

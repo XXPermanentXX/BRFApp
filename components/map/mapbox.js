@@ -168,7 +168,7 @@ module.exports = class Mapbox extends Component {
     this.mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN
     const map = this.map = new this.mapboxgl.Map({
       container: this.element,
-      style: process.env.MAPBOX_STYLE,
+      style: "mapbox://styles/mapbox/streets-v9",
       maxZoom: 17,
       zoom: 11
     })
